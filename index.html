@@ -760,10 +760,10 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
       <div class="field"><label for="at_weapon">Weapon</label><select id="at_weapon"></select></div>
     </div>
     <div class="preset-btns">
-      <div class="chip" id="at_presetVert">Best vertical control</div>
-      <div class="chip" id="at_presetHoriz">Best horizontal</div>
-      <div class="chip" id="at_presetBal">Balanced</div>
-      <div class="chip" id="at_presetClear">Clear</div>
+      <button type="button" class="chip" id="at_presetVert">Best vertical control</button>
+      <button type="button" class="chip" id="at_presetHoriz">Best horizontal</button>
+      <button type="button" class="chip" id="at_presetBal">Balanced</button>
+      <button type="button" class="chip" id="at_presetClear">Clear</button>
     </div>
     <div class="toolbar">
       <div class="field"><label for="at_muzzle">Muzzle</label><select id="at_muzzle"></select></div>
@@ -919,7 +919,7 @@ function activateMega(mega){
   }
 }
 document.querySelectorAll('#hub-nav button').forEach(btn=>{
-  btn.onclick = ()=> activateMega(btn.dataset.mega);
+  btn.onclick = ()=>{ activateMega(btn.dataset.mega); window.scrollTo({top:0, behavior:'auto'}); };
 });
 document.querySelectorAll('#engine-subnav button').forEach(btn=>{
   btn.onclick = ()=>{
@@ -928,6 +928,7 @@ document.querySelectorAll('#engine-subnav button').forEach(btn=>{
     btn.classList.add('active');
     btn.setAttribute('aria-pressed', 'true');
     showPanel(lastEnginePanel);
+    window.scrollTo({top:0, behavior:'auto'});
   };
 });
 activateMega('engine');
