@@ -15,7 +15,7 @@ const panelIds = [
   'panel-combat', 'panel-range', 'panel-ttk', 'panel-recoil2',
   'panel-attach', 'panel-sensitivity', 'panel-backpack', 'panel-data'
 ];
-const scripts = [...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(m => m[1]);
+const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m => m[1]);
 
 test('all eight toolkit panels and their navigation links exist', () => {
   for (const id of panelIds) {
