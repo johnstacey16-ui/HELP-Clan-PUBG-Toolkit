@@ -1006,8 +1006,8 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
     const currentIndex = panelIds.indexOf(id)+1;
     index.innerHTML = String(currentIndex).padStart(2,'0')+' <i>/</i> 08';
     index.setAttribute('aria-label','Tool '+currentIndex+' of 8');
-    if(options.updateHistory) history.pushState({panel:id},'', '#'+id);
-    if(options.scroll && changed) window.scrollTo({top:0,behavior:'instant'});
+    if(options.updateHistory && location.hash !== '#'+id) history.pushState({panel:id},'', '#'+id);
+    if(options.scroll && changed) window.scrollTo({top:0,behavior:'auto'});
     const wasOpen = root.classList.contains('sidebar-open');
     closeMenu();
     if(wasOpen && options.focus) title.focus({preventScroll:true});
