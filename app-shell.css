@@ -576,3 +576,97 @@ body {
     transition: none !important;
   }
 }
+
+
+/* Weapon database: page-sticky, horizontally synchronized two-row headings.
+   The original wide table remains horizontally scrollable as before. */
+#weapon-table-sticky-header {
+  position: fixed;
+  z-index: 94; /* Under the app topbar (95), above the table itself */
+  overflow: hidden;
+  border: 1px solid rgba(193,215,230,.30);
+  border-bottom: 2px solid #d0ae78;
+  border-radius: 0 0 11px 11px;
+  background: #182939;
+  box-shadow: 0 13px 28px rgba(0,0,0,.34);
+  color: #e1ecf4;
+}
+#weapon-table-sticky-header[hidden] { display: none !important; }
+#weapon-table-sticky-header .weapon-table-sticky-viewport {
+  width: 100%;
+  overflow: hidden;
+  scrollbar-width: none;
+}
+#weapon-table-sticky-header .weapon-table-sticky-copy {
+  display: table;
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 0;
+  max-width: none;
+  background: #203145;
+  color: #d5e5f1;
+}
+#weapon-table-sticky-header th {
+  box-sizing: border-box;
+  position: relative;
+  white-space: nowrap;
+  padding: 12px 11px;
+  line-height: 1.45;
+  color: #c5d7e4;
+  border: 0;
+  border-bottom: 1px solid rgba(216,191,150,.2);
+  background: #203145;
+  font: 700 10px/1.45 "IBM Plex Mono", monospace;
+  letter-spacing: .035em;
+  text-align: left;
+  text-transform: uppercase;
+  cursor: default;
+}
+#weapon-table-sticky-header tr.grouprow th {
+  padding: 5px 6px;
+  background: #182939;
+  color: #8bd8e8;
+  text-align: center;
+  font-size: 9.5px;
+  letter-spacing: .075em;
+  box-shadow: inset 0 -1px rgba(139,216,232,.2);
+}
+#weapon-table-sticky-header tr.colheader th {
+  background: #203145;
+  border-bottom: 1px solid rgba(139,216,232,.6);
+}
+#weapon-table-sticky-header tr.colheader th[data-key] {
+  cursor: pointer;
+}
+#weapon-table-sticky-header tr.colheader th[data-key]:hover {
+  color: #f2d3a0;
+  background: #2a3e52;
+}
+#weapon-table-sticky-header tr.colheader th[data-key]:focus-visible {
+  z-index: 5;
+  outline: 2px solid #f2d3a0;
+  outline-offset: -3px;
+}
+#weapon-table-sticky-header th:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  box-shadow: 2px 0 5px rgba(0,0,0,.30);
+}
+#weapon-table-sticky-header tr.grouprow th:first-child { z-index: 3; }
+#weapon-table-sticky-header .arrow {
+  margin-left: 3px;
+  color: #f2d3a0;
+  font-size: 9px;
+}
+
+/* Native table's older sticky positions were relative to its horizontal
+   scroller, not the page. Keep horizontal sticky first-column cells intact. */
+#panel-combat #wTable tr.grouprow th,
+#panel-combat #wTable tr.colheader th { top: 0; }
+
+@media (max-width: 700px) {
+  #weapon-table-sticky-header th { padding: 10px 8px; }
+  #weapon-table-sticky-header tr.grouprow th { padding: 5px 6px; }
+}
