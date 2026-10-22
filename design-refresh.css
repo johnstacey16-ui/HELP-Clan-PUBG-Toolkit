@@ -43,7 +43,7 @@ button, input, select, textarea { font: inherit; }
 button, a, input, select { -webkit-tap-highlight-color: transparent; }
 button { touch-action: manipulation; }
 a { text-underline-offset: 3px; }
-:focus-visible, .hub-main :focus-visible {
+:focus-visible, :is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) :focus-visible {
   outline: 2px solid var(--design-gold);
   outline-offset: 3px;
 }
@@ -161,7 +161,7 @@ a { text-underline-offset: 3px; }
   border-color: rgba(139,216,232,.25);
   box-shadow: none;
 }
-.hub-main { display: none; }
+:is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) { display: none; }
 .hub-main.active { display: block; animation: help-panel-enter .25s ease-out; }
 @keyframes help-panel-enter { from { opacity: .5; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -225,15 +225,15 @@ a { text-underline-offset: 3px; }
 }
 #panel-combat .wrap { padding-top: 30px; }
 #panel-sensitivity .wrap { max-width: 1280px; }
-.hub-main .wrap > * { min-width: 0; }
-.hub-main p, .hub-main li, .hub-main dd {
+:is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) .wrap > * { min-width: 0; }
+:is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) p, :is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) li, :is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) dd {
   overflow-wrap: break-word;
 }
-.hub-main p, .hub-main dd, .hub-main li, .hub-main .helptext,
-.hub-main .note, #panel-sensitivity .card-sub, #panel-combat .sub {
+:is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) p, :is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) dd, :is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) li, :is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) .helptext,
+:is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) .note, #panel-sensitivity .card-sub, #panel-combat .sub {
   line-height: 1.72;
 }
-.hub-main .eyebrow {
+:is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) .eyebrow {
   font: 600 11px/1.6 var(--mono);
   color: var(--design-gold);
   letter-spacing: .16em;
@@ -345,7 +345,7 @@ a { text-underline-offset: 3px; }
 #panel-sensitivity .hdr .credit { max-width: 800px; color: #b5c5d2; line-height: 1.8; }
 
 /* Reusable surfaces and section hierarchy. */
-.hub-main .card,
+:is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) .card,
 #panel-sensitivity .card,
 #panel-combat .card {
   min-width: 0;
@@ -357,9 +357,9 @@ a { text-underline-offset: 3px; }
   box-shadow: 0 9px 26px rgba(0,0,0,.11), inset 0 1px 0 rgba(255,255,255,.025);
   -webkit-backdrop-filter: none; backdrop-filter: none;
 }
-.hub-main .card::before, .hub-main .card::after,
+:is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) .card::before, :is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) .card::after,
 #panel-sensitivity .card::before, #panel-sensitivity .card::after { content: none; }
-.hub-main .section-h, #panel-combat .section-h {
+:is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) .section-h, #panel-combat .section-h {
   display: flex; align-items: center;
   gap: 10px; flex-wrap: wrap;
   padding: 0; margin: 6px 0 17px;
@@ -367,7 +367,7 @@ a { text-underline-offset: 3px; }
   font: 700 clamp(22px, 2.2vw, 29px)/1.1 var(--disp);
   letter-spacing: .025em; text-transform: uppercase;
 }
-.hub-main .section-h::before {
+:is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) .section-h::before {
   content: ""; display: block; flex: 0 0 4px;
   width: 4px; height: 23px; border-radius: 4px;
   background: var(--design-gold);
@@ -389,19 +389,19 @@ a { text-underline-offset: 3px; }
   background: rgba(236,196,139,.07);
 }
 #panel-sensitivity .card-sub { color: var(--design-muted); font-size: 13px; max-width: 85ch; }
-.hub-main .stat, #panel-sensitivity .out {
+:is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) .stat, #panel-sensitivity .out {
   min-width: 0; border: 1px solid rgba(174,194,215,.13);
   border-radius: 13px; padding: 18px 18px;
   background: linear-gradient(140deg, #1c2c3c, #142334);
   box-shadow: none;
 }
-.hub-main .stat .n {
+:is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) .stat .n {
   color: #b7eff5;
   font: 700 clamp(28px, 3vw, 37px)/1.05 var(--disp);
   text-shadow: none;
   overflow-wrap: anywhere;
 }
-.hub-main .stat .l, #panel-sensitivity .out .k {
+:is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) .stat .l, #panel-sensitivity .out .k {
   margin-top: 6px; color: #a9bbc9;
   font: 600 10px/1.55 var(--mono);
   letter-spacing: .035em; text-transform: uppercase;
@@ -410,25 +410,25 @@ a { text-underline-offset: 3px; }
 #panel-sensitivity .out.hi .v { color: #9ee7cd; }
 #panel-sensitivity .out.warn .v { color: #ffaaa4; }
 #panel-sensitivity .outbar { border-top: 1px solid var(--design-border); gap: 12px; margin-top: 22px; padding-top: 18px; }
-.hub-main .grid2, .hub-main .grid3, .hub-main .grid4, #panel-sensitivity .grid {
+:is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) .grid2, :is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) .grid3, :is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) .grid4, #panel-sensitivity .grid {
   gap: 15px;
 }
-.hub-main .grid2 > *, .hub-main .grid3 > *, .hub-main .grid4 > *,
+:is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) .grid2 > *, :is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) .grid3 > *, :is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) .grid4 > *,
 #panel-sensitivity .grid > * { min-width: 0; }
-.hub-main .helptext, .hub-main .note, .hub-main .assumptions,
+:is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) .helptext, :is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) .note, :is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) .assumptions,
 #panel-sensitivity .note { color: var(--design-muted); font-size: 13px; }
-.hub-main .note, #panel-sensitivity .note {
+:is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) .note, #panel-sensitivity .note {
   border-left: 3px solid rgba(236,196,139,.60);
   background: rgba(236,196,139,.035);
   border-radius: 0 9px 9px 0;
   padding: 12px 15px;
   margin-top: 14px;
 }
-.hub-main .note b { color: var(--design-gold); }
-.hub-main :is(footer) { color: #889bad; font: 500 11px/1.8 var(--mono); }
+:is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) .note b { color: var(--design-gold); }
+:is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) :is(footer) { color: #889bad; font: 500 11px/1.8 var(--mono); }
 
 /* Accessible, comfortable inputs and filter controls. */
-.hub-main :is(input:not([type="checkbox"]):not([type="range"]), select, textarea) {
+:is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) :is(input:not([type="checkbox"]):not([type="range"]), select, textarea) {
   min-width: 0;
   min-height: 46px;
   max-width: 100%;
@@ -441,30 +441,30 @@ a { text-underline-offset: 3px; }
   box-shadow: inset 0 1px 2px rgba(0,0,0,.16);
   outline: none;
 }
-.hub-main :is(input:not([type="checkbox"]):not([type="range"]), select, textarea):focus {
+:is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) :is(input:not([type="checkbox"]):not([type="range"]), select, textarea):focus {
   border-color: #cda66f !important;
   box-shadow: 0 0 0 3px rgba(236,196,139,.15);
 }
-.hub-main :is(input,select):disabled { opacity: .50; cursor: not-allowed; }
-.hub-main input[type="checkbox"] {
+:is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) :is(input,select):disabled { opacity: .50; cursor: not-allowed; }
+:is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) input[type="checkbox"] {
   accent-color: #dcba83;
   width: 16px; height: 16px; vertical-align: middle;
 }
-.hub-main input[type="range"] {
+:is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) input[type="range"] {
   accent-color: var(--design-gold);
   width: 100%; min-height: 30px; cursor: pointer;
 }
-.hub-main label,
+:is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) label,
 #panel-sensitivity .field label {
   color: #b9c8d5;
   font: 700 11px/1.5 "Manrope", sans-serif;
   letter-spacing: .025em;
 }
-.hub-main .field { min-width: 0; }
-.hub-main .toolbar { gap: 14px; }
-.hub-main .toolbar .field { min-width: min(180px,100%); }
+:is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) .field { min-width: 0; }
+:is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) .toolbar { gap: 14px; }
+:is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) .toolbar .field { min-width: min(180px,100%); }
 #panel-combat .toolbar input[type=text] { min-width: min(220px,100%); }
-.hub-main :is(.chip, .tab, .preset-btns button, .bp-stepper button) {
+:is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) :is(.chip, .tab, .preset-btns button, .bp-stepper button) {
   border: 1px solid #405469;
   border-radius: 10px;
   background: #1b2c3c;
@@ -475,8 +475,8 @@ a { text-underline-offset: 3px; }
   text-transform: none;
   transition: border-color .18s, background .18s, color .18s, transform .18s;
 }
-.hub-main :is(.chip, .tab) { padding: 10px 15px; min-height: 42px; }
-.hub-main :is(.chip, .tab):hover {
+:is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) :is(.chip, .tab) { padding: 10px 15px; min-height: 42px; }
+:is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) :is(.chip, .tab):hover {
   color: white;
   border-color: rgba(236,196,139,.55);
   background: #253748;
@@ -500,9 +500,9 @@ a { text-underline-offset: 3px; }
 #panel-backpack .bp-row .bp-sub { flex-basis: 64px; }
 
 /* Data tables: cleaner scan lines; overflow stays within each card. */
-.hub-main table { border-collapse: separate; border-spacing: 0; width: 100%; }
-.hub-main :is(th, td) { border-color: rgba(174,194,215,.10); }
-.hub-main th {
+:is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) table { border-collapse: separate; border-spacing: 0; width: 100%; }
+:is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) :is(th, td) { border-color: rgba(174,194,215,.10); }
+:is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) th {
   padding: 12px 11px;
   background: #203145;
   color: #bfdde5;
@@ -512,13 +512,13 @@ a { text-underline-offset: 3px; }
   letter-spacing: .045em;
   white-space: nowrap;
 }
-.hub-main td {
+:is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) td {
   padding: 12px 11px;
   color: #d7e0e9;
   border-bottom: 1px solid rgba(174,194,215,.10);
   font: 500 12px/1.6 var(--mono);
 }
-.hub-main tbody tr:hover td { background: rgba(139,216,232,.045); }
+:is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) tbody tr:hover td { background: rgba(139,216,232,.045); }
 #panel-combat #wTable th:first-child,
 #panel-combat #wTable td:first-child { background: #1b2b3a; }
 #panel-combat #wTable tr.rowclick:hover td:first-child { background: #23394a; }
@@ -559,7 +559,7 @@ a { text-underline-offset: 3px; }
   #engine-subnav { justify-content: flex-start; padding-inline: 16px; }
   #panel-combat .grid3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   #panel-combat .grid2 { grid-template-columns: minmax(0,1fr); }
-  .hub-main .toolbar .field { flex: 1 1 180px; }
+  :is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) .toolbar .field { flex: 1 1 180px; }
 }
 @media (max-width: 700px) {
   :root { --hub-nav-h: 66px; }
@@ -610,7 +610,7 @@ a { text-underline-offset: 3px; }
   #panel-combat .hero-stats span { font-size: 9px; overflow-wrap: anywhere; }
   #panel-combat .quicknav { display: grid; grid-template-columns: 1fr; }
   #panel-combat .quicknav a { justify-content: space-between; min-height: 43px; }
-  .hub-main .card, #panel-combat .card, #panel-sensitivity .card {
+  :is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) .card, #panel-combat .card, #panel-sensitivity .card {
     padding: 18px 16px; border-radius: 15px; margin-bottom: 15px;
   }
   #panel-sensitivity .hdr { padding: 27px 20px; border-radius: 19px; }
@@ -618,7 +618,7 @@ a { text-underline-offset: 3px; }
   #panel-sensitivity .tabs { display: flex; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 5px; scrollbar-width: thin; }
   #panel-sensitivity .tab { flex: 0 0 auto; min-height: 45px; }
   #panel-combat .grid3, #panel-combat .grid2 { grid-template-columns: minmax(0, 1fr); }
-  .hub-main .grid3, .hub-main .grid4 { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  :is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) .grid3, :is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) .grid4 { grid-template-columns: repeat(2, minmax(0,1fr)); }
   #panel-sensitivity .grid, #panel-sensitivity .outbar { grid-template-columns: repeat(2, minmax(0,1fr)); }
   #panel-backpack .bp-row { flex-wrap: wrap; gap: 8px; }
   #panel-backpack .bp-row .bp-name { flex: 1 1 calc(100% - 100px); }
@@ -629,15 +629,15 @@ a { text-underline-offset: 3px; }
   #panel-combat .modal { padding: 22px 17px; }
   #panel-combat .modal .kv { grid-template-columns: minmax(0,1fr) minmax(0,1fr); }
   #panel-combat [id] { scroll-margin-top: 138px; }
-  .hub-main :is(th,td) { padding: 10px 8px; }
+  :is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) :is(th,td) { padding: 10px 8px; }
   /* Preserve legibility: charts scroll in their cards instead of shrinking to illegibility. */
   #panel-range canvas, #panel-ttk canvas, #panel-recoil2 canvas { min-width: 540px; }
 }
 @media (max-width: 430px) {
-  .hub-main .grid3, .hub-main .grid4,
+  :is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) .grid3, :is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) .grid4,
   #panel-sensitivity .grid, #panel-sensitivity .outbar { grid-template-columns: minmax(0,1fr); }
-  .hub-main .toolbar { align-items: stretch; }
-  .hub-main .toolbar .field { flex: 1 1 100%; }
+  :is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) .toolbar { align-items: stretch; }
+  :is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) .toolbar .field { flex: 1 1 100%; }
   #panel-combat .hero-stats span { font-size: 8.5px; }
   #panel-combat header.hero h1 { font-size: 39px; }
   #panel-combat .modal .kv { grid-template-columns: 1fr; }
