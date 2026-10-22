@@ -1,0 +1,2410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HELP — PUBG Field Toolkit</title>
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap");
+ 
+:root{ --hub-bg:#07080a; --hub-panel:#0e1013; --hub-line:#2a2e33; --hub-ink:#e9ecef; --hub-dim:#8b929b; --hub-accent:#ffb545; --hub-nav-h:48px; --grouprow-h:26px; --mono: ui-monospace, "SFMono-Regular", Consolas, monospace; --disp: "Arial Narrow", "Helvetica Neue Condensed", Impact, sans-serif; }
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--hub-bg);}
+body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hub-ink);}
+#hub-nav{position:sticky;top:0;z-index:50;display:flex;gap:0;background:var(--hub-panel);border-bottom:2px solid var(--hub-accent);}
+#hub-nav button{flex:1;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;background:transparent;border:none;
+  border-right:1px solid var(--hub-line);color:var(--hub-dim);padding:14px 10px;cursor:pointer;transition:background .12s,color .12s;}
+#hub-nav button:last-child{border-right:none}
+#hub-nav button:hover{color:var(--hub-ink);background:rgba(255,181,69,.06);}
+#hub-nav button.active{color:var(--hub-accent);background:rgba(255,181,69,.1);box-shadow:inset 0 -3px 0 var(--hub-accent);font-weight:700;}
+.hub-main{display:none;}
+.hub-main.active{display:block;}
+@media(max-width:560px){#hub-nav button{font-size:10.5px;padding:14px 6px;min-height:48px;}}
+#engine-subnav{position:sticky;top:var(--hub-nav-h);z-index:49;display:flex;gap:0;background:#0c1016;border-bottom:1px solid rgba(34,224,255,.28);overflow-x:auto;}
+#engine-subnav button{flex:0 0 auto;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;background:transparent;border:none;
+  border-right:1px solid var(--hub-line);color:var(--hub-dim);padding:10px 14px;cursor:pointer;transition:background .12s,color .12s;white-space:nowrap;min-height:44px;}
+#engine-subnav button:last-child{border-right:none}
+#engine-subnav button:hover{color:var(--hub-ink);background:rgba(34,224,255,.06);}
+#engine-subnav button.active{color:#22e0ff;background:rgba(34,224,255,.1);box-shadow:inset 0 -2px 0 #22e0ff;font-weight:700;}
+#engine-subnav.hidden{display:none;}
+ 
+#panel-combat {
+  --bg:#07090e; --bg2:#0f161d; --panel:#121a22; --line:#223140; --line-soft:#161f27;
+  --ink:#eef4f8; --dim:#71899b; --zone:#22e0ff; --zone-soft:rgba(34,224,255,.10);
+  --keep:#3ecf7e; --swap:#ff5a45; --amber:#ffb545; --orange:#ff8c42; --olive:#22e0ff; --border-warn:#ffb545;
+  --mono: ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  --disp: "Rajdhani", "Arial Narrow", "Helvetica Neue Condensed", Impact, sans-serif;
+  --body: -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+}
+#panel-combat * {box-sizing:border-box}
+#panel-combat {background:var(--bg);color:var(--ink);font-family:var(--body);margin:0;
+  background-image:
+    linear-gradient(var(--line-soft) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line-soft) 1px, transparent 1px);
+  background-size:56px 56px; background-position:-1px -1px; background-attachment:fixed;
+}
+#panel-combat::before {content:"";position:fixed;top:-260px;right:-260px;width:900px;height:900px;z-index:0;pointer-events:none;
+  background:radial-gradient(circle,
+    transparent 0 118px, rgba(46,166,255,.14) 119px 121px,
+    transparent 122px 236px, rgba(46,166,255,.10) 237px 239px,
+    transparent 240px 354px, rgba(46,166,255,.07) 355px 357px,
+    transparent 358px 440px);
+}
+#panel-combat .wrap {max-width:1180px;margin:0 auto;padding:0 20px 80px;position:relative;z-index:1}
+#panel-combat::after {content:"";position:fixed;inset:0;pointer-events:none;z-index:3;
+  background:
+    repeating-linear-gradient(0deg, rgba(255,255,255,.012) 0 1px, transparent 1px 3px),
+    radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,.32) 100%);
+}
+#panel-combat header.hero {padding:28px 0 18px;border-bottom:2px solid var(--zone);position:relative}
+#panel-combat .eyebrow {font-family:var(--mono);letter-spacing:.2em;color:var(--zone);font-size:11px;text-transform:uppercase}
+#panel-combat h1 {font-family:var(--disp);font-weight:800;letter-spacing:.02em;font-size:44px;margin:6px 0 4px;text-transform:uppercase;
+  background:linear-gradient(90deg,#eef4f8,var(--zone));-webkit-background-clip:text;background-clip:text;color:transparent}
+#panel-combat .sub {color:var(--dim);font-size:14px;max-width:640px;line-height:1.5}
+#panel-combat .datasource {font-family:var(--mono);font-size:11px;color:var(--dim);margin-top:10px}
+#panel-combat .hero-stats {display:flex;gap:0;margin-top:16px;border:1px solid var(--line);width:fit-content}
+#panel-combat .hero-stats div {padding:8px 18px;border-right:1px solid var(--line)}
+#panel-combat .hero-stats div:last-child {border-right:none}
+#panel-combat .hero-stats b {display:block;font-family:var(--disp);font-size:24px;color:var(--zone);letter-spacing:.02em}
+#panel-combat .hero-stats span {display:block;font-family:var(--mono);font-size:9.5px;color:var(--dim);text-transform:uppercase;letter-spacing:.1em;margin-top:2px}
+#panel-combat .card {background:rgba(18,26,34,.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(34,224,255,.28);border-radius:3px;padding:18px;position:relative;box-shadow:0 0 24px rgba(34,224,255,.06), inset 0 1px 0 rgba(255,255,255,.03)}
+#panel-combat .card::before, #panel-combat .card::after {content:"";position:absolute;width:12px;height:12px;border:1px solid var(--zone);opacity:.55}
+#panel-combat .card::before {top:-1px;left:-1px;border-right:none;border-bottom:none}
+#panel-combat .card::after {bottom:-1px;right:-1px;border-left:none;border-top:none}
+#panel-combat .toolbar {display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;align-items:center}
+#panel-combat .toolbar input[type=text] {background:var(--bg2);border:1px solid var(--line);color:var(--ink);padding:9px 12px;
+  font-family:var(--mono);font-size:13px;flex:1;min-width:180px}
+#panel-combat .toolbar select {background:var(--bg2);border:1px solid var(--line);color:var(--ink);padding:9px 10px;font-family:var(--mono);font-size:12px}
+#panel-combat .chip {background:var(--bg2);border:1px solid var(--line);color:var(--dim);font-family:var(--mono);font-size:11px;
+  padding:6px 10px;cursor:pointer;text-transform:uppercase;letter-spacing:.04em}
+#panel-combat .chip.on {color:var(--zone);border-color:var(--zone)}
+#panel-combat table {width:100%;border-collapse:collapse;font-size:12.5px}
+#panel-combat th {text-align:left;font-family:var(--mono);text-transform:uppercase;letter-spacing:.05em;font-size:10.5px;color:var(--olive);
+  border-bottom:1px solid var(--olive);padding:8px 6px;cursor:pointer;white-space:nowrap}
+#panel-combat th:hover {color:var(--amber)}
+#panel-combat td {padding:8px 6px;border-bottom:1px solid var(--line);font-family:var(--mono);white-space:nowrap}
+#panel-combat tr.rowclick {cursor:pointer}
+#panel-combat tr.rowclick:hover td {background:rgba(46,166,255,.06)}
+#panel-combat :focus-visible {outline:2px solid var(--zone);outline-offset:2px}
+#panel-combat th[data-key] {cursor:pointer;user-select:none}
+#panel-combat th[data-key]:hover {color:var(--amber)}
+#panel-combat th .arrow {color:var(--amber);margin-left:3px;font-size:9px}
+#panel-combat .tag {display:inline-block;font-size:10px;padding:1px 6px;border:1px solid var(--line);border-radius:2px;color:var(--dim)}
+#panel-combat .tag.crate {border-color:var(--amber);color:var(--amber);box-shadow:0 0 6px rgba(255,181,69,.35);text-shadow:0 0 6px rgba(255,181,69,.5)}
+#panel-combat #wTable tr:has(.tag.crate) td:first-child {box-shadow:inset 3px 0 0 var(--amber), 2px 0 4px rgba(0,0,0,.4)}
+#panel-combat .result-keep {color:var(--keep);font-weight:700}
+#panel-combat .result-swap {color:var(--swap);font-weight:700}
+#panel-combat .result-always {color:var(--olive);font-weight:700}
+#panel-combat .thresh-always {color:var(--keep);font-weight:700}
+#panel-combat .thresh-yellow {color:var(--amber);font-weight:700}
+#panel-combat .thresh-orange {color:var(--orange);font-weight:700}
+#panel-combat .thresh-red {color:var(--swap);font-weight:700}
+#panel-combat #wTable th:first-child, #panel-combat #wTable td:first-child {position:sticky;left:0;z-index:2;background:var(--panel);box-shadow:2px 0 4px rgba(0,0,0,.4)}
+#panel-combat #wTable th:first-child {background:var(--bg2);z-index:3}
+#panel-combat #wTable tr.rowclick:hover td:first-child {background:rgba(15,22,29,.98)}
+#panel-combat #wTable tr.grouprow th {position:sticky;top:var(--hub-nav-h);z-index:6;background:var(--bg2);color:var(--zone);text-align:center;font-size:9.5px;letter-spacing:.08em;border-bottom:none;box-shadow:0 1px 0 var(--line);cursor:default;padding:5px 6px}
+#panel-combat #wTable tr.grouprow th:hover {color:var(--zone)}
+#panel-combat #wTable tr.colheader th {position:sticky;top:calc(var(--hub-nav-h) + var(--grouprow-h));z-index:5;background:var(--bg2);border-bottom:none;box-shadow:0 1px 0 var(--olive), 0 3px 6px rgba(0,0,0,.35)}
+#panel-combat #wTable tr.colheader th:first-child {box-shadow:2px 0 4px rgba(0,0,0,.4), 0 1px 0 var(--olive), 0 3px 6px rgba(0,0,0,.35)}
+#panel-combat #cmpTable tr.grouplabel td {background:var(--bg2);color:var(--zone);font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:6px 8px;border-bottom:1px solid var(--zone);white-space:nowrap}
+#panel-combat .grid2 {display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:700px){
+  #panel-combat .grid2 {grid-template-columns:1fr}
+}
+#panel-combat .grid3 {display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:820px){
+  #panel-combat .grid3 {grid-template-columns:1fr 1fr}
+}
+@media(max-width:520px){
+  #panel-combat .grid3 {grid-template-columns:1fr}
+}
+#panel-combat .stat {background:var(--bg2);border:1px solid var(--line);padding:14px}
+#panel-combat .stat .n {font-family:var(--disp);font-size:34px;color:var(--zone)}
+#panel-combat .stat .l {font-family:var(--mono);font-size:10.5px;color:var(--dim);text-transform:uppercase;letter-spacing:.05em}
+#panel-combat .overlay {position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:flex-start;justify-content:center;
+  padding:40px 16px;z-index:20;overflow-y:auto}
+#panel-combat .overlay.show {display:flex}
+#panel-combat .modal {background:var(--panel);border:1px solid var(--zone);max-width:520px;width:100%;padding:22px;position:relative}
+#panel-combat .modal::before, #panel-combat .modal::after {content:"";position:absolute;width:14px;height:14px;border:1px solid var(--zone);opacity:.7}
+#panel-combat .modal::before {top:-1px;left:-1px;border-right:none;border-bottom:none}
+#panel-combat .modal::after {bottom:-1px;right:-1px;border-left:none;border-top:none}
+#panel-combat .modal .close {position:absolute;top:10px;right:14px;background:none;border:none;color:var(--dim);font-size:20px;cursor:pointer}
+#panel-combat .modal h3 {font-family:var(--disp);text-transform:uppercase;font-size:26px;margin:0 0 2px}
+#panel-combat .modal .kv {display:grid;grid-template-columns:1fr 1fr;gap:6px 14px;margin:14px 0;font-family:var(--mono);font-size:12.5px}
+#panel-combat .modal .kv div span {color:var(--dim)}
+#panel-combat .modal .note {font-size:12.5px;color:var(--dim);line-height:1.5;margin-top:10px;border-top:1px solid var(--line);padding-top:10px}
+#panel-combat .section-h {font-family:var(--disp);text-transform:uppercase;font-size:19px;letter-spacing:.03em;margin:28px 0 14px;
+  color:var(--ink);border-left:3px solid var(--zone);padding-left:12px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+#panel-combat .section-h .coord {font-family:var(--mono);font-size:10.5px;color:var(--zone);letter-spacing:.14em;opacity:.8}
+#panel-combat .helptext {color:var(--dim);font-size:12.5px;line-height:1.6;max-width:760px;margin-bottom:14px}
+#panel-combat .rank-list {list-style:none;margin:0;padding:0}
+#panel-combat .rank-list li {display:flex;justify-content:space-between;font-family:var(--mono);font-size:12.5px;padding:7px 0;border-bottom:1px solid var(--line)}
+#panel-combat .rank-list li span:last-child {color:var(--zone)}
+#panel-combat .rank-list li span.pct {color:var(--amber)}
+#panel-combat .compare-picker {display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+#panel-combat .compare-picker select {flex:1;min-width:160px}
+#panel-combat .assumptions {font-size:12px;color:var(--dim);line-height:1.7}
+#panel-combat .assumptions li {margin-bottom:4px}
+#panel-combat .legend {display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px 20px;margin-top:14px}
+#panel-combat .legend dt {font-family:var(--mono);font-size:11px;color:var(--zone);letter-spacing:.05em;text-transform:uppercase}
+#panel-combat .legend dd {margin:2px 0 0;font-size:12px;color:var(--dim);line-height:1.5}
+#panel-combat footer {margin-top:40px;font-family:var(--mono);font-size:11px;color:var(--dim);text-align:center;border-top:1px solid var(--line);padding-top:16px}
+#panel-combat .missing-note {font-size:11.5px;color:var(--amber);font-family:var(--mono);margin-top:6px}
+#panel-combat .panel-coord {font-family:var(--mono);font-size:10.5px;color:var(--zone);letter-spacing:.18em;text-transform:uppercase;margin-bottom:12px;opacity:.85}
+#panel-combat [id] {scroll-margin-top:64px}
+#panel-combat .hero-hint {font-family:var(--mono);font-size:10px;color:var(--dim);margin-top:8px;letter-spacing:.03em}
+#panel-combat .quicknav {display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:10px;font-family:var(--mono);font-size:11.5px}
+#panel-combat .quicknav a {color:var(--zone);text-decoration:none;border-bottom:1px dotted var(--zone);padding-bottom:1px}
+#panel-combat .quicknav a:hover {color:var(--amber);border-color:var(--amber)}
+#panel-combat .sort-hint {font-size:11px;color:var(--dim);font-family:var(--mono);margin:-4px 0 12px}
+#panel-combat .color-legend {display:flex;flex-wrap:wrap;gap:8px 18px;margin:2px 0 18px}
+#panel-combat .clegend-item {display:flex;align-items:center;gap:6px;font-size:12px;color:var(--dim)}
+#panel-combat .dot {width:9px;height:9px;border-radius:50%;display:inline-block;flex:none}
+
+#panel-sensitivity {
+  --bg-deep:#07090e;
+  --bg-panel:#0f161d;
+  --bg-panel-2:#121a22;
+  --line:#223140;
+  --line-bright:#2c3f52;
+  --amber:#22e0ff;
+  --amber-dim:#1a6b7a;
+  --olive:#3ecf7e;
+  --bone:#eef4f8;
+  --dim:#71899b;
+  --rust:#ff5a45;
+  --mono: "JetBrains Mono", monospace;
+  --disp: "Rajdhani", sans-serif;
+}
+#panel-sensitivity * {box-sizing:border-box;}
+#panel-sensitivity, #panel-sensitivity {margin:0;padding:0;}
+#panel-sensitivity {
+  background:
+    radial-gradient(ellipse at 20% -10%, rgba(34,224,255,0.08), transparent 45%),
+    radial-gradient(ellipse at 90% 110%, rgba(34,224,255,0.06), transparent 50%),
+    var(--bg-deep);
+  color:var(--bone);
+  font-family:var(--disp);
+  min-height:100vh;
+  padding:18px 14px 60px;
+}
+#panel-sensitivity .wrap {max-width:960px;margin:0 auto;}
+#panel-sensitivity .hdr {
+  border:1px solid var(--line-bright);
+  background:linear-gradient(180deg, rgba(34,224,255,0.08), transparent 60%), var(--bg-panel);
+  padding:18px 20px;
+  position:relative;
+  margin-bottom:14px;
+}
+#panel-sensitivity .hdr:before, #panel-sensitivity .hdr:after, #panel-sensitivity .hdr b.br1, #panel-sensitivity .hdr b.br2 {content:"";position:absolute;width:14px;height:14px;border-color:var(--amber);}
+#panel-sensitivity .hdr:before {top:-1px;left:-1px;border-top:2px solid var(--amber);border-left:2px solid var(--amber);}
+#panel-sensitivity .hdr:after {top:-1px;right:-1px;border-top:2px solid var(--amber);border-right:2px solid var(--amber);}
+#panel-sensitivity .hdr b.br1 {bottom:-1px;left:-1px;border-bottom:2px solid var(--amber);border-left:2px solid var(--amber);}
+#panel-sensitivity .hdr b.br2 {bottom:-1px;right:-1px;border-bottom:2px solid var(--amber);border-right:2px solid var(--amber);}
+#panel-sensitivity .eyebrow {font-family:var(--mono);font-size:10.5px;letter-spacing:.22em;color:var(--olive);text-transform:uppercase;}
+#panel-sensitivity .title {font-size:30px;font-weight:700;letter-spacing:.02em;margin:2px 0 4px;text-transform:uppercase;}
+#panel-sensitivity .title span {color:var(--amber);}
+#panel-sensitivity .credit {font-family:var(--mono);font-size:11px;color:var(--dim);}
+#panel-sensitivity .tabs {display:flex;flex-wrap:wrap;gap:6px;margin:16px 0 14px;}
+#panel-sensitivity .tab {
+  font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+  padding:9px 12px;border:1px solid var(--line-bright);background:var(--bg-panel);
+  color:var(--dim);cursor:pointer;user-select:none;transition:all .12s;
+}
+#panel-sensitivity .tab:hover {color:var(--bone);border-color:var(--olive);}
+#panel-sensitivity .tab.active {background:var(--amber);color:#04141a;border-color:var(--amber);font-weight:700;}
+#panel-sensitivity .panel {display:none;}
+#panel-sensitivity .panel.active {display:block;animation:panel_sensitivity_fade .18s ease;}
+@keyframes panel_sensitivity_fade{from{opacity:0;transform:translateY(3px);}to{opacity:1;transform:translateY(0);}}
+#panel-sensitivity .card {
+  border:1px solid rgba(34,224,255,.28);
+  background:rgba(15,22,29,.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  box-shadow:0 0 24px rgba(34,224,255,.06), inset 0 1px 0 rgba(255,255,255,.03);
+  padding:16px 18px 18px;
+  margin-bottom:14px;
+  position:relative;
+}
+#panel-sensitivity .card:before, #panel-sensitivity .card:after {content:"";position:absolute;width:9px;height:9px;top:-1px;border-top:2px solid var(--line-bright);}
+#panel-sensitivity .card:before {left:-1px;border-left:2px solid var(--line-bright);}
+#panel-sensitivity .card:after {right:-1px;border-right:2px solid var(--line-bright);}
+#panel-sensitivity .card-title {
+  font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;
+  color:var(--amber);margin:0 0 3px;display:flex;align-items:center;gap:8px;
+}
+#panel-sensitivity .card-title .n {font-family:var(--mono);font-size:11px;color:var(--dim);border:1px solid var(--line-bright);padding:1px 6px;}
+#panel-sensitivity .card-sub {font-size:12.5px;color:var(--dim);margin:0 0 14px;line-height:1.5;max-width:70ch;}
+#panel-sensitivity .grid {display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-bottom:4px;}
+#panel-sensitivity .field label {
+  display:block;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--olive);margin-bottom:5px;
+}
+#panel-sensitivity .field select, #panel-sensitivity .field input[type=number] {
+  width:100%;background:var(--bg-panel-2);border:1px solid var(--line-bright);color:var(--bone);
+  font-family:var(--mono);font-size:14px;padding:8px 9px;outline:none;
+}
+#panel-sensitivity .field select:focus, #panel-sensitivity .field input:focus {border-color:var(--amber);}
+#panel-sensitivity .field input::-webkit-outer-spin-button, #panel-sensitivity .field input::-webkit-inner-spin-button {opacity:0.4;}
+#panel-sensitivity .outbar {
+  margin-top:14px;border-top:1px dashed var(--line-bright);padding-top:12px;
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;
+}
+#panel-sensitivity .out {background:var(--bg-panel-2);border:1px solid var(--line);padding:9px 11px;}
+#panel-sensitivity .out .k {font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin-bottom:4px;}
+#panel-sensitivity .out .v {font-family:var(--mono);font-size:19px;font-weight:700;color:var(--bone);}
+#panel-sensitivity .out.hi .v {color:var(--olive);}
+#panel-sensitivity .out.warn .v {color:var(--rust);}
+#panel-sensitivity .out .u {font-size:11px;color:var(--dim);margin-left:3px;font-weight:400;}
+#panel-sensitivity .note {
+  margin-top:12px;font-size:12px;color:var(--dim);line-height:1.55;
+  border-left:2px solid var(--amber-dim);padding:6px 0 6px 10px;
+}
+#panel-sensitivity .note b {color:var(--amber);}
+#panel-sensitivity table.ref {width:100%;border-collapse:collapse;font-family:var(--mono);font-size:12px;margin-top:6px;}
+#panel-sensitivity table.ref th {text-align:left;color:var(--olive);font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:6px 8px;border-bottom:1px solid var(--line-bright);}
+#panel-sensitivity table.ref td {padding:7px 8px;border-bottom:1px solid var(--line);color:var(--bone);}
+#panel-sensitivity table.ref tr:hover td {background:rgba(232,163,61,0.04);}
+#panel-sensitivity .badge {display:inline-block;font-family:var(--mono);font-size:10px;padding:1px 6px;border:1px solid var(--line-bright);color:var(--dim);}
+#panel-sensitivity .gauge-row {display:flex;gap:18px;align-items:center;flex-wrap:wrap;margin-top:6px;}
+#panel-sensitivity .gauge {position:relative;width:118px;height:118px;flex:none;}
+#panel-sensitivity .gauge svg {width:100%;height:100%;}
+#panel-sensitivity .gauge .lbl {position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+#panel-sensitivity .gauge .lbl .num {font-family:var(--mono);font-weight:700;font-size:16px;color:var(--amber);}
+#panel-sensitivity .gauge .lbl .unit {font-family:var(--mono);font-size:9px;color:var(--dim);letter-spacing:.05em;}
+#panel-sensitivity footer {text-align:center;font-family:var(--mono);font-size:10.5px;color:var(--dim);margin-top:26px;letter-spacing:.04em;}
+#panel-sensitivity footer .v {color:var(--amber);}
+#panel-sensitivity .divider {display:flex;align-items:center;gap:10px;margin:18px 0 12px;}
+#panel-sensitivity .divider span {font-family:var(--mono);font-size:10px;letter-spacing:.15em;color:var(--dim);text-transform:uppercase;white-space:nowrap;}
+#panel-sensitivity .divider i {flex:1;height:1px;background:var(--line-bright);}
+@media(max-width:520px){
+  #panel-sensitivity .title {font-size:23px;}
+  #panel-sensitivity .tab {flex:1 1 30%;text-align:center;}
+}
+
+/* ================= EXTENSION PANELS (Range/TTK/Recoil/Attachments/Backpack/Data) ================= */
+#panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data {
+  --bg:#07090e; --bg2:#0f161d; --panel:#121a22; --line:#223140; --ink:#eef4f8; --dim:#71899b;
+  --zone:#22e0ff; --zone-soft:rgba(34,224,255,.10); --amber:#ffb545; --keep:#3ecf7e; --swap:#ff5a45;
+  --mono: ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  --disp: "Rajdhani", "Arial Narrow", "Helvetica Neue Condensed", Impact, sans-serif;
+  --body: -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  background:var(--bg); color:var(--ink); font-family:var(--body); margin:0;
+}
+#panel-range *, #panel-ttk *, #panel-recoil2 *, #panel-attach *, #panel-backpack *, #panel-data * {box-sizing:border-box}
+#panel-range .wrap, #panel-ttk .wrap, #panel-recoil2 .wrap, #panel-attach .wrap, #panel-backpack .wrap, #panel-data .wrap {
+  max-width:1180px;margin:0 auto;padding:24px 20px 80px;
+}
+#panel-range h1, #panel-ttk h1, #panel-recoil2 h1, #panel-attach h1, #panel-backpack h1, #panel-data h1 {
+  font-family:var(--disp);font-weight:800;letter-spacing:.02em;font-size:34px;margin:0 0 4px;text-transform:uppercase;color:var(--ink);
+}
+#panel-range .eyebrow, #panel-ttk .eyebrow, #panel-recoil2 .eyebrow, #panel-attach .eyebrow, #panel-backpack .eyebrow, #panel-data .eyebrow {
+  font-family:var(--mono);letter-spacing:.2em;color:var(--zone);font-size:11px;text-transform:uppercase;
+}
+#panel-range .sub, #panel-ttk .sub, #panel-recoil2 .sub, #panel-attach .sub, #panel-backpack .sub, #panel-data .sub {
+  color:var(--dim);font-size:13.5px;max-width:720px;line-height:1.55;margin:0 0 20px;
+}
+#panel-range .card, #panel-ttk .card, #panel-recoil2 .card, #panel-attach .card, #panel-backpack .card, #panel-data .card {
+  background:rgba(18,26,34,.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(34,224,255,.28);border-radius:3px;padding:18px;margin-bottom:16px;position:relative;box-shadow:0 0 24px rgba(34,224,255,.06), inset 0 1px 0 rgba(255,255,255,.03);
+}
+#panel-range .card::before, #panel-ttk .card::before, #panel-recoil2 .card::before, #panel-attach .card::before, #panel-backpack .card::before, #panel-data .card::before,
+#panel-range .card::after, #panel-ttk .card::after, #panel-recoil2 .card::after, #panel-attach .card::after, #panel-backpack .card::after, #panel-data .card::after {
+  content:"";position:absolute;width:12px;height:12px;border:1px solid var(--zone);opacity:.55;
+}
+#panel-range .card::before, #panel-ttk .card::before, #panel-recoil2 .card::before, #panel-attach .card::before, #panel-backpack .card::before, #panel-data .card::before {top:-1px;left:-1px;border-right:none;border-bottom:none}
+#panel-range .card::after, #panel-ttk .card::after, #panel-recoil2 .card::after, #panel-attach .card::after, #panel-backpack .card::after, #panel-data .card::after {bottom:-1px;right:-1px;border-left:none;border-top:none}
+#panel-range .section-h, #panel-ttk .section-h, #panel-recoil2 .section-h, #panel-attach .section-h, #panel-backpack .section-h, #panel-data .section-h {
+  font-family:var(--disp);text-transform:uppercase;font-size:17px;letter-spacing:.03em;margin:0 0 12px;color:var(--ink);
+  border-left:3px solid var(--zone);padding-left:12px;
+}
+#panel-range .toolbar, #panel-ttk .toolbar, #panel-recoil2 .toolbar, #panel-attach .toolbar, #panel-backpack .toolbar {
+  display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;align-items:flex-end;
+}
+#panel-range .field, #panel-ttk .field, #panel-recoil2 .field, #panel-attach .field, #panel-backpack .field {display:flex;flex-direction:column;gap:5px;min-width:140px;flex:1}
+#panel-range .field label, #panel-ttk .field label, #panel-recoil2 .field label, #panel-attach .field label, #panel-backpack .field label {
+  font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--zone);
+}
+#panel-range select, #panel-ttk select, #panel-recoil2 select, #panel-attach select, #panel-backpack select,
+#panel-range input, #panel-ttk input, #panel-recoil2 input, #panel-attach input, #panel-backpack input {
+  background:var(--bg2);border:1px solid var(--line);color:var(--ink);padding:8px 10px;font-family:var(--mono);font-size:12.5px;width:100%;
+}
+#panel-range select:disabled, #panel-attach select:disabled { opacity:.35; cursor:not-allowed; }
+#panel-range .grid3, #panel-ttk .grid3, #panel-recoil2 .grid3, #panel-attach .grid3, #panel-backpack .grid3 {
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;
+}
+#panel-range .grid4, #panel-ttk .grid4, #panel-recoil2 .grid4, #panel-attach .grid4, #panel-backpack .grid4 {
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;
+}
+#panel-range .stat, #panel-ttk .stat, #panel-recoil2 .stat, #panel-attach .stat, #panel-backpack .stat {
+  background:rgba(15,22,29,.65);border:1px solid var(--line);padding:12px 14px;position:relative;overflow:hidden;
+}
+#panel-range .stat .n, #panel-ttk .stat .n, #panel-recoil2 .stat .n, #panel-attach .stat .n, #panel-backpack .stat .n {
+  font-family:var(--disp);font-weight:700;font-size:28px;color:var(--zone);text-shadow:0 0 12px rgba(34,224,255,.35);
+}
+#panel-range .stat .l, #panel-ttk .stat .l, #panel-recoil2 .stat .l, #panel-attach .stat .l, #panel-backpack .stat .l {
+  font-family:var(--mono);font-size:9.5px;color:var(--dim);text-transform:uppercase;letter-spacing:.05em;margin-top:2px;
+}
+#panel-range .stat .bar, #panel-ttk .stat .bar, #panel-attach .stat .bar, #panel-backpack .stat .bar {
+  height:3px;background:rgba(255,255,255,.06);margin-top:10px;border-radius:2px;overflow:hidden;
+}
+#panel-range .stat .bar-fill, #panel-ttk .stat .bar-fill, #panel-attach .stat .bar-fill, #panel-backpack .stat .bar-fill {
+  height:100%;width:0%;background:linear-gradient(90deg, rgba(34,224,255,.5), var(--zone));box-shadow:0 0 8px rgba(34,224,255,.6);transition:width .25s ease;
+}
+#panel-range .stat.warn .n, #panel-backpack .stat.warn .n { color:var(--swap); }
+#panel-backpack .stat.warn .bar-fill { background:linear-gradient(90deg, rgba(255,90,69,.5), var(--swap)); box-shadow:0 0 8px rgba(255,90,69,.6); }
+#panel-range table, #panel-ttk table, #panel-recoil2 table, #panel-attach table, #panel-backpack table {
+  width:100%;border-collapse:collapse;font-size:12px;
+}
+#panel-range th, #panel-ttk th, #panel-recoil2 th, #panel-attach th, #panel-backpack th {
+  text-align:left;font-family:var(--mono);text-transform:uppercase;letter-spacing:.05em;font-size:10px;color:var(--zone);
+  border-bottom:1px solid var(--zone);padding:7px 6px;
+}
+#panel-range td, #panel-ttk td, #panel-recoil2 td, #panel-attach td, #panel-backpack td {
+  padding:7px 6px;border-bottom:1px solid var(--line);font-family:var(--mono);
+}
+#panel-range .note, #panel-ttk .note, #panel-recoil2 .note, #panel-attach .note, #panel-backpack .note, #panel-data .note {
+  font-size:12px;color:var(--dim);line-height:1.6;margin-top:10px;border-left:2px solid var(--amber);padding:6px 0 6px 10px;
+}
+#panel-range .note b, #panel-ttk .note b, #panel-recoil2 .note b, #panel-attach .note b, #panel-backpack .note b, #panel-data .note b { color:var(--amber); }
+#panel-range .helptext, #panel-ttk .helptext, #panel-recoil2 .helptext, #panel-attach .helptext, #panel-backpack .helptext, #panel-data .helptext {
+  color:var(--dim);font-size:12.5px;line-height:1.6;max-width:760px;margin-bottom:14px;
+}
+#panel-range canvas, #panel-ttk canvas, #panel-recoil2 canvas { width:100%; height:220px; display:block; }
+#panel-attach .slot-off { color:var(--dim); font-family:var(--mono); font-size:11.5px; padding:8px 0; }
+#panel-attach .preset-btns, #panel-backpack .preset-btns { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
+#panel-attach .chip, #panel-backpack .chip {
+  background:var(--bg2);border:1px solid var(--line);color:var(--dim);font-family:var(--mono);font-size:11px;
+  padding:6px 10px;cursor:pointer;text-transform:uppercase;letter-spacing:.04em;
+}
+#panel-attach .chip:hover, #panel-backpack .chip:hover { color:var(--zone); border-color:var(--zone); }
+#panel-data dl.datalist { font-size:13px; color:var(--dim); line-height:1.7; }
+#panel-data dl.datalist dt { color:var(--ink); font-weight:700; margin-top:10px; }
+#panel-data ul.gaps { font-size:12.5px; color:var(--dim); line-height:1.7; }
+#panel-backpack .catrow { display:flex; justify-content:space-between; font-family:var(--mono); font-size:12.5px; padding:6px 0; border-bottom:1px solid var(--line); }
+#panel-backpack .catrow b { color:var(--zone); }
+#panel-backpack .bp-list { display:flex; flex-direction:column; }
+#panel-backpack .bp-row { display:flex; align-items:center; gap:10px; padding:9px 0; border-bottom:1px solid var(--line); }
+#panel-backpack .bp-row:last-child { border-bottom:none; }
+#panel-backpack .bp-row .bp-name { flex:1; font-size:13px; color:var(--ink); }
+#panel-backpack .bp-row .bp-wt { font-family:var(--mono); font-size:10.5px; color:var(--dim); flex:0 0 auto; white-space:nowrap; }
+#panel-backpack .bp-row .bp-sub { font-family:var(--mono); font-size:11px; color:var(--zone); flex:0 0 52px; text-align:right; white-space:nowrap; }
+#panel-backpack .bp-row .bp-stepper { display:flex; align-items:center; gap:4px; flex:0 0 auto; }
+#panel-backpack .bp-row .bp-stepper button { width:26px; height:26px; background:var(--bg2); border:1px solid var(--line); color:var(--ink); font-family:var(--mono); font-size:14px; cursor:pointer; padding:0; line-height:1; }
+#panel-backpack .bp-row .bp-stepper button:hover { border-color:var(--zone); color:var(--zone); }
+#panel-backpack .bp-row .bp-stepper input { width:44px; text-align:center; padding:5px 2px; font-size:13px; }
+@media(max-width:520px){
+  #panel-backpack .bp-row .bp-wt { display:none; }
+}
+@media(max-width:700px){
+  #panel-range h1, #panel-ttk h1, #panel-recoil2 h1, #panel-attach h1, #panel-backpack h1, #panel-data h1 { font-size:26px; }
+}
+</style>
+</head>
+<body>
+ 
+<nav id="hub-nav">
+  <button data-mega="engine" class="active">Weapon Combat Engine</button>
+  <button data-mega="sens">Sensitivity &amp; Recoil Matcher</button>
+  <button data-mega="loadout">Tactical Loadout &amp; Gear</button>
+</nav>
+<nav id="engine-subnav" class="sub-nav">
+  <button data-target="panel-combat" class="active">Combat DB</button>
+  <button data-target="panel-range">Effective Range</button>
+  <button data-target="panel-ttk">TTK</button>
+  <button data-target="panel-recoil2">Recoil Analyzer</button>
+  <button data-target="panel-attach">Attachments</button>
+  <button data-target="panel-data">Data &amp; Patch</button>
+</nav>
+ 
+<div id="panel-combat" class="hub-main active">
+ 
+<div class="wrap">
+ 
+<header class="hero">
+  <div class="eyebrow">Field Reference · Extracted Game Data</div>
+  <h1>PUBG Combat &amp; Armor Intelligence</h1>
+  <p class="sub">Built by HELP, for HELP. Real weapon data, real armor math — know when to keep your plates and when to swap, before the fight makes that call for you.</p>
+  <div class="hero-stats">
+    <div id="statAll"><b>44</b><span>Weapons</span></div>
+    <div id="statVest"><b>39</b><span>Vest X-over</span></div>
+    <div id="statHelm"><b>39</b><span>Helmet X-over</span></div>
+  </div>
+  <div class="hero-hint">Every weapon is shown below — search or filter by class to narrow it down</div>
+  <nav class="quicknav">
+    <a href="#combat-database">↓ Weapon &amp; armor database</a>
+    <a href="#compare-weapons">↓ Compare weapons</a>
+    <a href="#how-thresholds-work">↓ How thresholds work</a>
+  </nav>
+</header>
+ 
+<div id="panels"></div>
+ 
+<footer>Source: supplied weapon DataAssets/BallisticData and manually computed armor crossover tables. Not a PUBG game engine simulation.</footer>
+</div>
+ 
+<div class="overlay" id="overlay"><div class="modal" id="modalBody" role="dialog" aria-modal="true" aria-labelledby="modalTitle"></div></div>
+ 
+ 
+ 
+</div>
+ 
+<div id="panel-sensitivity" class="hub-main">
+ 
+<div class="wrap">
+ 
+  <div class="hdr"><b class="br1"></b><b class="br2"></b>
+    <div class="eyebrow">// UNOFFICIAL FIELD REFERENCE TOOL</div>
+    <div class="title">PUBG <span>SENSITIVITY</span> CALCULATOR</div>
+    <div class="credit">Logic: HELP clan manual v1.0 &nbsp;·&nbsp; Interactive build assembled by Claude &nbsp;·&nbsp; Not an official PUBG/KRAFTON tool</div>
+  </div>
+ 
+  <div class="card" style="border-color:var(--amber-dim);">
+    <div class="card-title" style="color:var(--olive);"><span class="n">i</span> Quick Start &mdash; which tab do I need?</div>
+    <table class="ref">
+      <thead><tr><th>You want to&hellip;</th><th>Use</th></tr></thead>
+      <tbody>
+        <tr><td>Nudge ADS/scope sensitivity up or down without losing your recoil-control feel</td><td>Vertical Mult.</td></tr>
+        <tr><td>Make every scope (1x&ndash;15x) turn at the same actual speed</td><td>Scope</td></tr>
+        <tr><td>Change monitor aspect ratio and correct sensitivity accordingly</td><td>Resolution</td></tr>
+      </tbody>
+    </table>
+  </div>
+ 
+  <div class="tabs" id="tabs"></div>
+ 
+  <!-- ================= VERTICAL MULTIPLIER ================= -->
+  <div class="panel" data-panel="vert">
+    <div class="card">
+      <div class="card-title"><span class="n">01</span> Vertical Multiplier Calculator</div>
+      <p class="card-sub">Change ADS or scope sensitivity by a small amount (~1&ndash;3 points) while keeping your existing vertical recoil-control feel. Works because PUBG sensitivity scales logarithmically: +15 sensitivity &asymp; 2&times;. Vertical multiplier runs 50&ndash;150 in-game.</p>
+      <div class="grid">
+        <div class="field"><label>Current ADS sensitivity <span style="color:var(--dim);">(0&ndash;20)</span></label><input type="number" id="v_cur_ads" value="10" step="1" min="0" max="20"></div>
+        <div class="field"><label>Current vertical multiplier <span style="color:var(--dim);">(50&ndash;150)</span></label><input type="number" id="v_cur_vm" value="100" step="1" min="50" max="150"></div>
+        <div class="field"><label>Target ADS sensitivity <span style="color:var(--dim);">(0&ndash;20)</span></label><input type="number" id="v_tgt_ads" value="12" step="1" min="0" max="20"></div>
+      </div>
+      <div class="outbar">
+        <div class="out"><div class="k">Sensitivity difference</div><div class="v" id="v_diff">–</div></div>
+        <div class="out"><div class="k">Sensitivity ratio</div><div class="v" id="v_ratio">–</div></div>
+        <div class="out hi"><div class="k">Target vertical multiplier</div><div class="v" id="v_tvm">–</div></div>
+        <div class="out"><div class="k">Rounded (nearest)</div><div class="v" id="v_round">–</div></div>
+        <div class="out"><div class="k">Rounded down (safer)</div><div class="v" id="v_floor">–</div></div>
+      </div>
+      <p class="card-sub" style="margin:10px 0 0">In-game the vertical multiplier field only accepts whole numbers — use <b>Rounded (nearest)</b> for the closest match to your original feel, or <b>Rounded down (safer)</b> if you'd rather slightly undershoot than overshoot it.</p>
+      <div class="note" id="v_advice"></div>
+    </div>
+  </div>
+ 
+  <!-- ================= SCOPE ================= -->
+  <div class="panel" data-panel="scope">
+    <div class="card">
+      <div class="card-title"><span class="n">02</span> Pixel-Speed Scope Matcher</div>
+      <p class="card-sub">Matches actual screen turn-rate (pixel speed) across scopes, since equal menu sensitivity values do <b>not</b> produce equal turn speed &mdash; each scope has its own A/B constants. Set the scope you like, and get matched values for every other scope.</p>
+      <div class="grid">
+        <div class="field"><label for="px_scope">Reference scope</label>
+          <select id="px_scope">
+            <option value="1x">1x (Red Dot / Holo / Iron)</option>
+            <option value="2x">2x</option>
+            <option value="3x" selected>3x</option>
+            <option value="4x">4x</option>
+            <option value="6x">6x</option>
+            <option value="8x">8x</option>
+            <option value="15x">15x</option>
+          </select>
+        </div>
+        <div class="field"><label for="px_sens">Sensitivity on that scope</label><input type="number" id="px_sens" value="12" step="0.1"></div>
+      </div>
+      <div class="outbar">
+        <div class="out hi"><div class="k">Pixel speed</div><div class="v" id="px_speed">–</div><div class="u" style="margin-left:0;">px/s</div></div>
+      </div>
+ 
+      <div class="divider"><span>Matched sensitivity per scope</span><i></i></div>
+      <table class="ref" id="px_table">
+        <thead><tr><th>Scope</th><th>A</th><th>B</th><th>Matched sensitivity</th><th>In range?</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <div class="note">Formula: <b>pixel_speed = 3840 &times; (C + B) &divide; ((A/60) &times; (10 + B))</b>, inverse: <b>C = (A/60) &times; (10 + B) &times; pixel_speed &divide; 3840 &minus; B</b>. A/B are scope-specific constants from empirical fitting, not official engine values &mdash; treat matched values as precise relative-to-each-other, but still confirm feel in-game. A row marked <b>Out of range</b> means that scope's slider can't reach the exact matched value — set it as close to that number as the slider allows.</div>
+    </div>
+  </div>
+ 
+  <!-- ================= RESOLUTION ================= -->
+  <div class="panel" data-panel="res">
+    <div class="card">
+      <div class="card-title"><span class="n">03</span> Resolution / Aspect Ratio Converter</div>
+      <p class="card-sub">Correction values when switching aspect ratio. Sensitivity and vertical multiplier are corrected together for 4:3; only the vertical multiplier is corrected for 16:10 and 21:9.</p>
+      <div class="grid">
+        <div class="field"><label>Current ADS sensitivity <span style="color:var(--dim);">(0&ndash;20)</span></label><input type="number" id="r_sens" value="10" step="1" min="0" max="20"></div>
+        <div class="field"><label>Current vertical multiplier <span style="color:var(--dim);">(50&ndash;150)</span></label><input type="number" id="r_vm" value="100" step="1" min="50" max="150"></div>
+        <div class="field"><label for="r_conv">Conversion</label>
+          <select id="r_conv">
+            <option value="169to1610">16:9 &rarr; 16:10</option>
+            <option value="1610to169">16:10 &rarr; 16:9</option>
+            <option value="169to219">16:9 &rarr; 21:9</option>
+            <option value="219to169">21:9 &rarr; 16:9</option>
+            <option value="169to43">16:9 &rarr; 4:3</option>
+            <option value="43to169">4:3 &rarr; 16:9</option>
+          </select>
+        </div>
+      </div>
+      <div class="outbar">
+        <div class="out"><div class="k">Sensitivity change</div><div class="v" id="r_sensout">–</div></div>
+        <div class="out hi"><div class="k">New vertical multiplier</div><div class="v" id="r_vmout">–</div></div>
+      </div>
+ 
+      <div class="divider"><span>Reference table</span><i></i></div>
+      <table class="ref">
+        <thead><tr><th>Conversion</th><th>Sensitivity</th><th>Vertical multiplier</th></tr></thead>
+        <tbody>
+          <tr><td>16:9 &rarr; 16:10</td><td>No change</td><td>&times; 1.11</td></tr>
+          <tr><td>16:10 &rarr; 16:9</td><td>No change</td><td>&divide; 1.11</td></tr>
+          <tr><td>16:9 &rarr; 21:9</td><td>No change</td><td>&times; 0.85</td></tr>
+          <tr><td>21:9 &rarr; 16:9</td><td>No change</td><td>&divide; 0.85</td></tr>
+          <tr><td>16:9 &rarr; 4:3</td><td>+3</td><td>&times; 1.166</td></tr>
+          <tr><td>4:3 &rarr; 16:9</td><td>&minus;3</td><td>&divide; 1.166</td></tr>
+        </tbody>
+      </table>
+ 
+      <div class="divider"><span>Common resolutions</span><i></i></div>
+      <table class="ref">
+        <thead><tr><th>Resolution</th><th>Aspect</th></tr></thead>
+        <tbody>
+          <tr><td>1280&times;720</td><td>16:9</td></tr>
+          <tr><td>1920&times;1080</td><td>16:9</td></tr>
+          <tr><td>2560&times;1440</td><td>16:9</td></tr>
+          <tr><td>3840&times;2160</td><td>16:9</td></tr>
+          <tr><td>2560&times;1080</td><td>21:9</td></tr>
+          <tr><td>3440&times;1440</td><td>21:9</td></tr>
+          <tr><td>1920&times;1200</td><td>16:10</td></tr>
+          <tr><td>2560&times;1600</td><td>16:10</td></tr>
+          <tr><td>1440&times;1080</td><td>4:3</td></tr>
+          <tr><td>1920&times;1440</td><td>4:3</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+ 
+  <footer>PUBG Sensitivity Calculator <span class="v">v1.0</span> &middot; logic by HELP clan manual v1.0 &middot; unofficial, not affiliated with PUBG or KRAFTON</footer>
+</div>
+ 
+ 
+ 
+</div>
+
+<!-- ================= EFFECTIVE RANGE & DAMAGE ================= -->
+<div id="panel-range" class="hub-main">
+<div class="wrap">
+  <div class="eyebrow">Field Reference · Damage Falloff</div>
+  <h1>Effective Range &amp; Damage</h1>
+  <p class="sub">Damage, hits-to-kill, and time-to-kill at range, against a chosen hitbox and armor level. Every weapon uses a sourced per-distance falloff table (shotguns use per-pellet tables), with caveats flagged below wherever the data is limited.</p>
+
+  <div class="card">
+    <div class="section-h">Setup</div>
+    <div class="toolbar">
+      <div class="field"><label for="rg_weapon">Weapon</label><select id="rg_weapon"></select></div>
+      <div class="field"><label for="rg_hitbox">Hitbox</label>
+        <select id="rg_hitbox"><option value="head">Head</option><option value="chest" selected>Chest</option><option value="limb">Limbs</option></select>
+      </div>
+      <div class="field" style="flex:0 0 auto;justify-content:flex-end;flex-direction:row;align-items:center;gap:6px">
+        <label style="margin:0"><input type="checkbox" id="rg_detailed" style="width:auto;margin-right:4px;vertical-align:middle"> Detailed hitboxes</label>
+      </div>
+      <div class="field"><label for="rg_armor">Armor level (on that hitbox)</label>
+        <select id="rg_armor"><option value="0">None</option><option value="1">Level 1</option><option value="2">Level 2</option><option value="3" selected>Level 3</option></select>
+      </div>
+      <div class="field" id="rg_stanceField" style="display:none"><label for="rg_stance">Firing stance (shotguns only)</label>
+        <select id="rg_stance"><option value="hip" selected>Hip-fire</option><option value="ads">Aimed (ADS)</option></select>
+      </div>
+    </div>
+    <div class="field" style="margin-bottom:6px"><label>Range: <span id="rg_rangeLabel">100 m</span></label>
+      <input type="range" id="rg_range" min="0" max="500" step="10" value="100">
+    </div>
+    <div id="rg_approxNote"></div>
+  </div>
+
+  <div class="card">
+    <div class="section-h">Result at this range</div>
+    <div class="grid4">
+      <div class="stat"><div class="n" id="rg_dmg">–</div><div class="l">Damage at range</div><div class="bar"><div class="bar-fill" id="rg_dmg_bar"></div></div></div>
+      <div class="stat"><div class="n" id="rg_htk">–</div><div class="l">Hits to kill</div><div class="bar"><div class="bar-fill" id="rg_htk_bar"></div></div></div>
+      <div class="stat"><div class="n" id="rg_ttk">–</div><div class="l">TTK (seconds)</div><div class="bar"><div class="bar-fill" id="rg_ttk_bar"></div></div></div>
+      <div class="stat"><div class="n" id="rg_flight">–</div><div class="l">Flight time (s)</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-h">Bullet drop at this range</div>
+    <div class="grid3">
+      <div class="stat"><div class="n" id="rg_drop">–</div><div class="l">Drop below aim point (cm)</div></div>
+      <div class="stat"><div class="n" id="rg_holdover">–</div><div class="l">Holdover (mrad)</div></div>
+      <div class="stat"><div class="n" id="rg_muzzlecmp">–</div><div class="l">Muzzle velocity (measured)</div></div>
+    </div>
+    <div class="note" id="rg_dropNote"></div>
+  </div>
+
+  <div class="card">
+    <div class="section-h">Damage vs range (0–500 m)</div>
+    <canvas id="rg_chartDmg" width="1100" height="200"></canvas>
+  </div>
+  <div class="card">
+    <div class="section-h">Where hits-to-kill and TTK actually change</div>
+    <p class="helptext" style="margin-bottom:10px">HTK only moves in whole-hit steps, so a line chart of it is mostly flat with a couple of sudden jumps — this table shows the range brackets between those jumps instead, which is the part that's actually useful to know.</p>
+    <table id="rg_brackets"></table>
+  </div>
+
+  <div class="card">
+    <div class="note"><b>Data sources:</b> Falloff tables for 41 of 45 weapons plus per-pellet tables for the four pellet shotguns (AWM, AKM, M416, M16A4, Vector, UMP9, M249, RPD, VSS Vintorez, M24, O12, Kar98k, R1895, Desert Eagle, MK47 Mutant, Groza, SLR, SKS, Beryl, ACE32, SCAR-L, QBZ95, Mini 14, MG3, K2, G36C, AUG A3, FAMAS, Tommy Gun, JS9, MP5K, P90, MP9, Micro Uzi, Mk12, MK14 EBR, SVD Dragunov, Lynx AMR, G18C, P92, Skorpion) are sourced directly from each weapon's pubgstatistics.com page, and so are the per-pellet falloff tables for DBS, S686, S12K and Sawn-off (checked against patch 43.2 on 2026-10-22). No weapon uses the generic approximate falloff any more. Hit-area and per-class damage multipliers (head/chest/limb, by weapon class) are also from pubgstatistics.com, cross-checked digit-for-digit against several weapons' published damage tables. Armor reduction (30/40/55% for L1/L2/L3) is unchanged from the original build notes.</div>
+  </div>
+</div>
+</div>
+
+<!-- ================= TTK CALCULATOR ================= -->
+<div id="panel-ttk" class="hub-main">
+<div class="wrap">
+  <div class="eyebrow">Field Reference · Time To Kill</div>
+  <h1>TTK Calculator</h1>
+  <p class="sub">Point-blank (0 m) TTK with armor and hitbox, including reload time from each weapon's actual reload figure if the fight runs past one magazine.</p>
+
+  <div class="card">
+    <div class="section-h">Setup</div>
+    <div class="toolbar">
+      <div class="field"><label for="tk_weapon">Weapon</label><select id="tk_weapon"></select></div>
+      <div class="field"><label for="tk_hitbox">Hitbox</label>
+        <select id="tk_hitbox"><option value="head">Head</option><option value="chest" selected>Chest</option><option value="limb">Limbs</option></select>
+      </div>
+      <div class="field" style="flex:0 0 auto;justify-content:flex-end;flex-direction:row;align-items:center;gap:6px">
+        <label style="margin:0"><input type="checkbox" id="tk_detailed" style="width:auto;margin-right:4px;vertical-align:middle"> Detailed hitboxes</label>
+      </div>
+      <div class="field"><label for="tk_armor">Armor level</label>
+        <select id="tk_armor"><option value="0">None</option><option value="1">Level 1</option><option value="2">Level 2</option><option value="3" selected>Level 3</option></select>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-h">Result</div>
+    <div class="grid3">
+      <div class="stat"><div class="n" id="tk_dmg">–</div><div class="l">Damage per shot</div><div class="bar"><div class="bar-fill" id="tk_dmg_bar"></div></div></div>
+      <div class="stat"><div class="n" id="tk_htk">–</div><div class="l">Hits to kill</div><div class="bar"><div class="bar-fill" id="tk_htk_bar"></div></div></div>
+      <div class="stat"><div class="n" id="tk_pure">–</div><div class="l">Pure TTK (s)</div><div class="bar"><div class="bar-fill" id="tk_pure_bar"></div></div></div>
+    </div>
+    <div class="grid3" style="margin-top:10px">
+      <div class="stat"><div class="n" id="tk_reload">–</div><div class="l">TTK incl. reload (s)</div><div class="bar"><div class="bar-fill" id="tk_reload_bar"></div></div></div>
+    </div>
+    <div class="note" id="tk_note"></div>
+  </div>
+
+  <div class="card">
+    <div class="section-h">Compare weapons</div>
+    <p class="helptext" style="margin-bottom:10px">Uses the same hitbox, armor, and accuracy settings above. Pick up to three.</p>
+    <div class="toolbar">
+      <div class="field"><label for="tk_cmpA">Weapon A</label><select id="tk_cmpA"></select></div>
+      <div class="field"><label for="tk_cmpB">Weapon B</label><select id="tk_cmpB"></select></div>
+      <div class="field"><label for="tk_cmpC">Weapon C</label><select id="tk_cmpC"><option value="">— none —</option></select></div>
+    </div>
+    <table id="tk_cmpTable"></table>
+  </div>
+</div>
+</div>
+
+<!-- ================= PER-SHOT RECOIL ANALYZER ================= -->
+<div id="panel-recoil2" class="hub-main">
+<div class="wrap">
+  <div class="eyebrow">Field Reference · Shot-By-Shot Model</div>
+  <h1>Per-Shot Recoil Analyzer</h1>
+  <p class="sub">Shot-by-shot vertical and horizontal recoil, modeled from this toolkit's existing recoil-pattern data (v.recoil, crouch modifier, horizontal bias, recovery speeds, min-H%). This is a model built on extracted stats, not the game engine's exact simulation.</p>
+
+  <div class="card">
+    <div class="toolbar">
+      <div class="field"><label for="rc_weapon">Weapon</label><select id="rc_weapon"></select></div>
+      <div class="field"><label for="rc_stance">Stance</label>
+        <select id="rc_stance"><option value="standing">Standing</option><option value="crouched">Crouched</option><option value="prone">Prone</option></select>
+      </div>
+      <div class="field"><label for="rc_shots">Shots</label>
+        <select id="rc_shots"><option value="10">10</option><option value="20" selected>20</option><option value="30">30</option></select>
+      </div>
+    </div>
+    <div id="rc_missing"></div>
+  </div>
+
+  <div class="card">
+    <div class="section-h">Cumulative displacement</div>
+    <canvas id="rc_chart" width="1100" height="260"></canvas>
+  </div>
+
+  <div class="card">
+    <div class="section-h">Shot-by-shot table</div>
+    <div style="overflow-x:auto;max-height:360px;overflow-y:auto"><table id="rc_table"></table></div>
+    <div class="note">Model: vertical recoil grows ~5%/shot × vertical speed; horizontal recoil grows the same way and is scaled between min-H% and 100% of its max with a small random factor, signed by horizontal bias direction. Crouching applies the weapon's crouch modifier to the vertical component. This is a simplified pattern model for comparing weapons, not a frame-accurate recoil sim.</div>
+  </div>
+</div>
+</div>
+
+<!-- ================= ATTACHMENTS & RECOIL ================= -->
+<div id="panel-attach" class="hub-main">
+<div class="wrap">
+  <div class="eyebrow">Field Reference · Loadout Tuning</div>
+  <h1>Attachments &amp; Recoil</h1>
+  <p class="sub">Shows how muzzle, grip, stock, and magazine attachments change a weapon's recoil, capacity, and reload — restricted to the slots that weapon actually has. Slot access is assigned by weapon class using the compatibility groups supplied, with the explicit exceptions noted (e.g. AKM has no grip or stock slot) — see the Data &amp; Patch Info panel for what's extrapolated versus explicitly sourced.</p>
+
+  <div class="card">
+    <div class="section-h">Loadout</div>
+    <div class="toolbar">
+      <div class="field"><label for="at_weapon">Weapon</label><select id="at_weapon"></select></div>
+    </div>
+    <div class="preset-btns">
+      <div class="chip" id="at_presetVert">Best vertical control</div>
+      <div class="chip" id="at_presetHoriz">Best horizontal</div>
+      <div class="chip" id="at_presetBal">Balanced</div>
+      <div class="chip" id="at_presetClear">Clear</div>
+    </div>
+    <div class="toolbar">
+      <div class="field"><label for="at_muzzle">Muzzle</label><select id="at_muzzle"></select></div>
+      <div class="field"><label for="at_grip">Grip</label><select id="at_grip"></select></div>
+      <div class="field"><label for="at_stock">Stock</label><select id="at_stock"></select></div>
+      <div class="field"><label for="at_mag">Magazine</label><select id="at_mag"></select></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-h">Effect on this weapon</div>
+    <div class="grid4">
+      <div class="stat"><div class="n" id="at_vrecoil">–</div><div class="l">Vertical recoil change</div></div>
+      <div class="stat"><div class="n" id="at_hrecoil">–</div><div class="l">Horizontal recoil change</div></div>
+      <div class="stat"><div class="n" id="at_recovery">–</div><div class="l">Recoil recovery change</div></div>
+      <div class="stat"><div class="n" id="at_reload">–</div><div class="l">Reload time change</div></div>
+    </div>
+    <div class="grid3" style="margin-top:10px">
+      <div class="stat"><div class="n" id="at_capBase">–</div><div class="l">Base capacity</div></div>
+      <div class="stat"><div class="n" id="at_capNew">–</div><div class="l">Capacity with magazine</div></div>
+    </div>
+    <div class="note" id="at_note"></div>
+  </div>
+</div>
+</div>
+
+<!-- ================= BACKPACK CALCULATOR ================= -->
+<div id="panel-backpack" class="hub-main">
+<div class="wrap">
+  <div class="eyebrow">Field Reference · Loadout Capacity</div>
+  <h1>Backpack Calculator</h1>
+  <p class="sub">Build an ammo/healing/boost/throwable loadout and see how much of your backpack it uses. Weapon and armor weight are not modeled — only ammo and utility items count against capacity, as documented below.</p>
+
+  <div class="card">
+    <div class="toolbar">
+      <div class="field"><label for="bp_type">Backpack type</label>
+        <select id="bp_type"><option value="standard">Standard Backpack</option><option value="jammer">Jammer Pack</option></select>
+      </div>
+      <div class="field"><label for="bp_level">Level</label>
+        <select id="bp_level"><option value="1">Level 1</option><option value="2">Level 2</option><option value="3" selected>Level 3</option></select>
+      </div>
+    </div>
+    <div id="bp_jammerNote"></div>
+    <div class="preset-btns">
+      <div class="chip" id="bp_clear">Clear all</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-h" style="margin-top:0">Result</div>
+    <div class="grid3">
+      <div class="stat"><div class="n" id="bp_cap">–</div><div class="l">Capacity</div></div>
+      <div class="stat"><div class="n" id="bp_used">–</div><div class="l">Used</div><div class="bar"><div class="bar-fill" id="bp_used_bar"></div></div></div>
+      <div class="stat" id="bp_remStat"><div class="n" id="bp_rem">–</div><div class="l">Remaining</div><div class="bar"><div class="bar-fill" id="bp_rem_bar"></div></div></div>
+    </div>
+    <div id="bp_breakdown" style="margin-top:12px"></div>
+    <div class="note" id="bp_warn"></div>
+  </div>
+
+  <div class="card">
+    <div class="section-h">Ammo</div>
+    <div id="bp_ammoGrid" class="bp-list"></div>
+  </div>
+  <div class="card">
+    <div class="section-h">Healing &amp; boosts</div>
+    <div id="bp_healGrid" class="bp-list"></div>
+  </div>
+  <div class="card">
+    <div class="section-h">Throwables</div>
+    <div id="bp_throwGrid" class="bp-list"></div>
+  </div>
+</div>
+</div>
+
+<!-- ================= DATA & PATCH INFO ================= -->
+<div id="panel-data" class="hub-main">
+<div class="wrap">
+  <div class="eyebrow">Reference · Version &amp; Sources</div>
+  <h1>Data &amp; Patch Info</h1>
+  <p class="sub">What this toolkit is, what it isn't, and where every number in it comes from.</p>
+
+  <div class="card">
+    <dl class="datalist">
+      <dt>Version</dt>
+      <dd id="dp_version">v1.4 — weapon/armor data from the original supplied dataset, cross-checked and extended against official PUBG patch notes and pubgstatistics.com</dd>
+      <dt>Game &amp; patch</dt>
+      <dd>PUBG: BATTLEGROUNDS, PC/console. Checked against Update 43.1 (2026-09-09) and the two patches before it (42.3, 41.1). Anything later than 43.1 hasn't been checked.</dd>
+      <dt>Last opened</dt>
+      <dd id="dp_updated"></dd>
+      <dt>What this is</dt>
+      <dd>A reference built from a fixed dataset plus the patch notes and community tables cited below — not a live simulator. Treat every number as a snapshot, not a guarantee of the current patch.</dd>
+      <dt>Sources</dt>
+      <dd>
+        Base weapon stats (damage, RPM, velocity, magazine, recoil pattern, reload time) for the original 44 weapons: the supplied weapon dataset.<br>
+        Damage falloff by distance: exact tables for 41 of 45 weapons plus per-pellet tables for the four pellet shotguns (DBS, S686, S12K, Sawn-off), all sourced from pubgstatistics.com and checked against patch 43.2 on 2026-10-22. Its measured ranges are finite (e.g. S12K to 70m, Sawn-off to 50m); the site states damage beyond them is unknown, and this toolkit holds the last measured value past that point.<br>
+        Hit-area and per-class damage multipliers, all 13 body parts, by weapon class: pubgstatistics.com, cross-checked against several weapons' published damage tables.<br>
+        Armor reduction (30/40/55% for L1/L2/L3): PUBG wiki/community guides. Only Level 3 helmets reduce face-shot damage.<br>
+        Attachment modifiers, RPD, LMG rebalance, Tilted Grip, Half Grip, Angled Foregrip, Jammer Pack: official PUBG patch notes (pubg.com/en/news — 42.3, 41.1, 43.1).<br>
+        Backpack and item weights: PUBG wiki, pubgmap.io, and community capacity lists.<br>
+        Bullet drop and holdover (21 weapons): winnermeta.win real-match telemetry, currently in beta; values are estimated from measured flight time and drift a few percent between 14-day sampling windows.<br>
+        Shotgun pellet-spread cone angles (Sawn-off, S12K, S686): pubgmap.io datamined game files.
+      </dd>
+      <dt>Patch changes reflected here</dt>
+      <dd>
+        <b>42.3</b> — RPD added (7.62mm LMG, 43 dmg, 750 RPM, 735 m/s, 50-round mag expandable to 110; no muzzle or foregrip; accepts AR/LMG mags and stocks; up to 6x scope). LMG reload times −25%, LMG max horizontal recoil −30% (M249, MG3, RPD).<br>
+        <b>41.1</b> — Tilted Grip added (+12% vertical / +6% horizontal recoil control, +25% camera-shake control — shown as a note only, not modeled numerically). Angled Foregrip removed from world spawn, its role folded into Half Grip (now +16% horizontal, up from +8%). Jammer Pack: 3 tiers at 150/200/250 capacity with Low/Medium/High Blue Zone protection.<br>
+        <b>43.1</b> — Exact firing-position recoil-control figures for RPD (standing −10%, crouching −17%, prone −27%), M249 (crouching −17%, prone −27%), and MG3 (standing −15%, crouching −17%), shown as a note in the Recoil Analyzer. Also adjusted LMG ADS speed and vehicle-damage multipliers — not modeled here.
+      </dd>
+      <dt>Shotguns</dt>
+      <dd>DBS, S686, S12K, and Sawn-off fire full pellet-pattern damage (count × per-pellet, from pubgstatistics.com) — 9/9/9/8 pellets respectively — instead of a single pellet's damage. For Sawn-off, S12K, and S686, that damage is then scaled by a real spread-based hit fraction: pubgmap.io's datamined pellet-grid cone angle (a genuine game-engine value, not an estimate) gives the pattern's diameter at any range via plain cone geometry (2 × range × tan(angle/2)), and the fraction of pellets landing on an assumed ~0.5m-wide target is the area ratio between the two. This replaced an earlier version of this toolkit that applied a generic bullet-style "18% loss by 500m" falloff to full pellet-pattern damage — which is the wrong mechanic for a pellet weapon and was producing physically impossible numbers (e.g. S12K still doing 75+ damage at 500m). A firing-stance toggle (hip-fire / aimed) appears for these three weapons, since aiming down sights uses a far tighter spread cone from the same datamined source — e.g. S12K at 30m is 43 hits to kill hip-fired but only 2 aimed, both numbers being correct for what they each represent. DBS has no sourced spread-cone data, so it shows flat full-pattern damage with no falloff applied at all, flagged prominently rather than guessed. O12 fires a slug, not pellets, and uses the normal single-projectile falloff model.</dd>
+      <dt>Bullet drop</dt>
+      <dd>The Effective Range panel now shows drop-below-aim-point and holdover (mrad) for 16 weapons (AUG A3, AKM, M416, AWM, Kar98k, Vector, M24, Beryl M762, SCAR-L, M249, UMP9, Groza, Mini 14, SKS, K2, QBZ95), sourced from winnermeta.win real-match telemetry — a different site from pubgstatistics.com, and one that's explicitly in beta. It only publishes drop at 200m/400m/600m checkpoints rather than a full curve (some weapons only have a 200m point), so this toolkit interpolates between those points and holds the last one flat beyond it (flagged when that happens). Every other weapon shows no drop data rather than an estimate. Worth noting on its own: Vector's drop by 400m is nearly 16 metres, and UMP9's is over 2 metres by 200m — a good illustration of why SMGs shouldn't be aimed at range at all, regardless of what the damage numbers say.</dd>
+      <dt>Known limitation</dt>
+      <dd>The pellet hit-fraction model assumes pellets land uniformly across a circular pattern and the target is a fixed ~0.5m circle — a simplification, not a full engine-accurate spread simulation. Real spread isn't perfectly circular or uniform, and target size varies by stance and hitbox. Treat the resulting damage/HTK/TTK numbers as directionally correct (and a large improvement over ignoring spread entirely), not exact.</dd>
+      <dt>Known gaps</dt>
+      <dd>
+        <ul class="gaps">
+          <li>11 of 45 weapons (DBS, S686, S12K, G18C, P92, Skorpion, Sawn-off, Mk12, MK14 EBR, SVD Dragunov, Lynx AMR) still use an approximate linear falloff rather than a real per-distance table — flagged in the Effective Range panel whenever it applies.</li>
+          <li>RPD has no published recoil-pattern data; the Recoil Analyzer shows it as incomplete rather than guessing. G18C is missing its recovery-speed and minimum-horizontal% figures for the same reason.</li>
+          <li>RPD's reload time (3.5s) is this toolkit's own placeholder — it wasn't in the original dataset like every other weapon's reload time is.</li>
+          <li>Attachment slot access is assigned by weapon class plus named exceptions (AKM has no grip/stock; RPD has no muzzle/grip); weapons not individually named follow the class default rather than being verified one by one. Sights aren't modeled as a slot.</li>
+          <li>Attachment recoil/reload modifiers not tied to a specific patch note above are approximate community figures and may drift from the current patch.</li>
+          <li>Magazine capacities use exact figures where supplied (Vector, UMP, MP5K, Micro Uzi, pistols, RPD); everything else is a generic +30% (AR/DMR/S12K, SMG/Pistol) or +5 rounds (DMR/SR) approximation.</li>
+          <li>Frag grenade and Molotov weights are listed as either 16 or 18 depending on the source; this toolkit uses 18 for both.</li>
+        </ul>
+      </dd>
+    </dl>
+  </div>
+</div>
+</div>
+
+<script>
+// ---- hub navigation (3 mega-cards, with a sub-nav inside "Weapon Combat Engine") ----
+(function(){
+const MEGA_GROUPS = {
+  engine:  ['panel-combat','panel-range','panel-ttk','panel-recoil2','panel-attach','panel-data'],
+  sens:    ['panel-sensitivity'],
+  loadout: ['panel-backpack'],
+};
+let lastEnginePanel = 'panel-combat';
+function showPanel(id){
+  document.querySelectorAll('.hub-main').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function activateMega(mega){
+  document.querySelectorAll('#hub-nav button').forEach(b=>b.classList.toggle('active', b.dataset.mega===mega));
+  document.getElementById('engine-subnav').classList.toggle('hidden', mega!=='engine');
+  if(mega==='engine'){
+    showPanel(lastEnginePanel);
+    document.querySelectorAll('#engine-subnav button').forEach(b=>b.classList.toggle('active', b.dataset.target===lastEnginePanel));
+  } else {
+    showPanel(MEGA_GROUPS[mega][0]);
+  }
+}
+document.querySelectorAll('#hub-nav button').forEach(btn=>{
+  btn.onclick = ()=> activateMega(btn.dataset.mega);
+});
+document.querySelectorAll('#engine-subnav button').forEach(btn=>{
+  btn.onclick = ()=>{
+    lastEnginePanel = btn.dataset.target;
+    document.querySelectorAll('#engine-subnav button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    showPanel(lastEnginePanel);
+  };
+});
+activateMega('engine');
+})();
+</script>
+ 
+<script>
+// ---- shared namespace: the only global this toolkit's scripts expose to each other or to window ----
+const PT = {};
+</script>
+<script>
+// ---- Combat & Armor Intelligence logic ----
+(function(){
+ 
+/* ---------------- DATA ---------------- */
+const WEAPONS = [
+["Lynx AMR","SR",".50 Cal",true,118,86,1200,169,10,3.1,["Semi"]],
+["AWM","SR",".300 Mag",true,105,32,945,56,5,3.7,["Bolt"]],
+["O12","SG","12G Slug",false,100,480,625,800,30,2.3,["Semi","Burst","Auto"]],
+["Kar98k","SR","7.62mm",false,79,39,760,51,5,2.0,["Bolt"]],
+["M24","SR","7.62mm",false,75,42,790,53,5,3.7,["Bolt"]],
+["R1895","Pistol","7.62mm",false,64,240,330,256,7,3.0,["Semi"]],
+["Desert Eagle","Pistol",".45 ACP",false,62,300,450,310,7,2.0,["Semi"]],
+["MK14 EBR","DMR","7.62mm",true,54,400,853,360,10,3.1,["Semi","Auto"]],
+["SVD Dragunov","DMR","7.62mm",false,53,180,830,159,10,3.1,["Semi"]],
+["MK47 Mutant","AR","7.62mm",false,49,800,780,653,10,3.1,["Semi","Burst"]],
+["SLR","DMR","7.62mm",false,49,330,870,270,10,3.1,["Semi"]],
+["AKM","AR","7.62mm",false,48,600,715,480,30,3.1,["Semi","Auto"]],
+["Groza","AR","7.62mm",true,47,750,715,588,30,3.1,["Semi","Auto"]],
+["SKS","DMR","7.62mm",false,47,330,800,259,10,3.1,["Semi"]],
+["VSS Vintorez","DMR","9mm",false,45,700,430,525,10,3.1,["Semi","Auto"]],
+["Beryl M762","AR","7.62mm",false,44,700,715,513,30,3.1,["Semi","Burst","Auto"]],
+["M16A4","AR","5.56mm",false,43,800,900,573,30,2.5,["Semi","Burst"]],
+["ACE 32","AR","7.62mm",false,43,680,720,487,30,3.1,["Semi","Auto"]],
+["Mk12","DMR","5.56mm",false,43,330,900,237,10,2.5,["Semi"]],
+["SCAR-L","AR","5.56mm",false,42,650,870,455,30,3.1,["Semi","Auto"]],
+["QBZ95","AR","5.56mm",false,42,650,870,455,30,3.1,["Semi","Auto"]],
+["Mini 14","DMR","5.56mm",false,42,330,990,231,20,2.5,["Semi"]],
+["UMP9","SMG","9mm",false,42,670,400,469,25,3.1,["Semi","Burst","Auto"]],
+["MG3","MG","7.62mm",false,42,700,820,490,75,3.5,["Auto"]],
+["K2","AR","5.56mm",false,41,700,880,478,30,3.1,["Semi","Burst","Auto"]],
+["G36C","AR","5.56mm",false,41,700,870,478,30,3.1,["Semi","Auto"]],
+["M249","MG","5.56mm",false,41,800,915,547,75,3.5,["Auto"]],
+["M416","AR","5.56mm",false,40,700,880,467,30,3.1,["Semi","Auto"]],
+["AUG A3","AR","5.56mm",false,40,720,890,480,30,3.1,["Semi","Auto"]],
+["Tommy Gun","SMG","9mm",false,40,750,280,500,30,3.1,["Semi","Auto"]],
+["FAMAS","AR","5.56mm",true,39,900,925,585,30,3.1,["Semi","Burst","Auto"]],
+["P90","SMG","5.7mm",false,35,1000,716,583,50,3.1,["Semi","Auto"]],
+["P92","Pistol","9mm",false,34,600,380,340,15,2.3,["Semi"]],
+["MP5K","SMG","9mm",false,32,900,400,480,30,3.1,["Semi","Burst","Auto"]],
+["JS9","SMG","9mm",false,32,900,400,480,30,3.1,["Semi","Auto"]],
+["Vector","SMG","9mm",false,31,1100,380,568,19,3.1,["Semi","Burst","Auto"]],
+["MP9","SMG","9mm",false,31,1000,400,517,30,3.1,["Semi","Auto"]],
+["DBS","SG","12 Gauge",false,28,480,360,224,14,6.1,["Semi"]],
+["Micro Uzi","SMG","9mm",false,26,1250,350,542,25,3.1,["Semi","Auto"]],
+["S686","SG","12 Gauge",false,26,240,370,104,2,2.3,["Semi"]],
+["S12K","SG","12 Gauge",false,23,240,350,92,5,2.3,["Semi"]],
+["G18C","Pistol","9mm",false,23,1000,375,383,17,2.3,["Semi","Auto"]],
+["Skorpion","SMG","9mm",false,22,850,350,312,10,3.1,["Semi","Auto"]],
+["Sawn-off","SG","12 Gauge",false,21,240,330,84,2,3.0,["Semi"]],
+["RPD","MG","7.62mm",false,43,750,735,538,50,3.5,["Auto"]],
+].map(w=>({name:w[0],cls:w[1],ammo:w[2],crate:w[3],dmg:w[4],rpm:w[5],vel:w[6],dps:w[7],mag:w[8],reload:w[9],modes:w[10]}));
+// w[9] ("reload") was present in the originally supplied WEAPONS array but was never wired into any
+// calculation — every reload figure elsewhere in this toolkit up to now was an invented generic
+// placeholder (3.0s/3.5s) instead of this real per-weapon data. Now used directly in the TTK and
+// Attachments panels. Exception: RPD's reload value (3.5) is this toolkit's own placeholder, added when
+// RPD was added in a later revision — it did not come from the original supplied dataset like the other
+// 44 do, and is flagged as such wherever it's shown.
+// RPD added per official Update 42.3 patch notes (pubg.com/en/news/10885): dmg 43, RPM 750, velocity 735 m/s,
+// base magazine 50 (expandable to 110 via AR/LMG magazine attachments), Auto only, world spawn on all maps.
+// No vertical/horizontal recoil-pattern figures have been published for RPD, so its recoil fields are left
+// unset below (RECOIL_RAW has no RPD entry) rather than estimated — the Recoil Analyzer will show it as
+// incomplete data. Reload-time estimate (3.5s) is this toolkit's generic LMG placeholder, not an official figure.
+ 
+// recoil-pattern data: v.recoil, crouch modifier (mult + %), h.bias (direction + value), vert/horiz recovery speed, min horizontal %
+// G18C's row was cut off in the source paste after h.bias — its vert/horiz speed and min-h% were not supplied, so they stay null rather than guessed.
+const RECOIL_RAW = {
+  "Desert Eagle": [null, 0.82,-18, "→",0.17, 15,12, 42],
+  "Mini 14":      [3.1,  0.75,-25,"→",0.15, 11.2,11,30],
+  "UMP9":         [null, null,null,"→",0.12, 10,9, 50],
+  "SCAR-L":       [7.0,  0.84,-16,"→",0.10, 15,11, 40],
+  "G36C":         [7.0,  0.84,-16,"→",0.10, 15,11, 40],
+  "QBZ95":        [7.0,  0.84,-16,"→",0.10, 14,11.5,43],
+  "Kar98k":       [7.0,  null,null,"→",0.10, 15,7, null],
+  "M24":          [7.0,  null,null,"→",0.10, 15,7, null],
+  "AWM":          [7.0,  null,null,"→",0.10, 15,7, null],
+  "S12K":         [9.0,  0.85,-15,"→",0.10, 15,16, 50],
+  "O12":          [9.0,  null,null,"→",0.10, 13,12, 50],
+  "Mk12":         [null, 0.75,-25,"→",0.05, 11.5,11,30],
+  "MP5K":         [null, null,null,"→",0.05, 12,12, 60],
+  "JS9":          [null, 0.85,-15,"→",0.05, 11,11, 63],
+  "Tommy Gun":    [null, null,null,"→",0.03, 15,11, 30],
+  "Vector":       [null, null,null,"→",0.03, 15,16, 55],
+  "AUG A3":       [7.0,  0.86,-14,"←",0.05, 10,10.8,40],
+  "K2":           [7.0,  0.84,-16,"←",0.05, 13,12, 40],
+  "SLR":          [8.0,  0.75,-25,"←",0.05, 11.5,10,40],
+  "M416":         [7.0,  0.84,-16,"←",0.10, 12,12, 40],
+  "Beryl M762":   [8.0,  0.88,-12,"←",0.10, 16.5,11,50],
+  "ACE 32":       [7.0,  0.84,-16,"←",0.10, 15,9.5, 40],
+  "FAMAS":        [7.0,  0.84,-16,"←",0.10, 10,10.8,40],
+  "SKS":          [8.0,  0.75,-25,"←",0.10, 9.5,7.2, 40],
+  "MK14 EBR":     [8.0,  0.75,-25,"←",0.10, 11.5,10,40],
+  "SVD Dragunov": [10.0, 0.75,-25,"←",0.10, 12,11, 40],
+  "Lynx AMR":     [7.0,  0.75,-25,"←",0.10, 20,8,  40],
+  "AKM":          [8.0,  0.84,-16,"←",0.20, 15,9.5, 42],
+  "Groza":        [8.0,  null,null,null,null, 14,11, 35],
+  "M16A4":        [7.0,  0.84,-16,null,null, 11,13, 40],
+  "MK47 Mutant":  [8.0,  0.88,-12,null,null, 12.5,10,48],
+  "VSS Vintorez": [8.0,  0.75,-25,null,null, 10.5,8, 40],
+  "Micro Uzi":    [null, null,null,null,null, 15,14, 35],
+  "MP9":          [null, null,null,null,null, 11,10.5,63],
+  "P90":          [null, null,null,null,null, 11,10.5,63],
+  "Skorpion":     [null, 0.85,-15,null,null, 15,14, 35],
+  "M249":         [7.0,  0.54,-46,null,null, 15,10, 20],
+  "MG3":          [null, 0.50,-50,null,null, 16,11.5,25],
+  "S686":         [null, null,null,null,null, 13,11, 70],
+  "DBS":          [null, null,null,null,null, 12,10, 75],
+  "Sawn-off":     [null, null,null,null,null, 15,12, null],
+  "P92":          [1.0,  null,null,null,null, 15,12, null],
+  "R1895":        [null, null,null,null,null, 15,12, null],
+  "G18C":         [null, null,null,null,null, null,null,null],
+};
+WEAPONS.forEach(w=>{
+  const r = RECOIL_RAW[w.name];
+  if(!r) return;
+  const [vRecoil,crouchMod,crouchPct,hBiasDir,hBiasVal,vertSpeed,horizSpeed,minH] = r;
+  Object.assign(w, {vRecoil,crouchMod,crouchPct,hBiasDir,hBiasVal,vertSpeed,horizSpeed,minH});
+});
+ 
+// crossover data keyed by normalized weapon key (maps onto WEAPONS via ALIAS)
+const ALIAS = { // crossover-sheet name -> weapon-db name
+  "FAMAS G2":"FAMAS","QBZ":"QBZ95","VSS":"VSS Vintorez","Mk47 Mutant":"MK47 Mutant",
+  "Mk14":"MK14 EBR","P18C":"G18C","ACE 32":"ACE 32","Mini 14":"Mini 14"
+};
+ 
+// [name, chestDmg, l3->l2, l2->l1]
+const VEST_RAW = [
+["AKM",48,"≤26 (10%)","Always keep"],
+["Beryl M762",44,"≤24 (10%)","≤24 (11%)"],
+["M416",40,"≤44 (18%)","≤22 (10%)"],
+["SCAR-L",42,"≤23 (9%)","≤23 (10%)"],
+["G36C",41,"≤45 (18%)","≤22 (10%)"],
+["Mk47 Mutant",49,"≤26 (10%)","Always keep"],
+["QBZ",42,"≤23 (9%)","≤23 (10%)"],
+["Groza",47,"≤25 (10%)","≤51 (23%)"],
+["AUG A3",40,"≤44 (18%)","≤22 (10%)"],
+["ACE 32",43,"≤23 (9%)","≤23 (10%)"],
+["FAMAS G2",39,"≤42 (17%)","≤21 (10%)"],
+["K2",41,"≤45 (18%)","≤22 (10%)"],
+["M16A4",43,"≤23 (9%)","≤23 (10%)"],
+["UMP9",44.1,"≤16 (6%)","≤16 (7%)"],
+["Vector",32.6,"≤37 (15%)","≤24 (11%)"],
+["Tommy Gun",42,"≤16 (6%)","≤16 (7%)"],
+["P90",36.8,"≤28 (11%)","Always keep"],
+["MP5K",33.6,"≤12 (5%)","≤25 (11%)"],
+["MP9",32.6,"≤37 (15%)","≤24 (11%)"],
+["Micro Uzi",27.3,"≤41 (16%)","≤31 (14%)"],
+["JS9",33.6,"≤12 (5%)","≤25 (11%)"],
+["Skorpion",23.1,"≤35 (14%)","≤35 (16%)"],
+["Mini 14",44.1,"≤25 (10%)","≤25 (11%)"],
+["SKS",49.4,"≤28 (11%)","Always keep"],
+["SLR",51.5,"≤29 (12%)","Always keep"],
+["Mk14",56.7,"Always keep","Always keep"],
+["Mk12",45.2,"≤25 (10%)","≤25 (11%)"],
+["SVD Dragunov",55.7,"Always keep","Always keep"],
+["VSS",47.3,"≤27 (11%)","≤54 (25%)"],
+["Kar98k",102.7,"Always keep","Always keep"],
+["M24",97.5,"Always keep","Always keep"],
+["AWM",136.5,"Always keep","Always keep"],
+["Lynx AMR",153.4,"Always keep","Always keep"],
+["M249",43.1,"≤22 (9%)","≤22 (10%)"],
+["MG3",44.1,"≤23 (9%)","≤23 (10%)"],
+["Desert Eagle",62,"Always keep","Always keep"],
+["R1895",64,"Always keep","≤25 (11%)"],
+["P92",34,"≤13 (5%)","≤27 (12%)"],
+["P18C",23,"≤36 (14%)","≤36 (16%)"],
+];
+
+const HELM_RAW = [
+["AKM",112.8,"Always keep","Always keep"],
+["Beryl M762",103.4,"Always keep","Always keep"],
+["M416",94,"Always keep","Always keep"],
+["SCAR-L",98.7,"Always keep","Always keep"],
+["G36C",96.4,"Always keep","Always keep"],
+["Mk47 Mutant",115.2,"Always keep","Always keep"],
+["QBZ",98.7,"Always keep","Always keep"],
+["Groza",110.5,"Always keep","Always keep"],
+["AUG A3",94,"Always keep","Always keep"],
+["ACE 32",101.1,"Always keep","Always keep"],
+["FAMAS G2",91.7,"Always keep","Always keep"],
+["K2",96.4,"Always keep","Always keep"],
+["M16A4",101.1,"Always keep","Always keep"],
+["UMP9",88.2,"Always keep","Always keep"],
+["Vector",65.1,"Always keep","≤12 (8%)"],
+["Tommy Gun",84,"Always keep","Always keep"],
+["P90",73.5,"≤14 (6%)","Always keep"],
+["MP5K",67.2,"Always keep","≤12 (8%)"],
+["MP9",65.1,"Always keep","≤12 (8%)"],
+["Micro Uzi",54.6,"≤20 (9%)","Always keep"],
+["JS9",67.2,"Always keep","≤12 (8%)"],
+["Skorpion",46.2,"≤8 (3%)","≤17 (11%)"],
+["Mini 14",98.7,"Always keep","Always keep"],
+["SKS",110.5,"Always keep","Always keep"],
+["SLR",115.2,"Always keep","Always keep"],
+["Mk14",126.9,"Always keep","Always keep"],
+["Mk12",101.1,"Always keep","Always keep"],
+["SVD Dragunov",124.6,"Always keep","Always keep"],
+["VSS",105.8,"Always keep","Always keep"],
+["Kar98k",197.5,"Always keep","Always keep"],
+["M24",187.5,"Always keep","Always keep"],
+["AWM",262.5,"Always keep","Always keep"],
+["Lynx AMR",295,"Always keep","Always keep"],
+["M249",94.3,"Always keep","Always keep"],
+["MG3",96.6,"Always keep","Always keep"],
+["Desert Eagle",142.6,"Always keep","Always keep"],
+["R1895",147.2,"Always keep","Always keep"],
+["P92",78.2,"≤13 (6%)","Always keep"],
+["P18C",52.9,"≤18 (8%)","Always keep"],
+];
+ 
+function norm(n){ return ALIAS[n] || n; }
+function buildIndex(raw){
+  const idx = {};
+  raw.forEach(r=>{ idx[norm(r[0])] = {srcName:r[0], dmg:r[1], l3:r[2], l2:r[3]}; });
+  return idx;
+}
+const VEST = buildIndex(VEST_RAW);
+const HELM = buildIndex(HELM_RAW);
+const WBYNAME = {}; WEAPONS.forEach(w=>WBYNAME[w.name]=w);
+ 
+function parseThreshold(str){
+  // returns {always:true} or {pct:number, raw:number}
+  if(/always/i.test(str)) return {always:true, label:str};
+  const m = str.match(/≤\s*(\d+(?:\.\d+)?)\s*\((\d+)%\)/);
+  if(m) return {always:false, raw:+m[1], pct:+m[2], label:str};
+  return {always:false, label:str};
+}
+ 
+/* ---------------- SINGLE-PAGE CONTAINER ---------------- */
+const panelsEl = document.getElementById("panels");
+ 
+/* ---------------- 1. COMBAT DATABASE (weapons + helmet + vest crossover, merged) ---------------- */
+(function(){
+  const p = panelsEl;
+  p.innerHTML = `
+    <div class="card" id="combat-database">
+      <div class="panel-coord">A1 · Combat Database</div>
+      <div class="toolbar">
+        <input type="text" id="wSearch" placeholder="Search weapon name…">
+        <select id="wSort">
+          <option value="dmg-desc">Sort: Damage ↓</option>
+          <option value="dps-desc">Sort: DPS ↓</option>
+          <option value="rpm-desc">Sort: RPM ↓</option>
+          <option value="vel-desc">Sort: Velocity ↓</option>
+          <option value="headDmg-desc">Sort: Head dmg ↓</option>
+          <option value="chestDmg-desc">Sort: Chest dmg ↓</option>
+          <option value="vRecoil-desc">Sort: V.Recoil ↓</option>
+          <option value="minH-desc">Sort: Min H% ↓</option>
+          <option value="dmg-asc">Sort: Damage ↑</option>
+          <option value="name-asc">Sort: Name A-Z</option>
+        </select>
+      </div>
+      <div class="toolbar" id="wClassFilters"></div>
+      <div class="sort-hint">Click any column header to sort by it (click again to reverse) — hover a header for what it means.</div>
+      <div style="overflow-x:auto;overflow-y:visible"><table id="wTable"></table></div>
+      <div class="missing-note">Shotguns and any weapon without a supplied crossover figure show — in the Head/Chest/armor columns; no threshold was invented for them.</div>
+      <div class="missing-note">G18C's recovery-speed and min-H% figures weren't included in the recoil data supplied — shown as — rather than estimated.</div>
+      <p class="missing-note" style="color:var(--dim)">These thresholds are point-blank values with no distance falloff modeled. At real engagement ranges the actual crossover point may sit lower than shown — treat this as a baseline, not a guarantee at range.</p>
+      <div class="section-h">Column legends</div>
+      <div class="helptext" style="margin-bottom:6px">Armor threshold colors (Head/Chest → armor columns):</div>
+      <div class="color-legend">
+        <span class="clegend-item"><i class="dot" style="background:var(--keep)"></i>Always keep — the math never favors a fresh lower tier</span>
+        <span class="clegend-item"><i class="dot" style="background:var(--amber)"></i>15%+ — swap with a comfortable durability margin</span>
+        <span class="clegend-item"><i class="dot" style="background:var(--orange)"></i>8–14% — swap opportunistically, not urgently</span>
+        <span class="clegend-item"><i class="dot" style="background:var(--swap)"></i>Under 8% — crossover comes right before it breaks, little margin</span>
+      </div>
+      <div class="helptext" style="margin-bottom:6px">Recoil &amp; handling columns:</div>
+      <dl class="legend">
+        <div><dt>V.Recoil</dt><dd>Vertical kick per shot — how much the gun climbs upward. Lower is easier to control.</dd></div>
+        <div><dt>Crouch Recoil</dt><dd>How much recoil drops while crouching. A lower multiplier means a bigger % reduction.</dd></div>
+        <div><dt>Horizontal Bias</dt><dd>Which way the gun drifts sideways during sustained fire (← or →) and how strongly — tells you which direction to counter-pull.</dd></div>
+        <div><dt>Vertical Speed</dt><dd>How fast the gun snaps upward after each shot. Higher is harder to control.</dd></div>
+        <div><dt>Horizontal Speed</dt><dd>How fast it jolts sideways after each shot. Higher is harder to control.</dd></div>
+        <div><dt>Minimum Horizontal %</dt><dd>The floor of a single shot's sideways kick, as a % of the max. Higher % means a more consistent spray; lower means more random.</dd></div>
+      </dl>
+    </div>
+    <div class="card" style="margin-top:16px" id="realityCard"></div>
+    <div class="card" style="margin-top:16px" id="compare-weapons">
+      <div class="panel-coord">Compare weapons</div>
+      <p class="helptext" style="margin-bottom:12px">Pick up to three weapons to see every stat side-by-side. The stronger value in each row is highlighted green.</p>
+      <div class="compare-picker">
+        <select id="cmpA"></select>
+        <select id="cmpB"></select>
+        <select id="cmpC"><option value="">— none —</option></select>
+      </div>
+      <div style="overflow-x:auto"><table id="cmpTable"></table></div>
+    </div>
+    <div class="card" style="margin-top:16px" id="how-thresholds-work">
+      <div class="section-h" style="margin-top:0">How the crossover thresholds work</div>
+      <p class="helptext">A crossover point is the durability value at which damaged higher-tier armor stops being worth more than a fresh piece of the tier below. Higher tiers absorb more damage per hit but wear down with use; a fresh lower tier is undamaged, so at some durability the two protect equally well, and below it the fresh lower tier wins.</p>
+      <div class="section-h">Assumptions in this dataset</div>
+      <ul class="assumptions">
+        <li>Head and chest damage are the supplied base-damage × multiplier calculations, not the game's live formula.</li>
+        <li>Thresholds shown as "Always keep" mean no durability point in the supplied data made the fresh lower tier equal or better.</li>
+        <li>Shotguns and any weapon without a supplied crossover row are omitted from armor sections rather than estimated.</li>
+        <li>This is a decision reference built from a fixed dataset, not a live PUBG mechanics simulator — treat it as a snapshot, not an authority on the current patch.</li>
+      </ul>
+    </div>`;
+  const ROWS = WEAPONS.map(w=>({...w, helm:HELM[norm(w.name)], vest:VEST[norm(w.name)]}));
+ 
+  const classes = ["All",...new Set(WEAPONS.map(w=>w.cls))];
+  let activeClass = "All";
+  let armorFilter = "all";
+  let sortKey = "dmg", sortDir = "desc";
+  const cf = document.getElementById("wClassFilters");
+  classes.forEach(c=>{
+    const chip = document.createElement("div");
+    chip.className = "chip" + (c==="All"?" on":"");
+    chip.textContent = c;
+    chip.tabIndex = 0;
+    chip.onclick = ()=>{ activeClass=c; [...cf.children].forEach(x=>x.classList.remove("on")); chip.classList.add("on"); render(); };
+    chip.onkeydown = e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); chip.click(); } };
+    cf.appendChild(chip);
+  });
+  const COLS = [["name","Weapon"],["cls","Class"],["dmg","Dmg"],["rpm","RPM"],["vel","Vel m/s"],["dps","DPS"],
+    ["mag","Mag"],["vRecoil","V.Recoil"],["crouchMod","Crouch Recoil"],["hBias","Horizontal Bias"],["vertSpeed","Vertical Speed"],
+    ["horizSpeed","Horizontal Speed"],["minH","Minimum Horizontal %"],["headDmg","Head"],["helmL3","Helm L3→L2"],["helmL2","Helm L2→L1"],
+    ["chestDmg","Chest"],["vestL3","Vest L3→L2"],["vestL2","Vest L2→L1"]];
+  const GROUPS = [["",1],["Core Stats",6],["Recoil & Handling",6],["Vs. Head / Helmet",3],["Vs. Chest / Vest",3]];
+  const SORTABLE = new Set(["name","dmg","rpm","vel","dps","mag","vRecoil","vertSpeed","horizSpeed","minH","headDmg","chestDmg"]);
+  const TOOLTIPS = {
+    cls:"Weapon category (AR, SMG, SR, DMR, SG, MG, Pistol)",
+    dmg:"Base hitbox damage per hit, before armor reduction",
+    rpm:"Rounds per minute at maximum fire rate",
+    vel:"Bullet velocity in meters per second",
+    dps:"Theoretical sustained damage per second at max RPM",
+    mag:"Magazine capacity",
+    vRecoil:"Vertical kick per shot — how much the gun climbs upward. Lower is easier to control.",
+    crouchMod:"How much recoil drops while crouching. A lower multiplier means a bigger % reduction.",
+    hBias:"Which way the gun drifts sideways during sustained fire (← or →) and how strongly.",
+    vertSpeed:"How fast the gun snaps upward after each shot. Higher is harder to control.",
+    horizSpeed:"How fast it jolts sideways after each shot. Higher is harder to control.",
+    minH:"The floor of a single shot's sideways kick, as a % of the max. Higher means a more consistent spray.",
+    headDmg:"Headshot damage against bare skin, no helmet",
+    helmL3:"Durability at which a damaged Level 3 helmet stops being better than a fresh Level 2",
+    helmL2:"Durability at which a damaged Level 2 helmet stops being better than a fresh Level 1",
+    chestDmg:"Chest damage against bare skin, no vest",
+    vestL3:"Durability at which a damaged Level 3 vest stops being better than a fresh Level 2",
+    vestL2:"Durability at which a damaged Level 2 vest stops being better than a fresh Level 1",
+  };
+  function getVal(row,key){
+    if(key==="headDmg") return row.helm ? row.helm.dmg : null;
+    if(key==="chestDmg") return row.vest ? row.vest.dmg : null;
+    return row[key];
+  }
+  function setSort(key){
+    if(sortKey===key){ sortDir = sortDir==="desc"?"asc":"desc"; } else { sortKey=key; sortDir = key==="name"?"asc":"desc"; }
+    document.getElementById("wSort").value = `${sortKey}-${sortDir}`;
+    render();
+  }
+  function armorCell(entry, field){
+    if(!entry) return `<td>—</td>`;
+    const t = parseThreshold(entry[field]);
+    let cls;
+    if(t.always) cls = 'thresh-always';
+    else if(t.pct>=15) cls = 'thresh-yellow';
+    else if(t.pct>=8) cls = 'thresh-orange';
+    else cls = 'thresh-red';
+    return `<td class="${cls}">${entry[field]}</td>`;
+  }
+  function render(){
+    const q = document.getElementById("wSearch").value.toLowerCase();
+    let list = ROWS.filter(w=> w.name.toLowerCase().includes(q) && (activeClass==="All"||w.cls===activeClass)
+      && (armorFilter==="all" || (armorFilter==="vest"&&w.vest) || (armorFilter==="helm"&&w.helm)));
+    list.sort((a,b)=>{
+      if(sortKey==="name") return a.name.localeCompare(b.name)*(sortDir==="asc"?1:-1);
+      const av=getVal(a,sortKey), bv=getVal(b,sortKey);
+      const an = (av===null||av===undefined) ? -Infinity : av, bn = (bv===null||bv===undefined) ? -Infinity : bv;
+      return sortDir==="desc" ? bn-an : an-bn;
+    });
+    const t = document.getElementById("wTable");
+    const groupHtml = GROUPS.map(([label,span])=> label ? `<th colspan="${span}">${label}</th>` : `<th colspan="${span}"></th>`).join("");
+    const headHtml = COLS.map(([key,label])=>{
+      const arrow = sortKey===key ? `<span class="arrow">${sortDir==="desc"?"▼":"▲"}</span>` : "";
+      const tip = TOOLTIPS[key] ? ` title="${TOOLTIPS[key]}"` : "";
+      return SORTABLE.has(key) ? `<th data-key="${key}" tabindex="0"${tip}>${label}${arrow}</th>` : `<th${tip}>${label}</th>`;
+    }).join("");
+    t.innerHTML = `<tr class="grouprow">${groupHtml}</tr><tr class="colheader">${headHtml}</tr>` +
+      list.map(w=>`<tr class="rowclick" tabindex="0" data-n="${w.name}">
+        <td>${w.name} ${w.crate?'<span class="tag crate">CRATE</span>':''}</td>
+        <td>${w.cls?`<span class="tag">${w.cls}</span>`:'—'}</td>
+        <td>${w.dmg??'—'}</td>
+        <td>${w.rpm??'—'}</td>
+        <td>${w.vel??'—'}</td>
+        <td>${w.dps??'—'}</td>
+        <td>${w.mag??'—'}</td>
+        <td>${w.vRecoil??'—'}</td>
+        <td>${w.crouchMod!=null?`${w.crouchMod} (${w.crouchPct}%)`:'—'}</td>
+        <td>${w.hBiasDir?`${w.hBiasDir} ${w.hBiasVal}`:'—'}</td>
+        <td>${w.vertSpeed??'—'}</td>
+        <td>${w.horizSpeed??'—'}</td>
+        <td>${w.minH!=null?w.minH+'%':'—'}</td>
+        <td>${w.helm?w.helm.dmg:'—'}</td>
+        ${armorCell(w.helm,'l3')}${armorCell(w.helm,'l2')}
+        <td>${w.vest?w.vest.dmg:'—'}</td>
+        ${armorCell(w.vest,'l3')}${armorCell(w.vest,'l2')}
+      </tr>`).join("");
+    t.querySelectorAll("tr.rowclick").forEach(tr=>{
+      tr.onclick = ()=>openWeaponDetail(tr.dataset.n);
+      tr.onkeydown = e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); openWeaponDetail(tr.dataset.n); } };
+    });
+    t.querySelectorAll("th[data-key]").forEach(th=>{
+      th.onclick = ()=> setSort(th.dataset.key);
+      th.onkeydown = e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); setSort(th.dataset.key); } };
+    });
+  }
+  document.getElementById("wSearch").oninput = render;
+  document.getElementById("wSort").onchange = ()=>{
+    [sortKey,sortDir] = document.getElementById("wSort").value.split("-");
+    render();
+  };
+  // Hero stat tiles are informational only now — the table below always shows every weapon;
+  // clicking them to filter wasn't adding anything a search/class-chip couldn't already do.
+  document.querySelector("#statAll b").textContent = WEAPONS.length; // dynamic count, no longer hard-coded
+  render();
+})();
+ 
+function getStrengthsWeaknesses(w){
+  const rank = (arr,key)=> [...arr].sort((a,b)=>b[key]-a[key]).findIndex(x=>x.name===w.name)+1;
+  const dmgRank = rank(WEAPONS,"dmg");
+  const sameClass = WEAPONS.filter(x=>x.cls===w.cls);
+  const classRank = (key,asc)=>{
+    const sorted = [...sameClass].sort((a,b)=> asc ? a[key]-b[key] : b[key]-a[key]);
+    return sorted.findIndex(x=>x.name===w.name)+1;
+  };
+  const n = sameClass.length;
+  const strengths = [], weaknesses = [];
+  const cDmg = classRank("dmg"), cDps = classRank("dps"), cVel = classRank("vel"), cMag = classRank("mag");
+  if(n>1){
+    if(cDmg===1) strengths.push(`highest base damage of the ${n} ${w.cls} weapons`);
+    else if(cDmg<=Math.ceil(n/3)) strengths.push(`top-third damage among ${w.cls} weapons`);
+    if(cDps===1) strengths.push(`highest DPS of the ${n} ${w.cls} weapons`);
+    if(cVel===1) strengths.push(`fastest bullet velocity in its class`);
+    if(cMag===1) strengths.push(`largest magazine in its class (${w.mag} rounds)`);
+    if(cDmg===n) weaknesses.push(`lowest base damage of the ${n} ${w.cls} weapons`);
+    if(cMag===n && w.cls!=="SR") weaknesses.push(`smallest magazine in its class (${w.mag} rounds)`);
+    if(cVel===n) weaknesses.push(`slowest bullet velocity in its class`);
+  }
+  if(dmgRank<=5) strengths.push(`top-5 base damage across all ${WEAPONS.length} weapons`);
+  if(w.vel<450) weaknesses.push("low absolute bullet velocity — noticeable lead required at range");
+  if(!strengths.length) strengths.push(`mid-pack on damage, DPS, and magazine size within its ${n>1?w.cls+" class":"category"}`);
+  return {strengths, weaknesses};
+}
+function openWeaponDetail(name){
+  const w = WBYNAME[name]; if(!w) return;
+  const rank = (arr,key)=> [...arr].sort((a,b)=>b[key]-a[key]).findIndex(x=>x.name===w.name)+1;
+  const dmgRank = rank(WEAPONS,"dmg"), dpsRank = rank(WEAPONS,"dps");
+  const {strengths, weaknesses} = getStrengthsWeaknesses(w);
+  const helm = HELM[norm(w.name)], vest = VEST[norm(w.name)];
+  document.getElementById("modalBody").innerHTML = `
+    <button class="close" data-action="close-modal" aria-label="Close weapon detail">✕</button>
+    <div class="eyebrow">${w.cls}${w.crate?' · CRATE':''}</div>
+    <h3 id="modalTitle">${w.name}</h3>
+    <div class="kv">
+      <div><span>Damage</span> ${w.dmg}</div>
+      <div><span>RPM</span> ${w.rpm}</div>
+      <div><span>Velocity</span> ${w.vel} m/s</div>
+      <div><span>DPS</span> ${w.dps}</div>
+      <div><span>Magazine</span> ${w.mag}</div>
+      <div><span>Damage rank</span> #${dmgRank} of ${WEAPONS.length}</div>
+      <div><span>DPS rank</span> #${dpsRank} of ${WEAPONS.length}</div>
+    </div>
+    <div class="note">
+      <b>Provided-data notes:</b><br>
+      ${strengths.length?"Strengths: "+strengths.join("; ")+".":"No standout strengths from supplied stats."}<br>
+      ${weaknesses.length?"Weaknesses: "+weaknesses.join("; ")+".":"No notable weaknesses from supplied stats."}
+      ${helm?`<br><br>Headshot vs armor: ${helm.dmg} dmg. L3→L2 ${helm.l3} · L2→L1 ${helm.l2}.`:''}
+      ${vest?`<br>Chest vs armor: ${vest.dmg} dmg. L3→L2 ${vest.l3} · L2→L1 ${vest.l2}.`:''}
+    </div>`;
+  document.getElementById("overlay").classList.add("show");
+}
+function closeModal(){ document.getElementById("overlay").classList.remove("show"); }
+document.getElementById("overlay").onclick = e=>{ if(e.target.id==="overlay") closeModal(); };
+document.getElementById("overlay").addEventListener("click", e=>{ if(e.target.closest('[data-action="close-modal"]')) closeModal(); });
+document.addEventListener("keydown", e=>{ if(e.key==="Escape") closeModal(); });
+ 
+/* ---------------- 4. REALITY CHECK + COMPARE (folded into the Combat Database panel) ---------------- */
+(function(){
+  function counts(raw){
+    let alwaysL3=0; raw.forEach(r=>{ if(parseThreshold(r[2]).always) alwaysL3++; });
+    return {alwaysL3, total:raw.length};
+  }
+  const vc = counts(VEST_RAW), hc = counts(HELM_RAW);
+  document.getElementById("realityCard").innerHTML =
+    `<div class="section-h" style="margin-top:0">Reality check</div>
+     <p class="helptext" style="margin-bottom:0">Helmets barely ever cross over — ${hc.alwaysL3} of ${hc.total} weapons keep Level 3 head protection valuable at any durability above zero, versus only ${vc.alwaysL3} of ${vc.total} for vests. Chest damage is where the interesting swap decisions live; headshots almost always favor keeping the higher tier.</p>`;
+ 
+  const names = WEAPONS.map(w=>w.name);
+  const $ = id=>document.getElementById(id);
+  const optHtml = sel => names.map(n=>`<option ${n===sel?'selected':''}>${n}</option>`).join("");
+  $("cmpA").innerHTML = optHtml("AKM");
+  $("cmpB").innerHTML = optHtml("Beryl M762");
+  $("cmpC").innerHTML += names.map(n=>`<option>${n}</option>`).join("");
+  function render(){
+    const sel = [$("cmpA").value, $("cmpB").value, $("cmpC").value].filter(Boolean);
+    const ws = sel.map(n=>WBYNAME[n]);
+    const ROW_GROUPS = [
+      ["Core Stats", [
+        ["Class", w=>w.cls, null],
+        ["Damage", w=>w.dmg, "high"],
+        ["RPM", w=>w.rpm, "high"],
+        ["Velocity", w=>w.vel, "high", v=>v+" m/s"],
+        ["DPS", w=>w.dps, "high"],
+        ["Magazine", w=>w.mag, "high"],
+      ]],
+      ["Recoil & Handling", [
+        ["V.Recoil", w=>w.vRecoil, "low"],
+        ["Crouch Recoil", w=> w.crouchMod!=null?`${w.crouchMod} (${w.crouchPct}%)`:null, null],
+        ["Horizontal Bias", w=> w.hBiasDir?`${w.hBiasDir} ${w.hBiasVal}`:null, null],
+        ["Vertical Speed", w=>w.vertSpeed, "low"],
+        ["Horizontal Speed", w=>w.horizSpeed, "low"],
+        ["Minimum Horizontal %", w=> w.minH!=null?w.minH+'%':null, null],
+      ]],
+      ["Vs. Head / Helmet", [
+        ["Head dmg", w=> HELM[norm(w.name)]?HELM[norm(w.name)].dmg:null, "high"],
+        ["Helm L3→L2", w=> HELM[norm(w.name)]?HELM[norm(w.name)].l3:"—", null],
+        ["Helm L2→L1", w=> HELM[norm(w.name)]?HELM[norm(w.name)].l2:"—", null],
+      ]],
+      ["Vs. Chest / Vest", [
+        ["Chest dmg", w=> VEST[norm(w.name)]?VEST[norm(w.name)].dmg:null, "high"],
+        ["Vest L3→L2", w=> VEST[norm(w.name)]?VEST[norm(w.name)].l3:"—", null],
+        ["Vest L2→L1", w=> VEST[norm(w.name)]?VEST[norm(w.name)].l2:"—", null],
+      ]],
+      ["Verdict", [
+        ["Notable", w=>{
+          const {strengths, weaknesses} = getStrengthsWeaknesses(w);
+          const s = strengths.length ? "+ "+strengths.join("; ") : "";
+          const wk = weaknesses.length ? "− "+weaknesses.join("; ") : "";
+          return [s,wk].filter(Boolean).join("<br>");
+        }, null],
+      ]],
+    ];
+    const renderRow = ([label,fn,better,fmt])=>{
+      const wrap = label==="Notable";
+      const style = wrap ? ' style="white-space:normal;max-width:240px;font-size:11.5px;line-height:1.6"' : '';
+      const vals = ws.map(fn);
+      let winnerIdx = -1;
+      if(better && ws.length>1){
+        const nums = vals.map(v=> typeof v==='number' ? v : null);
+        if(nums.every(v=>v!==null)){
+          const best = better==="high" ? Math.max(...nums) : Math.min(...nums);
+          if(new Set(nums).size>1) winnerIdx = nums.indexOf(best);
+        }
+      }
+      return `<tr><td>${label}</td>${ws.map((w,i)=>{
+        const raw = vals[i];
+        const display = raw===null||raw===undefined ? "—" : (fmt ? fmt(raw) : raw);
+        const win = i===winnerIdx ? ' class="thresh-always"' : '';
+        return `<td${win}${style}>${display}</td>`;
+      }).join("")}</tr>`;
+    };
+    $("cmpTable").innerHTML =
+      `<tr><th></th>${ws.map(w=>`<th>${w.name}</th>`).join("")}</tr>` +
+      ROW_GROUPS.map(([label,groupRows])=>
+        `<tr class="grouplabel"><td colspan="${ws.length+1}">${label}</td></tr>` + groupRows.map(renderRow).join("")
+      ).join("");
+  }
+  ["cmpA","cmpB","cmpC"].forEach(id=>$(id).onchange = render);
+  render();
+})();
+
+// Expose only what other scripts on this page actually need — everything else above
+// (RECOIL_RAW, ALIAS, VEST_RAW, HELM_RAW, HELM, VEST, norm, buildIndex, parseThreshold, panelsEl,
+// getStrengthsWeaknesses, openWeaponDetail, closeModal) stays private to this script.
+PT.WEAPONS = WEAPONS;
+PT.WBYNAME = WBYNAME;
+})();
+ 
+</script>
+ 
+<script>
+// ---- Sensitivity Calculator logic ----
+(function(){
+ 
+const TABS = [
+  {id:'vert', label:'Vertical Mult.'},
+  {id:'scope', label:'Scope Match'},
+  {id:'res', label:'Resolution'},
+];
+const tabsEl = document.getElementById('tabs');
+TABS.forEach((t,i)=>{
+  const b = document.createElement('div');
+  b.className = 'tab'+(i===0?' active':'');
+  b.textContent = t.label;
+  b.onclick = ()=>switchTab(t.id);
+  b.dataset.tab = t.id;
+  tabsEl.appendChild(b);
+});
+function switchTab(id){
+  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active', b.dataset.tab===id));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active', p.dataset.panel===id));
+}
+switchTab('vert');
+ 
+const $ = id => document.getElementById(id);
+const fmt = (n, d=3) => isFinite(n) ? (Math.round(n*Math.pow(10,d))/Math.pow(10,d)).toString() : '–';
+ 
+/* ---------- 01 Vertical Multiplier ---------- */
+function calcVert(){
+  const cur = parseFloat($('v_cur_ads').value);
+  const vm = parseFloat($('v_cur_vm').value);
+  const tgt = parseFloat($('v_tgt_ads').value);
+  if(!isFinite(cur)||!isFinite(vm)||!isFinite(tgt)) return;
+  const diff = tgt - cur;
+  const ratio = Math.pow(10, diff/50);
+  const tvm = vm / ratio;
+  $('v_diff').textContent = (diff>=0?'+':'')+diff;
+  $('v_ratio').textContent = fmt(ratio,4)+'×';
+  $('v_tvm').textContent = fmt(tvm,4);
+  $('v_round').textContent = fmt(Math.round(tvm),0);
+  $('v_floor').textContent = fmt(Math.floor(tvm),0);
+  let advice = '';
+  if(diff>0) advice = `Raising ADS sensitivity by ${diff} speeds up horizontal rotation, so vertical multiplier is scaled down to roughly hold your original recoil-control feel. Test AR and vehicle sprays after applying.`;
+  else if(diff<0) advice = `Lowering ADS sensitivity by ${Math.abs(diff)} slows horizontal rotation, so vertical multiplier is scaled up to roughly hold your original recoil-control feel. Test AR sprays after applying.`;
+  else advice = `No change in ADS sensitivity — vertical multiplier stays the same.`;
+  if(cur<0||cur>20||tgt<0||tgt>20){
+    advice += ` <b style="color:var(--rust);">Warning: ADS sensitivity in PUBG only goes from 0 to 20 — one of your values is outside that range.</b>`;
+  }
+  if(vm<50||vm>150){
+    advice += ` <b style="color:var(--rust);">Warning: vertical multiplier in PUBG only goes from 50 to 150 — check your input.</b>`;
+  }
+  $('v_advice').innerHTML = advice;
+}
+['v_cur_ads','v_cur_vm','v_tgt_ads'].forEach(id=>$(id).addEventListener('input', calcVert));
+ 
+/* ---------- 05 pixel-speed scope matcher ---------- */
+const SCOPE_CONST = {
+  '1x':  {A:64, B:2,   range:[0.1,19.1]},
+  '2x':  {A:54, B:0.6, range:[0.9,15.1]},
+  '3x':  {A:70, B:0.6, range:[1.4,19.8]},
+  '4x':  {A:50, B:0.6, range:[0.8,14]},
+  '6x':  {A:35, B:0.6, range:[0.4,9.6]},
+  '8x':  {A:35, B:0.6, range:[0.4,9.6]},
+  '15x': {A:53, B:0.2, range:[1.3,14.7]},
+};
+function pixelSpeed(C, A, B){
+  return (3840*(C+B)) / ((A/60)*(10+B));
+}
+function matchedSens(speed, A, B){
+  return ((A/60)*(10+B)*speed)/3840 - B;
+}
+function calcScope(){
+  const refKey = $('px_scope').value;
+  const C = parseFloat($('px_sens').value);
+  const ref = SCOPE_CONST[refKey];
+  if(!isFinite(C)||!ref) return;
+  const speed = pixelSpeed(C, ref.A, ref.B);
+  $('px_speed').textContent = fmt(speed,0);
+ 
+  const tbody = document.querySelector('#px_table tbody');
+  tbody.innerHTML = '';
+  Object.keys(SCOPE_CONST).forEach(key=>{
+    const sc = SCOPE_CONST[key];
+    const sens = matchedSens(speed, sc.A, sc.B);
+    const inRange = sens >= sc.range[0] && sens <= sc.range[1];
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${key}${key===refKey?' <span class="badge">ref</span>':''}</td>
+      <td>${sc.A}</td><td>${sc.B}</td>
+      <td style="color:${key===refKey?'#e8a33d':'#e9e7dc'};font-weight:${key===refKey?'700':'400'};">${fmt(sens,2)}</td>
+      <td style="color:${inRange?'#8fae5c':'#c8593d'};">${inRange?'Yes':'Out of range'}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+['px_scope','px_sens'].forEach(id=>$(id).addEventListener('input', calcScope));
+$('px_scope').addEventListener('change', calcScope);
+ 
+/* ---------- 03 resolution converter ---------- */
+const CONV = {
+  '169to1610': {sensDelta:0, vmOp:'mul', vmFactor:1.11},
+  '1610to169': {sensDelta:0, vmOp:'div', vmFactor:1.11},
+  '169to219':  {sensDelta:0, vmOp:'mul', vmFactor:0.85},
+  '219to169':  {sensDelta:0, vmOp:'div', vmFactor:0.85},
+  '169to43':   {sensDelta:3, vmOp:'mul', vmFactor:1.166},
+  '43to169':   {sensDelta:-3, vmOp:'div', vmFactor:1.166},
+};
+function calcRes(){
+  const sens = parseFloat($('r_sens').value);
+  const vm = parseFloat($('r_vm').value);
+  const c = CONV[$('r_conv').value];
+  if(!isFinite(sens)||!isFinite(vm)||!c) return;
+  const newSens = sens + c.sensDelta;
+  const newVm = c.vmOp==='mul' ? vm*c.vmFactor : vm/c.vmFactor;
+  $('r_sensout').textContent = (c.sensDelta===0? 'No change' : (newSens+ ' (' + (c.sensDelta>0?'+':'') + c.sensDelta + ')'));
+  $('r_vmout').textContent = fmt(newVm,4);
+}
+['r_sens','r_vm','r_conv'].forEach(id=>$(id).addEventListener('input', calcRes));
+$('r_conv').addEventListener('change', calcRes);
+ 
+/* init all */
+calcVert(); calcScope(); calcRes();
+ 
+})();
+</script>
+
+<script>
+// ==================================================================
+// EXTENSION PANELS: Range, TTK, Recoil Analyzer, Attachments, Backpack, Data
+// ==================================================================
+(function(){
+// Only PT.WEAPONS and PT.WBYNAME (exposed by the Combat & Armor Intelligence script above) are used
+// here — everything else in this script is self-contained.
+// ==================================================================
+
+/* ---------------- shared damage model ---------------- */
+// Per-class hit-area × class-multiplier system, reverse-engineered from pubgstatistics.com's published
+// "Damage multipliers" tables and cross-checked exactly (every body part, to the decimal) against the
+// AKM, M416, M16A4, Vector, UMP, M249, RPD, VSS, and M24 weapon pages on 2026-09-10.
+// Full 13-body-part table — Pelvis is its own class-multiplier bucket, distinct from the other torso
+// parts, since LMG's pelvis multiplier (100%) differs from its chest/clavicle/stomach multiplier (105%).
+// "armored" marks whether the selected armor level applies: helmets cover head/neck, vests cover
+// clavicle/chest/upper+lower stomach/pelvis, nothing covers the arms or legs.
+const BODY_PARTS = {
+  head:         {label:"Head",          hitArea:1.00, bucket:"head",  armored:true},
+  neck:         {label:"Neck",          hitArea:0.75, bucket:"head",  armored:true},
+  clavicle:     {label:"Clavicle",      hitArea:1.00, bucket:"torso", armored:true},
+  chest:        {label:"Chest",         hitArea:1.10, bucket:"torso", armored:true},
+  upperStomach: {label:"Upper stomach", hitArea:1.00, bucket:"torso", armored:true},
+  lowerStomach: {label:"Lower stomach", hitArea:0.95, bucket:"torso", armored:true},
+  pelvis:       {label:"Pelvis",        hitArea:1.00, bucket:"pelvis",armored:true},
+  upperArm:     {label:"Upper arm",     hitArea:0.60, bucket:"limb",  armored:false},
+  forearm:      {label:"Forearm",       hitArea:0.50, bucket:"limb",  armored:false},
+  hand:         {label:"Hand",          hitArea:0.30, bucket:"limb",  armored:false},
+  thigh:        {label:"Thigh",         hitArea:0.60, bucket:"limb",  armored:false},
+  calf:         {label:"Calf",          hitArea:0.50, bucket:"limb",  armored:false},
+  foot:         {label:"Foot",          hitArea:0.30, bucket:"limb",  armored:false},
+  limb:         {label:"Limbs (avg.)",  hitArea:0.60, bucket:"limb",  armored:false}, // simple-mode alias = upper arm/thigh figure
+};
+const SIMPLE_PARTS = ["head","chest","limb"];
+const DETAILED_PARTS = ["head","neck","clavicle","chest","upperStomach","lowerStomach","pelvis","upperArm","forearm","hand","thigh","calf","foot"];
+const CLASS_MULT_DETAILED = {
+  AR:     {head:2.35, torso:1.00, pelvis:1.00, limb:0.90},
+  DMR:    {head:2.35, torso:1.05, pelvis:1.05, limb:0.95},
+  SR:     {head:2.50, torso:1.30, pelvis:1.30, limb:0.95},
+  MG:     {head:2.30, torso:1.05, pelvis:1.00, limb:0.90}, // "LMG" on the site; MG is this toolkit's existing class label
+  SMG:    {head:2.10, torso:1.05, pelvis:1.05, limb:1.30},
+  Pistol: {head:2.10, torso:1.00, pelvis:1.00, limb:1.05}, // site's "Handgun" class
+  SG:     {head:1.50, torso:0.90, pelvis:0.90, limb:1.05}, // site's "Shotgun" class — shotguns' pellet mechanic isn't modeled here regardless
+};
+// Per-weapon head-multiplier overrides. pubgstatistics.com's Dragunov page lists a 2.80 head multiplier
+// (53 base -> 148.4 unarmoured headshot at 0m) instead of the 2.35 DMR class value; its Mk12 and Mk14 pages
+// show the normal 2.35. Only weapons whose page was checked are listed — other weapons' multiplier columns
+// have not been individually re-verified. Applies to head and neck (both use the head bucket).
+const WEAPON_HEAD_MULT = {"SVD Dragunov":2.80};
+// Real per-weapon falloff tables [distance_m, baseDamage], sourced directly from each weapon's
+// pubgstatistics.com page (fetched 2026-09-10, patch 42.3 data unless the page said otherwise). Every
+// other weapon still uses the generic linear approximation below, clearly labeled in the UI.
+const FALLOFF_TABLES = {
+  "AWM":  [[0,105.0],[100,105.0],[150,104.9],[200,104.2],[250,103.1],[300,101.9],[400,99.4],[500,97.0]],
+  "AKM":  [[0,48.0],[25,48.0],[50,48.0],[100,45.5],[150,42.4],[200,39.3],[250,37.0],[300,36.0],[400,36.0],[500,36.0]],
+  "M416": [[0,40.0],[25,40.0],[50,40.0],[100,39.0],[150,37.5],[200,35.8],[250,34.1],[300,32.5],[400,30.3],[450,30.0]],
+  "M16A4":[[0,43.0],[25,43.0],[50,43.0],[100,42.8],[150,41.6],[200,39.9],[250,37.8],[300,35.8],[400,32.7],[500,32.3]],
+  "Vector":[[0,31.0],[25,28.1],[50,24.5],[100,20.4],[150,18.9],[200,18.6],[250,18.6],[275,18.6]],
+  "UMP9": [[0,42.0],[25,41.5],[50,39.8],[100,34.5],[150,30.8],[200,29.5],[250,29.4]],
+  "M249": [[0,41.0],[25,41.0],[50,41.0],[100,40.4],[150,39.0],[200,37.3],[250,35.7],[300,34.3],[400,32.8],[500,32.8]],
+  "RPD":  [[0,43.0],[25,43.0],[50,42.9],[100,41.8],[150,40.6],[200,39.3],[250,38.1],[300,36.9],[400,34.6],[500,34.4]],
+  "VSS Vintorez":[[0,45.0],[25,45.0],[50,45.0],[100,44.1],[150,42.7],[200,41.3],[250,40.5],[300,40.5],[400,40.5],[500,40.5]],
+  "M24":  [[0,75.0],[25,75.0],[50,75.0],[100,75.0],[150,74.8],[200,74.4],[250,74.0],[300,73.6],[400,72.8],[500,72.0]],
+  "O12":  [[2,98.7],[25,92.2],[50,88.8]],
+  "Kar98k":[[0,79.0],[25,79.0],[50,79.0],[100,79.0],[150,78.5],[200,78.0],[250,77.5],[300,77.0],[400,76.0],[500,75.1]],
+  "R1895":[[0,64.0],[25,63.4],[50,62.9],[100,61.8]],
+  "Desert Eagle":[[0,62.0],[25,62.0],[45,60.1]],
+  "MK47 Mutant":[[0,49.0],[25,49.0],[50,49.0],[100,48.2],[150,45.8],[200,43.2],[250,40.8],[300,38.7],[400,36.8],[450,36.8]],
+  "Groza":[[0,47.0],[25,47.0],[50,47.0],[100,46.5],[150,45.0],[200,43.2]],
+  "SLR":  [[0,49.0],[25,49.0],[50,49.0],[100,49.0],[150,47.9],[200,46.4],[250,44.9],[300,43.4],[400,40.5],[500,38.2]],
+  "SKS":  [[0,47.0],[25,47.0],[50,47.0],[100,46.9],[150,45.7],[200,44.3],[250,43.0],[300,41.7],[400,39.0],[500,37.6]],
+  "Beryl M762":[[0,44.0],[25,44.0],[50,44.0],[100,41.7],[150,38.9],[200,36.0],[250,33.9],[300,33.0],[350,33.0]],
+  "ACE 32":[[0,43.0],[25,43.0],[50,43.0],[100,40.8],[150,38.0],[200,35.2],[250,33.2],[300,32.3],[350,32.3]],
+  "SCAR-L":[[0,42.0],[25,42.0],[50,42.0],[100,41.3],[150,40.0],[200,38.4],[250,36.7],[300,35.3],[350,33.8]],
+  "QBZ95":[[0,42.0],[25,42.0],[50,42.0],[100,40.4],[150,38.5],[200,36.8],[250,35.4],[300,34.0],[400,32.1]],
+  "Mini 14":[[0,42.0],[25,42.0],[50,42.0],[100,41.7],[150,40.3],[200,38.9],[250,37.5],[300,36.0],[400,33.2],[500,33.2]],
+  "MG3":  [[0,42.0],[25,42.0],[50,42.0],[100,40.8],[150,39.6],[200,38.4],[250,37.2],[300,36.1],[400,33.9]],
+  "K2":   [[0,41.0],[25,41.0],[50,41.0],[100,40.3],[150,38.8],[200,37.3],[250,35.3],[275,34.3]],
+  "G36C": [[0,41.0],[25,41.0],[50,41.0],[100,40.3],[150,38.9],[200,37.3],[250,35.6]],
+  "AUG A3":[[0,40.0],[25,40.0],[50,40.0],[100,39.1],[150,37.6],[200,35.9],[250,34.2],[300,32.6],[400,30.4]],
+  "FAMAS":[[0,39.0],[25,39.0],[50,39.0],[100,38.8],[150,37.6],[200,36.1],[225,35.5]],
+  "Tommy Gun":[[0,40.0],[25,39.3],[50,37.7],[100,33.4],[150,29.8],[160,29.2]],
+  "JS9":  [[0,32.0],[25,31.9],[50,31.4],[100,27.4],[150,22.1],[200,19.7],[250,19.4],[275,19.2]],
+  "MP5K": [[0,32.0],[25,31.4],[50,29.5],[100,24.9],[150,21.0],[200,19.2],[250,19.2],[275,19.2]],
+  "P90":  [[0,35.0],[25,35.0],[50,35.0],[100,33.3],[150,31.6],[200,29.9]],
+  "MP9":  [[0,31.0],[25,28.6],[50,25.3],[100,21.1],[120,20.2]],
+  "Micro Uzi":[[0,26.0],[25,23.9],[50,21.2],[100,17.6],[120,16.9]],
+  // Added 2026-10-22 from each weapon's pubgstatistics.com page (patch 43.1/43.2). Beyond the last point the
+  // site says damage is unknown; interpolateFalloff holds the last value, same as every other table here.
+  "Mk12":[[0,43.0],[25,43.0],[50,42.9],[100,41.7],[150,40.4],[200,39.2],[250,37.9],[300,36.6],[400,34.1],[500,34.0]],
+  "MK14 EBR":[[0,54.0],[25,54.0],[50,54.0],[100,54.0],[150,53.5],[200,52.3],[250,50.9],[300,49.5],[400,47.0],[500,45.9]],
+  "SVD Dragunov":[[0,53.0],[25,53.0],[50,53.0],[100,51.9],[150,49.8],[200,47.8],[250,45.8],[300,43.8],[400,39.8],[500,39.8]],
+  "Lynx AMR":[[2,118.0],[25,118.0],[50,118.0],[100,118.0],[150,117.9],[200,117.1],[250,115.8],[300,114.5],[350,113.1]],
+  "G18C":[[0,23.0],[25,21.6],[50,20.4],[60,20.1]],
+  "P92":[[0,34.0],[25,33.0],[50,32.0],[90,30.4]],
+  "Skorpion":[[0,22.0],[25,22.0],[50,21.0],[90,18.4]],
+};
+function interpolateFalloff(rows, range){
+  if(range<=rows[0][0]) return rows[0][1];
+  for(let i=0;i<rows.length-1;i++){
+    const [r0,b0] = rows[i], [r1,b1] = rows[i+1];
+    if(range<=r1){ const t = r1===r0?0:(range-r0)/(r1-r0); return b0+(b1-b0)*t; }
+  }
+  return rows[rows.length-1][1];
+}
+// Bullet drop, sourced from winnermeta.win (real match telemetry, fetched 2026-09-13). WinnerMeta only
+// publishes drop at 200m/400m/600m checkpoints (plus muzzle=0), not a full per-meter curve — this
+// toolkit interpolates between those checkpoints the same way it does for the falloff tables, and holds
+// the last known value flat beyond the final checkpoint (flagged in the UI). Their own site notes this
+// data is in beta and drawn from a rolling 14-day sample, not a fixed-patch official figure.
+const DROP_TABLES = {
+  "AUG A3": [[0,0],[200,35.2],[400,177.6]],
+  "AKM":    [[0,0],[200,66.0],[400,341.6]],
+  "M416":   [[0,0],[200,36.0],[400,187.7]],
+  "AWM":    [[0,0],[200,27.1],[400,123.0],[600,290.1]],
+  "Kar98k": [[0,0],[200,44.1],[400,172.3],[600,404.0]],
+  "Vector": [[0,0],[200,198.2],[400,1595.5]],
+  "M24":    [[0,0],[200,40.4],[400,168.8],[600,429.3]],
+  "Beryl M762":[[0,0],[200,55.0],[400,291.7]],
+  "SCAR-L": [[0,0],[200,36.8],[400,197.6]],
+  "M249":   [[0,0],[200,35.2],[400,172.9],[600,504.8]],
+  "UMP9":   [[0,0],[200,218.0],[400,961.8]],
+  "Groza":  [[0,0],[200,55.0]],
+  "Mini 14":[[0,0],[200,27.8],[400,145.0],[600,446.0]],
+  "SKS":    [[0,0],[200,44.4],[400,198.2],[600,563.6]],
+  "K2":     [[0,0],[200,43.8]],
+  "QBZ95":  [[0,0],[200,34.9],[400,176.7]],
+  // Added 2026-10-22 from winnermeta.win weapon pages (14-day rolling windows, Jul-Sep 2026 snapshots).
+  "MG3":    [[0,0],[200,44.1],[400,179.9]],
+  "Mk12":   [[0,0],[200,35.2],[400,178.2],[600,561.0]],
+  "VSS Vintorez":[[0,0],[200,139.7],[400,525.9],[600,1231.0]],
+  "MP9":    [[0,0],[200,197.6]],
+  "G36C":   [[0,0],[200,35.6]],
+};
+// WinnerMeta's own independently-measured muzzle velocity, for comparison against this toolkit's supplied
+// value — shown as a secondary reference, not used to override the supplied WEAPONS velocity anywhere.
+const MEASURED_MUZZLE_VEL = {"AUG A3":927, "AKM":762, "M416":921, "AWM":1009, "Kar98k":823, "Vector":389, "M24":860, "Beryl M762":786, "SCAR-L":916, "M249":953, "UMP9":368, "Groza":764, "Mini 14":1057, "SKS":845, "K2":924, "QBZ95":962, "MG3":860, "Mk12":955, "VSS Vintorez":440, "MP9":405, "G36C":927};
+function hasDropData(w){ return DROP_TABLES[w.name] != null; }
+function dropAtRange(w, range){
+  const rows = DROP_TABLES[w.name];
+  if(!rows) return null;
+  if(range<=0) return 0;
+  if(range>rows[rows.length-1][0]) return null; // past the last measured checkpoint: no data, not a flat hold
+  // Gravity drop grows roughly with the square of flight time, so it is interpolated as a power law between
+  // checkpoints (muzzle -> first checkpoint assumed ~quadratic) instead of a straight line, which roughly
+  // doubles the true drop at half the first checkpoint distance (e.g. AWM at 100m: ~6.8cm, not 13.6cm).
+  let r0 = 0, d0 = 0;
+  for(let i=1;i<rows.length;i++){
+    const [r1,d1] = rows[i];
+    if(range<=r1){
+      if(i===1) return d1*Math.pow(range/r1, 2);
+      return d0*Math.pow(range/r0, Math.log(d1/d0)/Math.log(r1/r0));
+    }
+    r0 = r1; d0 = d1;
+  }
+  return null;
+}
+const GENERIC_FALLOFF_FACTOR = 0.18; // approximate fallback, only used for weapons with no table above
+function hasExactFalloff(w){ return FALLOFF_TABLES[w.name] != null; }
+// Shotguns fire multiple pellets per trigger pull; the WEAPONS array's dmg field for these four is a
+// single pellet's damage (matches pubgstatistics.com's per-pellet figure), not the shot's total output.
+// Counts/per-pellet damage sourced from pubgstatistics.com's "X-Y base damage (one pellet up to the full
+// pattern)" wording, fetched 2026-09-10: DBS 28-252, S686 26-234, S12K 23-207, Sawn-off 21-168.
+// Sawn-off is 8 pellets (168/21), not 9 — a document handed to this toolkit claimed 9, but the math on
+// its own source doesn't support that, so this uses 8. O12 fires a slug, not pellets, so it's excluded
+// and keeps using its existing single dmg value.
+const SHOTGUN_PELLETS = {
+  "DBS":{count:9, dmgPerPellet:28},
+  "S686":{count:9, dmgPerPellet:26},
+  "S12K":{count:9, dmgPerPellet:23},
+  "Sawn-off":{count:8, dmgPerPellet:21},
+};
+// Per-PELLET damage falloff [distance_m, damagePerPellet] from each shotgun's pubgstatistics.com page
+// (patch 43.1/43.2, fetched 2026-10-22; "Shotgun values are per pellet"). Measured range only: DBS to 70m,
+// S686 to 80m, S12K to 70m, Sawn-off to 50m — the site states damage past that is unknown. Per-pellet damage
+// really does fall hard with range (S12K 23.0 -> 9.8 by 25m), which the earlier model ignored: it applied
+// only a spread-based hit fraction to flat full-pattern damage.
+const PELLET_FALLOFF = {
+  "DBS":     [[0,28.0],[5,27.9],[10,26.4],[15,24.4],[20,22.3],[25,20.3],[30,18.5],[35,16.9],[40,16.2],[45,15.7],[50,15.0],[55,14.4],[60,13.8],[65,13.4],[70,13.0]],
+  "S686":    [[0,26.0],[5,26.0],[10,23.3],[15,19.3],[20,17.8],[25,16.4],[30,15.2],[35,14.2],[40,13.2],[45,12.3],[50,11.5],[55,10.7],[60,9.8],[65,9.1],[70,8.4],[75,7.7],[80,6.9]],
+  "S12K":    [[0,23.0],[5,21.7],[10,18.6],[15,15.1],[20,11.7],[25,9.8],[30,8.4],[35,7.8],[40,7.4],[45,7.1],[50,6.8],[55,6.4],[60,6.0],[65,5.7],[70,5.4]],
+  "Sawn-off":[[0,21.0],[2,21.0],[4,20.9],[6,20.4],[8,19.3],[10,17.9],[12,16.6],[14,15.0],[16,13.6],[18,12.3],[20,11.5],[22,11.2],[24,10.9],[26,10.7],[28,10.4],[30,10.2],[32,10.0],[34,9.7],[36,9.5],[38,9.3],[40,9.0],[42,8.8],[44,8.5],[46,8.3],[48,8.2],[50,8.0]],
+};
+function shotgunFullPatternDamage(w){ const p = SHOTGUN_PELLETS[w.name]; return p ? p.count*p.dmgPerPellet : null; }
+// LEGACY / UNVERIFIED FOR THE CURRENT BUILD: these cone angles come from pubgmap.io's shotgun page, which
+// reports game version 5.0.1.38 (2018). pubgstatistics.com's patch history records buckshot-spread changes
+// since (S12K +5% Feb 2025; S686 +14% Feb 2024 then -12% Feb 2025; Sawn-off none recorded; earlier changes
+// before mid-2022 aren't recorded there at all), and pubgstatistics.com itself says it hasn't modelled spread
+// yet. The unit (full vs half angle) and what the ADS multiplier scales are also not confirmed.
+// Original description: datamined pellet-spread cone angles from pubgmap.io: "Base" is the
+// full hip-fire spread cone in degrees, "adsMod" is the multiplier applied when aiming down sights. Only
+// 3 of this toolkit's 4 pellet shotguns are covered — DBS and O12 aren't listed on pubgmap.io's shotgun
+// page, so they're left out rather than guessed. Spread diameter at a given range is computed as
+// 2 × range × tan(angle/2), standard cone geometry — not PUBG-specific math, just trigonometry applied to
+// a real sourced angle.
+const PELLET_SPREAD = {
+  "Sawn-off":{baseDeg:3.50, adsMod:0.05},
+  "S12K":    {baseDeg:6.00, adsMod:0.03},
+  "S686":    {baseDeg:5.00, adsMod:0.08},
+};
+function spreadDiameterAt(w, range){
+  const p = PELLET_SPREAD[w.name];
+  if(!p) return null;
+  const rad = deg => deg*Math.PI/180;
+  return {
+    hip: 2*range*Math.tan(rad(p.baseDeg/2)),
+    ads: 2*range*Math.tan(rad(p.baseDeg*p.adsMod/2)),
+  };
+}
+// Assumed target width for pellet-hit-fraction modeling — a rough human chest width. This is a modeling
+// choice, not a sourced game value (unlike the spread angles themselves), and is labeled as such in the UI.
+const TARGET_WIDTH_M = 0.5;
+function pelletHitFraction(w, range, stance){
+  const sd = spreadDiameterAt(w, range);
+  if(!sd || range<=0) return 1; // no real spread data (e.g. DBS) — can't compute a fraction, caller handles this
+  const diam = stance==="ads" ? sd.ads : sd.hip;
+  if(diam<=TARGET_WIDTH_M) return 1;
+  return Math.min(1, (TARGET_WIDTH_M/diam)**2); // area-ratio: fraction of a uniformly-spread pattern landing on a smaller target
+}
+function baseDamageAtRange(w, range, stance){
+  if(hasExactFalloff(w)) return interpolateFalloff(FALLOFF_TABLES[w.name], range);
+  const full = shotgunFullPatternDamage(w);
+  if(full != null){
+    // Pellet shotguns: the dominant real-world effect at range is spread causing pellets to MISS the
+    // target, not per-pellet damage decay — so a generic bullet-style "18% loss by 500m" formula is the
+    // wrong model here and was producing physically absurd numbers (e.g. S12K still doing 75+ damage at
+    // 500m). For the 3 shotguns with real datamined spread-cone data, damage is scaled by the fraction of
+    // the pattern that would actually land on a human-width target at this range, using either the
+    // hip-fire or aimed (ADS) spread cone depending on the stance toggle. Per-pellet damage ALSO falls with
+    // range (PELLET_FALLOFF, sourced), so the full-pattern figure is pellet count x per-pellet falloff, not a
+    // flat number. For DBS (no spread data) the result is the all-pellets-connect upper bound, flagged in the UI.
+    const pattern = SHOTGUN_PELLETS[w.name].count * interpolateFalloff(PELLET_FALLOFF[w.name], range);
+    if(PELLET_SPREAD[w.name]) return pattern * pelletHitFraction(w, range, stance);
+    return pattern;
+  }
+  const start = w.dmg;
+  return start * (1 - GENERIC_FALLOFF_FACTOR * (range/500));
+}
+function armorMultFor(part, level){
+  if(!part.armored) return 1.00;
+  return {0:1.00,1:0.70,2:0.60,3:0.45}[level] ?? 1.00;
+}
+function finalDamageAt(w, range, hitbox, armorLevel, stance){
+  const base = baseDamageAtRange(w, range, stance);
+  const part = BODY_PARTS[hitbox] || BODY_PARTS.chest;
+  const cm = CLASS_MULT_DETAILED[w.cls] || CLASS_MULT_DETAILED.AR;
+  const classMult = (part.bucket==="head" && WEAPON_HEAD_MULT[w.name]) || cm[part.bucket];
+  const beforeArmor = base * part.hitArea * classMult;
+  return beforeArmor * armorMultFor(part, armorLevel);
+}
+function htkFor(dmg){ return dmg>0 ? Math.ceil(100/dmg) : Infinity; }
+function pureTtk(htk, rpm){ return htk>1 ? (htk-1)/(rpm/60) : 0; }
+
+// LMGs whose recoil/reload were patched in Update 42.3 (max horizontal recoil -30%, reload time ~-25%) —
+// per pubg.com/en/news/10885, applies to the LMG class as a whole, not just RPD.
+const LMG_PATCH_42_3 = new Set(["M249","MG3","RPD"]);
+function debounce(fn, ms){
+  let t;
+  return (...args)=>{ clearTimeout(t); t = setTimeout(()=>fn(...args), ms); };
+}
+function setBar(id, value, max){
+  const bar = document.getElementById(id+"_bar");
+  if(!bar) return;
+  const pct = max>0 ? Math.min(100, Math.max(0, (value/max)*100)) : 0;
+  bar.style.width = (isFinite(pct)?pct:0)+"%";
+}
+function fillWeaponSelect(sel, def){
+  sel.innerHTML = PT.WEAPONS.map(w=>`<option ${w.name===def?'selected':''}>${w.name}</option>`).join("");
+}
+function fillHitboxSelect(sel, detailed, keepValue){
+  const ids = detailed ? DETAILED_PARTS : SIMPLE_PARTS;
+  const prev = keepValue || sel.value;
+  sel.innerHTML = ids.map(id=>`<option value="${id}">${BODY_PARTS[id].label}</option>`).join("");
+  sel.value = ids.includes(prev) ? prev : (detailed ? "chest" : "chest");
+}
+function drawLineChart(canvas, series, opts={}){
+  const ctx = canvas.getContext("2d");
+  const W = canvas.width, H = canvas.height, pad = 36;
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle = "#0f161d"; ctx.fillRect(0,0,W,H);
+  const allY = series.flatMap(s=>s.data.map(p=>p.y));
+  const minY = Math.min(0,...allY), maxY = Math.max(...allY,1);
+  const minX = Math.min(...series[0].data.map(p=>p.x)), maxX = Math.max(...series[0].data.map(p=>p.x));
+  const xAt = x => pad + (W-2*pad) * ((x-minX)/(maxX-minX||1));
+  const yAt = y => H-pad - (H-2*pad) * ((y-minY)/(maxY-minY||1));
+  ctx.strokeStyle = "#223140"; ctx.lineWidth = 1;
+  for(let i=0;i<=4;i++){
+    const gy = pad + (H-2*pad)*i/4;
+    ctx.beginPath(); ctx.moveTo(pad,gy); ctx.lineTo(W-pad,gy); ctx.stroke();
+  }
+  series.forEach(s=>{
+    ctx.strokeStyle = s.color; ctx.lineWidth = 2; ctx.beginPath();
+    s.data.forEach((p,i)=>{ const x=xAt(p.x), y=yAt(p.y); i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); });
+    ctx.stroke();
+  });
+  ctx.fillStyle = "#71899b"; ctx.font = "10px ui-monospace,monospace";
+  ctx.fillText(String(Math.round(minX)), pad, H-14);
+  ctx.fillText(String(Math.round(maxX)), W-pad-24, H-14);
+  let lx = pad;
+  series.forEach(s=>{
+    ctx.fillStyle = s.color; ctx.fillRect(lx, 10, 8, 8);
+    ctx.fillStyle = "#eef4f8"; ctx.fillText(s.label, lx+12, 18);
+    lx += ctx.measureText(s.label).width + 34;
+  });
+}
+
+/* ================= 1. EFFECTIVE RANGE & DAMAGE ================= */
+(function(){
+  const $ = id => document.getElementById(id);
+  fillWeaponSelect($("rg_weapon"), "AKM");
+  function currentWeapon(){ return PT.WBYNAME[$("rg_weapon").value]; }
+  function currentStance(){ return $("rg_stance").value; }
+  function updateStanceVisibility(w){
+    $("rg_stanceField").style.display = PELLET_SPREAD[w.name] ? "" : "none";
+  }
+  function updateDrop(w, range){
+    const drop = dropAtRange(w, range);
+    if(!hasDropData(w)){
+      $("rg_drop").textContent = "–";
+      $("rg_holdover").textContent = "–";
+      $("rg_muzzlecmp").textContent = "–";
+      $("rg_dropNote").innerHTML = `<b>No drop data:</b> ${w.name} isn't one of the ${Object.keys(DROP_TABLES).length} weapons with measured bullet-drop data yet (${Object.keys(DROP_TABLES).join(", ")}).`;
+      return;
+    }
+    if(drop == null){
+      const lastKnown = DROP_TABLES[w.name][DROP_TABLES[w.name].length-1][0];
+      $("rg_drop").textContent = "–";
+      $("rg_holdover").textContent = "–";
+      $("rg_muzzlecmp").textContent = MEASURED_MUZZLE_VEL[w.name]+" m/s";
+      $("rg_dropNote").innerHTML = `<b>No data past ${lastKnown}m:</b> ${w.name}'s measured drop only goes to ${lastKnown}m, so nothing is shown beyond it rather than holding the last value flat (which would badly understate drop). Source: winnermeta.win real-match telemetry (beta).`;
+      return;
+    }
+    const holdover = range>0 ? (drop/100)/range*1000 : 0; // mrad, derived from the drop figure itself
+    $("rg_drop").textContent = drop.toFixed(1);
+    $("rg_holdover").textContent = holdover.toFixed(2);
+    $("rg_muzzlecmp").textContent = MEASURED_MUZZLE_VEL[w.name]+" m/s";
+    const rows = DROP_TABLES[w.name];
+    const lastKnown = rows[rows.length-1][0];
+    $("rg_dropNote").innerHTML = `Sourced from winnermeta.win real-match telemetry (beta, 14-day rolling sample, checkpoints at ${rows.slice(1).map(r=>r[0]+'m').join('/')}), interpolated between points as a power law. Values are gravity drop estimated from measured flight time (the site's own pages describe this as an estimate, not in-game reticle holdover), and shift a few percent between sampling windows — not official ballistics.`;
+  }
+  function updateApproxNote(w, range, stance){
+    const hasSpread = PELLET_SPREAD[w.name] != null;
+    const isPelletShotgun = shotgunFullPatternDamage(w) != null;
+    let noteHtml;
+    if(hasExactFalloff(w)){
+      noteHtml = `<div class="note"><b>Exact table:</b> ${w.name} uses a real per-distance damage table sourced from pubgstatistics.com (interpolated between the published points).</div>`;
+    } else if(hasSpread){
+      const f = pelletHitFraction(w, range, stance);
+      const stanceLabel = stance==="ads" ? "aimed (ADS)" : "hip-fire";
+      noteHtml = `<div class="note"><b>Spread-based model (${stanceLabel}):</b> ${w.name}'s damage at range is sourced per-pellet damage at this distance (pubgstatistics.com, measured to ${PELLET_FALLOFF[w.name][PELLET_FALLOFF[w.name].length-1][0]}m — held flat beyond that) × pellet count × the fraction of the pattern landing on a ~${TARGET_WIDTH_M}m-wide target (an assumed target width, not a sourced figure). The spread cone is a <b>legacy value</b> from pubgmap.io's game version 5.0.1.38 (2018) and has not been verified against the current build, so treat the connecting fraction as indicative only. At ${range}m ${stanceLabel} that's <b>${(f*100).toFixed(1)}%</b> of the pattern connecting — not a generic bullet-style falloff. Switch the firing-stance dropdown above to compare hip-fire against aimed.</div>`;
+    } else if(isPelletShotgun){
+      noteHtml = `<div class="note"><b>No falloff model:</b> ${w.name} has no spread-cone data (only Sawn-off, S12K, and S686 have even legacy values), so this shows the all-pellets-connect upper bound: sourced per-pellet falloff (pubgstatistics.com, measured to ${PELLET_FALLOFF[w.name][PELLET_FALLOFF[w.name].length-1][0]}m, held flat beyond) × pellet count. Real damage will be lower once the pattern spreads wider than a body — deliberately not guessing how much.</div>`;
+    } else {
+      noteHtml = `<div class="note"><b>Approximate:</b> ${w.name} has no per-range falloff table loaded — this uses a generic linear falloff (≈18% loss by 500 m), documented as approximate. Weapons with an exact table: ${Object.keys(FALLOFF_TABLES).join(", ")}.</div>`;
+    }
+    if(isPelletShotgun){
+      const sd = spreadDiameterAt(w, range);
+      noteHtml += `<div class="note"><b>Pellets:</b> ${w.name} fires ${SHOTGUN_PELLETS[w.name].count} pellets at ${SHOTGUN_PELLETS[w.name].dmgPerPellet} damage each (sourced from pubgstatistics.com).${sd ? ` At ${range}m, the legacy datamined spread cone (pubgmap.io, 2018 build, unverified for today's patch) covers roughly <b>${sd.hip.toFixed(1)}m</b> hip-fire, or <b>${sd.ads.toFixed(2)}m</b> aiming down sights — hip-fire is already wider than a ${TARGET_WIDTH_M}m target by ${sd.hip>TARGET_WIDTH_M ? Math.round(sd.hip/TARGET_WIDTH_M*10)/10+"×" : "well under"} at this range.` : ``}</div>`;
+    }
+    $("rg_approxNote").innerHTML = noteHtml;
+  }
+  function update(){
+    const w = currentWeapon();
+    const range = +$("rg_range").value;
+    const hitbox = $("rg_hitbox").value;
+    const armor = +$("rg_armor").value;
+    const stance = currentStance();
+    updateStanceVisibility(w);
+    $("rg_rangeLabel").textContent = range+" m";
+    const dmg = finalDamageAt(w, range, hitbox, armor, stance);
+    const htk = htkFor(dmg);
+    const ttk = pureTtk(htk, w.rpm);
+    const flight = range / w.vel;
+    $("rg_dmg").textContent = dmg.toFixed(1);
+    $("rg_htk").textContent = isFinite(htk)?htk:"–";
+    $("rg_ttk").textContent = ttk.toFixed(2);
+    $("rg_flight").textContent = flight.toFixed(3);
+    updateDrop(w, range);
+    setBar("rg_dmg", dmg, (shotgunFullPatternDamage(w) ?? w.dmg)*1.3);
+    setBar("rg_htk", htk, 8);
+    setBar("rg_ttk", ttk, 2);
+    updateApproxNote(w, range, stance);
+    updateCharts();
+  }
+  function updateCharts(){
+    const w = currentWeapon();
+    const hitbox = $("rg_hitbox").value;
+    const armor = +$("rg_armor").value;
+    const stance = currentStance();
+    const dmgSeries=[];
+    let brackets=[];
+    for(let r=0;r<=500;r+=5){
+      const d = finalDamageAt(w,r,hitbox,armor,stance);
+      dmgSeries.push({x:r,y:d});
+      const h = htkFor(d), t = pureTtk(h,w.rpm);
+      const last = brackets[brackets.length-1];
+      if(last && last.htk===h){ last.end = r; }
+      else brackets.push({start:r, end:r, htk:h, ttk:t});
+    }
+    // Pellet shotguns have a continuously-declining hit fraction rather than the stepped HTK jumps normal
+    // weapons show, so the "where it changes" bracket scan above produces a near-useless 100-row table.
+    // Fall back to a fixed set of checkpoints instead — still real numbers, just not scanned for every tick.
+    if(brackets.length>12){
+      const checkpoints = [0,10,25,50,75,100,150,200,300,400,500];
+      brackets = checkpoints.map(r=>{
+        const d = finalDamageAt(w,r,hitbox,armor,stance);
+        const h = htkFor(d);
+        return {start:r, end:r, htk:h, ttk:pureTtk(h,w.rpm), checkpoint:true};
+      });
+    }
+    drawLineChart($("rg_chartDmg"), [{label:"Damage", color:"#2ea6ff", data:dmgSeries}]);
+    $("rg_brackets").innerHTML = `<tr><th>Range</th><th>Hits to kill</th><th>TTK (s)</th></tr>` +
+      brackets.map((b,i)=>{
+        const rangeLabel = b.checkpoint ? `${b.start}m` : (i===brackets.length-1 ? `${b.start}m+` : `${b.start}–${b.end}m`);
+        const htkDisplay = isFinite(b.htk) ? (b.htk>50 ? "50+" : b.htk) : "–";
+        return `<tr><td>${rangeLabel}</td><td>${htkDisplay}</td><td>${b.ttk>20 ? "20+" : b.ttk.toFixed(2)}</td></tr>`;
+      }).join("");
+  }
+  const debouncedCharts = debounce(updateCharts, 120);
+  $("rg_range").addEventListener("input", ()=>{
+    const range = +$("rg_range").value;
+    const w = currentWeapon(), hitbox = $("rg_hitbox").value, armor = +$("rg_armor").value, stance = currentStance();
+    $("rg_rangeLabel").textContent = range+" m";
+    const dmg = finalDamageAt(w, range, hitbox, armor, stance);
+    const htk = htkFor(dmg);
+    const ttk = pureTtk(htk, w.rpm);
+    $("rg_dmg").textContent = dmg.toFixed(1);
+    $("rg_htk").textContent = isFinite(htk)?htk:"–";
+    $("rg_ttk").textContent = ttk.toFixed(2);
+    $("rg_flight").textContent = (range/w.vel).toFixed(3);
+    updateDrop(w, range);
+    updateApproxNote(w, range, stance);
+    setBar("rg_dmg", dmg, (shotgunFullPatternDamage(w) ?? w.dmg)*1.3); setBar("rg_htk", htk, 8); setBar("rg_ttk", ttk, 2);
+    debouncedCharts(); // chart redraw (the expensive part) is throttled during slider drag
+  });
+  ["rg_weapon","rg_hitbox","rg_armor"].forEach(id=>{ $(id).addEventListener("input", update); $(id).addEventListener("change", update); });
+  $("rg_stance").addEventListener("change", update);
+  $("rg_detailed").addEventListener("change", ()=>{ fillHitboxSelect($("rg_hitbox"), $("rg_detailed").checked); update(); });
+  update();
+})();
+
+/* ================= 2. TTK CALCULATOR ================= */
+(function(){
+  const $ = id => document.getElementById(id);
+  fillWeaponSelect($("tk_weapon"), "AKM");
+  fillWeaponSelect($("tk_cmpA"), "AKM");
+  fillWeaponSelect($("tk_cmpB"), "UMP9");
+  $("tk_cmpC").innerHTML += PT.WEAPONS.map(w=>`<option>${w.name}</option>`).join("");
+  function reloadSecondsFor(w){
+    let base = w.reload; // real per-weapon figure from the originally supplied WEAPONS array
+    if(LMG_PATCH_42_3.has(w.name)) base *= 0.75; // official: LMG reload times reduced ~25% (Update 42.3)
+    return base;
+  }
+  function computeFor(w, hitbox, armor){
+    const dmg = finalDamageAt(w, 0, hitbox, armor);
+    const htk = htkFor(dmg);
+    const pure = pureTtk(htk, w.rpm);
+    const reloads = w.mag ? Math.max(0, Math.ceil(htk/w.mag)-1) : 0;
+    const withReload = pure + reloads*reloadSecondsFor(w);
+    return {dmg,htk,pure,withReload,reloads};
+  }
+  function update(){
+    const w = PT.WBYNAME[$("tk_weapon").value];
+    const hitbox = $("tk_hitbox").value, armor = +$("tk_armor").value;
+    const r = computeFor(w, hitbox, armor);
+    $("tk_dmg").textContent = r.dmg.toFixed(1);
+    $("tk_htk").textContent = isFinite(r.htk)?r.htk:"–";
+    $("tk_pure").textContent = r.pure.toFixed(2);
+    $("tk_reload").textContent = r.withReload.toFixed(2);
+    setBar("tk_dmg", r.dmg, w.dmg*1.3);
+    setBar("tk_htk", r.htk, 8);
+    setBar("tk_pure", r.pure, 2);
+    setBar("tk_reload", r.withReload, 6);
+    const rs = reloadSecondsFor(w);
+    let tkNote = r.reloads>0
+      ? `This fight needs ~${r.reloads} reload(s) at ${rs.toFixed(2)}s each${w.name==="RPD"?" (this toolkit's own placeholder — RPD's reload time wasn't in the originally supplied data, unlike every other weapon here)":""}${LMG_PATCH_42_3.has(w.name)&&w.name!=="RPD"?", including the sourced Update 42.3 LMG −25% reload reduction":""}.`
+      : `This fight doesn't run past one magazine, so no reload is added.`;
+    if(shotgunFullPatternDamage(w) != null) tkNote += ` Damage assumes all ${SHOTGUN_PELLETS[w.name].count} pellets connect (pellet spread at range isn't modeled, so real damage will be lower past point-blank).`;
+    $("tk_note").innerHTML = tkNote;
+    renderCompare();
+  }
+  function renderCompare(){
+    const hitbox = $("tk_hitbox").value, armor = +$("tk_armor").value;
+    const names = [$("tk_cmpA").value, $("tk_cmpB").value, $("tk_cmpC").value].filter(Boolean);
+    const rows = names.map(n=>{ const w=PT.WBYNAME[n]; return {name:n, ...computeFor(w,hitbox,armor)}; });
+    $("tk_cmpTable").innerHTML = `<tr><th>Weapon</th><th>Dmg</th><th>HTK</th><th>Pure TTK</th><th>Incl. reload</th></tr>` +
+      rows.map(r=>`<tr><td>${r.name}</td><td>${r.dmg.toFixed(1)}</td><td>${isFinite(r.htk)?r.htk:"–"}</td><td>${r.pure.toFixed(2)}</td><td>${r.withReload.toFixed(2)}</td></tr>`).join("");
+  }
+  ["tk_weapon","tk_hitbox","tk_armor"].forEach(id=>{ $(id).addEventListener("input", update); $(id).addEventListener("change", update); });
+  $("tk_detailed").addEventListener("change", ()=>{ fillHitboxSelect($("tk_hitbox"), $("tk_detailed").checked); update(); });
+  ["tk_cmpA","tk_cmpB","tk_cmpC"].forEach(id=>$(id).addEventListener("change", renderCompare));
+  update();
+})();
+
+/* ================= 3. PER-SHOT RECOIL ANALYZER ================= */
+(function(){
+  const $ = id => document.getElementById(id);
+  fillWeaponSelect($("rc_weapon"), "AKM");
+  // Deterministic pseudo-random noise, seeded per weapon+shot, so the same weapon/settings always
+  // reproduce the same pattern (previously used Math.random(), which changed on every recompute and
+  // couldn't be compared or copied reliably).
+  function seededNoise(seed){
+    const x = Math.sin(seed*12.9898)*43758.5453;
+    return x - Math.floor(x);
+  }
+  function weaponSeed(name){
+    let h = 0; for(let i=0;i<name.length;i++) h = (h*31 + name.charCodeAt(i)) >>> 0;
+    return h % 1000;
+  }
+  // Stance multipliers applied to the vertical component. "Crouched" reuses each weapon's own supplied
+  // crouchMod. "Prone" has no official generic figure, so it's modeled as a further approximate reduction
+  // on top of crouched, clearly flagged — except for RPD/M249/MG3, where Update 43.1 published exact
+  // firing-position recoil-control reductions (shown as a text note, not folded into this simplified model).
+  const PRONE_EXTRA = 0.85; // approximate, undocumented — extends the crouch bonus further
+  function update(){
+    const w = PT.WBYNAME[$("rc_weapon").value];
+    const stance = $("rc_stance").value;
+    const n = +$("rc_shots").value;
+    const missing = [];
+    if(w.vRecoil==null) missing.push("vertical recoil");
+    if(w.vertSpeed==null) missing.push("vertical speed");
+    if(w.horizSpeed==null) missing.push("horizontal speed");
+    if(w.hBiasVal==null) missing.push("horizontal bias");
+    if(stance!=="standing" && w.crouchMod==null) missing.push("crouch modifier");
+    let missingNote = missing.length
+      ? `<div class="note"><b>INCOMPLETE DATA:</b> ${w.name} is missing ${missing.join(", ")} in the supplied recoil dataset — this model fills the gap with 0 (or, for crouch modifier, no reduction) rather than an invented value, so the chart may understate recoil for this weapon.</div>`
+      : "";
+    if(stance==="prone") missingNote += `<div class="note">Prone is modeled as an approximate extra ${((1-PRONE_EXTRA)*100).toFixed(0)}% reduction on top of the crouch bonus — no generic official prone figure has been published.${LMG_PATCH_42_3.has(w.name)?` For ${w.name} specifically, Update 43.1 did publish exact firing-position recoil-control reductions (not folded into this simplified stance model): ${w.name==="RPD"?"standing −10%, crouching −17%, prone −27%":w.name==="M249"?"crouching −17%, prone −27%":"standing −15%, crouching −17%"}.`:""}</div>`;
+    $("rc_missing").innerHTML = missingNote;
+    const vRecoil = w.vRecoil ?? 0, vertSpeed = w.vertSpeed ?? 0, horizSpeed = w.horizSpeed ?? 0;
+    const hBiasVal = w.hBiasVal ?? 0, minHpct = (w.minH ?? 50)/100;
+    const dir = w.hBiasDir==="←" ? -1 : 1;
+    let crouchMod = 1;
+    if(stance==="crouched") crouchMod = w.crouchMod ?? 1;
+    else if(stance==="prone") crouchMod = (w.crouchMod ?? 1) * PRONE_EXTRA;
+    const seed = weaponSeed(w.name);
+    let cumV = 0, cumH = 0;
+    const rows = [];
+    for(let i=1;i<=n;i++){
+      let vi = vRecoil * (1 + (i-1)*vertSpeed*0.05) * crouchMod;
+      let hMax = hBiasVal * (1 + (i-1)*horizSpeed*0.05);
+      let hi = hMax * (minHpct + (1-minHpct) * (0.8 + seededNoise(seed+i)*0.2)) * dir;
+      cumV += vi; cumH += hi;
+      rows.push({shot:i, v:vi, h:hi, cumV, cumH});
+    }
+    $("rc_table").innerHTML = `<tr><th>Shot</th><th>Vertical</th><th>Horizontal</th><th>Cum. Vertical</th><th>Cum. Horizontal</th><th>Displacement</th></tr>` +
+      rows.map(r=>`<tr><td>${r.shot}</td><td>${r.v.toFixed(2)}</td><td>${r.h.toFixed(2)}</td><td>${r.cumV.toFixed(2)}</td><td>${r.cumH.toFixed(2)}</td><td>${Math.sqrt(r.cumV**2+r.cumH**2).toFixed(2)}</td></tr>`).join("");
+    drawLineChart($("rc_chart"), [
+      {label:"Cum. Vertical", color:"#2ea6ff", data:rows.map(r=>({x:r.shot,y:r.cumV}))},
+      {label:"Cum. Horizontal", color:"#ffb545", data:rows.map(r=>({x:r.shot,y:r.cumH}))},
+    ]);
+  }
+  ["rc_weapon","rc_stance","rc_shots"].forEach(id=>{ $(id).addEventListener("input", update); $(id).addEventListener("change", update); });
+  update();
+})();
+
+/* ================= 4. ATTACHMENTS & RECOIL ================= */
+const ATTACH_MOD = {
+  muzzle: {
+    none: {v:0,h:0,recov:0,label:"None"},
+    compensator: {v:-0.25,h:-0.20,recov:0,label:"Compensator"},
+    suppressor: {v:-0.05,h:-0.05,recov:0,label:"Suppressor"},
+    flash: {v:-0.05,h:0,recov:0,label:"Flash Hider"},
+  },
+  grip: {
+    none: {v:0,h:0,recov:0,label:"None"},
+    vertical: {v:-0.20,h:-0.05,recov:0,label:"Vertical Foregrip"},
+    angled: {v:0.05,h:-0.20,recov:0,label:"Angled Foregrip (removed from world spawn — Update 41.1)"},
+    half: {v:-0.08,h:-0.16,recov:0.10,label:"Half Grip"},
+    light: {v:0.05,h:0,recov:0.175,label:"Light Grip"},
+    thumb: {v:-0.05,h:0,recov:0,label:"Thumb Grip"},
+    laser: {v:0,h:-0.03,recov:0.05,label:"Laser Grip"},
+    tilted: {v:-0.12,h:-0.06,recov:0,shake:-0.25,label:"Tilted Grip"},
+  },
+  stock: {
+    none: {v:0,h:0,recov:0,label:"None"},
+    tactical: {v:0,h:0,recov:0.15,label:"Tactical Stock"},
+  },
+};
+// Sourced from official PUBG patch notes (pubg.com/en/news):
+// - Half Grip horizontal recoil control: +8% -> +16% (Update 41.1) — reflected above as h:-0.16.
+// - Angled Foregrip removed from world spawn, its role folded into Half Grip (Update 41.1) — kept in the
+//   dropdown (it can still turn up via crates/inventory carryover in some contexts) but labeled as removed.
+// - Tilted Grip added: +12% vertical recoil control, +6% horizontal recoil control, +25% camera-shake
+//   control (Update 41.1). This toolkit doesn't model camera shake elsewhere, so "shake" is shown as a
+//   note only, not folded into the vertical/horizontal recoil totals.
+// slot access assigned by weapon class + the explicit exceptions given in the build spec, plus RPD (Update 42.3)
+const STOCK_LIST = new Set(["M16A4","M416","MK47 Mutant","ACE 32","Vector","MP5K","M249","RPD"]);
+const MAG_EXPLICIT = { // [baseCap override not needed — use w.mag], extendedCap explicit
+  "Vector":33, "UMP9":35, "MP5K":40, "Micro Uzi":35,
+  "P92":20, "G18C":25, "Desert Eagle":10, "R1895":9,
+  "RPD":110, // official: 50-round base magazine, expandable to 110 via AR/LMG magazine attachments (Update 42.3)
+};
+function slotsFor(w){
+  if(w.name==="RPD") return {muzzle:null, grip:null, stock:"tactical", magazine:"AR_LMG"}; // official: no muzzle, no foregrip
+  const muzzle = w.cls==="SMG" ? "SMG" : (w.cls==="SR"||w.cls==="DMR") ? "DMR_SR" : (w.cls==="AR"||w.name==="S12K") ? "AR_DMR_S12K" : null;
+  const grip = w.name==="AKM" ? null : (w.cls==="AR"||w.cls==="SMG"||w.cls==="DMR") ? "AR_SMG_DMR" : null;
+  const stock = STOCK_LIST.has(w.name) ? "tactical" : null;
+  const magazine = (w.cls==="SR"||w.cls==="DMR") ? "DMR_SR" : (w.cls==="AR"||w.name==="S12K") ? "AR_DMR_S12K" : (w.cls==="SMG"||w.cls==="Pistol") ? "SMG_PISTOL" : null;
+  return {muzzle, grip, stock, magazine};
+}
+function extendedCapFor(w){
+  if(MAG_EXPLICIT[w.name]!=null) return MAG_EXPLICIT[w.name];
+  if(!w.mag) return null;
+  const slots = slotsFor(w);
+  if(slots.magazine==="DMR_SR") return w.mag+5; // approximate, documented
+  if(slots.magazine) return Math.ceil(w.mag*1.3); // generic +30%, documented
+  return null;
+}
+(function(){
+  const $ = id => document.getElementById(id);
+  fillWeaponSelect($("at_weapon"), "AKM");
+  function populateSlot(selId, group, allowed, defaultKey){
+    const sel = $(selId);
+    if(!allowed){ sel.innerHTML = `<option value="none">No slot</option>`; sel.disabled = true; return; }
+    sel.disabled = false;
+    sel.innerHTML = Object.keys(ATTACH_MOD[group]).map(k=>`<option value="${k}" ${k===defaultKey?'selected':''}>${ATTACH_MOD[group][k].label}</option>`).join("");
+  }
+  function update(){
+    const w = PT.WBYNAME[$("at_weapon").value];
+    const slots = slotsFor(w);
+    populateSlot("at_muzzle","muzzle", slots.muzzle, $("at_muzzle").value||"none");
+    populateSlot("at_grip","grip", slots.grip, $("at_grip").value||"none");
+    populateSlot("at_stock","stock", slots.stock, $("at_stock").value||"none");
+    // magazine select
+    const magSel = $("at_mag");
+    if(!slots.magazine || !w.mag){ magSel.innerHTML = `<option value="none">No slot</option>`; magSel.disabled = true; }
+    else {
+      magSel.disabled = false;
+      const ext = extendedCapFor(w);
+      magSel.innerHTML = `<option value="none">None (${w.mag})</option>
+        <option value="extended">Extended (${ext})</option>
+        <option value="quickdraw">QuickDraw (${w.mag}, −30% reload)</option>
+        <option value="extquick">Extended QuickDraw (${ext}, −30% reload)</option>`;
+      if(![...magSel.options].some(o=>o.value===magSel.dataset.sel)) magSel.value = magSel.dataset.sel || "none";
+    }
+    recompute();
+  }
+  function recompute(){
+    const w = PT.WBYNAME[$("at_weapon").value];
+    const slots = slotsFor(w);
+    const mVal = slots.muzzle ? $("at_muzzle").value : "none";
+    const gVal = slots.grip ? $("at_grip").value : "none";
+    const sVal = slots.stock ? $("at_stock").value : "none";
+    const magVal = (slots.magazine && w.mag) ? $("at_mag").value : "none";
+    const m = ATTACH_MOD.muzzle[mVal] || ATTACH_MOD.muzzle.none;
+    const g = ATTACH_MOD.grip[gVal] || ATTACH_MOD.grip.none;
+    const s = ATTACH_MOD.stock[sVal] || ATTACH_MOD.stock.none;
+    const vChange = m.v + g.v + s.v;
+    const hChange = m.h + g.h + s.h;
+    const recovChange = m.recov + g.recov + s.recov;
+    const baseCap = w.mag || null;
+    const ext = extendedCapFor(w);
+    let newCap = baseCap;
+    let reloadChange = 0;
+    if(magVal==="extended") newCap = ext;
+    else if(magVal==="quickdraw"){ newCap = baseCap; reloadChange = -0.30; }
+    else if(magVal==="extquick"){ newCap = ext; reloadChange = -0.30; }
+    const isLmgPatched = LMG_PATCH_42_3.has(w.name);
+    const realBaseReload = w.reload; // from the originally supplied WEAPONS array (RPD is this toolkit's own placeholder)
+    let reloadMult = 1 + reloadChange;
+    if(isLmgPatched) reloadMult *= 0.75; // official: LMG reload times reduced ~25% (Update 42.3)
+    $("at_vrecoil").textContent = (vChange*100).toFixed(0)+"%";
+    $("at_hrecoil").textContent = (hChange*100).toFixed(0)+"%"+(isLmgPatched?" (plus a sourced −30% max-horizontal cut from Update 42.3, shown in the note below, not folded into this %)":"");
+    $("at_recovery").textContent = "+"+(recovChange*100).toFixed(0)+"%";
+    const finalReload = realBaseReload*reloadMult;
+    $("at_reload").textContent = reloadMult<1
+      ? finalReload.toFixed(1)+"s (−"+((1-reloadMult)*100).toFixed(0)+"%)"
+      : finalReload.toFixed(1)+"s";
+    $("at_capBase").textContent = baseCap ?? "—";
+    $("at_capNew").textContent = newCap ?? "—";
+    let note = `Slot access for ${w.name}: muzzle ${slots.muzzle?"("+slots.muzzle+")":"none"}, grip ${slots.grip?"(has lower rail)":"none"}, stock ${slots.stock?"(tactical)":"none"}, magazine ${slots.magazine?"("+slots.magazine+")":"none"}. Modifier values are approximate community/datamined figures unless noted otherwise — see Data &amp; Patch Info for what's explicitly sourced vs. extrapolated by class.`;
+    if(w.name==="RPD") note += ` RPD's ${realBaseReload.toFixed(1)}s base reload is this toolkit's own placeholder, not part of the originally supplied dataset like every other weapon's reload time here.`;
+    if(gVal==="tilted") note += ` Tilted Grip also gives an official +25% camera-shake control (Update 41.1) — not reflected in the recoil % above since this toolkit doesn't otherwise track camera shake.`;
+    if(gVal==="angled") note += ` Angled Foregrip was removed from world spawn in Update 41.1 — its role was folded into Half Grip, which is why Half Grip's horizontal figure is higher than it used to be.`;
+    if(isLmgPatched) note += ` ${w.name} is an LMG: per Update 42.3, max horizontal recoil is reduced 30% and reload time ~25%, on top of any attachments selected here (these are sourced weapon-level patch changes, not attachment effects, so they're called out separately rather than folded into the deltas above).`;
+    $("at_note").innerHTML = note;
+  }
+  ["at_weapon"].forEach(id=>$(id).addEventListener("change", update));
+  ["at_muzzle","at_grip","at_stock","at_mag"].forEach(id=>$(id).addEventListener("change", recompute));
+  $("at_presetVert").onclick = ()=>{ trySet("at_muzzle","compensator"); trySet("at_grip","vertical"); trySet("at_stock","tactical"); recompute(); };
+  $("at_presetHoriz").onclick = ()=>{ trySet("at_muzzle","compensator"); trySet("at_grip","half"); trySet("at_stock","tactical"); recompute(); };
+  $("at_presetBal").onclick = ()=>{ trySet("at_muzzle","compensator"); trySet("at_grip","thumb"); trySet("at_stock","tactical"); recompute(); };
+  $("at_presetClear").onclick = ()=>{ trySet("at_muzzle","none"); trySet("at_grip","none"); trySet("at_stock","none"); trySet("at_mag","none"); recompute(); };
+  function trySet(id,val){ const sel=$(id); if(!sel.disabled && [...sel.options].some(o=>o.value===val)) sel.value = val; }
+  update();
+})();
+
+/* ================= 5. BACKPACK CALCULATOR ================= */
+// Standard capacities unchanged. Jammer Pack 3-tier capacities and Blue Zone protection levels are sourced
+// from the official Update 41.1 patch notes (pubg.com/en/news/9926): Lv.1/2/3 match standard backpack
+// capacity at the same level (150/200/250), with Low/Medium/High Blue Zone damage protection respectively.
+const BACKPACKS = {
+  standard: {1:170, 2:220, 3:270},
+  jammer:   {1:150, 2:200, 3:250},
+};
+const JAMMER_PROTECTION = {1:"Low", 2:"Medium", 3:"High"};
+const BP_CAP = BACKPACKS.standard; // kept for reference; calc() now reads BACKPACKS[type] directly
+const BP_AMMO = [ // [key,label,weight]
+  ["9mm","9mm (per round)",0.375], [".45acp",".45 ACP (per round)",0.40],
+  ["556","5.56mm (per round)",0.50], ["762","7.62mm (per round)",0.70],
+  ["300mag",".300 Magnum (per round)",1.00], ["12g","12 Gauge (per round)",1.25],
+  ["bolt","Crossbow bolt (per round)",2.00],
+];
+const BP_HEAL = [
+  ["bandage","Bandage",2], ["firstaid","First Aid Kit",10], ["medkit","Med Kit",20],
+  ["energy","Energy Drink",4], ["pain","Painkiller",10], ["adren","Adrenaline Syringe",20],
+];
+const BP_THROW = [
+  ["frag","Frag Grenade",18], ["smoke","Smoke Grenade",14], ["stun","Stun Grenade",12],
+  ["molotov","Molotov Cocktail",18], ["c4","C4",20],
+];
+(function(){
+  const $ = id => document.getElementById(id);
+  function buildGrid(container, items){
+    container.innerHTML = items.map(([k,label,wt])=>
+      `<div class="bp-row">
+        <span class="bp-name">${label}</span>
+        <span class="bp-wt">${wt}ea</span>
+        <span class="bp-sub" data-sub="${k}">0</span>
+        <span class="bp-stepper">
+          <button type="button" data-step="-1" data-target="${k}">−</button>
+          <input type="number" min="0" step="1" value="0" data-bp="${k}" data-wt="${wt}">
+          <button type="button" data-step="1" data-target="${k}">+</button>
+        </span>
+      </div>`
+    ).join("");
+  }
+  buildGrid($("bp_ammoGrid"), BP_AMMO);
+  buildGrid($("bp_healGrid"), BP_HEAL);
+  buildGrid($("bp_throwGrid"), BP_THROW);
+  function allInputs(){ return [...document.querySelectorAll('#panel-backpack input[data-bp]')]; }
+  function calc(){
+    const type = $("bp_type").value;
+    const level = +$("bp_level").value;
+    const cap = BACKPACKS[type][level];
+    $("bp_jammerNote").innerHTML = type==="jammer"
+      ? `<div class="note">Jammer Pack Lv.${level}: ${JAMMER_PROTECTION[level]} Blue Zone damage protection (Update 41.1). Capacity is its own tier — 150/200/250 across Lv.1-3, lower than the standard backpack's 170/220/270 at the same level. PUBG hasn't published exact Blue Zone absorption numbers, so protection is shown as Low/Medium/High only, not a percentage.</div>` : "";
+    let used = 0;
+    const cats = {Ammo:0, "Healing & Boosts":0, Throwables:0};
+    const ammoKeys = new Set(BP_AMMO.map(a=>a[0])), healKeys = new Set(BP_HEAL.map(a=>a[0]));
+    allInputs().forEach(inp=>{
+      const n = Math.max(0, parseInt(inp.value)||0);
+      const wt = +inp.dataset.wt;
+      const sub = n*wt;
+      used += sub;
+      const subEl = document.querySelector(`.bp-sub[data-sub="${inp.dataset.bp}"]`);
+      if(subEl) subEl.textContent = sub.toFixed(1).replace(/\.0$/,"");
+      if(ammoKeys.has(inp.dataset.bp)) cats.Ammo += sub;
+      else if(healKeys.has(inp.dataset.bp)) cats["Healing & Boosts"] += sub;
+      else cats.Throwables += sub;
+    });
+    const rem = cap - used;
+    $("bp_cap").textContent = cap;
+    $("bp_used").textContent = used.toFixed(1);
+    $("bp_rem").textContent = rem.toFixed(1);
+    setBar("bp_used", used, cap);
+    setBar("bp_rem", Math.max(0,rem), cap);
+    document.getElementById("bp_remStat").classList.toggle("warn", rem<0);
+    $("bp_breakdown").innerHTML = Object.entries(cats).map(([k,v])=>`<div class="catrow">${k}<b>${v.toFixed(1)}</b></div>`).join("");
+    $("bp_warn").innerHTML = rem<0
+      ? `<b>Over capacity by ${Math.abs(rem).toFixed(1)}.</b> Consider dropping some ammo or grenades to get back under the limit.`
+      : `Frag/Molotov weights are documented as 18 in this tool (source material lists 16 or 18 depending on the list) — see Data &amp; Patch Info.`;
+  }
+  document.addEventListener("input", e=>{ if(e.target.matches('#panel-backpack input[data-bp], #panel-backpack select#bp_level, #panel-backpack select#bp_type')) calc(); });
+  document.addEventListener("change", e=>{ if(e.target.matches('#panel-backpack select#bp_level, #panel-backpack select#bp_type')) calc(); });
+  document.addEventListener("click", e=>{
+    const btn = e.target.closest('#panel-backpack .bp-stepper button');
+    if(!btn) return;
+    const inp = document.querySelector(`#panel-backpack input[data-bp="${btn.dataset.target}"]`);
+    if(!inp) return;
+    inp.value = Math.max(0, (parseInt(inp.value)||0) + (+btn.dataset.step));
+    calc();
+  });
+  $("bp_clear").onclick = ()=>{ allInputs().forEach(i=>i.value=0); calc(); };
+  calc();
+})();
+
+/* ================= 6. DATA & PATCH INFO ================= */
+(function(){
+  const d = new Date();
+  document.getElementById("dp_updated").textContent = d.toISOString().slice(0,10);
+})();
+
+})();
+</script>
+ 
+</body>
+</html>
