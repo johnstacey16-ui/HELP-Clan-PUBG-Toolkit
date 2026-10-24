@@ -36,6 +36,7 @@ test('standard and jammer packs have equal total capacity at every level',()=>{
 
 test('ammo and healing space matches PUBG 33.1, 34.1 and 42.1 updates',()=>{
   assert.equal(value(bp.BP_AMMO,'9mm'),.3);
+  assert.equal(value(bp.BP_AMMO,'57'),.35);
   assert.equal(value(bp.BP_AMMO,'762'),.6);
   assert.equal(value(bp.BP_AMMO,'556'),.5);
   assert.equal(value(bp.BP_HEAL,'medkit'),15);
@@ -72,6 +73,9 @@ test('weapon-specific foregrip and stock slots improve the old class defaults',(
   assert.equal(at.slotsFor({name:'G18C',cls:'Pistol'}).grip,'FOREGRIP');
   assert.equal(at.slotsFor({name:'O12',cls:'SG'}).grip,'FOREGRIP');
   assert.equal(at.slotsFor({name:'RPD',cls:'LMG'}).grip,null);
+  assert.equal(at.slotsFor({name:'P90',cls:'SMG'}).magazine,null);
+  assert.equal(at.slotsFor({name:'Lynx AMR',cls:'SR'}).muzzle,null);
+  assert.equal(at.slotsFor({name:'Lynx AMR',cls:'SR'}).magazine,null);
   assert.equal(at.slotsFor({name:'MP9',cls:'SMG'}).stock,'tactical');
   assert.equal(at.HEAVY_STOCK_LIST.has('MP9'),false);
   assert.equal(at.HEAVY_STOCK_LIST.has('RPD'),true);
