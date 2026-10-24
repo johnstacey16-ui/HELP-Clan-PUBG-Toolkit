@@ -6,6 +6,18 @@ This document replaces the previous “Data & Patch” tool tab. It preserves th
 
 For the current approach to both original, owner-authored formulas and measured game data, see [DATA_ACCURACY_POLICY.md](../DATA_ACCURACY_POLICY.md).
 
+## 24 October 2026 — honest muzzle-velocity provenance and ideal minimum flight time
+
+**Sources:** https://pubg.gs/ballistics/ , https://pubg.gs/about/ (PUBG PC Update 43.2, Steam build 26072644, extracted 2026-10-21); Vector's velocity still uses the earlier WinnerMeta sample already archived under `MEASURED_MUZZLE_VEL`.
+
+**Corrections to the range UI**
+- The label **Muzzle velocity (measured)** was wrong for the updated 44/45 game-extracted velocities. The range result now dynamically identifies **Muzzle velocity (43.2 game files)** versus **Muzzle velocity (historical measurement)** for the one fallback weapon, Vector.
+- Previously every `rg_flight` result was **No data**, even when the selected weapon had a known initial speed. The new explicitly modeled **Minimum flight time (ideal)** uses `distance_m / initial_muzzle_velocity_m_per_s`. Example at 100 m for M416 at 880 m/s: 0.114 s **ideal lower bound**, not PUBG time of flight. It ignores aerodynamic drag, arcing path and velocity decay; actual travel takes longer. A clear note displays the limitation. This is an owner-style useful model, not a falsely sourced measured flight-time lookup.
+- `DROP_TABLES` still contains only **21** measured-drop tables. No missing bullet-drop readings, target lead, damage values, TTK, modeled drag curves or shot-by-shot recoil curves have been added, and the point selector still restricts readings to actual damage checkpoints.
+- The source comment for **Sawn-off pellet count** was contradictory (stated eight while the actual constant was nine). The extracted **Update 43.2** weapon page explicitly shows **nine pellets**: https://pubg.gs/weapons/sawed-off/ . Older sources conflict: https://pubgsearch.com/weapons/sawed-off/ claims eight, while https://pubg.wiki.gg/wiki/Sawed-off includes a historical eight-to-nine change. The toolkit keeps the current game-file count of nine, retains its independently sourced 21 damage per pellet in the sampled falloff table, and does not invent actual pellet hit rates. **No shotgun calculations were changed by this comment correction.**
+
+The `minimumIdealFlightTime` helper has regression coverage for all 45 toolkit guns, unknown/out-of-range inputs, and unchanged true drop-evidence behavior. Scope Matcher empirical constants and formulas are untouched.
+
 ## 24 October 2026 — complete source-backed recoil data for all 45 weapons
 
 The previous import recorded 20 weapon records. This batch adds **25 individually checked Update 43.2 RecoilConfig records**, bringing the named `RECOIL_DETAIL_43_2` table to **all 45 toolkit weapons**. Every record includes only fields the extractor actually exposes; full individual per-shot spray paths are not established.
