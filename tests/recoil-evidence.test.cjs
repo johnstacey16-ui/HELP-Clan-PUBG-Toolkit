@@ -10,6 +10,17 @@ const start = html.indexOf('/* ================= 3. RECOIL EVIDENCE EXPLORER ===
 const end = html.indexOf('/* ================= 4. ATTACHMENTS & RECOIL ================= */', start);
 const recoil = html.slice(start,end);
 
+test('Coming Soon is visible at the top, with existing recoil parameters still available',()=>{
+  const first = html.indexOf('id="panel-recoil2"');
+  const heading = html.indexOf('<h1>Recoil Evidence Explorer</h1>',first);
+  const label = html.indexOf('<span class="recoil-coming-soon">',first);
+  const tools = html.indexOf('<select id="rc_weapon"',first);
+  assert.ok(first>=0 && label>first && label<heading && tools>heading);
+  assert.match(html.slice(label,heading),/COMING SOON/);
+  assert.match(html.slice(first,tools),/FULL SHOT-BY-SHOT ANALYSIS/);
+  assert.match(html,/Detailed per-shot recoil patterns are in development/);
+});
+
 test('retire unsupported recoil growth and assumed prone multipliers',()=>{
   assert.ok(start>=0 && end>start,'Recoil evidence source section exists');
   assert.doesNotThrow(()=>new Script(recoil));
