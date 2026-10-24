@@ -26,6 +26,15 @@ For the current approach to both original, owner-authored formulas and measured 
 
 The `minimumIdealFlightTime` helper has regression coverage for all 45 toolkit guns, unknown/out-of-range inputs, and unchanged true drop-evidence behavior. Scope Matcher empirical constants and formulas are untouched.
 
+## 24 October 2026 — Dot Sight, Hybrid and Thermal 4x optic compatibility
+
+The Optic dropdown introduced earlier offered the standard Red Dot, Holo and 2x–15x scopes but omitted three separately represented in-game attachment entries, even when the weapon accepted them.
+
+- Source: https://pubg.gs/attachments/ generated from **PUBG PC Update 43.2**, Steam build 26072644, extracted 2026-10-21. The sight-item table explicitly names **Dot Sight**, **Hybrid Scope** and **Thermal 4x Scope** and lists all compatible weapon tags.
+- Added these optics to weapons already in our `SIGHT_6X_COMPAT` or `SIGHT_8X_COMPAT` sets, which accept the same basic `UpperSmall` / `UpperLarge` sight mounts in the extracted game table. AWM, AKM, M416 and RPD are explicit examples with all three. The option list remains restricted for red-dot/Holo-only pistols/compact SMGs (P92, G18C, MP9, Skorpion) and integral-optic weapons (P90, VSS).
+- The PUBG database reports **Thermal 4x** with `scope4x` sensitivity and 19° nominal field of view; this feature remains a **fit checker only**. Do not silently change the user-supplied scope matching constants or assume a hybrid scope has a single universal sensitivity setting.
+- Existing 45-weapon recoil parameters, LMG reload corrections, weapon magazine exceptions, backpack data, measured damage/drop endpoints and all seven panels remain unchanged. See `tests/optic-compatibility-43-2.test.cjs` for coverage.
+
 ## 24 October 2026 — official LMG reload timing and double-application fix
 
 **High-priority gameplay calculation correction.** Two existing calculator paths had applied the approximate **Update 42.3 LMG -25% reload duration** reduction directly to the old `WEAPONS[].reload` data, which was not tied to a verified pre-patch animation measurement. The underlying gun-data extraction publishes a 3.5-second `NoAnimReloadDuration` for RPD; **this is not the actual reload animation**. The result could incorrectly show e.g. an M249 3.5 × 0.75 = 2.625 s reload and no reload-inclusive TTK for RPD.

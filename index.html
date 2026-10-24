@@ -2470,14 +2470,21 @@ const SIGHT_8X_COMPAT = new Set([
 const SIGHT_RED_DOT_ONLY = new Set([
   "Desert Eagle","G18C","P92","MP9","Micro Uzi","Skorpion","Tommy Gun"
 ]);
+// The extracted 43.2 item table lists Dot Sight, Hybrid Scope and Thermal
+// 4x in addition to the usual Red Dot/Holo and 2x–15x optics. These share
+// the UpperSmall/UpperLarge weapon groups; compact pistols/SMGs which only
+// accept Red Dot/Holo do not get the extra optics.
 const SIGHT_LABELS = {
   none:"No optic",reddot:"Red Dot Sight",holo:"Holographic Sight",
-  "2x":"2x Scope","3x":"3x Scope","4x":"4x Scope","6x":"6x Scope",
-  "8x":"8x Scope","15x":"15x Scope"
+  dot:"Dot Sight",
+  "2x":"2x Scope","3x":"3x Scope","4x":"4x Scope",
+  hybrid:"Hybrid Scope",thermal4x:"Thermal 4x Scope",
+  "6x":"6x Scope","8x":"8x Scope","15x":"15x Scope"
 };
 function opticChoicesFor(w){
-  if(SIGHT_8X_COMPAT.has(w.name))return ["none","reddot","holo","2x","3x","4x","6x","8x","15x"];
-  if(SIGHT_6X_COMPAT.has(w.name))return ["none","reddot","holo","2x","3x","4x","6x"];
+  const common=["none","reddot","holo","dot","2x","3x","4x","hybrid","thermal4x","6x"];
+  if(SIGHT_8X_COMPAT.has(w.name))return [...common,"8x","15x"];
+  if(SIGHT_6X_COMPAT.has(w.name))return common;
   if(SIGHT_RED_DOT_ONLY.has(w.name))return ["none","reddot","holo"];
   return ["none"];
 }
