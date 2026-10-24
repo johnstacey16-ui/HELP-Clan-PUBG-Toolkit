@@ -14,8 +14,8 @@ const start=html.indexOf('/* ================= 3. RECOIL EVIDENCE EXPLORER =====
 const finish=html.indexOf('/* ================= 4. ATTACHMENTS & RECOIL ================= */',start);
 const logic=html.slice(start,finish);
 
-test('33 named weapons have individually mapped 43.2 recoil engine metadata',()=>{
-  assert.equal(keys.length,33);
+test('all 45 toolkit weapons have individually mapped 43.2 recoil metadata',()=>{
+  assert.equal(keys.length,45);
   for(const [name,mod,recovery,shotSwitch] of [
     ['RPD',.32,7,2],
     ['M249',.32,6,2],
@@ -56,6 +56,32 @@ test('33 named weapons have individually mapped 43.2 recoil engine metadata',()=
     assert.equal(recoil[name].fall,fall,name+'/fall');
   }
   assert.equal(Object.values(recoil).filter(r=>r.proneMod!=null).length > 0,true);
+  // The 12 final source mappings complete coverage without fabricated values.
+  for(const [name,prone,recovery,switchShots,climb,fall] of [
+    ['Lynx AMR',.25,10,1,null,4],
+    ['O12',.7,8,1,1.8,2],
+    ['R1895',.7,11,1,1.2,5.5],
+    ['Desert Eagle',.75,11,1,1.2,3.5],
+    ['MK47 Mutant',.7,8.2,1,.7,2.5],
+    ['Mk12',.2,9,1,1.25,2.8],
+    ['K2',null,8,2,.75,2.1],
+    ['FAMAS',null,7,2,.6,2.1],
+    ['P92',.7,11,1,null,4],
+    ['JS9',.7,7,5,.4,2],
+    ['S686',null,6,1,null,2],
+    ['Skorpion',.8,12,2,.23,2]
+  ]){
+    assert.equal(recoil[name].proneMod,prone,name+'/prone');
+    assert.equal(recoil[name].recoveryV,recovery,name+'/recovery');
+    assert.equal(recoil[name].switchShots,switchShots,name+'/switch');
+    assert.equal(recoil[name].climb,climb,name+'/climb');
+    assert.equal(recoil[name].fall,fall,name+'/fall');
+  }
+  const weapons=[...html.slice(
+    html.indexOf('const WEAPONS = ['),html.indexOf('].map(w=>',html.indexOf('const WEAPONS = ['))
+  ).matchAll(/^\["([^"]+)"/gm)].map(m=>m[1]);
+  assert.equal(weapons.length,45,'expected 45 named toolkit weapons');
+  assert.deepEqual(weapons.filter(name=>!recoil[name]),[],'each weapon has a recoil data record');
   assert.equal(recoil.SKS.climb,null);
   assert.equal(recoil.SLR.proneMod,null);
   for(const [name,obj] of Object.entries(recoil)){
