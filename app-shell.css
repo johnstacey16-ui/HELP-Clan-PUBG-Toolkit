@@ -741,3 +741,42 @@ body {
     width: 43px;height:43px;flex-basis:43px;font-size:29px;
   }
 }
+
+
+/* Recoil Analyzer development state: visible at the top without obscuring tools. */
+#panel-recoil2 .recoil-release-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  margin: 14px 0 13px;
+}
+#panel-recoil2 .recoil-coming-soon {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  border: 1px solid rgba(233,188,119,.44);
+  border-radius: 999px;
+  background: rgba(233,188,119,.10);
+  color: #f5d09a;
+  font: 700 10px/1.2 "IBM Plex Mono",monospace;
+  letter-spacing: .12em;
+  white-space: nowrap;
+}
+#panel-recoil2 .recoil-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #f0c381;
+  box-shadow: 0 0 0 3px rgba(240,195,129,.11);
+}
+#panel-recoil2 .recoil-release-caption {
+  color: #91a7b8;
+  font: 600 10px/1.4 "IBM Plex Mono",monospace;
+  letter-spacing: .07em;
+}
+@media (max-width: 600px) {
+  #panel-recoil2 .recoil-release-row { margin: 10px 0 12px; gap: 8px; }
+  #panel-recoil2 .recoil-release-caption { font-size: 9px; }
+}
