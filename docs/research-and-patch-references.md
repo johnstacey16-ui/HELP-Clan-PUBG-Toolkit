@@ -6,6 +6,26 @@ This document replaces the previous “Data & Patch” tool tab. It preserves th
 
 For the current approach to both original, owner-authored formulas and measured game data, see [DATA_ACCURACY_POLICY.md](../DATA_ACCURACY_POLICY.md).
 
+## Update 24 October 2026 — verified magazine capacity and compatibility corrections
+
+This follows the source-backed 43.2 inventory and attachment batch. It focuses on the **actual rounds loaded by specific weapons**, rather than a magazine attachment's own inventory-space weight. The public site remains concise.
+
+- **Mk47 Mutant:** corrected supplied base capacity from 10 to **20** rounds; the official PUBG introduction says it can use an extended magazine up to 30. https://www.pubg.com/en/news/1733
+- **Skorpion:** corrected supplied base from 10 to **20**, with an Extended Mag up to **40**. PUBG official console introduction confirms both. https://www.pubg.com/en/news/1728
+- **M416:** official magazine rebalance documents **30 standard / 42 Extended / 40 Extended QuickDraw**. https://store.steampowered.com/news/posts/?appids=578080&enddate=1639957213&feed=steam_community_announcements
+- **AWM and M24:** the 43.2 extracted DMR/SR item family lists an **8-round Extended** attachment versus **7-round Extended QuickDraw**. This applies to their 5-round base magazines; other DMRs use different per-weapon capacity multipliers. https://pubg.gs/attachments/
+- **M249:** accepted AR/LMG magazine attachments were missing from the tool despite the game-file slot listing; restore them, with the sourced **75 standard / 150 Extended** capacity. The exact Extended QuickDraw count is left **No data** rather than assuming 150. https://pubg.gs/weapons/m249/ and https://pubg.wiki.gg/wiki/M249
+- **RPD:** official Update 42.3 confirms **50 standard / up to 110 Extended**. Exact Extended QuickDraw capacity remains **No data**, and the toolkit's 3.5s placeholder reload time is now displayed as **No data** in the attachment screen, not a fabricated precise duration. https://pubg.com/en/news/10885
+- **Tommy Gun, Vector, UMP9, MP5K, Micro Uzi, Skorpion, G18C/P18C, P92 and Desert Eagle:** legacy individual extended magazine figures continue to be represented as explicit weapon entries, not a universal percent. The documented SMG and pistol-capacity tables can be cross-checked here: https://pubg.wiki.gg/wiki/Extended_Mag_%28Handgun%2C_SMG%29
+- **S12K:** the weapon-specific 5 → 10 extended magazine capacity is preserved. https://pubg.wiki.gg/wiki/S12K
+- **Magazine compatibility corrected:** the Kar98k bolt-action rifle and R1895 revolver do not take an ordinary magazine attachment, and MG3 remains without one. The **M249** now correctly takes compatible AR/LMG magazines. https://pubg.gs/weapons/kar98k/ and https://pubg.gs/attachments/
+- **For 30-round ARs without separate named entries**, a deliberately **modeled** 42/40 capacity comes from their shared 43.2 MagazineLarge attachment family. This is not independently verified per weapon: if a gun has an exception it must override the model. The attachment source lists 42 rounds for Extended and 40 rounds for Extended QuickDraw: https://pubg.gs/attachments/
+- **For weapons where exact extended capacity isn't verified**, return No data instead of the previous universal +30%/+5 shortcut. QuickDraw without extension retains base capacity. Extended and Extended QuickDraw are calculated separately and the latter carries its documented +15% reload-speed bonus.
+- The scope sensitivity, range/shotgun damage, damage multipliers and measured bullet-drop maths have **not** changed. Magazine rounds can affect weapon comparisons and reload-related calculations.
+
+### Outstanding magazine questions
+Verify 43.2 *per-weapon* Extended QuickDraw capacities for RPD, M249 and other class exceptions, and decide whether to support both AR/DMR and DMR/SR magazines for DMRs with two compatible families. There is no universal exact "extended magazine capacity" for every rifle.
+
 ## Update 24 October 2026 — expanded muzzle velocity coverage
 
 - Source: https://pubg.gs/ballistics/ , generated from the PUBG **Update 43.2** Steam build 26072644 (extracted 2026-10-21).
