@@ -6,6 +6,15 @@ This document replaces the previous “Data & Patch” tool tab. It preserves th
 
 For the current approach to both original, owner-authored formulas and measured game data, see [DATA_ACCURACY_POLICY.md](../DATA_ACCURACY_POLICY.md).
 
+## 24 October 2026 — attachment presets now use sourced per-weapon recoil values
+
+- The previous **Best vertical**, **Best horizontal** and **Balanced** buttons set the same muzzle/grip/Tactical Stock choices for every gun. This often ignored compatible Heavy Stock, Folding Stock and individual muzzle/group differences. Despite their labels, they did not choose the best control under the toolkit's own established attachment model.
+- Presets now enumerate **only options allowed by** `attachmentChoicesFor(w,...)`, use the same 43.2 component values as the existing calculator, and choose the strongest recoil reductions for the selected objective. Example M416: vertical recommends Compensator + Vertical Foregrip + Heavy Stock, horizontal recommends Compensator + Half Grip + Heavy Stock. Incompatible guns (MG3, Lynx AMR) correctly select None.
+- The Balanced option maximizes the **combined modelled vertical and horizontal reductions**, with a penalty for uneven control and a small preference for reported recoil-recovery effects. It is **not** a mathematical prediction of PUBG's full 10/20/30-shot spray, or a promise that it is the best subjective grip for ADS, sway, camera shake or single shots. The source records do not establish those tradeoffs sufficiently to optimise them.
+- No attachment percentages or player-created formulas were changed. Other tool selections, including magazine and optic, are left intact when choosing a recoil preset. The Clear button continues clearing all slots.
+- Current attachment values and eligible weapon items: https://pubg.gs/attachments/ (PUBG Update 43.2, game files extracted 2026-10-21), and https://pubg.gs/weapons/m416/ .
+- The new `tests/attachment-presets-optimal.test.cjs` checks the source table for compatible choices, true extrema for each control direction, and preservation of other calculator scripts.
+
 ## 24 October 2026 — Mini 14 exact recoil max and correct engine parameter labels
 
 - **Mini 14:** the legacy Combat DB had **3.1** for its `vRecoil` slot, which maps onto PUBG's `Vertical recoil max`. Current Update 43.2 game-file extraction reports **3.15** (not 3.1): https://pubg.gs/weapons/mini14/ and a separately recorded September build: https://pubgplanet.com/wiki/weapons/mini-14 . Updated **only** that legacy number.
