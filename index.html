@@ -668,7 +668,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
 <div class="wrap">
   <div class="eyebrow">Field Reference · Damage Falloff</div>
   <h1>Effective Range &amp; Damage</h1>
-  <p class="sub">Damage, hits-to-kill, and time-to-kill at range, against a chosen hitbox and armor level. Every weapon uses a sourced per-distance falloff table (shotguns use per-pellet tables), with caveats flagged below wherever the data is limited.</p>
+  <p class="sub">Source-backed damage at measured distances only. Shotguns show damage per pellet, not assumed pellet hits or made-up kills; unsupported values display as No data.</p>
 
   <div class="card">
     <div class="section-h">Setup</div>
@@ -687,8 +687,9 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
         <select id="rg_stance"><option value="hip" selected>Hip-fire</option><option value="ads">Aimed (ADS)</option></select>
       </div>
     </div>
-    <div class="field" style="margin-bottom:6px"><label>Range: <span id="rg_rangeLabel">100 m</span></label>
-      <input type="range" id="rg_range" min="0" max="500" step="10" value="100">
+    <div class="field" style="margin-bottom:6px"><label>Measured checkpoint: <span id="rg_rangeLabel">100 m</span></label>
+      <input type="range" id="rg_range" min="0" max="1" step="1" value="0" aria-label="Select a source-measured distance checkpoint">
+      <p class="helptext" id="rg_rangeEvidence">Only distances with source measurements are selectable. No estimates outside the recorded range.</p>
     </div>
     <div id="rg_approxNote"></div>
   </div>
@@ -696,10 +697,10 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
   <div class="card">
     <div class="section-h">Result at this range</div>
     <div class="grid4">
-      <div class="stat"><div class="n" id="rg_dmg">–</div><div class="l">Damage at range</div><div class="bar"><div class="bar-fill" id="rg_dmg_bar"></div></div></div>
+      <div class="stat"><div class="n" id="rg_dmg">–</div><div class="l" id="rg_dmgLabel">Damage at range</div><div class="bar"><div class="bar-fill" id="rg_dmg_bar"></div></div></div>
       <div class="stat"><div class="n" id="rg_htk">–</div><div class="l">Hits to kill</div><div class="bar"><div class="bar-fill" id="rg_htk_bar"></div></div></div>
       <div class="stat"><div class="n" id="rg_ttk">–</div><div class="l">TTK (seconds)</div><div class="bar"><div class="bar-fill" id="rg_ttk_bar"></div></div></div>
-      <div class="stat"><div class="n" id="rg_flight">–</div><div class="l">Flight time (s)</div></div>
+      <div class="stat"><div class="n" id="rg_flight">–</div><div class="l">Flight time (not measured)</div></div>
     </div>
   </div>
 
@@ -707,19 +708,19 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
     <div class="section-h">Bullet drop at this range</div>
     <div class="grid3">
       <div class="stat"><div class="n" id="rg_drop">–</div><div class="l">Drop below aim point (cm)</div></div>
-      <div class="stat"><div class="n" id="rg_holdover">–</div><div class="l">Holdover (mrad)</div></div>
+      <div class="stat"><div class="n" id="rg_holdover">–</div><div class="l">Angular drop (derived mrad)</div></div>
       <div class="stat"><div class="n" id="rg_muzzlecmp">–</div><div class="l">Muzzle velocity (measured)</div></div>
     </div>
     <div class="note" id="rg_dropNote"></div>
   </div>
 
   <div class="card">
-    <div class="section-h">Damage vs range (0–500 m)</div>
+    <div class="section-h" id="rg_chartTitle">Damage at measured checkpoints</div>
     <canvas id="rg_chartDmg" width="1100" height="200"></canvas>
   </div>
   <div class="card">
-    <div class="section-h">Where hits-to-kill and TTK actually change</div>
-    <p class="helptext" style="margin-bottom:10px">HTK only moves in whole-hit steps, so a line chart of it is mostly flat with a couple of sudden jumps — this table shows the range brackets between those jumps instead, which is the part that's actually useful to know.</p>
+    <div class="section-h">Hits-to-kill and TTK at recorded checkpoints</div>
+    <p class="helptext" style="margin-bottom:10px">Values are displayed only at source-measured distances. Shotgun hit counts and time-to-kill are unavailable without validated pellet-hit data. Between checkpoints, no numeric value is assumed.</p>
     <table id="rg_brackets"></table>
   </div>
 
@@ -734,7 +735,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
 <div class="wrap">
   <div class="eyebrow">Field Reference · Time To Kill</div>
   <h1>TTK Calculator</h1>
-  <p class="sub">Point-blank (0 m) TTK with armor and hitbox, including reload time from each weapon's actual reload figure if the fight runs past one magazine.</p>
+  <p class="sub">Point-blank TTK is calculated only where a sourced 0m damage checkpoint and the required inputs exist. Shotgun pellet-hit counts, unsupported 0m readings and unverified reload times are shown as No data.</p>
 
   <div class="card">
     <div class="section-h">Setup</div>
@@ -922,13 +923,13 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
       <dt>Sources</dt>
       <dd>
         Base weapon stats (damage, RPM, velocity, magazine, recoil pattern, reload time) for the original 44 weapons: the supplied weapon dataset.<br>
-        Damage falloff by distance: exact tables for 41 of 45 weapons plus per-pellet tables for the four pellet shotguns (DBS, S686, S12K, Sawn-off), all sourced from pubgstatistics.com and checked against patch 43.2 on 2026-10-22. Its measured ranges are finite (e.g. S12K to 70m, Sawn-off to 50m); the site states damage beyond them is unknown, and this toolkit holds the last measured value past that point.<br>
+        Damage falloff by distance: exact tables for 41 of 45 weapons plus per-pellet tables for the four pellet shotguns (DBS, S686, S12K, Sawn-off), all sourced from pubgstatistics.com and checked against patch 43.2 on 2026-10-22. Its measured ranges are finite (e.g. S12K to 70m, Sawn-off to 50m); the site states damage beyond them is unknown, and this toolkit does not extrapolate or retain the last measured damage.<br>
         Hit-area and per-class damage multipliers, all 13 body parts, by weapon class: pubgstatistics.com, cross-checked against several weapons' published damage tables.<br>
         Armor reduction (30/40/55% for L1/L2/L3): PUBG wiki/community guides. Only Level 3 helmets reduce face-shot damage.<br>
         Attachment modifiers, RPD, LMG rebalance, Tilted Grip, Half Grip, Angled Foregrip, Jammer Pack: official PUBG patch notes (pubg.com/en/news — 42.3, 41.1, 43.1).<br>
         Backpack and item weights: PUBG wiki, pubgmap.io, and community capacity lists.<br>
         Bullet drop and holdover (21 weapons): winnermeta.win real-match telemetry, currently in beta; values are estimated from measured flight time and drift a few percent between 14-day sampling windows.<br>
-        Shotgun pellet-spread cone angles (Sawn-off, S12K, S686): pubgmap.io datamined game files.
+        Historical shotgun spread angles were once taken from a 2018 pubgmap.io build; they are not verified for the current patch and are no longer used to calculate hits, damage or TTK.
       </dd>
       <dt>Patch changes reflected here</dt>
       <dd>
@@ -937,15 +938,15 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
         <b>43.1</b> — Exact firing-position recoil-control figures for RPD (standing −10%, crouching −17%, prone −27%), M249 (crouching −17%, prone −27%), and MG3 (standing −15%, crouching −17%), shown as a note in the Recoil Analyzer. Also adjusted LMG ADS speed and vehicle-damage multipliers — not modeled here.
       </dd>
       <dt>Shotguns</dt>
-      <dd>DBS, S686, S12K, and Sawn-off fire full pellet-pattern damage (count × per-pellet, from pubgstatistics.com) — 9/9/9/8 pellets respectively — instead of a single pellet's damage. For Sawn-off, S12K, and S686, that damage is then scaled by a real spread-based hit fraction: pubgmap.io's datamined pellet-grid cone angle (a genuine game-engine value, not an estimate) gives the pattern's diameter at any range via plain cone geometry (2 × range × tan(angle/2)), and the fraction of pellets landing on an assumed ~0.5m-wide target is the area ratio between the two. This replaced an earlier version of this toolkit that applied a generic bullet-style "18% loss by 500m" falloff to full pellet-pattern damage — which is the wrong mechanic for a pellet weapon and was producing physically impossible numbers (e.g. S12K still doing 75+ damage at 500m). A firing-stance toggle (hip-fire / aimed) appears for these three weapons, since aiming down sights uses a far tighter spread cone from the same datamined source — e.g. S12K at 30m is 43 hits to kill hip-fired but only 2 aimed, both numbers being correct for what they each represent. DBS has no sourced spread-cone data, so it shows flat full-pattern damage with no falloff applied at all, flagged prominently rather than guessed. O12 fires a slug, not pellets, and uses the normal single-projectile falloff model.</dd>
+      <dd>The range tool shows measured base damage <b>per pellet</b> for DBS, S686, S12K and Sawn-off, only at the source's published distance checkpoints. Measurement ends at DBS 70m, S686 80m, S12K 70m and Sawn-off 50m. Source data beyond those limits is unknown, not zero and not a flat continuation. Actual damage to a player, pellet impacts, hip-fire/ADS hit fractions, hits-to-kill and time-to-kill cannot be supported from per-pellet damage alone; the previous legacy-spread calculation has been removed from the effective-range results. O12 fires a slug and uses its measured single-projectile points (2–50m).</dd>
       <dt>Bullet drop</dt>
-      <dd>The Effective Range panel now shows drop-below-aim-point and holdover (mrad) for 16 weapons (AUG A3, AKM, M416, AWM, Kar98k, Vector, M24, Beryl M762, SCAR-L, M249, UMP9, Groza, Mini 14, SKS, K2, QBZ95), sourced from winnermeta.win real-match telemetry — a different site from pubgstatistics.com, and one that's explicitly in beta. It only publishes drop at 200m/400m/600m checkpoints rather than a full curve (some weapons only have a 200m point), so this toolkit interpolates between those points and holds the last one flat beyond it (flagged when that happens). Every other weapon shows no drop data rather than an estimate. Worth noting on its own: Vector's drop by 400m is nearly 16 metres, and UMP9's is over 2 metres by 200m — a good illustration of why SMGs shouldn't be aimed at range at all, regardless of what the damage numbers say.</dd>
+      <dd>Bullet drop is displayed only at explicitly provided WinnerMeta telemetry checkpoints for weapons that have them. At other distances, including past the last checkpoint, the tool displays No data rather than a power-law interpolation or flat continuation. Muzzle velocity by itself cannot establish actual flight time as the projectile slows; no estimated flight times are displayed.</dd>
       <dt>Known limitation</dt>
-      <dd>The pellet hit-fraction model assumes pellets land uniformly across a circular pattern and the target is a fixed ~0.5m circle — a simplification, not a full engine-accurate spread simulation. Real spread isn't perfectly circular or uniform, and target size varies by stance and hitbox. Treat the resulting damage/HTK/TTK numbers as directionally correct (and a large improvement over ignoring spread entirely), not exact.</dd>
+      <dd>The measured falloff tables provide discrete checkpoints, not a continuous verified curve. Only isolated measurement markers are plotted; no damage line or intermediate values are asserted between source checkpoints. Player damage for pellet shotguns cannot be calculated without reliable pellet-impact evidence, so the tool does not provide one.</dd>
       <dt>Known gaps</dt>
       <dd>
         <ul class="gaps">
-          <li>11 of 45 weapons (DBS, S686, S12K, G18C, P92, Skorpion, Sawn-off, Mk12, MK14 EBR, SVD Dragunov, Lynx AMR) still use an approximate linear falloff rather than a real per-distance table — flagged in the Effective Range panel whenever it applies.</li>
+          <li>The Effective Range panel shows only source-published damage checkpoints. Distances outside each weapon’s table and distances without a published sample are No data, not inferred.</li>
           <li>RPD has no published recoil-pattern data; the Recoil Analyzer shows it as incomplete rather than guessing. G18C is missing its recovery-speed and minimum-horizontal% figures for the same reason.</li>
           <li>RPD's reload time (3.5s) is this toolkit's own placeholder — it wasn't in the original dataset like every other weapon's reload time is.</li>
           <li>Attachment slot access is assigned by weapon class plus named exceptions (AKM has no grip/stock; RPD has no muzzle/grip); weapons not individually named follow the class default rather than being verified one by one. Sights aren't modeled as a slot.</li>
@@ -1787,7 +1788,7 @@ const CLASS_MULT_DETAILED = {
 const WEAPON_HEAD_MULT = {"SVD Dragunov":2.80};
 // Real per-weapon falloff tables [distance_m, baseDamage], sourced directly from each weapon's
 // pubgstatistics.com page (fetched 2026-09-10, patch 42.3 data unless the page said otherwise). Every
-// other weapon still uses the generic linear approximation below, clearly labeled in the UI.
+// distances outside published checkpoints are deliberately unknown; there is no generic falloff.
 const FALLOFF_TABLES = {
   "AWM":  [[0,105.0],[100,105.0],[150,104.9],[200,104.2],[250,103.1],[300,101.9],[400,99.4],[500,97.0]],
   "AKM":  [[0,48.0],[25,48.0],[50,48.0],[100,45.5],[150,42.4],[200,39.3],[250,37.0],[300,36.0],[400,36.0],[500,36.0]],
@@ -1824,7 +1825,7 @@ const FALLOFF_TABLES = {
   "MP9":  [[0,31.0],[25,28.6],[50,25.3],[100,21.1],[120,20.2]],
   "Micro Uzi":[[0,26.0],[25,23.9],[50,21.2],[100,17.6],[120,16.9]],
   // Added 2026-10-22 from each weapon's pubgstatistics.com page (patch 43.1/43.2). Beyond the last point the
-  // site says damage is unknown; interpolateFalloff holds the last value, same as every other table here.
+  // site says damage is unknown; no values are now generated past the last measured checkpoint.
   "Mk12":[[0,43.0],[25,43.0],[50,42.9],[100,41.7],[150,40.4],[200,39.2],[250,37.9],[300,36.6],[400,34.1],[500,34.0]],
   "MK14 EBR":[[0,54.0],[25,54.0],[50,54.0],[100,54.0],[150,53.5],[200,52.3],[250,50.9],[300,49.5],[400,47.0],[500,45.9]],
   "SVD Dragunov":[[0,53.0],[25,53.0],[50,53.0],[100,51.9],[150,49.8],[200,47.8],[250,45.8],[300,43.8],[400,39.8],[500,39.8]],
@@ -1833,19 +1834,19 @@ const FALLOFF_TABLES = {
   "P92":[[0,34.0],[25,33.0],[50,32.0],[90,30.4]],
   "Skorpion":[[0,22.0],[25,22.0],[50,21.0],[90,18.4]],
 };
-function interpolateFalloff(rows, range){
-  if(range<=rows[0][0]) return rows[0][1];
-  for(let i=0;i<rows.length-1;i++){
-    const [r0,b0] = rows[i], [r1,b1] = rows[i+1];
-    if(range<=r1){ const t = r1===r0?0:(range-r0)/(r1-r0); return b0+(b1-b0)*t; }
-  }
-  return rows[rows.length-1][1];
+// Strict evidence policy: numerical range results require an actual source checkpoint.
+function measuredValueAt(rows, range){
+  if(!rows || !Number.isFinite(range)) return null;
+  const point = rows.find(([metres]) => metres === range);
+  return point ? point[1] : null;
+}
+function sourcedRangeRows(w){
+  return FALLOFF_TABLES[w.name] || PELLET_FALLOFF[w.name] || null;
 }
 // Bullet drop, sourced from winnermeta.win (real match telemetry, fetched 2026-09-13). WinnerMeta only
 // publishes drop at 200m/400m/600m checkpoints (plus muzzle=0), not a full per-meter curve — this
-// toolkit interpolates between those checkpoints the same way it does for the falloff tables, and holds
-// the last known value flat beyond the final checkpoint (flagged in the UI). Their own site notes this
-// data is in beta and drawn from a rolling 14-day sample, not a fixed-patch official figure.
+// toolkit reports those checkpoints only; no interpolation or flat extension is used.
+// This is beta telemetry from a rolling 14-day sample, not a fixed-patch official figure.
 const DROP_TABLES = {
   "AUG A3": [[0,0],[200,35.2],[400,177.6]],
   "AKM":    [[0,0],[200,66.0],[400,341.6]],
@@ -1875,25 +1876,8 @@ const DROP_TABLES = {
 const MEASURED_MUZZLE_VEL = {"AUG A3":927, "AKM":762, "M416":921, "AWM":1009, "Kar98k":823, "Vector":389, "M24":860, "Beryl M762":786, "SCAR-L":916, "M249":953, "UMP9":368, "Groza":764, "Mini 14":1057, "SKS":845, "K2":924, "QBZ95":962, "MG3":860, "Mk12":955, "VSS Vintorez":440, "MP9":405, "G36C":927};
 function hasDropData(w){ return DROP_TABLES[w.name] != null; }
 function dropAtRange(w, range){
-  const rows = DROP_TABLES[w.name];
-  if(!rows) return null;
-  if(range<=0) return 0;
-  if(range>rows[rows.length-1][0]) return null; // past the last measured checkpoint: no data, not a flat hold
-  // Gravity drop grows roughly with the square of flight time, so it is interpolated as a power law between
-  // checkpoints (muzzle -> first checkpoint assumed ~quadratic) instead of a straight line, which roughly
-  // doubles the true drop at half the first checkpoint distance (e.g. AWM at 100m: ~6.8cm, not 13.6cm).
-  let r0 = 0, d0 = 0;
-  for(let i=1;i<rows.length;i++){
-    const [r1,d1] = rows[i];
-    if(range<=r1){
-      if(i===1) return d1*Math.pow(range/r1, 2);
-      return d0*Math.pow(range/r0, Math.log(d1/d0)/Math.log(r1/r0));
-    }
-    r0 = r1; d0 = d1;
-  }
-  return null;
+  return measuredValueAt(DROP_TABLES[w.name], range);
 }
-const GENERIC_FALLOFF_FACTOR = 0.18; // approximate fallback, only used for weapons with no table above
 function hasExactFalloff(w){ return FALLOFF_TABLES[w.name] != null; }
 // Shotguns fire multiple pellets per trigger pull; the WEAPONS array's dmg field for these four is a
 // single pellet's damage (matches pubgstatistics.com's per-pellet figure), not the shot's total output.
@@ -1919,60 +1903,12 @@ const PELLET_FALLOFF = {
   "S12K":    [[0,23.0],[5,21.7],[10,18.6],[15,15.1],[20,11.7],[25,9.8],[30,8.4],[35,7.8],[40,7.4],[45,7.1],[50,6.8],[55,6.4],[60,6.0],[65,5.7],[70,5.4]],
   "Sawn-off":[[0,21.0],[2,21.0],[4,20.9],[6,20.4],[8,19.3],[10,17.9],[12,16.6],[14,15.0],[16,13.6],[18,12.3],[20,11.5],[22,11.2],[24,10.9],[26,10.7],[28,10.4],[30,10.2],[32,10.0],[34,9.7],[36,9.5],[38,9.3],[40,9.0],[42,8.8],[44,8.5],[46,8.3],[48,8.2],[50,8.0]],
 };
-function shotgunFullPatternDamage(w){ const p = SHOTGUN_PELLETS[w.name]; return p ? p.count*p.dmgPerPellet : null; }
-// LEGACY / UNVERIFIED FOR THE CURRENT BUILD: these cone angles come from pubgmap.io's shotgun page, which
-// reports game version 5.0.1.38 (2018). pubgstatistics.com's patch history records buckshot-spread changes
-// since (S12K +5% Feb 2025; S686 +14% Feb 2024 then -12% Feb 2025; Sawn-off none recorded; earlier changes
-// before mid-2022 aren't recorded there at all), and pubgstatistics.com itself says it hasn't modelled spread
-// yet. The unit (full vs half angle) and what the ADS multiplier scales are also not confirmed.
-// Original description: datamined pellet-spread cone angles from pubgmap.io: "Base" is the
-// full hip-fire spread cone in degrees, "adsMod" is the multiplier applied when aiming down sights. Only
-// 3 of this toolkit's 4 pellet shotguns are covered — DBS and O12 aren't listed on pubgmap.io's shotgun
-// page, so they're left out rather than guessed. Spread diameter at a given range is computed as
-// 2 × range × tan(angle/2), standard cone geometry — not PUBG-specific math, just trigonometry applied to
-// a real sourced angle.
-const PELLET_SPREAD = {
-  "Sawn-off":{baseDeg:3.50, adsMod:0.05},
-  "S12K":    {baseDeg:6.00, adsMod:0.03},
-  "S686":    {baseDeg:5.00, adsMod:0.08},
-};
-function spreadDiameterAt(w, range){
-  const p = PELLET_SPREAD[w.name];
-  if(!p) return null;
-  const rad = deg => deg*Math.PI/180;
-  return {
-    hip: 2*range*Math.tan(rad(p.baseDeg/2)),
-    ads: 2*range*Math.tan(rad(p.baseDeg*p.adsMod/2)),
-  };
-}
-// Assumed target width for pellet-hit-fraction modeling — a rough human chest width. This is a modeling
-// choice, not a sourced game value (unlike the spread angles themselves), and is labeled as such in the UI.
-const TARGET_WIDTH_M = 0.5;
-function pelletHitFraction(w, range, stance){
-  const sd = spreadDiameterAt(w, range);
-  if(!sd || range<=0) return 1; // no real spread data (e.g. DBS) — can't compute a fraction, caller handles this
-  const diam = stance==="ads" ? sd.ads : sd.hip;
-  if(diam<=TARGET_WIDTH_M) return 1;
-  return Math.min(1, (TARGET_WIDTH_M/diam)**2); // area-ratio: fraction of a uniformly-spread pattern landing on a smaller target
-}
-function baseDamageAtRange(w, range, stance){
-  if(hasExactFalloff(w)) return interpolateFalloff(FALLOFF_TABLES[w.name], range);
-  const full = shotgunFullPatternDamage(w);
-  if(full != null){
-    // Pellet shotguns: the dominant real-world effect at range is spread causing pellets to MISS the
-    // target, not per-pellet damage decay — so a generic bullet-style "18% loss by 500m" formula is the
-    // wrong model here and was producing physically absurd numbers (e.g. S12K still doing 75+ damage at
-    // 500m). For the 3 shotguns with real datamined spread-cone data, damage is scaled by the fraction of
-    // the pattern that would actually land on a human-width target at this range, using either the
-    // hip-fire or aimed (ADS) spread cone depending on the stance toggle. Per-pellet damage ALSO falls with
-    // range (PELLET_FALLOFF, sourced), so the full-pattern figure is pellet count x per-pellet falloff, not a
-    // flat number. For DBS (no spread data) the result is the all-pellets-connect upper bound, flagged in the UI.
-    const pattern = SHOTGUN_PELLETS[w.name].count * interpolateFalloff(PELLET_FALLOFF[w.name], range);
-    if(PELLET_SPREAD[w.name]) return pattern * pelletHitFraction(w, range, stance);
-    return pattern;
-  }
-  const start = w.dmg;
-  return start * (1 - GENERIC_FALLOFF_FACTOR * (range/500));
+// Historical spread estimates were retired. Old cone-angle tables and assumed
+// target widths do not verify how many shotgun pellets actually hit a player.
+function baseDamageAtRange(w, range){
+  // Per-pellet damage is not actual whole-shot damage.
+  if(SHOTGUN_PELLETS[w.name]) return null;
+  return measuredValueAt(FALLOFF_TABLES[w.name], range);
 }
 function armorMultFor(part, level){
   if(!part.armored) return 1.00;
@@ -1980,14 +1916,15 @@ function armorMultFor(part, level){
 }
 function finalDamageAt(w, range, hitbox, armorLevel, stance){
   const base = baseDamageAtRange(w, range, stance);
+  if(base == null) return null;
   const part = BODY_PARTS[hitbox] || BODY_PARTS.chest;
   const cm = CLASS_MULT_DETAILED[w.cls] || CLASS_MULT_DETAILED.AR;
   const classMult = (part.bucket==="head" && WEAPON_HEAD_MULT[w.name]) || cm[part.bucket];
   const beforeArmor = base * part.hitArea * classMult;
   return beforeArmor * armorMultFor(part, armorLevel);
 }
-function htkFor(dmg){ return dmg>0 ? Math.ceil(100/dmg) : Infinity; }
-function pureTtk(htk, rpm){ return htk>1 ? (htk-1)/(rpm/60) : 0; }
+function htkFor(dmg){ return dmg == null ? null : (dmg>0 ? Math.ceil(100/dmg) : null); }
+function pureTtk(htk, rpm){ return htk == null ? null : (htk>1 ? (htk-1)/(rpm/60) : 0); }
 
 // LMGs whose recoil/reload were patched in Update 42.3 (max horizontal recoil -30%, reload time ~-25%) —
 // per pubg.com/en/news/10885, applies to the LMG class as a whole, not just RPD.
@@ -2027,9 +1964,20 @@ function drawLineChart(canvas, series, opts={}){
     ctx.beginPath(); ctx.moveTo(pad,gy); ctx.lineTo(W-pad,gy); ctx.stroke();
   }
   series.forEach(s=>{
-    ctx.strokeStyle = s.color; ctx.lineWidth = 2; ctx.beginPath();
-    s.data.forEach((p,i)=>{ const x=xAt(p.x), y=yAt(p.y); i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); });
-    ctx.stroke();
+    if(opts.pointsOnly){
+      // Separate markers denote actual published checkpoints; do not draw a
+      // connecting line that visually implies measured intermediate values.
+      ctx.fillStyle = s.color;
+      s.data.forEach(p=>{
+        ctx.beginPath();
+        ctx.arc(xAt(p.x),yAt(p.y),3.5,0,Math.PI*2);
+        ctx.fill();
+      });
+    } else {
+      ctx.strokeStyle = s.color; ctx.lineWidth = 2; ctx.beginPath();
+      s.data.forEach((p,i)=>{ const x=xAt(p.x), y=yAt(p.y); i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); });
+      ctx.stroke();
+    }
   });
   ctx.fillStyle = "#71899b"; ctx.font = "10px ui-monospace,monospace";
   ctx.fillText(String(Math.round(minX)), pad, H-14);
@@ -2043,137 +1991,189 @@ function drawLineChart(canvas, series, opts={}){
 }
 
 /* ================= 1. EFFECTIVE RANGE & DAMAGE ================= */
+// Strict source-only policy: show published checkpoints, never inferred distances
+// or assumed shotgun pellet connections.
 (function(){
   const $ = id => document.getElementById(id);
   fillWeaponSelect($("rg_weapon"), "AKM");
+  const rangeSlider = $("rg_range");
+  let previousWeaponName = null;
+  let preferredRange = 100;
   function currentWeapon(){ return PT.WBYNAME[$("rg_weapon").value]; }
-  function currentStance(){ return $("rg_stance").value; }
-  function updateStanceVisibility(w){
-    $("rg_stanceField").style.display = PELLET_SPREAD[w.name] ? "" : "none";
+  function isPelletShotgun(w){ return SHOTGUN_PELLETS[w.name] != null; }
+  function rowsFor(w){ return sourcedRangeRows(w); }
+
+  function selectMeasuredRange(w) {
+    const rows = rowsFor(w);
+    $("rg_stanceField").style.display = "none"; // no verified hip-fire / ADS impact count
+    if(!rows || !rows.length) {
+      rangeSlider.disabled = true;
+      rangeSlider.min = "0"; rangeSlider.max = "0"; rangeSlider.value = "0";
+      $("rg_rangeLabel").textContent = "No recorded distance";
+      $("rg_rangeEvidence").textContent = "No sourced damage checkpoints are available.";
+      previousWeaponName = w.name;
+      return null;
+    }
+    rangeSlider.disabled = false;
+    rangeSlider.min = "0";
+    rangeSlider.max = String(rows.length-1);
+    rangeSlider.step = "1";
+    if(previousWeaponName !== w.name) {
+      let chosen = 0;
+      for(let k=1;k<rows.length;k++){
+        if(Math.abs(rows[k][0]-preferredRange)<Math.abs(rows[chosen][0]-preferredRange)) chosen=k;
+      }
+      rangeSlider.value = String(chosen);
+      previousWeaponName = w.name;
+    }
+    const chosenIndex = Math.max(0, Math.min(rows.length-1, Number(rangeSlider.value)||0));
+    const distance = rows[chosenIndex][0];
+    $("rg_rangeLabel").textContent = distance+" m";
+    $("rg_rangeEvidence").textContent =
+      w.name+": recorded "+rows[0][0]+"–"+rows[rows.length-1][0]+
+      "m ("+rows.length+" measured checkpoints). No figures beyond this range or between sampled points.";
+    return distance;
   }
-  function updateDrop(w, range){
-    const drop = dropAtRange(w, range);
-    if(!hasDropData(w)){
-      $("rg_drop").textContent = "–";
-      $("rg_holdover").textContent = "–";
-      $("rg_muzzlecmp").textContent = "–";
-      $("rg_dropNote").innerHTML = `<b>No drop data:</b> ${w.name} isn't one of the ${Object.keys(DROP_TABLES).length} weapons with measured bullet-drop data yet (${Object.keys(DROP_TABLES).join(", ")}).`;
+
+  function updateDrop(w, range) {
+    const data = DROP_TABLES[w.name];
+    const measuredVelocity = MEASURED_MUZZLE_VEL[w.name];
+    $("rg_muzzlecmp").textContent = measuredVelocity==null ? "No data" : measuredVelocity+" m/s";
+    const point = dropAtRange(w, range);
+    if(point==null){
+      $("rg_drop").textContent = "No data";
+      $("rg_holdover").textContent = "No data";
+      $("rg_dropNote").innerHTML = data ?
+        "<b>Unmeasured at "+range+"m:</b> bullet-drop figures are only available at "+
+        data.map(p=>p[0]+"m").join(", ")+". No interpolation or extrapolation is used. Source: WinnerMeta telemetry (beta)." :
+        "<b>No sourced bullet-drop values</b> for "+w.name+".";
       return;
     }
-    if(drop == null){
-      const lastKnown = DROP_TABLES[w.name][DROP_TABLES[w.name].length-1][0];
-      $("rg_drop").textContent = "–";
-      $("rg_holdover").textContent = "–";
-      $("rg_muzzlecmp").textContent = MEASURED_MUZZLE_VEL[w.name]+" m/s";
-      $("rg_dropNote").innerHTML = `<b>No data past ${lastKnown}m:</b> ${w.name}'s measured drop only goes to ${lastKnown}m, so nothing is shown beyond it rather than holding the last value flat (which would badly understate drop). Source: winnermeta.win real-match telemetry (beta).`;
+    const angular = range>0 ? ((point/100)/range)*1000 : 0;
+    $("rg_drop").textContent = point.toFixed(1);
+    $("rg_holdover").textContent = angular.toFixed(2);
+    $("rg_dropNote").innerHTML =
+      "<b>Checkpoint "+range+"m:</b> WinnerMeta beta telemetry reports this drop estimate. "+
+      "Angular drop is mathematically derived from that checkpoint, not a validated in-game scope holdover.";
+  }
+
+  function updateEvidence(w, range){
+    const rows = rowsFor(w);
+    if(!rows){
+      $("rg_approxNote").innerHTML =
+        '<div class="note"><b>No data:</b> This weapon has no recorded damage-distance checkpoints. Nothing is estimated.</div>';
       return;
     }
-    const holdover = range>0 ? (drop/100)/range*1000 : 0; // mrad, derived from the drop figure itself
-    $("rg_drop").textContent = drop.toFixed(1);
-    $("rg_holdover").textContent = holdover.toFixed(2);
-    $("rg_muzzlecmp").textContent = MEASURED_MUZZLE_VEL[w.name]+" m/s";
-    const rows = DROP_TABLES[w.name];
-    const lastKnown = rows[rows.length-1][0];
-    $("rg_dropNote").innerHTML = `Sourced from winnermeta.win real-match telemetry (beta, 14-day rolling sample, checkpoints at ${rows.slice(1).map(r=>r[0]+'m').join('/')}), interpolated between points as a power law. Values are gravity drop estimated from measured flight time (the site's own pages describe this as an estimate, not in-game reticle holdover), and shift a few percent between sampling windows — not official ballistics.`;
-  }
-  function updateApproxNote(w, range, stance){
-    const hasSpread = PELLET_SPREAD[w.name] != null;
-    const isPelletShotgun = shotgunFullPatternDamage(w) != null;
-    let noteHtml;
-    if(hasExactFalloff(w)){
-      noteHtml = `<div class="note"><b>Exact table:</b> ${w.name} uses a real per-distance damage table sourced from pubgstatistics.com (interpolated between the published points).</div>`;
-    } else if(hasSpread){
-      const f = pelletHitFraction(w, range, stance);
-      const stanceLabel = stance==="ads" ? "aimed (ADS)" : "hip-fire";
-      noteHtml = `<div class="note"><b>Spread-based model (${stanceLabel}):</b> ${w.name}'s damage at range is sourced per-pellet damage at this distance (pubgstatistics.com, measured to ${PELLET_FALLOFF[w.name][PELLET_FALLOFF[w.name].length-1][0]}m — held flat beyond that) × pellet count × the fraction of the pattern landing on a ~${TARGET_WIDTH_M}m-wide target (an assumed target width, not a sourced figure). The spread cone is a <b>legacy value</b> from pubgmap.io's game version 5.0.1.38 (2018) and has not been verified against the current build, so treat the connecting fraction as indicative only. At ${range}m ${stanceLabel} that's <b>${(f*100).toFixed(1)}%</b> of the pattern connecting — not a generic bullet-style falloff. Switch the firing-stance dropdown above to compare hip-fire against aimed.</div>`;
-    } else if(isPelletShotgun){
-      noteHtml = `<div class="note"><b>No falloff model:</b> ${w.name} has no spread-cone data (only Sawn-off, S12K, and S686 have even legacy values), so this shows the all-pellets-connect upper bound: sourced per-pellet falloff (pubgstatistics.com, measured to ${PELLET_FALLOFF[w.name][PELLET_FALLOFF[w.name].length-1][0]}m, held flat beyond) × pellet count. Real damage will be lower once the pattern spreads wider than a body — deliberately not guessing how much.</div>`;
+    const start = rows[0][0], end = rows[rows.length-1][0];
+    const perPellet = isPelletShotgun(w);
+    let message =
+      "<div class=\"note\"><b>Source limit: "+start+"–"+end+"m.</b> "+
+      "Only the published damage checkpoints from pubgstatistics.com are used. "+
+      "Beyond "+end+"m and at unsampled distances, damage is unknown — not zero and not held flat.</div>";
+    if(perPellet){
+      const pellet = measuredValueAt(rows,range);
+      message +=
+        "<div class=\"note\"><b>Shotgun: damage per pellet only.</b> "+
+        (pellet==null ? "No recorded per-pellet damage at this distance. " :
+        "Measured base damage at "+range+"m: <b>"+pellet.toFixed(1)+" per pellet</b> (before hitbox and armor). ")+
+        "The number of pellets that hit a person is not verified, for hip-fire or ADS. "+
+        "The older spread angles and assumed target size were not verified for the current game, "+
+        "so total player damage, HTK and TTK are intentionally <b>No data</b>.</div>";
     } else {
-      noteHtml = `<div class="note"><b>Approximate:</b> ${w.name} has no per-range falloff table loaded — this uses a generic linear falloff (≈18% loss by 500 m), documented as approximate. Weapons with an exact table: ${Object.keys(FALLOFF_TABLES).join(", ")}.</div>`;
+      message +=
+        '<div class="note"><b>Calculated result:</b> Damage to the selected body area uses a published base-damage checkpoint plus the existing hit-area, weapon-class and armor multipliers. It is not a direct observation of this exact combat scenario.</div>';
     }
-    if(isPelletShotgun){
-      const sd = spreadDiameterAt(w, range);
-      noteHtml += `<div class="note"><b>Pellets:</b> ${w.name} fires ${SHOTGUN_PELLETS[w.name].count} pellets at ${SHOTGUN_PELLETS[w.name].dmgPerPellet} damage each (sourced from pubgstatistics.com).${sd ? ` At ${range}m, the legacy datamined spread cone (pubgmap.io, 2018 build, unverified for today's patch) covers roughly <b>${sd.hip.toFixed(1)}m</b> hip-fire, or <b>${sd.ads.toFixed(2)}m</b> aiming down sights — hip-fire is already wider than a ${TARGET_WIDTH_M}m target by ${sd.hip>TARGET_WIDTH_M ? Math.round(sd.hip/TARGET_WIDTH_M*10)/10+"×" : "well under"} at this range.` : ``}</div>`;
-    }
-    $("rg_approxNote").innerHTML = noteHtml;
+    $("rg_approxNote").innerHTML = message;
   }
-  function update(){
-    const w = currentWeapon();
-    const range = +$("rg_range").value;
+
+  function updatePoint(w,range){
+    const pellet = isPelletShotgun(w);
     const hitbox = $("rg_hitbox").value;
     const armor = +$("rg_armor").value;
-    const stance = currentStance();
-    updateStanceVisibility(w);
-    $("rg_rangeLabel").textContent = range+" m";
-    const dmg = finalDamageAt(w, range, hitbox, armor, stance);
-    const htk = htkFor(dmg);
-    const ttk = pureTtk(htk, w.rpm);
-    const flight = range / w.vel;
-    $("rg_dmg").textContent = dmg.toFixed(1);
-    $("rg_htk").textContent = isFinite(htk)?htk:"–";
-    $("rg_ttk").textContent = ttk.toFixed(2);
-    $("rg_flight").textContent = flight.toFixed(3);
-    updateDrop(w, range);
-    setBar("rg_dmg", dmg, (shotgunFullPatternDamage(w) ?? w.dmg)*1.3);
-    setBar("rg_htk", htk, 8);
-    setBar("rg_ttk", ttk, 2);
-    updateApproxNote(w, range, stance);
-    updateCharts();
+    const damage = range==null ? null :
+      pellet ? measuredValueAt(PELLET_FALLOFF[w.name], range) :
+      finalDamageAt(w,range,hitbox,armor);
+    const htk = pellet ? null : htkFor(damage);
+    const ttk = pellet ? null : pureTtk(htk,w.rpm);
+    $("rg_dmgLabel").textContent = pellet ? "Measured base dmg / pellet" : "Damage at checkpoint";
+    $("rg_dmg").textContent = damage==null ? "No data" : damage.toFixed(1);
+    $("rg_htk").textContent = htk==null ? "No data" : String(htk);
+    $("rg_ttk").textContent = ttk==null ? "No data" : ttk.toFixed(2);
+    // Muzzle velocity alone cannot determine actual travel time at distance.
+    $("rg_flight").textContent = "No data";
+    setBar("rg_dmg",damage, (pellet ? SHOTGUN_PELLETS[w.name].dmgPerPellet : w.dmg)*1.3);
+    setBar("rg_htk",htk,8);
+    setBar("rg_ttk",ttk,2);
+    if(range == null) {
+      $("rg_drop").textContent = "No data";
+      $("rg_holdover").textContent = "No data";
+      $("rg_muzzlecmp").textContent = "No data";
+      $("rg_dropNote").textContent = "No supported range available.";
+    } else updateDrop(w,range);
+    updateEvidence(w,range);
   }
+
   function updateCharts(){
     const w = currentWeapon();
+    const rows = rowsFor(w);
+    const pellet = isPelletShotgun(w);
+    const ctx = $("rg_chartDmg").getContext("2d");
+    const table = $("rg_brackets");
+    if(!rows || !rows.length){
+      ctx.clearRect(0,0,$("rg_chartDmg").width,$("rg_chartDmg").height);
+      $("rg_chartTitle").textContent = "No recorded damage chart";
+      table.innerHTML = '<tr><td>No recorded damage checkpoints for this weapon.</td></tr>';
+      return;
+    }
     const hitbox = $("rg_hitbox").value;
     const armor = +$("rg_armor").value;
-    const stance = currentStance();
-    const dmgSeries=[];
-    let brackets=[];
-    for(let r=0;r<=500;r+=5){
-      const d = finalDamageAt(w,r,hitbox,armor,stance);
-      dmgSeries.push({x:r,y:d});
-      const h = htkFor(d), t = pureTtk(h,w.rpm);
-      const last = brackets[brackets.length-1];
-      if(last && last.htk===h){ last.end = r; }
-      else brackets.push({start:r, end:r, htk:h, ttk:t});
+    const points = rows.map(([range,perPellet])=>({
+      x:range,
+      y:pellet ? perPellet : finalDamageAt(w,range,hitbox,armor)
+    })).filter(p=>p.y!=null);
+    $("rg_chartTitle").textContent = pellet ?
+      "Measured base damage per pellet ("+rows[0][0]+"–"+rows[rows.length-1][0]+"m)" :
+      "Calculated damage at measured checkpoints ("+rows[0][0]+"–"+rows[rows.length-1][0]+"m)";
+    if(points.length) drawLineChart($("rg_chartDmg"), [{
+      label:pellet ? "Base damage / pellet" : "Damage from source checkpoints",
+      color:"#8bd8e8", data:points
+    }], {pointsOnly:true});
+    if(pellet){
+      table.innerHTML =
+        '<tr><th>Range</th><th>Hits to kill</th><th>TTK (s)</th></tr>'+
+        '<tr><td colspan="3">No data: measured per-pellet damage does not tell us how many pellets hit the target.</td></tr>';
+      return;
     }
-    // Pellet shotguns have a continuously-declining hit fraction rather than the stepped HTK jumps normal
-    // weapons show, so the "where it changes" bracket scan above produces a near-useless 100-row table.
-    // Fall back to a fixed set of checkpoints instead — still real numbers, just not scanned for every tick.
-    if(brackets.length>12){
-      const checkpoints = [0,10,25,50,75,100,150,200,300,400,500];
-      brackets = checkpoints.map(r=>{
-        const d = finalDamageAt(w,r,hitbox,armor,stance);
-        const h = htkFor(d);
-        return {start:r, end:r, htk:h, ttk:pureTtk(h,w.rpm), checkpoint:true};
-      });
-    }
-    drawLineChart($("rg_chartDmg"), [{label:"Damage", color:"#2ea6ff", data:dmgSeries}]);
-    $("rg_brackets").innerHTML = `<tr><th>Range</th><th>Hits to kill</th><th>TTK (s)</th></tr>` +
-      brackets.map((b,i)=>{
-        const rangeLabel = b.checkpoint ? `${b.start}m` : (i===brackets.length-1 ? `${b.start}m+` : `${b.start}–${b.end}m`);
-        const htkDisplay = isFinite(b.htk) ? (b.htk>50 ? "50+" : b.htk) : "–";
-        return `<tr><td>${rangeLabel}</td><td>${htkDisplay}</td><td>${b.ttk>20 ? "20+" : b.ttk.toFixed(2)}</td></tr>`;
+    table.innerHTML =
+      '<tr><th>Measured range</th><th>Hits to kill (calculated)</th><th>TTK (s, calculated)</th></tr>'+
+      points.map(p=>{
+        const hits=htkFor(p.y), time=pureTtk(hits,w.rpm);
+        return "<tr><td>"+p.x+"m</td><td>"+(hits==null?"No data":hits)+
+          "</td><td>"+(time==null?"No data":time.toFixed(2))+"</td></tr>";
       }).join("");
   }
-  const debouncedCharts = debounce(updateCharts, 120);
-  $("rg_range").addEventListener("input", ()=>{
-    const range = +$("rg_range").value;
-    const w = currentWeapon(), hitbox = $("rg_hitbox").value, armor = +$("rg_armor").value, stance = currentStance();
-    $("rg_rangeLabel").textContent = range+" m";
-    const dmg = finalDamageAt(w, range, hitbox, armor, stance);
-    const htk = htkFor(dmg);
-    const ttk = pureTtk(htk, w.rpm);
-    $("rg_dmg").textContent = dmg.toFixed(1);
-    $("rg_htk").textContent = isFinite(htk)?htk:"–";
-    $("rg_ttk").textContent = ttk.toFixed(2);
-    $("rg_flight").textContent = (range/w.vel).toFixed(3);
-    updateDrop(w, range);
-    updateApproxNote(w, range, stance);
-    setBar("rg_dmg", dmg, (shotgunFullPatternDamage(w) ?? w.dmg)*1.3); setBar("rg_htk", htk, 8); setBar("rg_ttk", ttk, 2);
-    debouncedCharts(); // chart redraw (the expensive part) is throttled during slider drag
+
+  function update(){
+    const w=currentWeapon(), range=selectMeasuredRange(w);
+    if(range!=null) preferredRange=range;
+    updatePoint(w,range);
+    updateCharts();
+  }
+  rangeSlider.addEventListener("input",()=>{
+    const w=currentWeapon(), range=selectMeasuredRange(w);
+    if(range!=null) preferredRange=range;
+    updatePoint(w,range);
   });
-  ["rg_weapon","rg_hitbox","rg_armor"].forEach(id=>{ $(id).addEventListener("input", update); $(id).addEventListener("change", update); });
-  $("rg_stance").addEventListener("change", update);
-  $("rg_detailed").addEventListener("change", ()=>{ fillHitboxSelect($("rg_hitbox"), $("rg_detailed").checked); update(); });
+  ["rg_weapon","rg_hitbox","rg_armor"].forEach(id=>{
+    $(id).addEventListener("input",update);
+    $(id).addEventListener("change",update);
+  });
+  // Kept for compatibility but cannot affect a reported value without verified spread evidence.
+  $("rg_stance").addEventListener("change",update);
+  $("rg_detailed").addEventListener("change",()=>{
+    fillHitboxSelect($("rg_hitbox"),$("rg_detailed").checked);
+    update();
+  });
   update();
 })();
 
@@ -2183,50 +2183,75 @@ function drawLineChart(canvas, series, opts={}){
   fillWeaponSelect($("tk_weapon"), "AKM");
   fillWeaponSelect($("tk_cmpA"), "AKM");
   fillWeaponSelect($("tk_cmpB"), "UMP9");
-  $("tk_cmpC").innerHTML += PT.WEAPONS.map(w=>`<option>${w.name}</option>`).join("");
+  $("tk_cmpC").innerHTML += PT.WEAPONS.map(w=>"<option>"+w.name+"</option>").join("");
+  const display = (value, digits) => value == null ? "No data" : Number(value).toFixed(digits);
   function reloadSecondsFor(w){
-    let base = w.reload; // real per-weapon figure from the originally supplied WEAPONS array
-    if(LMG_PATCH_42_3.has(w.name)) base *= 0.75; // official: LMG reload times reduced ~25% (Update 42.3)
+    if(w.name==="RPD") return null; // current reload value is a toolkit placeholder, not evidence
+    let base = w.reload;
+    if(base==null) return null;
+    if(LMG_PATCH_42_3.has(w.name)) base *= 0.75; // sourced approximate balance change
     return base;
   }
   function computeFor(w, hitbox, armor){
     const dmg = finalDamageAt(w, 0, hitbox, armor);
+    if(dmg==null){
+      return {dmg:null,htk:null,pure:null,withReload:null,reloads:null};
+    }
     const htk = htkFor(dmg);
-    const pure = pureTtk(htk, w.rpm);
+    const pure = pureTtk(htk,w.rpm);
+    if(htk==null || pure==null) return {dmg,htk:null,pure:null,withReload:null,reloads:null};
     const reloads = w.mag ? Math.max(0, Math.ceil(htk/w.mag)-1) : 0;
-    const withReload = pure + reloads*reloadSecondsFor(w);
+    const reloadTime = reloads>0 ? reloadSecondsFor(w) : 0;
+    const withReload = reloadTime == null ? null : pure + reloads*reloadTime;
     return {dmg,htk,pure,withReload,reloads};
   }
   function update(){
-    const w = PT.WBYNAME[$("tk_weapon").value];
-    const hitbox = $("tk_hitbox").value, armor = +$("tk_armor").value;
-    const r = computeFor(w, hitbox, armor);
-    $("tk_dmg").textContent = r.dmg.toFixed(1);
-    $("tk_htk").textContent = isFinite(r.htk)?r.htk:"–";
-    $("tk_pure").textContent = r.pure.toFixed(2);
-    $("tk_reload").textContent = r.withReload.toFixed(2);
-    setBar("tk_dmg", r.dmg, w.dmg*1.3);
-    setBar("tk_htk", r.htk, 8);
-    setBar("tk_pure", r.pure, 2);
-    setBar("tk_reload", r.withReload, 6);
-    const rs = reloadSecondsFor(w);
-    let tkNote = r.reloads>0
-      ? `This fight needs ~${r.reloads} reload(s) at ${rs.toFixed(2)}s each${w.name==="RPD"?" (this toolkit's own placeholder — RPD's reload time wasn't in the originally supplied data, unlike every other weapon here)":""}${LMG_PATCH_42_3.has(w.name)&&w.name!=="RPD"?", including the sourced Update 42.3 LMG −25% reload reduction":""}.`
-      : `This fight doesn't run past one magazine, so no reload is added.`;
-    if(shotgunFullPatternDamage(w) != null) tkNote += ` Damage assumes all ${SHOTGUN_PELLETS[w.name].count} pellets connect (pellet spread at range isn't modeled, so real damage will be lower past point-blank).`;
-    $("tk_note").innerHTML = tkNote;
+    const w=PT.WBYNAME[$("tk_weapon").value];
+    const hitbox=$("tk_hitbox").value, armor=+$("tk_armor").value;
+    const r=computeFor(w,hitbox,armor);
+    $("tk_dmg").textContent=display(r.dmg,1);
+    $("tk_htk").textContent=r.htk==null?"No data":r.htk;
+    $("tk_pure").textContent=display(r.pure,2);
+    $("tk_reload").textContent=display(r.withReload,2);
+    setBar("tk_dmg",r.dmg,w.dmg*1.3);
+    setBar("tk_htk",r.htk,8);
+    setBar("tk_pure",r.pure,2);
+    setBar("tk_reload",r.withReload,6);
+    let tkNote;
+    if(SHOTGUN_PELLETS[w.name]){
+      tkNote="No verified pellet hit-count data for this shotgun. Per-pellet damage does not establish actual damage, hits-to-kill or time-to-kill of a full shot, even at point blank.";
+    } else if(r.dmg==null){
+      tkNote=w.name+" has no published 0m damage checkpoint. Point-blank damage and TTK are not inferred from another distance.";
+    } else if(r.withReload==null){
+      tkNote="Pure firing-time TTK is calculated from the sourced 0m damage and RPM, but no sourced reload duration is available for "+w.name+". TTK including reload is therefore unknown.";
+    } else if(r.reloads>0){
+      tkNote="Calculated firing time including "+r.reloads+" reload(s) at "+reloadSecondsFor(w).toFixed(2)+"s each. This is modelled from supplied figures, not direct combat telemetry.";
+    } else {
+      tkNote="Calculated from sourced 0m base damage, existing armor/hitbox multipliers and RPM. No reload is needed.";
+    }
+    $("tk_note").textContent=tkNote;
     renderCompare();
   }
   function renderCompare(){
-    const hitbox = $("tk_hitbox").value, armor = +$("tk_armor").value;
-    const names = [$("tk_cmpA").value, $("tk_cmpB").value, $("tk_cmpC").value].filter(Boolean);
-    const rows = names.map(n=>{ const w=PT.WBYNAME[n]; return {name:n, ...computeFor(w,hitbox,armor)}; });
-    $("tk_cmpTable").innerHTML = `<tr><th>Weapon</th><th>Dmg</th><th>HTK</th><th>Pure TTK</th><th>Incl. reload</th></tr>` +
-      rows.map(r=>`<tr><td>${r.name}</td><td>${r.dmg.toFixed(1)}</td><td>${isFinite(r.htk)?r.htk:"–"}</td><td>${r.pure.toFixed(2)}</td><td>${r.withReload.toFixed(2)}</td></tr>`).join("");
+    const hitbox=$("tk_hitbox").value, armor=+$("tk_armor").value;
+    const names=[$("tk_cmpA").value,$("tk_cmpB").value,$("tk_cmpC").value].filter(Boolean);
+    const rows=names.map(n=>{const w=PT.WBYNAME[n];return {name:n,...computeFor(w,hitbox,armor)};});
+    $("tk_cmpTable").innerHTML=
+      '<tr><th>Weapon</th><th>Dmg</th><th>HTK</th><th>Pure TTK</th><th>Incl. reload</th></tr>'+
+      rows.map(r=>'<tr><td>'+r.name+'</td><td>'+display(r.dmg,1)+
+        '</td><td>'+(r.htk==null?'No data':r.htk)+
+        '</td><td>'+display(r.pure,2)+
+        '</td><td>'+display(r.withReload,2)+'</td></tr>').join("");
   }
-  ["tk_weapon","tk_hitbox","tk_armor"].forEach(id=>{ $(id).addEventListener("input", update); $(id).addEventListener("change", update); });
-  $("tk_detailed").addEventListener("change", ()=>{ fillHitboxSelect($("tk_hitbox"), $("tk_detailed").checked); update(); });
-  ["tk_cmpA","tk_cmpB","tk_cmpC"].forEach(id=>$(id).addEventListener("change", renderCompare));
+  ["tk_weapon","tk_hitbox","tk_armor"].forEach(id=>{
+    $(id).addEventListener("input",update);
+    $(id).addEventListener("change",update);
+  });
+  $("tk_detailed").addEventListener("change",()=>{
+    fillHitboxSelect($("tk_hitbox"),$("tk_detailed").checked);
+    update();
+  });
+  ["tk_cmpA","tk_cmpB","tk_cmpC"].forEach(id=>$(id).addEventListener("change",renderCompare));
   update();
 })();
 
