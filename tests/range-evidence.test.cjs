@@ -65,7 +65,8 @@ test('range UI uses source indexes, not a fake 0–500m model',()=>{
   assert.match(html,/id="rg_range" min="0" max="1" step="1"/);
   assert.match(html,/id="rg_rangeEvidence"/);
   assert.match(html,/Available range: /);
-  assert.match(html,/Damage is per pellet only; total damage, hits to kill and TTK are unknown/);
+  assert.match(html,/Minimum shells assume all /);
+  assert.match(html,/shotgunMinShellsAt\(w,range,hitbox,armor\)/);
   assert.match(html,/Shots?gun/);
   assert.match(html,/No data: measured per-pellet damage does not tell us how many pellets hit the target/);
   assert.doesNotMatch(html,/GENERIC_FALLOFF_FACTOR|interpolateFalloff|PELLET_SPREAD|pelletHitFraction|TARGET_WIDTH_M/);
