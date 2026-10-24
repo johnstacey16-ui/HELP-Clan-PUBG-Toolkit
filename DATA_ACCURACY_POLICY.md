@@ -1,17 +1,24 @@
-# HELP Clan PUBG Toolkit — Data Accuracy Rules
+# HELP Clan PUBG Toolkit — Calculation and Reference Notes
 
-## Core rule: unknown stays unknown
+## Project approach: developer-built models are allowed
 
-This toolkit is a reference, not a physics simulator. **Never fabricate numeric results from missing evidence.** When the required source is absent, insufficient, beyond its measured range, or incompatible with the calculation, display **No data** and explain why.
+The HELP Clan toolkit includes original formulas, manual calibrations and calculations designed by its creator. **These are intentional features, not automatically invalid because they are not published by KRAFTON.** The previous blanket requirement to use only verified official measurements has been retired at the owner's request.
 
-### Measured, calculated and unknown
+Keep this distinction **in the repository documentation**, without filling the public interface with lengthy methodology:
 
-- **Measured / source-published**: original datapoint at its recorded distance. Identify its source, date or patch when available.
-- **Calculated from measured values**: a transparent calculation (for example, armor reduction at a sourced damage checkpoint). Label it as calculated, never as observed in a game.
-- **Estimated / historical / community-derived**: do not silently represent as measured. Do not turn unverified assumptions into apparently exact damage, hit-count or kill-time statistics.
-- **Unknown**: show **No data**. Do not use zeros, last-value carry-forward, arbitrary falloff percentages, placeholder reload times, extrapolation, or assumed target geometry as substitutes.
+- **Published measurements:** retain the source, patch and any known coverage limits.
+- **Custom or empirical calculators:** may use the creator's original formulas, fitted coefficients and practical assumptions. Keep the maths and intended behavior in source control; clearly note important limitations here for maintainers.
+- **Unknown measurements:** an absence of data is not the same as zero. Where a feature explicitly promises recorded values (such as the existing shotgun damage-distance tables), continue respecting the table's known endpoints. A separate modeled calculator can exist when intentionally designed.
+- **Avoid accidental changes to proven user-created maths:** interface improvements should not replace or silently remove working sensitivity and scope-matching formulas.
 
-## Effective Range — enforced
+### Core custom sensitivity calculations
+
+The Scope Sensitivity Matcher uses owner-supplied scope-specific A/B constants and two mathematical functions:
+`pixel_speed = 3840 × (C + B) / ((A/60) × (10+B))` and
+`matched_sensitivity = (A/60) × (10+B) × pixel_speed / 3840 − B`.
+These are **deliberately used empirical conversion formulas**, not a claim to reproduce an official game-engine implementation. They remain in the app and can be the default opening calculator.
+
+## Effective Range — current recorded-distance behavior
 
 - Each weapon has its own list of *published distance checkpoints*. The range slider selects those actual source points only.
 - **DBS** pellet damage: recorded 0–70m; **S686**: 0–80m; **S12K**: 0–70m; **Sawn-off**: 0–50m (pubgstatistics.com, checked October 2026).
@@ -25,20 +32,20 @@ This toolkit is a reference, not a physics simulator. **Never fabricate numeric 
 - Flight time from *muzzle velocity* alone is not reliable beyond the muzzle, so effective-range flight time is **No data** rather than a fabricated constant-speed figure.
 - Even a line drawn between measured endpoints can imply false confidence. This toolkit uses individual plotted markers for measured checkpoints.
 
-## Recoil Analyzer — no invented per-shot pattern
+## Recoil Analyzer — current behavior and future options
 
 - The old analyzer multiplied vertical recoil and horizontal bias by \`1 + (shot - 1) × speed × 0.05\`, then generated seeded horizontal variation. **No official or validated current-PUBG source supports this as a universal per-bullet formula. This calculation has been retired.**
-- Do not replace that with invented fixed jumps at bullets 10, 20 and 30. No evidence has established those precise universal boundaries.
+- The old implementation was removed because its universal behavior was not supported. The owner can add a clearly intentional custom recoil model later; bullet-10/20/30 stages should not be described as official PUBG mechanics without evidence.
 - KRAFTON's 7 August 2026 LMG developer letter describes recoil reaching a peak and then settling, and documents an adjustment of approximately −10% at the peak and +10% after recovery. https://pubg.com/en/news/10874
 - Update 42.1 (16 June 2026) documents distinct early/mid recoil buildup for the SLR. https://pubg.com/en/news/10179
 - Update 30.1 (11 June 2024) describes MP5K vertical recoil increasing gradually. https://pubg.com/en-asia/news/7424
 - Build-derived PUBG weapon field listings include vertical/horizontal recoil speed, climb and fall values, recoil variation and horizontal direction-switch cadence. These do **not** by themselves establish verified per-shot displacement or a complete game-engine spray simulation. Example: https://pubgplanet.com/wiki/weapons/rpd
 - The Recoil Evidence Explorer now displays original supplied weapon-level parameter values with an explicit caveat, while withholding simulated shot-by-shot/cumulative recoil. Unverified or absent measurements are **No data**. Neither a generic prone factor nor a fixed 5% growth is applied.
-- To restore exact curves, require current-patch measurements or reproducible game-engine data sufficient to validate the shot-by-shot behavior. Keep provenance and patch identifiers.
+- Future recoil features can use either game measurements or explicitly designed creator-owned models. Keep the algorithm, intended inputs and any supporting references in the repository. Do not advertise a custom model as an exact engine reproduction.
 
-## Other areas to audit before calling their outputs fully source-verified
+## Other models and known limitations
 
-The following pre-existing features contain explicitly documented approximations or placeholder inputs. Their figures should **not** be described as verified measurements until audited and replaced with reliable data, or suppressed if reliable data does not exist:
+The following existing features include custom estimates or incomplete inputs. They can remain useful tools, including when they are the creator's own original work. Track their assumptions here so future code changes don't accidentally alter their behavior:
 
 1. **Supplied recoil parameters** — several weapon-level fields lack independent current-patch validation; do not use them as exact per-shot recoil.
 2. **Attachment estimates** — approximate community modifier percentages where no patch-confirmed figure is available.
@@ -46,7 +53,7 @@ The following pre-existing features contain explicitly documented approximations
 4. **Armor crossovers** — derivations from fixed source tables; distinguish mathematical model outputs from live/current-patch observation.
 5. **RPD reload value** — explicitly marked as a placeholder in the original dataset. TTK including that placeholder is now withheld; examine other calculators that still reference reload.
 
-When a model is optional, make it visibly optional and unmistakably *an estimate*; do not default to presenting it as source-backed. If the user asks for fully verified numbers only, suppress unsupported outputs instead.
+When a model is deliberately included by the creator, retain it and document its assumptions here. Keep the main UI practical and compact; surface a short warning only where it materially changes how a result should be interpreted.
 
 ## Verification
 
@@ -58,4 +65,4 @@ Run `node --test tests/*.test.cjs` after updating the toolkit. The `range-eviden
 - The source explicitly states damage outside its recorded range is unknown.
 - WinnerMeta bullet-drop observations: https://winnermeta.win
 
-Update these rules if authoritative data genuinely changes. Do not replace unknowns with convenient assumptions merely to make an interface look complete.
+These notes describe current decisions and are not a ban on future owner-authored formulas or modeled calculations. Preserve the source maths and update this file whenever behavior changes.

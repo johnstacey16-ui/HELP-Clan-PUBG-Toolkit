@@ -417,8 +417,13 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
       <p class="sidebar-kicker"><span class="kicker-rule"></span> THE TOOLKIT</p>
       <nav id="app-toolnav" aria-label="Toolkit tools">
         <div class="nav-tool-group">
-  <div class="nav-group-label"><span>01</span>COMBAT ENGINE</div>
-  <button class="nav-tool active" type="button" data-open-panel="panel-combat" aria-controls="panel-combat" aria-current="page">
+  <div class="nav-group-label"><span>01</span>CORE TOOLS</div>
+  <button class="nav-tool active" type="button" data-open-panel="panel-sensitivity" aria-controls="panel-sensitivity" aria-current="page">
+    <span class="nav-tool-icon"><svg class="nav-tool-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="2.5" fill="#111f2c"/><circle cx="16" cy="17" r="2.5" fill="#111f2c"/></svg></span>
+    <span class="nav-tool-name">Scope Sensitivity Matcher</span>
+    <svg class="nav-tool-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+  </button>
+  <button class="nav-tool" type="button" data-open-panel="panel-combat" aria-controls="panel-combat"
     <span class="nav-tool-icon"><svg class="nav-tool-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="2"/><path d="M12 2v4m0 12v4M2 12h4m12 0h4"/></svg></span>
     <span class="nav-tool-name">Combat DB</span>
     <svg class="nav-tool-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
@@ -445,12 +450,8 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
   </button>
 </div>
         <div class="nav-tool-group">
-  <div class="nav-group-label"><span>02</span>PLAYER SETUP</div>
-  <button class="nav-tool" type="button" data-open-panel="panel-sensitivity" aria-controls="panel-sensitivity">
-    <span class="nav-tool-icon"><svg class="nav-tool-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="2.5" fill="#111f2c"/><circle cx="16" cy="17" r="2.5" fill="#111f2c"/></svg></span>
-    <span class="nav-tool-name">Sensitivity &amp; Recoil Matcher</span>
-    <svg class="nav-tool-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
-  </button>
+  <div class="nav-group-label"><span>02</span>GEAR &amp; LOADOUT</div>
+  
   <button class="nav-tool" type="button" data-open-panel="panel-backpack" aria-controls="panel-backpack">
     <span class="nav-tool-icon"><svg class="nav-tool-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="6" width="14" height="15" rx="3"/><path d="M9 6V4a3 3 0 0 1 6 0v2M9 11h6M5 15h14"/></svg></span>
     <span class="nav-tool-name">Tactical Loadout &amp; Gear</span>
@@ -474,7 +475,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
         </button>
         <div class="topbar-heading">
           <div class="topbar-breadcrumb">HELP CLAN <span>/</span> FIELD TOOLKIT</div>
-          <div class="topbar-title" id="active-tool-heading" tabindex="-1">Combat DB</div>
+          <div class="topbar-title" id="active-tool-heading" tabindex="-1">Scope Sensitivity Matcher</div>
         </div>
       </div>
       <div class="topbar-actions">
@@ -483,7 +484,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
       </div>
     </header>
     <main id="app-workspace" aria-label="Toolkit workspace">
-<div id="panel-combat" class="hub-main active">
+<div id="panel-combat" class="hub-main">
  
 <div class="wrap">
  
@@ -515,56 +516,22 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
  
 </div>
  
-<div id="panel-sensitivity" class="hub-main">
+<div id="panel-sensitivity" class="hub-main active">
  
 <div class="wrap">
  
   <div class="hdr"><b class="br1"></b><b class="br2"></b>
     <div class="eyebrow">// UNOFFICIAL FIELD REFERENCE TOOL</div>
-    <div class="title">PUBG <span>SENSITIVITY</span> CALCULATOR</div>
+    <div class="title">PUBG <span>SCOPE SENSITIVITY</span> MATCHER</div>
     
-  </div>
- 
-  <div class="card" style="border-color:var(--amber-dim);">
-    <div class="card-title" style="color:var(--olive);"><span class="n">i</span> Quick Start &mdash; which tab do I need?</div>
-    <table class="ref">
-      <thead><tr><th>You want to&hellip;</th><th>Use</th></tr></thead>
-      <tbody>
-        <tr><td>Nudge ADS/scope sensitivity up or down without losing your recoil-control feel</td><td>Vertical Mult.</td></tr>
-        <tr><td>Make every scope (1x&ndash;15x) turn at the same actual speed</td><td>Scope</td></tr>
-        <tr><td>Change monitor aspect ratio and correct sensitivity accordingly</td><td>Resolution</td></tr>
-      </tbody>
-    </table>
   </div>
  
   <div class="tabs" id="tabs"></div>
  
-  <!-- ================= VERTICAL MULTIPLIER ================= -->
-  <div class="panel" data-panel="vert">
-    <div class="card">
-      <div class="card-title"><span class="n">01</span> Vertical Multiplier Calculator</div>
-      <p class="card-sub">Change ADS or scope sensitivity by a small amount (~1&ndash;3 points) while keeping your existing vertical recoil-control feel. Works because PUBG sensitivity scales logarithmically: +15 sensitivity &asymp; 2&times;. Vertical multiplier runs 50&ndash;150 in-game.</p>
-      <div class="grid">
-        <div class="field"><label>Current ADS sensitivity <span style="color:var(--dim);">(0&ndash;20)</span></label><input type="number" id="v_cur_ads" value="10" step="1" min="0" max="20"></div>
-        <div class="field"><label>Current vertical multiplier <span style="color:var(--dim);">(50&ndash;150)</span></label><input type="number" id="v_cur_vm" value="100" step="1" min="50" max="150"></div>
-        <div class="field"><label>Target ADS sensitivity <span style="color:var(--dim);">(0&ndash;20)</span></label><input type="number" id="v_tgt_ads" value="12" step="1" min="0" max="20"></div>
-      </div>
-      <div class="outbar">
-        <div class="out"><div class="k">Sensitivity difference</div><div class="v" id="v_diff">–</div></div>
-        <div class="out"><div class="k">Sensitivity ratio</div><div class="v" id="v_ratio">–</div></div>
-        <div class="out hi"><div class="k">Target vertical multiplier</div><div class="v" id="v_tvm">–</div></div>
-        <div class="out"><div class="k">Rounded (nearest)</div><div class="v" id="v_round">–</div></div>
-        <div class="out"><div class="k">Rounded down (safer)</div><div class="v" id="v_floor">–</div></div>
-      </div>
-      <p class="card-sub" style="margin:10px 0 0">In-game the vertical multiplier field only accepts whole numbers — use <b>Rounded (nearest)</b> for the closest match to your original feel, or <b>Rounded down (safer)</b> if you'd rather slightly undershoot than overshoot it.</p>
-      <div class="note" id="v_advice"></div>
-    </div>
-  </div>
- 
   <!-- ================= SCOPE ================= -->
   <div class="panel" data-panel="scope">
     <div class="card">
-      <div class="card-title"><span class="n">02</span> Pixel-Speed Scope Matcher</div>
+      <div class="card-title"><span class="n">01</span> Scope Sensitivity Matcher</div>
       <p class="card-sub">Matches actual screen turn-rate (pixel speed) across scopes, since equal menu sensitivity values do <b>not</b> produce equal turn speed &mdash; each scope has its own A/B constants. Set the scope you like, and get matched values for every other scope.</p>
       <div class="grid">
         <div class="field"><label for="px_scope">Reference scope</label>
@@ -590,6 +557,28 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
         <tbody></tbody>
       </table>
       <div class="note">Confirm calculated sensitivity values in-game. Out of range means the scope cannot reach the exact match.</div>
+    </div>
+  </div>
+ 
+  <!-- ================= VERTICAL MULTIPLIER ================= -->
+  <div class="panel" data-panel="vert">
+    <div class="card">
+      <div class="card-title"><span class="n">02</span> Vertical Multiplier Calculator</div>
+      <p class="card-sub">Change ADS or scope sensitivity by a small amount (~1&ndash;3 points) while keeping your existing vertical recoil-control feel. Works because PUBG sensitivity scales logarithmically: +15 sensitivity &asymp; 2&times;. Vertical multiplier runs 50&ndash;150 in-game.</p>
+      <div class="grid">
+        <div class="field"><label>Current ADS sensitivity <span style="color:var(--dim);">(0&ndash;20)</span></label><input type="number" id="v_cur_ads" value="10" step="1" min="0" max="20"></div>
+        <div class="field"><label>Current vertical multiplier <span style="color:var(--dim);">(50&ndash;150)</span></label><input type="number" id="v_cur_vm" value="100" step="1" min="50" max="150"></div>
+        <div class="field"><label>Target ADS sensitivity <span style="color:var(--dim);">(0&ndash;20)</span></label><input type="number" id="v_tgt_ads" value="12" step="1" min="0" max="20"></div>
+      </div>
+      <div class="outbar">
+        <div class="out"><div class="k">Sensitivity difference</div><div class="v" id="v_diff">–</div></div>
+        <div class="out"><div class="k">Sensitivity ratio</div><div class="v" id="v_ratio">–</div></div>
+        <div class="out hi"><div class="k">Target vertical multiplier</div><div class="v" id="v_tvm">–</div></div>
+        <div class="out"><div class="k">Rounded (nearest)</div><div class="v" id="v_round">–</div></div>
+        <div class="out"><div class="k">Rounded down (safer)</div><div class="v" id="v_floor">–</div></div>
+      </div>
+      <p class="card-sub" style="margin:10px 0 0">In-game the vertical multiplier field only accepts whole numbers — use <b>Rounded (nearest)</b> for the closest match to your original feel, or <b>Rounded down (safer)</b> if you'd rather slightly undershoot than overshoot it.</p>
+      <div class="note" id="v_advice"></div>
     </div>
   </div>
  
@@ -649,7 +638,20 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
     </div>
   </div>
  
-  <footer>PUBG Sensitivity Calculator <span class="v">v1.0</span> &middot; logic by HELP clan manual v1.0 &middot; unofficial, not affiliated with PUBG or KRAFTON</footer>
+  <div class="card" style="border-color:var(--amber-dim);">
+    <div class="card-title" style="color:var(--olive);"><span class="n">i</span> Other sensitivity tools</div>
+    <table class="ref">
+      <thead><tr><th>You want to&hellip;</th><th>Use</th></tr></thead>
+      <tbody>
+        <tr><td>Make every scope (1x&ndash;15x) turn at the same actual speed</td><td>Scope Sensitivity Matcher</td></tr>
+        <tr><td>Nudge ADS/scope sensitivity up or down without losing your recoil-control feel</td><td>Vertical Mult.</td></tr>
+        <tr><td>Change monitor aspect ratio and correct sensitivity accordingly</td><td>Resolution</td></tr>
+      </tbody>
+    </table>
+  </div>
+ 
+
+  <footer>HELP Clan Scope Sensitivity Matcher <span class="v">v1.0</span> &middot; logic by HELP clan manual v1.0 &middot; unofficial, not affiliated with PUBG or KRAFTON</footer>
 </div>
  
  
@@ -918,14 +920,14 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
 // HELP Clan workspace navigation. Calculator scripts and existing content remain unchanged.
 (function(){
   'use strict';
-  const panelIds = ["panel-combat","panel-range","panel-ttk","panel-recoil2","panel-attach","panel-sensitivity","panel-backpack"];
+  const panelIds = ["panel-sensitivity","panel-combat","panel-range","panel-ttk","panel-recoil2","panel-attach","panel-backpack"];
   const navButtons = Array.from(document.querySelectorAll('#app-toolnav [data-open-panel]'));
   const toggle = document.getElementById('mobile-nav-toggle');
   const scrim = document.getElementById('sidebar-scrim');
   const title = document.getElementById('active-tool-heading');
   const index = document.getElementById('active-tool-index');
   const root = document.body;
-  let currentPanel = 'panel-combat';
+  let currentPanel = 'panel-sensitivity';
 
   function closeMenu(){
     root.classList.remove('sidebar-open');
@@ -985,7 +987,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
     if(panelIds.includes(id) && id!==currentPanel) selectPanel(id,{scroll:true});
   });
   const initialHash = decodeURIComponent(location.hash.slice(1));
-  selectPanel(panelIds.includes(initialHash) ? initialHash : 'panel-combat');
+  selectPanel(panelIds.includes(initialHash) ? initialHash : panelIds[0]);
 })();
 </script>
  
@@ -1561,8 +1563,8 @@ PT.WBYNAME = WBYNAME;
 (function(){
  
 const TABS = [
-  {id:'vert', label:'Vertical Mult.'},
-  {id:'scope', label:'Scope Match'},
+  {id:'scope', label:'Scope Sensitivity Matcher'},
+  {id:'vert', label:'Vertical Multiplier'},
   {id:'res', label:'Resolution'},
 ];
 const tabsEl = document.getElementById('tabs');
@@ -1578,7 +1580,7 @@ function switchTab(id){
   document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active', b.dataset.tab===id));
   document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active', p.dataset.panel===id));
 }
-switchTab('vert');
+switchTab('scope');
  
 const $ = id => document.getElementById(id);
 const fmt = (n, d=3) => isFinite(n) ? (Math.round(n*Math.pow(10,d))/Math.pow(10,d)).toString() : '–';

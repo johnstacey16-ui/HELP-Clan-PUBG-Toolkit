@@ -32,7 +32,7 @@ test('source and patch research is archived in docs, not displayed in the app',(
   assert.match(docs,/winnermeta\.win/);
   assert.match(docs,/Sensitivity scope matching/);
   assert.match(docs,/pubg\.com\/en\/news\/10874/);
-  assert.match(policy,/unknown stays unknown/i);
+  assert.match(policy,/developer-built models are allowed/i);
   assert.doesNotMatch(html,/<div class="recoil-source-list">/);
   assert.doesNotMatch(html,/<b>Data sources:<\/b>/);
   assert.doesNotMatch(html,/see Data &amp; Patch Info/i);
