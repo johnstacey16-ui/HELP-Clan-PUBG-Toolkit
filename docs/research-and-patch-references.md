@@ -4,7 +4,15 @@
 
 This document replaces the previous “Data & Patch” tool tab. It preserves the research notes, patch history, provenance and outstanding accuracy issues in the repository, rather than displaying a documentation page to players. The original panel was archived here on 24 October 2026. Some older statements may be stale; re-verify them before making new accuracy claims.
 
-For the no-assumptions policy, also see [DATA_ACCURACY_POLICY.md](../DATA_ACCURACY_POLICY.md).
+For the current approach to both original, owner-authored formulas and measured game data, see [DATA_ACCURACY_POLICY.md](../DATA_ACCURACY_POLICY.md).
+
+## October 2026 — Scope Sensitivity Matcher as the default
+
+- Scope Sensitivity Matcher is the site's **first and default tool**. Combat Database is second in the sidebar.
+- Within the Sensitivity page, Scope Sensitivity Matcher is tab **01**, Vertical Multiplier tab **02**, and Resolution tab **03**.
+- The original empirical sensitivity formulas, scope constants and conversion functions remain unchanged. This ordering update is presentation-only for those calculations.
+- Owner-created and empirically calibrated formulas are **permitted** without requiring official KRAFTON verification. Keep their logic and any assumptions in GitHub rather than making the public app a wall of citations.
+- Previous language below is preserved as historical material, not an overriding ban on developer-authored calculators.
 
 ## Update — 24 October 2026: theoretical shotgun HTK restored
 
