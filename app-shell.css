@@ -743,40 +743,249 @@ body {
 }
 
 
-/* Recoil Analyzer development state: visible at the top without obscuring tools. */
+/* Release-ready top bar: always-visible HELP CLAN in the centre of the
+   workspace. Grid keeps the brand truly centred, independent of side labels. */
+#app-topbar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) max-content minmax(0, 1fr);
+  column-gap: clamp(10px, 1.6vw, 24px);
+  box-shadow: 0 10px 28px rgba(3,8,14,.19);
+}
+#app-topbar .topbar-main { grid-column: 1; min-width: 0; }
+#app-topbar .topbar-heading { min-width: 0; max-width: 100%; }
+#app-topbar .topbar-brand {
+  grid-column: 2;
+  justify-self: center;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-width: 0;
+  pointer-events: none;
+  user-select: none;
+  line-height: 1;
+}
+#app-topbar .topbar-brand-name {
+  display: block;
+  font: 800 clamp(27px, 2.9vw, 36px)/.94 "Barlow Condensed", "Arial Narrow", sans-serif;
+  letter-spacing: .105em;
+  white-space: nowrap;
+  text-align: center;
+  text-shadow: 0 2px 15px rgba(0,0,0,.23);
+}
+#app-topbar .brand-help { color: #f7f6f2; }
+#app-topbar .brand-clan { color: #f2bd73; }
+#app-topbar .topbar-brand-tagline {
+  color: #a8bfd0;
+  font: 700 8px/1.15 "IBM Plex Mono",monospace;
+  letter-spacing: .25em;
+  text-align: center;
+  white-space: nowrap;
+}
+#app-topbar .topbar-actions {
+  grid-column: 3;
+  justify-self: end;
+  min-width: 0;
+}
+@media (min-width: 901px) and (max-width: 1350px) {
+  #app-topbar .topbar-title { font-size: 22px; }
+  #app-topbar .topbar-online { display: none; }
+  #app-topbar .topbar-actions { gap: 10px; }
+}
+@media (max-width: 900px) {
+  #app-topbar { grid-template-columns: minmax(46px,1fr) auto minmax(46px,1fr); }
+  #app-topbar .topbar-main { justify-self: start; }
+  /* The active tool is still announced on navigation via the existing
+     live text node; hide it visually to keep the centre brand unobstructed. */
+  #app-topbar .topbar-heading {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    white-space: nowrap;
+    clip-path: inset(50%);
+  }
+  #app-topbar .topbar-brand-name { font-size: clamp(26px, 4.5vw, 34px); }
+  #app-topbar .topbar-brand-tagline { font-size: 7.5px; letter-spacing: .18em; }
+  #app-topbar .topbar-online { display: none; }
+}
+@media (max-width: 390px) {
+  #app-topbar .topbar-brand-name { font-size: clamp(24px, 7vw, 29px); }
+  #app-topbar .topbar-brand-tagline { font-size: 7px; letter-spacing: .16em; }
+}
+
+/* Prominent Recoil Analyzer coming-soon banner. Recoil values that are already
+   provided in the tool remain visible and unchanged below the notice. */
 #panel-recoil2 .recoil-release-row {
+  position: relative;
+  isolation: isolate;
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 10px 14px;
-  margin: 14px 0 13px;
+  justify-content: space-between;
+  gap: 25px;
+  margin: 16px 0 30px;
+  padding: clamp(24px, 3.7vw, 44px);
+  overflow: hidden;
+  border: 1px solid rgba(241,189,113,.58);
+  border-left: 6px solid #f0b76b;
+  border-radius: 20px;
+  background:
+    radial-gradient(ellipse at 94% 48%,rgba(221,167,86,.24),transparent 49%),
+    linear-gradient(115deg,#30271f 0%,#2d2c2c 44%,#1b2834 100%);
+  box-shadow: 0 21px 47px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,231,193,.13);
+}
+#panel-recoil2 .recoil-release-row::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: linear-gradient(90deg,#fff2cf,#ebb86c 40%,transparent 85%);
+  z-index: 1;
+}
+#panel-recoil2 .recoil-release-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: clamp(10px,1.35vw,16px);
+  min-width: 0;
+}
+#panel-recoil2 .recoil-release-caption {
+  color: #f0c998;
+  font: 700 clamp(10px,1vw,13px)/1.35 "IBM Plex Mono",monospace;
+  letter-spacing: .16em;
+  text-transform: uppercase;
 }
 #panel-recoil2 .recoil-coming-soon {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 7px 12px;
-  border: 1px solid rgba(233,188,119,.44);
-  border-radius: 999px;
-  background: rgba(233,188,119,.10);
-  color: #f5d09a;
-  font: 700 10px/1.2 "IBM Plex Mono",monospace;
-  letter-spacing: .12em;
+  gap: clamp(11px, 1.3vw, 21px);
+  padding: 0;
+  background: none;
+  border: none;
+  color: #fff2d5;
+  font: 800 clamp(52px, 7.5vw, 101px)/.88 "Barlow Condensed", "Arial Narrow",sans-serif;
+  letter-spacing: .035em;
   white-space: nowrap;
+  text-shadow: 0 4px 24px rgba(234,156,59,.20);
 }
 #panel-recoil2 .recoil-status-dot {
-  width: 6px;
-  height: 6px;
+  display: block;
+  flex: 0 0 clamp(10px,1.4vw,17px);
+  width: clamp(10px,1.4vw,17px);
+  height: clamp(10px,1.4vw,17px);
   border-radius: 50%;
-  background: #f0c381;
-  box-shadow: 0 0 0 3px rgba(240,195,129,.11);
+  background: #ffe0a7;
+  box-shadow: 0 0 0 7px rgba(249,207,145,.12), 0 0 32px rgba(249,207,145,.32);
 }
-#panel-recoil2 .recoil-release-caption {
-  color: #91a7b8;
-  font: 600 10px/1.4 "IBM Plex Mono",monospace;
-  letter-spacing: .07em;
+#panel-recoil2 .recoil-release-detail {
+  display: block;
+  max-width: 590px;
+  color: #d6d8d7;
+  font: 500 clamp(12px,1.15vw,15px)/1.65 "Manrope",sans-serif;
+}
+#panel-recoil2 .recoil-release-graphic {
+  position: relative;
+  flex: 0 0 clamp(110px,16vw,200px);
+  width: clamp(110px,16vw,200px);
+  aspect-ratio: 1;
+  opacity: .9;
+  transform: rotate(-12deg);
+}
+#panel-recoil2 .recoil-target-ring {
+  position: absolute;
+  border: 1px solid rgba(251,211,151,.45);
+  border-radius: 50%;
+}
+#panel-recoil2 .recoil-ring-outer { inset: 0; box-shadow: 0 0 0 13px rgba(244,193,129,.035); }
+#panel-recoil2 .recoil-ring-inner { inset: 25%; border-width: 2px; }
+#panel-recoil2 .recoil-release-graphic::before,
+#panel-recoil2 .recoil-release-graphic::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  background: rgba(244,207,155,.48);
+}
+#panel-recoil2 .recoil-release-graphic::before { left: 50%; top: -10%; width: 1px; height: 120%; }
+#panel-recoil2 .recoil-release-graphic::after { top: 50%; left: -10%; height: 1px; width: 120%; }
+#panel-recoil2 .recoil-target-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #f5c483;
+  transform: translate(-50%,-50%);
+  box-shadow: 0 0 0 8px rgba(245,196,131,.12);
+  z-index: 2;
+}
+@media (max-width: 700px) {
+  #panel-recoil2 .recoil-release-row {
+    margin: 12px 0 24px;
+    padding: 27px 21px;
+    border-radius: 16px;
+    border-left-width: 5px;
+  }
+  #panel-recoil2 .recoil-release-graphic { display: none; }
+  #panel-recoil2 .recoil-coming-soon {
+    font-size: clamp(48px, 11vw, 78px);
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  #panel-recoil2 .recoil-release-caption { font-size: 10px; letter-spacing: .1em; }
+  #panel-recoil2 .recoil-release-detail { font-size: 12.5px; }
+}
+@media (max-width: 390px) {
+  #panel-recoil2 .recoil-coming-soon { font-size: clamp(43px,10vw,53px); }
+  #panel-recoil2 .recoil-status-dot { flex-basis: 9px; width: 9px; height: 9px; }
+  #panel-recoil2 .recoil-release-row { padding: 23px 17px; }
+}
+
+/* Final launch polish: immediately usable scope results, uncluttered technical
+   constants, and easy-to-tap sensitivity controls on small screens. */
+#panel-sensitivity .scope-results-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  border-radius: 12px;
+  scrollbar-width: thin;
+}
+#panel-sensitivity .scope-results-scroll:focus-visible {
+  outline: 2px solid #f0c88d;
+  outline-offset: 3px;
+}
+#panel-sensitivity #px_table {
+  width: 100%;
+  min-width: 310px;
+  font-variant-numeric: tabular-nums;
+}
+#panel-sensitivity #px_table th:nth-child(2),
+#panel-sensitivity #px_table td:nth-child(2),
+#panel-sensitivity #px_table th:nth-child(3),
+#panel-sensitivity #px_table td:nth-child(3) {
+  display: none;
+}
+#panel-sensitivity .tab {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 44px;
+  border-radius: 9px;
+  text-align: center;
+}
+#panel-sensitivity .panel[data-panel="scope"] .card {
+  border-color: rgba(233,188,119,.29);
 }
 @media (max-width: 600px) {
-  #panel-recoil2 .recoil-release-row { margin: 10px 0 12px; gap: 8px; }
-  #panel-recoil2 .recoil-release-caption { font-size: 9px; }
+  #panel-sensitivity .tabs { gap: 8px; }
+  #panel-sensitivity .tab { flex: 1 1 135px; letter-spacing: .025em; padding: 10px 11px; }
+  #panel-sensitivity #px_table { min-width: 290px; }
+  #panel-sensitivity #px_table th { font-size: 10px; white-space: normal; }
+  #panel-sensitivity #px_table td { font-size: 11px; }
 }
