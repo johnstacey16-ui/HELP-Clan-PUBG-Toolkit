@@ -6,9 +6,9 @@ This document replaces the previous “Data & Patch” tool tab. It preserves th
 
 For the current approach to both original, owner-authored formulas and measured game data, see [DATA_ACCURACY_POLICY.md](../DATA_ACCURACY_POLICY.md).
 
-## 24 October 2026 — extend source-backed recoil data to 33 of 45 weapons
+## 24 October 2026 — complete source-backed recoil data for all 45 weapons
 
-The earlier recoil import recorded game-engine parameters for 20 weapons. This batch adds **13 more independently checked 43.2 RecoilConfig records**, bringing the named `RECOIL_DETAIL_43_2` table to **33 weapons** (12 are still without this extra data layer).
+The previous import recorded 20 weapon records. This batch adds **25 individually checked Update 43.2 RecoilConfig records**, bringing the named `RECOIL_DETAIL_43_2` table to **all 45 toolkit weapons**. Every record includes only fields the extractor actually exposes; full individual per-shot spray paths are not established.
 
 **New weapons and source pages**
 
@@ -25,6 +25,23 @@ The earlier recoil import recorded game-engine parameters for 20 weapons. This b
 - MG3 https://pubg.gs/weapons/mg3/ — prone factor 0.265, 2 bullets/switch, climb 0.75, fall 3.3, recovery 8.5.
 - Mini 14 https://pubg.gs/weapons/mini14/ — 1 bullet/switch, climb 1.2, fall 3, recovery 9.
 - MK14 EBR https://pubg.gs/weapons/mk14/ — prone factor 0.25, 1 bullet/switch, climb 0.9, fall 3, recovery 6.
+
+**Final 12 records checked against weapon-specific extraction pages**
+
+- Lynx AMR https://pubg.gs/weapons/lynx-amr/ — switch 1, prone 0.25, recovery 10, fall 4; **climb not reported**.
+- O12 https://pubg.gs/weapons/o12/ — switch 1, prone 0.70, recovery 8, climb 1.8, fall 2.
+- R1895 https://pubg.gs/weapons/r1895/ — switch 1, prone 0.70, recovery 11, climb 1.2, fall 5.5.
+- Desert Eagle (Deagle) https://pubg.gs/weapons/deagle/ — switch 1, prone 0.75, recovery 11, climb 1.2, fall 3.5.
+- Mk47 Mutant https://pubg.gs/weapons/mk47-mutant/ — switch 1, prone 0.70, recovery 8.2, climb 0.7, fall 2.5.
+- Mk12 https://pubg.gs/weapons/mk12/ — switch 1, prone 0.20, recovery 9, climb 1.25, fall 2.8.
+- K2 https://pubg.gs/weapons/k2/ — switch 2, recovery 8, climb 0.75, fall 2.1; **prone not reported**.
+- FAMAS https://pubg.gs/weapons/famas/ — switch 2, recovery 7, climb 0.6, fall 2.1; **prone not reported**.
+- P92 https://pubg.gs/weapons/p92/ — switch 1, prone 0.70, recovery 11, fall 4; **climb not reported**.
+- JS9 https://pubg.gs/weapons/js9/ — switch 5, prone 0.70, recovery 7, climb 0.4, fall 2.
+- S686 https://pubg.gs/weapons/s686/ — switch 1, recovery 6, fall 2; **prone/climb not reported**.
+- Skorpion https://pubg.gs/weapons/skorpion/ — switch 2, prone 0.80, recovery 12, climb 0.23, fall 2.
+
+**Important scope note:** 45/45 means all 45 guns have an entry in this *additional source-parameter layer*—**not** that every value in the legacy Combat DB's 8-field recoil schema is verified or filled, nor that full recoil curves or per-shot patterns are available. Do not extend unsupported fields based on class averages.
 
 All other new `proneMod` fields stay **null** where the source page has no explicit prone modifier. Do not infer a uniform 0.7 prone reduction, and do not convert raw recoil fields into an apparent bullet-by-bullet trace. The Recoil Analyzer still says **Coming Soon** for the exact shot sequence and keeps its previous record types untouched. User-developed sensitivity formulas, damage falloff checkpoints, magazine data, attachments and backpack calculations were not changed.
 
