@@ -1121,11 +1121,39 @@ const RECOIL_RAW = {
   "G18C":         [null, null,null,null,null, 15,12,15], // P18C in 43.2 game data
   "RPD":          [7.5,  0.70,-30,null,null, 15.5,11,25], // Update 43.2 extracted gun data
 };
+// Additional recoil engine fields actually exposed by Update 43.2.
+// The existing RECOIL_RAW schema has no recovery, prone, climb/fall or
+// direction-switch columns. Keep these separate to avoid mislabeling them as
+// per-shot movement, and never infer unknown fields from another weapon.
+// Each entry maps the standard game-file "Recoil" section for this gun.
+const RECOIL_DETAIL_43_2 = {
+  "UMP9":         {switchShots:2, proneMod:0.70, recoveryV:7,   climb:0.48, fall:1.8},
+  "MP5K":         {switchShots:2, proneMod:0.70, recoveryV:8.5, climb:0.6,  fall:2.5},
+  "Micro Uzi":    {switchShots:2, proneMod:0.70, recoveryV:12,  climb:0.2,  fall:1.25},
+  "Tommy Gun":    {switchShots:2, proneMod:0.70, recoveryV:12,  climb:0.5,  fall:1.5},
+  "Vector":       {switchShots:2, proneMod:0.70, recoveryV:12,  climb:0.5,  fall:2.2},
+  "P90":          {switchShots:null,proneMod:0.70, recoveryV:7,  climb:0.4,  fall:2},
+  "MP9":          {switchShots:null,proneMod:0.70, recoveryV:7,  climb:0.4,  fall:2},
+  "G18C":         {switchShots:1, proneMod:0.70, recoveryV:11,  climb:0.18, fall:2},
+  "RPD":          {switchShots:2, proneMod:0.32, recoveryV:7,   climb:0.7,  fall:2.2},
+  "M249":         {switchShots:2, proneMod:0.32, recoveryV:6,   climb:0.75, fall:2.4},
+  "SLR":          {switchShots:1, proneMod:null, recoveryV:5.3, climb:1.1,  fall:1.9},
+  "SKS":          {switchShots:1, proneMod:null, recoveryV:4.8, climb:null, fall:2.4},
+  "S12K":         {switchShots:1, proneMod:0.75, recoveryV:7,   climb:1.8,  fall:3},
+  "DBS":          {switchShots:1, proneMod:0.70, recoveryV:6,   climb:null, fall:2},
+  "Sawn-off":     {switchShots:1, proneMod:0.70, recoveryV:11,  climb:1.2,  fall:1.9},
+  "VSS Vintorez": {switchShots:1, proneMod:null, recoveryV:6,   climb:0.5,  fall:2},
+  "M16A4":        {switchShots:1, proneMod:null, recoveryV:8,   climb:0.8,  fall:2.6},
+  "SVD Dragunov": {switchShots:1, proneMod:null, recoveryV:6,   climb:1.1,  fall:2},
+  "ACE 32":       {switchShots:2, proneMod:null, recoveryV:8.2, climb:0.65, fall:2.15},
+  "Groza":        {switchShots:2, proneMod:null, recoveryV:8.2, climb:0.65, fall:2.1}
+};
 WEAPONS.forEach(w=>{
   const r = RECOIL_RAW[w.name];
   if(!r) return;
   const [vRecoil,crouchMod,crouchPct,hBiasDir,hBiasVal,vertSpeed,horizSpeed,minH] = r;
   Object.assign(w, {vRecoil,crouchMod,crouchPct,hBiasDir,hBiasVal,vertSpeed,horizSpeed,minH});
+  w.recoilDetail = RECOIL_DETAIL_43_2[w.name] || null;
 });
  
 // crossover data keyed by normalized weapon key (maps onto WEAPONS via ALIAS)
@@ -2261,6 +2289,20 @@ function drawLineChart(canvas, series, opts={}){
         (w.hBiasDir || "Direction not recorded")+" "+String(w.hBiasVal)],
       ["Crouch recoil multiplier", format(w.crouchMod)]
     ];
+    // Source-backed weapon parameters, not a predicted bullet-by-bullet spray.
+    const detail = w.recoilDetail;
+    if(detail){
+      const additional = [
+        ["Prone recoil multiplier", detail.proneMod, ""],
+        ["Vertical recovery speed", detail.recoveryV, ""],
+        ["Bullets per direction switch", detail.switchShots, ""],
+        ["Recoil climb parameter", detail.climb, ""],
+        ["Recoil fall parameter", detail.fall, ""]
+      ];
+      additional.forEach(([label,value,suffix])=>{
+        if(value!=null)fields.push([label,format(value,suffix)]);
+      });
+    }
 
     $("rc_table").innerHTML =
       "<thead><tr><th>Weapon parameter</th><th>Value</th></tr></thead>"+
