@@ -26,6 +26,21 @@ For the current approach to both original, owner-authored formulas and measured 
 
 The `minimumIdealFlightTime` helper has regression coverage for all 45 toolkit guns, unknown/out-of-range inputs, and unchanged true drop-evidence behavior. Scope Matcher empirical constants and formulas are untouched.
 
+## 24 October 2026 — official LMG reload timing and double-application fix
+
+**High-priority gameplay calculation correction.** Two existing calculator paths had applied the approximate **Update 42.3 LMG -25% reload duration** reduction directly to the old `WEAPONS[].reload` data, which was not tied to a verified pre-patch animation measurement. The underlying gun-data extraction publishes a 3.5-second `NoAnimReloadDuration` for RPD; **this is not the actual reload animation**. The result could incorrectly show e.g. an M249 3.5 × 0.75 = 2.625 s reload and no reload-inclusive TTK for RPD.
+
+Pubg's own [2026 Developer Letter](https://pubg.com/en/news/10874), released with the [42.3 balance notes](https://www.pubg.com/en/news/10885), publishes base post-rebalance timings:
+- **RPD: 5.2 seconds** (official, after the 42.3 adjustment).
+- **M249: 5.962 seconds** (official, after the 42.3 adjustment).
+- **MG3: no exact animation duration in the referenced official table**. The developer describes around five seconds as the *LMG class average*, which cannot be treated as a measured MG3-specific number; keep its reload-inclusive TTK **No data** for cases requiring a reload.
+
+Added shared `LMG_RELOAD_2026` and `reloadSecondsForWeapon(w)` used by **both** the Attachments and TTK calculators. Do not multiply the official base values by 0.75 again. The old `WEAPONS[].reload` values stay unchanged as historic owner-input values, but they are overridden for M249 and RPD and disregarded for MG3 in calculations. A QuickDraw reload-speed change is still applied to the post-patch base for an eligible weapon (`time / speedMultiplier`).
+
+**Calculation scope and caveats:** TTK with reload is now available for RPD when the modeled engagement actually exhausts its current base magazine. If no reload is necessary, the base timing does not affect pure TTK. This still models a perfect uninterrupted firing sequence and is **not** a replay measurement. Other weapons continue to use their original owner-provided reload inputs, which may themselves be approximate; do not describe them all as PUBG-verified reload animations.
+
+The seven panels, original Scope Sensitivity Matcher maths, projectile/drop tables, recoil metadata, backpacks, magazine capacity rules and shotgun evidence boundaries are untouched.
+
 ## 24 October 2026 — complete source-backed recoil data for all 45 weapons
 
 The previous import recorded 20 weapon records. This batch adds **25 individually checked Update 43.2 RecoilConfig records**, bringing the named `RECOIL_DETAIL_43_2` table to **all 45 toolkit weapons**. Every record includes only fields the extractor actually exposes; full individual per-shot spray paths are not established.

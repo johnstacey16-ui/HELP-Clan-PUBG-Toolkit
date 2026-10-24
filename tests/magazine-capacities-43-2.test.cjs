@@ -83,7 +83,7 @@ test('UI displays the distinct capacities and hides fake RPD reloads',()=>{
   assert.match(html,/newCap = extQuick; reloadSpeedMultiplier = 1\.15/);
   assert.match(html,/Extended QuickDraw \(\$\{eq==null\?"No data":eq\}/);
   assert.match(html,/\$\("at_capNew"\)\.textContent = newCap \?\? "No data"/);
-  assert.match(html,/w.name==="RPD" \? "No data" : reloadMult<1/);
+  assert.match(html,/finalReload==null \? "No data" : reloadMult<1/);
   assert.doesNotMatch(html,/Math\.ceil\(w\.mag\*1\.3\)/);
   assert.doesNotMatch(html,/return w\.mag\+5/);
 });

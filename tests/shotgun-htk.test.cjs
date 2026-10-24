@@ -16,7 +16,7 @@ function section(a,b){
 const source=[
   section('const BODY_PARTS = {','// Real per-weapon falloff tables'),
   section('const FALLOFF_TABLES = {','// Bullet drop, sourced'),
-  section('const SHOTGUN_PELLETS = {','// LMGs whose')
+  section('const SHOTGUN_PELLETS = {','// PUBG\'s 2026 Dev Letter')
 ].join('\n');
 const context=vm.createContext({});
 vm.runInContext(source+

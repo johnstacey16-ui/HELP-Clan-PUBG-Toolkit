@@ -1060,17 +1060,17 @@ const WEAPONS = [
 ["Sawn-off","SG","12 Gauge",false,21,240,330,84,2,3.0,["Semi"]],
 ["RPD","MG","7.62mm",false,43,750,735,538,50,3.5,["Auto"]],
 ].map(w=>({name:w[0],cls:w[1],ammo:w[2],crate:w[3],dmg:w[4],rpm:w[5],vel:w[6],dps:w[7],mag:w[8],reload:w[9],modes:w[10]}));
-// w[9] ("reload") was present in the originally supplied WEAPONS array but was never wired into any
-// calculation — every reload figure elsewhere in this toolkit up to now was an invented generic
-// placeholder (3.0s/3.5s) instead of this real per-weapon data. Now used directly in the TTK and
-// Attachments panels. Exception: RPD's reload value (3.5) is this toolkit's own placeholder, added when
-// RPD was added in a later revision — it did not come from the original supplied dataset like the other
-// 44 do, and is flagged as such wherever it's shown.
+// w[9] ("reload") is preserved as originally supplied, including RPD's
+// unverified 3.5s placeholder. TTK and Attachments read it through
+// reloadSecondsForWeapon(): official post-42.3 RPD/M249 times override it,
+// and MG3 stays unknown rather than treating the generic 3.5s as measured.
+// Other weapon reload timings remain owner-supplied inputs, not guaranteed
+// to be animation-verified.
 // RPD added per official Update 42.3 patch notes (pubg.com/en/news/10885): dmg 43, RPM 750, velocity 735 m/s,
 // base magazine 50 (expandable to 110 via AR/LMG magazine attachments), Auto only, world spawn on all maps.
-// No vertical/horizontal recoil-pattern figures have been published for RPD, so its recoil fields are left
-// unset below (RECOIL_RAW has no RPD entry) rather than estimated — the Recoil Analyzer will show it as
-// incomplete data. Reload-time estimate (3.5s) is this toolkit's generic LMG placeholder, not an official figure.
+// RPD's 43.2 engine recoil parameters are now recorded below; the precise
+// shot-by-shot spray remains unknown. Official post-balance base reload 5.2s
+// is stored in LMG_RELOAD_2026, not in the legacy weapon record.
  
 // recoil-pattern data: v.recoil, crouch modifier (mult + %), h.bias (direction + value), vert/horiz recovery speed, min horizontal %
 // G18C's row was cut off in the source paste after h.bias — its vert/horiz speed and min-h% were not supplied, so they stay null rather than guessed.
@@ -1988,9 +1988,18 @@ function shotgunMinShellsAt(w,range,hitbox,armorLevel){
 function htkFor(dmg){ return dmg == null ? null : (dmg>0 ? Math.ceil(100/dmg) : null); }
 function pureTtk(htk, rpm){ return htk == null ? null : (htk>1 ? (htk-1)/(rpm/60) : 0); }
 
-// LMGs whose recoil/reload were patched in Update 42.3 (max horizontal recoil -30%, reload time ~-25%) —
-// per pubg.com/en/news/10885, applies to the LMG class as a whole, not just RPD.
-const LMG_PATCH_42_3 = new Set(["M249","MG3","RPD"]);
+// PUBG's 2026 Dev Letter explicitly publishes *post-42.3* base reloads:
+// RPD 5.2s, M249 5.962s. These values already reflect the LMG balance
+// changes, so NEVER apply the patch's approximate extra -25% to them.
+// MG3 animation duration was not separately verified: no precise TTK with
+// reload is claimed for MG3. Leave the original w.reload entries untouched
+// for provenance / rollback; calculation uses the override below.
+const LMG_RELOAD_2026 = Object.freeze({"RPD":5.2,"M249":5.962,"MG3":null});
+function reloadSecondsForWeapon(w){
+  if(Object.prototype.hasOwnProperty.call(LMG_RELOAD_2026,w.name))
+    return LMG_RELOAD_2026[w.name];
+  return Number.isFinite(w.reload) && w.reload>0 ? w.reload : null;
+}
 function debounce(fn, ms){
   let t;
   return (...args)=>{ clearTimeout(t); t = setTimeout(()=>fn(...args), ms); };
@@ -2235,13 +2244,9 @@ function drawLineChart(canvas, series, opts={}){
   fillWeaponSelect($("tk_cmpB"), "UMP9");
   $("tk_cmpC").innerHTML += PT.WEAPONS.map(w=>"<option>"+w.name+"</option>").join("");
   const display = (value, digits) => value == null ? "No data" : Number(value).toFixed(digits);
-  function reloadSecondsFor(w){
-    if(w.name==="RPD") return null; // current reload value is a toolkit placeholder, not evidence
-    let base = w.reload;
-    if(base==null) return null;
-    if(LMG_PATCH_42_3.has(w.name)) base *= 0.75; // sourced approximate balance change
-    return base;
-  }
+  // Shared with Attachments calculator: official LMG reload durations are
+  // post-patch values and must not have the 25% reduction applied twice.
+  function reloadSecondsFor(w){ return reloadSecondsForWeapon(w); }
   function computeFor(w, hitbox, armor){
     if(SHOTGUN_PELLETS[w.name]){
       // 0m exists in the published pellet tables: only the theoretical
@@ -2665,21 +2670,21 @@ function extendedCapFor(w,kind="extended"){
     // tooltip for the Kar98k variant. The S686 entry does not publish a
     // comparable speed modifier, so do not infer one from the same name.
     if(selectedStock==="loops" && w.name==="Kar98k") reloadSpeedMultiplier *= 1.30;
-    const isLmgPatched = LMG_PATCH_42_3.has(w.name);
-    const realBaseReload = w.reload; // RPD remains a non-animation placeholder
-    let reloadMult = 1 / reloadSpeedMultiplier;
-    if(isLmgPatched) reloadMult *= 0.75; // official: LMG reload times reduced ~25% (Update 42.3)
+    const realBaseReload = reloadSecondsForWeapon(w);
+    // Attachments change the current base reload; 42.3's LMG adjustment is
+    // already included in the two official timings above.
+    const reloadMult = 1 / reloadSpeedMultiplier;
     $("at_vrecoil").textContent = (vChange*100).toFixed(0)+"%";
     $("at_hrecoil").textContent = (hChange*100).toFixed(0)+"%";
     $("at_recovery").textContent = "+"+(recovChange*100).toFixed(0)+"%";
-    const finalReload = realBaseReload*reloadMult;
-    $("at_reload").textContent = w.name==="RPD" ? "No data" : reloadMult<1
-      ? finalReload.toFixed(1)+"s (−"+((1-reloadMult)*100).toFixed(0)+"%)"
-      : finalReload.toFixed(1)+"s";
+    const finalReload = realBaseReload==null ? null : realBaseReload*reloadMult;
+    $("at_reload").textContent = finalReload==null ? "No data" : reloadMult<1
+      ? finalReload.toFixed(2)+"s (−"+((1-reloadMult)*100).toFixed(0)+"%)"
+      : finalReload.toFixed(2)+"s";
     $("at_capBase").textContent = baseCap ?? "—";
     $("at_capNew").textContent = newCap ?? "No data";
     let note = `Attachment percentages are estimates, not guaranteed in-game results.`;
-    if(w.name==="RPD") note += ` RPD reload time is not verified.`;
+    if(w.name==="MG3") note += " MG3 real reload-animation time is not verified.";
     if((magVal==="extended" || magVal==="extquick") && newCap==null)
       note += " This magazine's capacity is not verified.";
     if(mVal==="choke"||mVal==="duckbill")

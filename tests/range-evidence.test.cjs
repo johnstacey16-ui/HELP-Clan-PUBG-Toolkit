@@ -80,5 +80,5 @@ test('both browser calculators remain parseable and missing damage is handled sa
   assert.match(html,/function htkFor\(dmg\)\{ return dmg == null \? null/);
   assert.match(html,/if\(dmg==null\)\{\s*return \{dmg:null,htk:null,pure:null,withReload:null,reloads:null\}/);
   assert.match(html,/if\(SHOTGUN_PELLETS\[w.name\]\)/);
-  assert.match(html,/w.name==="RPD"\) return null/);
+  assert.match(html,/return reloadSecondsForWeapon\(w\)/);
 });
