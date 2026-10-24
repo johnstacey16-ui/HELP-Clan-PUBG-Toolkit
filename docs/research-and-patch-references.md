@@ -14,6 +14,8 @@ This batch updates the **live backpack and attachment calculators**, and fills s
 
 - Standard and Jammer Pack each grant identical +150, +200, +250 capacity by level, verified in official Update 41.1: https://pubg.com/en/news/9926
 - The former +50 Utility Belt benefit became part of the character's innate capacity in Update 28.2: https://www.pubg.com/en/news/7083 ; the old 20 innate plus 50 belt yields **70 base**, so modeled totals for both pack types are **220, 270, 320**. These totals **do not add an unconfirmed vest capacity**. Historical wiki pages showing 170/220/270 without a utility belt predate its integration.
+- Added **5.7mm / P90 ammunition** at 0.35 space per round from the 43.2 game-file item row: https://pubg.gs/ammo/5-7mm/ .
+- Fixed Lynx AMR to **optics-only** and P90 to have no external magazine/grip/muzzle selectable in the attachment calculator: https://pubg.gs/weapons/lynx-amr/ and https://pubg.gs/attachments/ .
 - 9mm per round 0.375→**0.30** after Update 33.1's 20% weight reduction: https://d3tpthp8lq9ou3.cloudfront.net/en-asia/news/7988 and https://pubg.gs/ammo/9mm/
 - 7.62mm 0.70→**0.60** after Update 34.1: https://pubg.com/en/news/8170 and https://pubg.gs/ammo/7-62mm/
 - Med Kit 20→**15**, Painkiller 10→**6**, Adrenaline 20→**10** from official Update 42.1: https://pubg.com/en/news/10179
