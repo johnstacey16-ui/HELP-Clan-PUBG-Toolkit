@@ -1115,7 +1115,8 @@ const RECOIL_RAW = {
   "Sawn-off":     [null, null,null,null,null, 15,12, null],
   "P92":          [1.0,  null,null,null,null, 15,12, null],
   "R1895":        [null, null,null,null,null, 15,12, null],
-  "G18C":         [null, null,null,null,null, null,null,null],
+  "G18C":         [null, null,null,null,null, 15,12,15], // P18C in 43.2 game data
+  "RPD":          [7.5,  0.70,null,null,null, 15.5,11,25], // Update 43.2 extracted gun data
 };
 WEAPONS.forEach(w=>{
   const r = RECOIL_RAW[w.name];
@@ -2270,22 +2271,23 @@ const ATTACH_MOD = {
   muzzle: {
     none: {v:0,h:0,recov:0,label:"None"},
     compensator: {v:-0.25,h:-0.20,recov:0,label:"Compensator"},
-    suppressor: {v:-0.05,h:-0.05,recov:0,label:"Suppressor"},
-    flash: {v:-0.05,h:0,recov:0,label:"Flash Hider"},
+    suppressor: {v:0,h:0,recov:0,label:"Suppressor"},
+    flash: {v:-0.10,h:-0.10,recov:0,label:"Flash Hider"},
   },
   grip: {
     none: {v:0,h:0,recov:0,label:"None"},
-    vertical: {v:-0.20,h:-0.05,recov:0,label:"Vertical Foregrip"},
+    vertical: {v:-0.15,h:0,recov:0,label:"Vertical Foregrip"},
     angled: {v:0.05,h:-0.20,recov:0,label:"Angled Foregrip"},
     half: {v:-0.08,h:-0.16,recov:0.10,label:"Half Grip"},
-    light: {v:0.05,h:0,recov:0.175,label:"Light Grip"},
-    thumb: {v:-0.05,h:0,recov:0,label:"Thumb Grip"},
-    laser: {v:0,h:-0.03,recov:0.05,label:"Laser Grip"},
+    light: {v:0,h:0,recov:0.20,label:"Light Grip"},
+    thumb: {v:-0.10,h:0,recov:0.10,label:"Thumb Grip"},
+    laser: {v:0,h:0,recov:0,label:"Laser Sight"},
     tilted: {v:-0.12,h:-0.06,recov:0,shake:-0.25,label:"Tilted Grip"},
   },
   stock: {
     none: {v:0,h:0,recov:0,label:"None"},
-    tactical: {v:0,h:0,recov:0.15,label:"Tactical Stock"},
+    tactical: {v:0,h:0,recov:0.05,label:"Tactical Stock"},
+    heavy: {v:-0.10,h:-0.10,recov:0.05,label:"Heavy Stock"},
   },
 };
 // Sourced from official PUBG patch notes (pubg.com/en/news):
@@ -2296,16 +2298,33 @@ const ATTACH_MOD = {
 //   control (Update 41.1). This toolkit doesn't model camera shake elsewhere, so "shake" is shown as a
 //   note only, not folded into the vertical/horizontal recoil totals.
 // slot access assigned by weapon class + the explicit exceptions given in the build spec, plus RPD (Update 42.3)
-const STOCK_LIST = new Set(["M16A4","M416","MK47 Mutant","ACE 32","Vector","MP5K","M249","RPD"]);
+// Weapon slot tags in PUBG game-file extract (Update 43.2).
+const STOCK_LIST = new Set(["M16A4","M416","MK47 Mutant","ACE 32","Vector","MP5K","MP9","M249","RPD"]);
+const HEAVY_STOCK_LIST = new Set(["M16A4","M416","MK47 Mutant","ACE 32","Vector","MP5K","M249","RPD"]);
+const GRIP_LIST = new Set([
+  "ACE 32","AUG A3","Beryl M762","Desert Eagle","G18C","G36C","M416","P92",
+  "MP5K","Mk12","MK47 Mutant","O12","QBZ95","SCAR-L","SKS","Tommy Gun","UMP9","Vector","Skorpion"
+]);
+// Class-specific compensators: AR/DMR/S12K +15V/+10H; SMG +25V/+20H;
+// DMR/SR compensator +20V/+20H. Other tooltips aren't identical across classes.
+function compensatorFor(w){
+  if(w.cls==="SMG")return {v:-0.25,h:-0.20};
+  if(w.cls==="DMR"||w.cls==="SR")return {v:-0.20,h:-0.20};
+  if(w.cls==="AR"||w.name==="S12K"||w.name==="O12")return {v:-0.15,h:-0.10};
+  return {v:0,h:0};
+}
 const MAG_EXPLICIT = { // [baseCap override not needed — use w.mag], extendedCap explicit
   "Vector":33, "UMP9":35, "MP5K":40, "Micro Uzi":35,
   "P92":20, "G18C":25, "Desert Eagle":10, "R1895":9,
   "RPD":110, // official: 50-round base magazine, expandable to 110 via AR/LMG magazine attachments (Update 42.3)
 };
 function slotsFor(w){
+  // Lynx AMR is optics-only, and P90 uses an integral 50-round magazine.
+  if(w.name==="Lynx AMR" || w.name==="P90")
+    return {muzzle:null, grip:null, stock:null, magazine:null};
   if(w.name==="RPD") return {muzzle:null, grip:null, stock:"tactical", magazine:"AR_LMG"}; // official: no muzzle, no foregrip
-  const muzzle = w.cls==="SMG" ? "SMG" : (w.cls==="SR"||w.cls==="DMR") ? "DMR_SR" : (w.cls==="AR"||w.name==="S12K") ? "AR_DMR_S12K" : null;
-  const grip = w.name==="AKM" ? null : (w.cls==="AR"||w.cls==="SMG"||w.cls==="DMR") ? "AR_SMG_DMR" : null;
+  const muzzle = (w.cls==="SMG"&&w.name!=="MP9"&&w.name!=="P90") ? "SMG" : (w.cls==="SR"||w.cls==="DMR") ? "DMR_SR" : (w.cls==="AR"||w.name==="S12K"||w.name==="O12") ? "AR_DMR_S12K" : null;
+  const grip = GRIP_LIST.has(w.name) ? "FOREGRIP" : null;
   const stock = STOCK_LIST.has(w.name) ? "tactical" : null;
   const magazine = (w.cls==="SR"||w.cls==="DMR") ? "DMR_SR" : (w.cls==="AR"||w.name==="S12K") ? "AR_DMR_S12K" : (w.cls==="SMG"||w.cls==="Pistol") ? "SMG_PISTOL" : null;
   return {muzzle, grip, stock, magazine};
@@ -2333,6 +2352,10 @@ function extendedCapFor(w){
     populateSlot("at_muzzle","muzzle", slots.muzzle, $("at_muzzle").value||"none");
     populateSlot("at_grip","grip", slots.grip, $("at_grip").value||"none");
     populateSlot("at_stock","stock", slots.stock, $("at_stock").value||"none");
+    if(slots.stock && !HEAVY_STOCK_LIST.has(w.name)){
+      const heavy=$("at_stock").querySelector('option[value="heavy"]');
+      if(heavy) heavy.remove();
+    }
     // magazine select
     const magSel = $("at_mag");
     if(!slots.magazine || !w.mag){ magSel.innerHTML = `<option value="none">No slot</option>`; magSel.disabled = true; }
@@ -2341,8 +2364,8 @@ function extendedCapFor(w){
       const ext = extendedCapFor(w);
       magSel.innerHTML = `<option value="none">None (${w.mag})</option>
         <option value="extended">Extended (${ext})</option>
-        <option value="quickdraw">QuickDraw (${w.mag}, −30% reload)</option>
-        <option value="extquick">Extended QuickDraw (${ext}, −30% reload)</option>`;
+        <option value="quickdraw">QuickDraw (${w.mag}, +60% reload speed)</option>
+        <option value="extquick">Extended QuickDraw (${ext}, +15% reload speed)</option>`;
       if(![...magSel.options].some(o=>o.value===magSel.dataset.sel)) magSel.value = magSel.dataset.sel || "none";
     }
     recompute();
@@ -2356,20 +2379,22 @@ function extendedCapFor(w){
     const magVal = (slots.magazine && w.mag) ? $("at_mag").value : "none";
     const m = ATTACH_MOD.muzzle[mVal] || ATTACH_MOD.muzzle.none;
     const g = ATTACH_MOD.grip[gVal] || ATTACH_MOD.grip.none;
-    const s = ATTACH_MOD.stock[sVal] || ATTACH_MOD.stock.none;
-    const vChange = m.v + g.v + s.v;
-    const hChange = m.h + g.h + s.h;
+    const selectedStock = (sVal==="heavy" && !HEAVY_STOCK_LIST.has(w.name)) ? "none" : sVal;
+    const s = ATTACH_MOD.stock[selectedStock] || ATTACH_MOD.stock.none;
+    const comp = mVal==="compensator" ? compensatorFor(w) : m;
+    const vChange = comp.v + g.v + s.v;
+    const hChange = comp.h + g.h + s.h;
     const recovChange = m.recov + g.recov + s.recov;
     const baseCap = w.mag || null;
     const ext = extendedCapFor(w);
     let newCap = baseCap;
-    let reloadChange = 0;
+    let reloadSpeedMultiplier = 1;
     if(magVal==="extended") newCap = ext;
-    else if(magVal==="quickdraw"){ newCap = baseCap; reloadChange = -0.30; }
-    else if(magVal==="extquick"){ newCap = ext; reloadChange = -0.30; }
+    else if(magVal==="quickdraw"){ newCap = baseCap; reloadSpeedMultiplier = 1.60; }
+    else if(magVal==="extquick"){ newCap = ext; reloadSpeedMultiplier = 1.15; }
     const isLmgPatched = LMG_PATCH_42_3.has(w.name);
-    const realBaseReload = w.reload; // from the originally supplied WEAPONS array (RPD is this toolkit's own placeholder)
-    let reloadMult = 1 + reloadChange;
+    const realBaseReload = w.reload; // RPD remains a non-animation placeholder
+    let reloadMult = 1 / reloadSpeedMultiplier;
     if(isLmgPatched) reloadMult *= 0.75; // official: LMG reload times reduced ~25% (Update 42.3)
     $("at_vrecoil").textContent = (vChange*100).toFixed(0)+"%";
     $("at_hrecoil").textContent = (hChange*100).toFixed(0)+"%";
@@ -2398,28 +2423,33 @@ function extendedCapFor(w){
 })();
 
 /* ================= 5. BACKPACK CALCULATOR ================= */
-// Standard capacities unchanged. Jammer Pack 3-tier capacities and Blue Zone protection levels are sourced
-// from the official Update 41.1 patch notes (pubg.com/en/news/9926): Lv.1/2/3 match standard backpack
-// capacity at the same level (150/200/250), with Low/Medium/High Blue Zone damage protection respectively.
+// Update 41.1 verifies Jammer and normal backpack carry bonuses match;
+// do not confuse the +150/+200/+250 pack additions with total character capacity.
+// Update 28.2 integrated the former +50 Utility Belt bonus into character
+// base capacity: old innate 20 + belt 50 = 70; Update 41.1 confirms Jammer
+// Packs grant exactly the same +150/+200/+250 as standard backpacks.
+// These are total character carrying capacities, not item weights.
+const CHARACTER_BASE_CAPACITY = 70;
+const BACKPACK_CAPACITY_BONUS = Object.freeze({1:150, 2:200, 3:250});
 const BACKPACKS = {
-  standard: {1:170, 2:220, 3:270},
-  jammer:   {1:150, 2:200, 3:250},
+  standard: Object.fromEntries(Object.entries(BACKPACK_CAPACITY_BONUS).map(([level,bonus])=>[level,CHARACTER_BASE_CAPACITY+bonus])),
+  jammer: Object.fromEntries(Object.entries(BACKPACK_CAPACITY_BONUS).map(([level,bonus])=>[level,CHARACTER_BASE_CAPACITY+bonus])),
 };
 const JAMMER_PROTECTION = {1:"Low", 2:"Medium", 3:"High"};
 const BP_CAP = BACKPACKS.standard; // kept for reference; calc() now reads BACKPACKS[type] directly
 const BP_AMMO = [ // [key,label,weight]
-  ["9mm","9mm (per round)",0.375], [".45acp",".45 ACP (per round)",0.40],
-  ["556","5.56mm (per round)",0.50], ["762","7.62mm (per round)",0.70],
+  ["9mm","9mm (per round)",0.30], ["57","5.7mm / P90 (per round)",0.35], [".45acp",".45 ACP (per round)",0.40],
+  ["556","5.56mm (per round)",0.50], ["762","7.62mm (per round)",0.60],
   ["300mag",".300 Magnum (per round)",1.00], ["12g","12 Gauge (per round)",1.25],
   ["bolt","Crossbow bolt (per round)",2.00],
 ];
 const BP_HEAL = [
-  ["bandage","Bandage",2], ["firstaid","First Aid Kit",10], ["medkit","Med Kit",20],
-  ["energy","Energy Drink",4], ["pain","Painkiller",10], ["adren","Adrenaline Syringe",20],
+  ["bandage","Bandage",2], ["firstaid","First Aid Kit",10], ["medkit","Med Kit",15],
+  ["energy","Energy Drink",4], ["pain","Painkiller",6], ["adren","Adrenaline Syringe",10],
 ];
 const BP_THROW = [
-  ["frag","Frag Grenade",18], ["smoke","Smoke Grenade",14], ["stun","Stun Grenade",12],
-  ["molotov","Molotov Cocktail",18], ["c4","C4",20],
+  ["frag","Frag Grenade",27], ["smoke","Smoke Grenade",14], ["stun","Stun Grenade",12],
+  ["molotov","Molotov Cocktail",16], ["c4","C4",35],
 ];
 (function(){
   const $ = id => document.getElementById(id);
