@@ -12,8 +12,8 @@ const shell = fs.readFileSync(path.join(root, 'app-shell.css'), 'utf8');
 const legacy = fs.readFileSync(path.join(root, 'design-refresh.css'), 'utf8');
 
 const panelIds = [
-  'panel-combat', 'panel-range', 'panel-ttk', 'panel-recoil2',
-  'panel-attach', 'panel-sensitivity', 'panel-backpack'
+  'panel-sensitivity', 'panel-combat', 'panel-range', 'panel-ttk',
+  'panel-recoil2', 'panel-attach', 'panel-backpack'
 ];
 const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m => m[1]);
 
@@ -61,9 +61,8 @@ function createElement(id) {
 test('desktop, mobile, back navigation and Escape all select the correct panel', () => {
   const panels = panelIds.map(id => createElement(id));
   const labels = [
-    'Combat DB', 'Effective Range', 'TTK', 'Recoil Analyzer',
-    'Attachments', 'Sensitivity & Recoil Matcher',
-    'Tactical Loadout & Gear'
+    'Scope Sensitivity Matcher', 'Combat DB', 'Effective Range', 'TTK',
+    'Recoil Analyzer', 'Attachments', 'Tactical Loadout & Gear'
   ];
   const buttons = panelIds.map((id, i) => {
     const button = createElement('button-' + id);
@@ -95,6 +94,12 @@ test('desktop, mobile, back navigation and Escape all select the correct panel',
     addEventListener(type, handler) { this.events[type] = handler; }
   };
   vm.runInNewContext(scripts[0], { document, window, location, history });
+  // Blank URL must open directly to the new first tool.
+  assert.deepEqual(panels.filter(p => p.classList.contains('active')).map(p => p.id), ['panel-sensitivity']);
+  assert.equal(buttons[0].attrs['aria-current'], 'page');
+  assert.equal(nodes['active-tool-heading'].textContent, 'Scope Sensitivity Matcher');
+  assert.equal(nodes['active-tool-index'].attrs['aria-label'], 'Tool 1 of 7');
+  assert.equal(location.hash, '', 'Default landing should not add a URL fragment');
 
   for (const [i, id] of panelIds.entries()) {
     buttons[i].events.click();
