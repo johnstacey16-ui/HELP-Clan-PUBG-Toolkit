@@ -457,14 +457,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
     <svg class="nav-tool-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
   </button>
 </div>
-        <div class="nav-tool-group">
-  <div class="nav-group-label"><span>03</span>REFERENCE</div>
-  <button class="nav-tool" type="button" data-open-panel="panel-data" aria-controls="panel-data">
-    <span class="nav-tool-icon"><svg class="nav-tool-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h10l4 4v14H5zM15 3v5h4M8 12h8m-8 4h8"/></svg></span>
-    <span class="nav-tool-name">Data &amp; Patch</span>
-    <svg class="nav-tool-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
-  </button>
-</div>
+        
       </nav>
     </div>
     <div class="sidebar-footer">
@@ -495,7 +488,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
 <div class="wrap">
  
 <header class="hero">
-  <div class="eyebrow">Field Reference · Extracted Game Data</div>
+  <div class="eyebrow">Combat · Weapon Database</div>
   <h1>PUBG Combat &amp; Armor Intelligence</h1>
   <p class="sub">Built by HELP, for HELP. Real weapon data, real armor math — know when to keep your plates and when to swap, before the fight makes that call for you.</p>
   <div class="hero-stats">
@@ -513,7 +506,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
  
 <div id="panels"></div>
  
-<footer>Source: supplied weapon DataAssets/BallisticData and manually computed armor crossover tables. Not a PUBG game engine simulation.</footer>
+
 </div>
  
 <div class="overlay" id="overlay"><div class="modal" id="modalBody" role="dialog" aria-modal="true" aria-labelledby="modalTitle"></div></div>
@@ -666,9 +659,9 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
 <!-- ================= EFFECTIVE RANGE & DAMAGE ================= -->
 <div id="panel-range" class="hub-main">
 <div class="wrap">
-  <div class="eyebrow">Field Reference · Damage Falloff</div>
+  <div class="eyebrow">Combat · Effective Range</div>
   <h1>Effective Range &amp; Damage</h1>
-  <p class="sub">Source-backed damage at measured distances only. Shotguns show damage per pellet, not assumed pellet hits or made-up kills; unsupported values display as No data.</p>
+  <p class="sub">Check damage and range using available measurements. Shotguns show damage per pellet; unavailable results show No data.</p>
 
   <div class="card">
     <div class="section-h">Setup</div>
@@ -688,8 +681,8 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
       </div>
     </div>
     <div class="field" style="margin-bottom:6px"><label>Measured checkpoint: <span id="rg_rangeLabel">100 m</span></label>
-      <input type="range" id="rg_range" min="0" max="1" step="1" value="0" aria-label="Select a source-measured distance checkpoint">
-      <p class="helptext" id="rg_rangeEvidence">Only distances with source measurements are selectable. No estimates outside the recorded range.</p>
+      <input type="range" id="rg_range" min="0" max="1" step="1" value="0" aria-label="Select a recorded distance">
+      <p class="helptext" id="rg_rangeEvidence">Only recorded distances are available.</p>
     </div>
     <div id="rg_approxNote"></div>
   </div>
@@ -720,22 +713,20 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
   </div>
   <div class="card">
     <div class="section-h">Hits-to-kill and TTK at recorded checkpoints</div>
-    <p class="helptext" style="margin-bottom:10px">Values are displayed only at source-measured distances. Shotgun hit counts and time-to-kill are unavailable without validated pellet-hit data. Between checkpoints, no numeric value is assumed.</p>
+    <p class="helptext" style="margin-bottom:10px">No data is shown for unknown distances or shotgun pellet-hit counts.</p>
     <table id="rg_brackets"></table>
   </div>
 
-  <div class="card">
-    <div class="note"><b>Data sources:</b> Falloff tables for 41 of 45 weapons plus per-pellet tables for the four pellet shotguns (AWM, AKM, M416, M16A4, Vector, UMP9, M249, RPD, VSS Vintorez, M24, O12, Kar98k, R1895, Desert Eagle, MK47 Mutant, Groza, SLR, SKS, Beryl, ACE32, SCAR-L, QBZ95, Mini 14, MG3, K2, G36C, AUG A3, FAMAS, Tommy Gun, JS9, MP5K, P90, MP9, Micro Uzi, Mk12, MK14 EBR, SVD Dragunov, Lynx AMR, G18C, P92, Skorpion) are sourced directly from each weapon's pubgstatistics.com page, and so are the per-pellet falloff tables for DBS, S686, S12K and Sawn-off (checked against patch 43.2 on 2026-10-22). No weapon uses the generic approximate falloff any more. Hit-area and per-class damage multipliers (head/chest/limb, by weapon class) are also from pubgstatistics.com, cross-checked digit-for-digit against several weapons' published damage tables. Armor reduction (30/40/55% for L1/L2/L3) is unchanged from the original build notes.</div>
-  </div>
+
 </div>
 </div>
 
 <!-- ================= TTK CALCULATOR ================= -->
 <div id="panel-ttk" class="hub-main">
 <div class="wrap">
-  <div class="eyebrow">Field Reference · Time To Kill</div>
+  <div class="eyebrow">Combat · Time To Kill</div>
   <h1>TTK Calculator</h1>
-  <p class="sub">Point-blank TTK is calculated only where a sourced 0m damage checkpoint and the required inputs exist. Shotgun pellet-hit counts, unsupported 0m readings and unverified reload times are shown as No data.</p>
+  <p class="sub">Compare point-blank damage, hits to kill and time to kill. Missing values show No data.</p>
 
   <div class="card">
     <div class="section-h">Setup</div>
@@ -782,9 +773,9 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
 <!-- ================= PER-SHOT RECOIL ANALYZER ================= -->
 <div id="panel-recoil2" class="hub-main">
 <div class="wrap">
-  <div class="eyebrow">Field Reference · Recoil Evidence</div>
+  <div class="eyebrow">Combat · Recoil</div>
   <h1>Recoil Evidence Explorer</h1>
-  <p class="sub">PUBG recoil changes over sustained fire, but we do not have verified per-bullet recoil curves for these weapons. This reference shows the available weapon-level parameters without inventing a 5%-per-shot increase or unverified jumps at bullets 10, 20 and 30.</p>
+  <p class="sub">Inspect recoil parameters by weapon and stance. Exact shot-by-shot patterns are unavailable.</p>
 
   <div class="card">
     <div class="section-h">Choose a weapon and question</div>
@@ -813,30 +804,22 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
 
   <div class="card">
     <div class="section-h">Supplied weapon-level recoil fields</div>
-    <p class="helptext">These are raw fields from the toolkit's supplied dataset, not recoil amounts for specific bullets. Their in-game units and current-patch accuracy have not all been independently verified.</p>
+    <p class="helptext">Weapon-level parameters, not shot-by-shot recoil.</p>
     <div style="overflow-x:auto;max-width:100%">
       <table id="rc_table"></table>
     </div>
   </div>
 
-  <div class="card">
-    <div class="section-h">What the official evidence tells us</div>
-    <div class="recoil-source-list">
-      <p><b>LMGs — Update 42.3 (August 2026):</b> KRAFTON described a vertical recoil peak during sustained fire and a lower-recoil recovery phase, not constant growth. <a href="https://pubg.com/en/news/10874" target="_blank" rel="noopener noreferrer">Developer letter</a>.</p>
-      <p><b>SLR — Update 42.1 (June 2026):</b> Vertical recoil buildup was reduced in the early and middle stages of sustained firing. <a href="https://pubg.com/en/news/10179" target="_blank" rel="noopener noreferrer">Official patch notes</a>.</p>
-      <p><b>MP5K — Update 30.1 (June 2024):</b> PUBG described vertical recoil increasing gradually, without publishing an exact percentage for every subsequent bullet. <a href="https://pubg.com/en-asia/news/7424" target="_blank" rel="noopener noreferrer">Official patch notes</a>.</p>
-      <p><b>10 / 20 / 30 bullet thresholds:</b> No authoritative evidence has been found that every weapon's recoil jumps at these precise shot counts. Until a current-patch recoil curve is measured or verified, exact shot-by-shot movement remains <b>No data</b>.</p>
-    </div>
-  </div>
+
 </div>
 </div>
 
 <!-- ================= ATTACHMENTS & RECOIL ================= -->
 <div id="panel-attach" class="hub-main">
 <div class="wrap">
-  <div class="eyebrow">Field Reference · Loadout Tuning</div>
+  <div class="eyebrow">Loadout · Attachments</div>
   <h1>Attachments &amp; Recoil</h1>
-  <p class="sub">Shows how muzzle, grip, stock, and magazine attachments change a weapon's recoil, capacity, and reload — restricted to the slots that weapon actually has. Slot access is assigned by weapon class using the compatibility groups supplied, with the explicit exceptions noted (e.g. AKM has no grip or stock slot) — see the Data &amp; Patch Info panel for what's extrapolated versus explicitly sourced.</p>
+  <p class="sub">Configure muzzle, grip, stock and magazine options for your chosen weapon.</p>
 
   <div class="card">
     <div class="section-h">Loadout</div>
@@ -877,9 +860,9 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
 <!-- ================= BACKPACK CALCULATOR ================= -->
 <div id="panel-backpack" class="hub-main">
 <div class="wrap">
-  <div class="eyebrow">Field Reference · Loadout Capacity</div>
+  <div class="eyebrow">Loadout · Backpack</div>
   <h1>Backpack Calculator</h1>
-  <p class="sub">Build an ammo/healing/boost/throwable loadout and see how much of your backpack it uses. Weapon and armor weight are not modeled — only ammo and utility items count against capacity, as documented below.</p>
+  <p class="sub">Plan ammo, healing, boosts and throwables within your backpack capacity.</p>
 
   <div class="card">
     <div class="toolbar">
@@ -922,62 +905,6 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
 </div>
 </div>
 
-<!-- ================= DATA & PATCH INFO ================= -->
-<div id="panel-data" class="hub-main">
-<div class="wrap">
-  <div class="eyebrow">Reference · Version &amp; Sources</div>
-  <h1>Data &amp; Patch Info</h1>
-  <p class="sub">What this toolkit is, what it isn't, and where every number in it comes from.</p>
-
-  <div class="card">
-    <dl class="datalist">
-      <dt>Version</dt>
-      <dd id="dp_version">v1.4 — weapon/armor data from the original supplied dataset, cross-checked and extended against official PUBG patch notes and pubgstatistics.com</dd>
-      <dt>Game &amp; patch</dt>
-      <dd>PUBG: BATTLEGROUNDS, PC/console. Checked against Update 43.1 (2026-09-09) and the two patches before it (42.3, 41.1). Anything later than 43.1 hasn't been checked.</dd>
-      <dt>Last opened</dt>
-      <dd id="dp_updated"></dd>
-      <dt>What this is</dt>
-      <dd>A reference built from a fixed dataset plus the patch notes and community tables cited below — not a live simulator. Treat every number as a snapshot, not a guarantee of the current patch.</dd>
-      <dt>Sources</dt>
-      <dd>
-        Base weapon stats (damage, RPM, velocity, magazine, recoil pattern, reload time) for the original 44 weapons: the supplied weapon dataset.<br>
-        Damage falloff by distance: exact tables for 41 of 45 weapons plus per-pellet tables for the four pellet shotguns (DBS, S686, S12K, Sawn-off), all sourced from pubgstatistics.com and checked against patch 43.2 on 2026-10-22. Its measured ranges are finite (e.g. S12K to 70m, Sawn-off to 50m); the site states damage beyond them is unknown, and this toolkit does not extrapolate or retain the last measured damage.<br>
-        Hit-area and per-class damage multipliers, all 13 body parts, by weapon class: pubgstatistics.com, cross-checked against several weapons' published damage tables.<br>
-        Armor reduction (30/40/55% for L1/L2/L3): PUBG wiki/community guides. Only Level 3 helmets reduce face-shot damage.<br>
-        Attachment modifiers, RPD, LMG rebalance, Tilted Grip, Half Grip, Angled Foregrip, Jammer Pack: official PUBG patch notes (pubg.com/en/news — 42.3, 41.1, 43.1).<br>
-        Backpack and item weights: PUBG wiki, pubgmap.io, and community capacity lists.<br>
-        Bullet drop and holdover (21 weapons): winnermeta.win real-match telemetry, currently in beta; values are estimated from measured flight time and drift a few percent between 14-day sampling windows.<br>
-        Historical shotgun spread angles were once taken from a 2018 pubgmap.io build; they are not verified for the current patch and are no longer used to calculate hits, damage or TTK.
-      </dd>
-      <dt>Patch changes reflected here</dt>
-      <dd>
-        <b>42.3</b> — RPD added (7.62mm LMG, 43 dmg, 750 RPM, 735 m/s, 50-round mag expandable to 110; no muzzle or foregrip; accepts AR/LMG mags and stocks; up to 6x scope). LMG reload times −25%, LMG max horizontal recoil −30% (M249, MG3, RPD).<br>
-        <b>41.1</b> — Tilted Grip added (+12% vertical / +6% horizontal recoil control, +25% camera-shake control — shown as a note only, not modeled numerically). Angled Foregrip removed from world spawn, its role folded into Half Grip (now +16% horizontal, up from +8%). Jammer Pack: 3 tiers at 150/200/250 capacity with Low/Medium/High Blue Zone protection.<br>
-        <b>43.1</b> — Exact firing-position recoil-control figures for RPD (standing −10%, crouching −17%, prone −27%), M249 (crouching −17%, prone −27%), and MG3 (standing −15%, crouching −17%), shown as a note in the Recoil Analyzer. Also adjusted LMG ADS speed and vehicle-damage multipliers — not modeled here.
-      </dd>
-      <dt>Shotguns</dt>
-      <dd>The range tool shows measured base damage <b>per pellet</b> for DBS, S686, S12K and Sawn-off, only at the source's published distance checkpoints. Measurement ends at DBS 70m, S686 80m, S12K 70m and Sawn-off 50m. Source data beyond those limits is unknown, not zero and not a flat continuation. Actual damage to a player, pellet impacts, hip-fire/ADS hit fractions, hits-to-kill and time-to-kill cannot be supported from per-pellet damage alone; the previous legacy-spread calculation has been removed from the effective-range results. O12 fires a slug and uses its measured single-projectile points (2–50m).</dd>
-      <dt>Bullet drop</dt>
-      <dd>Bullet drop is displayed only at explicitly provided WinnerMeta telemetry checkpoints for weapons that have them. At other distances, including past the last checkpoint, the tool displays No data rather than a power-law interpolation or flat continuation. Muzzle velocity by itself cannot establish actual flight time as the projectile slows; no estimated flight times are displayed.</dd>
-      <dt>Known limitation</dt>
-      <dd>The measured falloff tables provide discrete checkpoints, not a continuous verified curve. Only isolated measurement markers are plotted; no damage line or intermediate values are asserted between source checkpoints. Player damage for pellet shotguns cannot be calculated without reliable pellet-impact evidence, so the tool does not provide one.</dd>
-      <dt>Known gaps</dt>
-      <dd>
-        <ul class="gaps">
-          <li>The Effective Range panel shows only source-published damage checkpoints. Distances outside each weapon’s table and distances without a published sample are No data, not inferred.</li>
-          <li>RPD has no published recoil-pattern data; the Recoil Analyzer shows it as incomplete rather than guessing. G18C is missing its recovery-speed and minimum-horizontal% figures for the same reason.</li>
-          <li>RPD's reload time (3.5s) is this toolkit's own placeholder — it wasn't in the original dataset like every other weapon's reload time is.</li>
-          <li>Attachment slot access is assigned by weapon class plus named exceptions (AKM has no grip/stock; RPD has no muzzle/grip); weapons not individually named follow the class default rather than being verified one by one. Sights aren't modeled as a slot.</li>
-          <li>Attachment recoil/reload modifiers not tied to a specific patch note above are approximate community figures and may drift from the current patch.</li>
-          <li>Magazine capacities use exact figures where supplied (Vector, UMP, MP5K, Micro Uzi, pistols, RPD); everything else is a generic +30% (AR/DMR/S12K, SMG/Pistol) or +5 rounds (DMR/SR) approximation.</li>
-          <li>Frag grenade and Molotov weights are listed as either 16 or 18 depending on the source; this toolkit uses 18 for both.</li>
-        </ul>
-      </dd>
-    </dl>
-  </div>
-</div>
-</div>
 
     </main>
   </div>
@@ -987,7 +914,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
 // HELP Clan workspace navigation. Calculator scripts and existing content remain unchanged.
 (function(){
   'use strict';
-  const panelIds = ["panel-combat","panel-range","panel-ttk","panel-recoil2","panel-attach","panel-sensitivity","panel-backpack","panel-data"];
+  const panelIds = ["panel-combat","panel-range","panel-ttk","panel-recoil2","panel-attach","panel-sensitivity","panel-backpack"];
   const navButtons = Array.from(document.querySelectorAll('#app-toolnav [data-open-panel]'));
   const toggle = document.getElementById('mobile-nav-toggle');
   const scrim = document.getElementById('sidebar-scrim');
@@ -1024,8 +951,8 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
     const button = navButtons.find(item=>item.dataset.openPanel===id);
     title.textContent = button ? button.querySelector('.nav-tool-name').textContent.trim() : '';
     const currentIndex = panelIds.indexOf(id)+1;
-    index.innerHTML = String(currentIndex).padStart(2,'0')+' <i>/</i> 08';
-    index.setAttribute('aria-label','Tool '+currentIndex+' of 8');
+    index.innerHTML = String(currentIndex).padStart(2,'0')+' <i>/</i> '+String(panelIds.length).padStart(2,'0');
+    index.setAttribute('aria-label','Tool '+currentIndex+' of '+panelIds.length);
     if(options.updateHistory && location.hash !== '#'+id) history.pushState({panel:id},'', '#'+id);
     if(options.scroll && changed) window.scrollTo({top:0,behavior:'auto'});
     const wasOpen = root.classList.contains('sidebar-open');
@@ -2553,11 +2480,7 @@ const BP_THROW = [
   calc();
 })();
 
-/* ================= 6. DATA & PATCH INFO ================= */
-(function(){
-  const d = new Date();
-  document.getElementById("dp_updated").textContent = d.toISOString().slice(0,10);
-})();
+
 
 })();
 </script>
