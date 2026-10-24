@@ -22,11 +22,22 @@ This toolkit is a reference, not a physics simulator. **Never fabricate numeric 
 - Flight time from *muzzle velocity* alone is not reliable beyond the muzzle, so effective-range flight time is **No data** rather than a fabricated constant-speed figure.
 - Even a line drawn between measured endpoints can imply false confidence. This toolkit uses individual plotted markers for measured checkpoints.
 
+## Recoil Analyzer — no invented per-shot pattern
+
+- The old analyzer multiplied vertical recoil and horizontal bias by \`1 + (shot - 1) × speed × 0.05\`, then generated seeded horizontal variation. **No official or validated current-PUBG source supports this as a universal per-bullet formula. This calculation has been retired.**
+- Do not replace that with invented fixed jumps at bullets 10, 20 and 30. No evidence has established those precise universal boundaries.
+- KRAFTON's 7 August 2026 LMG developer letter describes recoil reaching a peak and then settling, and documents an adjustment of approximately −10% at the peak and +10% after recovery. https://pubg.com/en/news/10874
+- Update 42.1 (16 June 2026) documents distinct early/mid recoil buildup for the SLR. https://pubg.com/en/news/10179
+- Update 30.1 (11 June 2024) describes MP5K vertical recoil increasing gradually. https://pubg.com/en-asia/news/7424
+- Build-derived PUBG weapon field listings include vertical/horizontal recoil speed, climb and fall values, recoil variation and horizontal direction-switch cadence. These do **not** by themselves establish verified per-shot displacement or a complete game-engine spray simulation. Example: https://pubgplanet.com/wiki/weapons/rpd
+- The Recoil Evidence Explorer now displays original supplied weapon-level parameter values with an explicit caveat, while withholding simulated shot-by-shot/cumulative recoil. Unverified or absent measurements are **No data**. Neither a generic prone factor nor a fixed 5% growth is applied.
+- To restore exact curves, require current-patch measurements or reproducible game-engine data sufficient to validate the shot-by-shot behavior. Keep provenance and patch identifiers.
+
 ## Other areas to audit before calling their outputs fully source-verified
 
 The following pre-existing features contain explicitly documented approximations or placeholder inputs. Their figures should **not** be described as verified measurements until audited and replaced with reliable data, or suppressed if reliable data does not exist:
 
-1. **Recoil Analyzer** — generic prone stance factor (`PRONE_EXTRA`) and some incomplete recoil samples.
+1. **Supplied recoil parameters** — several weapon-level fields lack independent current-patch validation; do not use them as exact per-shot recoil.
 2. **Attachment estimates** — approximate community modifier percentages where no patch-confirmed figure is available.
 3. **Magazine capacities** — generic extended-magazine estimates for weapons lacking exact values.
 4. **Armor crossovers** — derivations from fixed source tables; distinguish mathematical model outputs from live/current-patch observation.
