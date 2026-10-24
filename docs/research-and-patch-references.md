@@ -6,6 +6,30 @@ This document replaces the previous “Data & Patch” tool tab. It preserves th
 
 For the current approach to both original, owner-authored formulas and measured game data, see [DATA_ACCURACY_POLICY.md](../DATA_ACCURACY_POLICY.md).
 
+## 24 October 2026 — extend source-backed recoil data to 33 of 45 weapons
+
+The earlier recoil import recorded game-engine parameters for 20 weapons. This batch adds **13 more independently checked 43.2 RecoilConfig records**, bringing the named `RECOIL_DETAIL_43_2` table to **33 weapons** (12 are still without this extra data layer).
+
+**New weapons and source pages**
+
+- AKM https://pubg.gs/weapons/akm/ — 2 bullets/switch, climb 0.7, fall 2.4, vertical recovery 8.2.
+- Beryl M762 https://pubg.gs/weapons/beryl-m762/ — prone factor 0.7, 2 bullets/switch, climb 0.65, fall 2.15, recovery 8.2.
+- M416 https://pubg.gs/weapons/m416/ — 2 bullets/switch, climb 0.7, fall 2.1, recovery 7.
+- AUG A3 https://pubg.gs/weapons/aug/ — 2 bullets/switch, climb 0.65, fall 2.1, recovery 6.
+- G36C https://pubg.gs/weapons/g36c/ — 2 bullets/switch, climb 0.65, fall 2.3, recovery 8.
+- Kar98k https://pubg.gs/weapons/kar98k/ — 1 bullet/switch, climb 0.7, fall 3, recovery 5.5.
+- AWM https://pubg.gs/weapons/awm/ — 1 bullet/switch, climb 0.7, fall 3, recovery 5.5.
+- M24 https://pubg.gs/weapons/m24/ — 1 bullet/switch, climb 0.5, fall 3, recovery 5.5.
+- SCAR-L https://pubg.gs/weapons/scar-l/ — 2 bullets/switch, climb 0.75, fall 2.3, recovery 8.
+- QBZ95 https://pubg.gs/weapons/qbz/ — 2 bullets/switch, climb 0.75, fall 2.4, recovery 8.
+- MG3 https://pubg.gs/weapons/mg3/ — prone factor 0.265, 2 bullets/switch, climb 0.75, fall 3.3, recovery 8.5.
+- Mini 14 https://pubg.gs/weapons/mini14/ — 1 bullet/switch, climb 1.2, fall 3, recovery 9.
+- MK14 EBR https://pubg.gs/weapons/mk14/ — prone factor 0.25, 1 bullet/switch, climb 0.9, fall 3, recovery 6.
+
+All other new `proneMod` fields stay **null** where the source page has no explicit prone modifier. Do not infer a uniform 0.7 prone reduction, and do not convert raw recoil fields into an apparent bullet-by-bullet trace. The Recoil Analyzer still says **Coming Soon** for the exact shot sequence and keeps its previous record types untouched. User-developed sensitivity formulas, damage falloff checkpoints, magazine data, attachments and backpack calculations were not changed.
+
+The current official patch is **43.2** (13 October 2026 patch notes, PC maintenance 14 October): https://pubg.com/en/news/11136 . The game-file extraction states 21 October 2026: https://pubg.gs/about/ .
+
 ## Update 24 October 2026 — remove universal 42-round magazine assumption
 
 - Source reconciliation identified that the `42 rounds` printed on the extracted `Extended Mag (AR, DMR, LMG, S12K)` item record is **not** the number of rounds every compatible weapon can load. See the raw attachment-item table: https://pubg.gs/attachments/
