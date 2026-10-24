@@ -1115,7 +1115,8 @@ const RECOIL_RAW = {
   "Sawn-off":     [null, null,null,null,null, 15,12, null],
   "P92":          [1.0,  null,null,null,null, 15,12, null],
   "R1895":        [null, null,null,null,null, 15,12, null],
-  "G18C":         [null, null,null,null,null, null,null,null],
+  "G18C":         [null, null,null,null,null, 15,12,15], // P18C in 43.2 game data
+  "RPD":          [7.5,  0.70,null,null,null, 15.5,11,25], // Update 43.2 extracted gun data
 };
 WEAPONS.forEach(w=>{
   const r = RECOIL_RAW[w.name];
@@ -2401,25 +2402,31 @@ function extendedCapFor(w){
 // Standard capacities unchanged. Jammer Pack 3-tier capacities and Blue Zone protection levels are sourced
 // from the official Update 41.1 patch notes (pubg.com/en/news/9926): Lv.1/2/3 match standard backpack
 // capacity at the same level (150/200/250), with Low/Medium/High Blue Zone damage protection respectively.
+// Update 28.2 integrated the former +50 Utility Belt bonus into character
+// base capacity: old innate 20 + belt 50 = 70; Update 41.1 confirms Jammer
+// Packs grant exactly the same +150/+200/+250 as standard backpacks.
+// These are total character carrying capacities, not item weights.
+const CHARACTER_BASE_CAPACITY = 70;
+const BACKPACK_CAPACITY_BONUS = Object.freeze({1:150, 2:200, 3:250});
 const BACKPACKS = {
-  standard: {1:170, 2:220, 3:270},
-  jammer:   {1:150, 2:200, 3:250},
+  standard: Object.fromEntries(Object.entries(BACKPACK_CAPACITY_BONUS).map(([level,bonus])=>[level,CHARACTER_BASE_CAPACITY+bonus])),
+  jammer: Object.fromEntries(Object.entries(BACKPACK_CAPACITY_BONUS).map(([level,bonus])=>[level,CHARACTER_BASE_CAPACITY+bonus])),
 };
 const JAMMER_PROTECTION = {1:"Low", 2:"Medium", 3:"High"};
 const BP_CAP = BACKPACKS.standard; // kept for reference; calc() now reads BACKPACKS[type] directly
 const BP_AMMO = [ // [key,label,weight]
-  ["9mm","9mm (per round)",0.375], [".45acp",".45 ACP (per round)",0.40],
-  ["556","5.56mm (per round)",0.50], ["762","7.62mm (per round)",0.70],
+  ["9mm","9mm (per round)",0.30], [".45acp",".45 ACP (per round)",0.40],
+  ["556","5.56mm (per round)",0.50], ["762","7.62mm (per round)",0.60],
   ["300mag",".300 Magnum (per round)",1.00], ["12g","12 Gauge (per round)",1.25],
   ["bolt","Crossbow bolt (per round)",2.00],
 ];
 const BP_HEAL = [
-  ["bandage","Bandage",2], ["firstaid","First Aid Kit",10], ["medkit","Med Kit",20],
-  ["energy","Energy Drink",4], ["pain","Painkiller",10], ["adren","Adrenaline Syringe",20],
+  ["bandage","Bandage",2], ["firstaid","First Aid Kit",10], ["medkit","Med Kit",15],
+  ["energy","Energy Drink",4], ["pain","Painkiller",6], ["adren","Adrenaline Syringe",10],
 ];
 const BP_THROW = [
-  ["frag","Frag Grenade",18], ["smoke","Smoke Grenade",14], ["stun","Stun Grenade",12],
-  ["molotov","Molotov Cocktail",18], ["c4","C4",20],
+  ["frag","Frag Grenade",27], ["smoke","Smoke Grenade",14], ["stun","Stun Grenade",12],
+  ["molotov","Molotov Cocktail",16], ["c4","C4",35],
 ];
 (function(){
   const $ = id => document.getElementById(id);
