@@ -1129,6 +1129,21 @@ const RECOIL_RAW = {
 // per-shot movement, and never infer unknown fields from another weapon.
 // Each entry maps the standard game-file "Recoil" section for this gun.
 const RECOIL_DETAIL_43_2 = {
+  // Additional directly extracted weapon records; null is an unknown field,
+  // not an assumed zero or copied stance modifier.
+  "AKM":          {switchShots:2, proneMod:null, recoveryV:8.2, climb:0.7,  fall:2.4},
+  "Beryl M762":   {switchShots:2, proneMod:0.70, recoveryV:8.2, climb:0.65, fall:2.15},
+  "M416":         {switchShots:2, proneMod:null, recoveryV:7,   climb:0.7,  fall:2.1},
+  "AUG A3":       {switchShots:2, proneMod:null, recoveryV:6,   climb:0.65, fall:2.1},
+  "G36C":         {switchShots:2, proneMod:null, recoveryV:8,   climb:0.65, fall:2.3},
+  "Kar98k":       {switchShots:1, proneMod:null, recoveryV:5.5, climb:0.7,  fall:3},
+  "AWM":          {switchShots:1, proneMod:null, recoveryV:5.5, climb:0.7,  fall:3},
+  "M24":          {switchShots:1, proneMod:null, recoveryV:5.5, climb:0.5,  fall:3},
+  "SCAR-L":       {switchShots:2, proneMod:null, recoveryV:8,   climb:0.75, fall:2.3},
+  "QBZ95":        {switchShots:2, proneMod:null, recoveryV:8,   climb:0.75, fall:2.4},
+  "MG3":          {switchShots:2, proneMod:0.265,recoveryV:8.5, climb:0.75, fall:3.3},
+  "Mini 14":      {switchShots:1, proneMod:null, recoveryV:9,   climb:1.2,  fall:3},
+  "MK14 EBR":     {switchShots:1, proneMod:0.25, recoveryV:6,   climb:0.9,  fall:3},
   "UMP9":         {switchShots:2, proneMod:0.70, recoveryV:7,   climb:0.48, fall:1.8},
   "MP5K":         {switchShots:2, proneMod:0.70, recoveryV:8.5, climb:0.6,  fall:2.5},
   "Micro Uzi":    {switchShots:2, proneMod:0.70, recoveryV:12,  climb:0.2,  fall:1.25},
