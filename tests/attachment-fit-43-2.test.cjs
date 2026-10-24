@@ -50,13 +50,13 @@ test('stocks match gun tags: folding, cheek pad, bullet loops and tactical',()=>
   assert.deepEqual(options('AWM','SR','stock'),['none','cheek']);
   assert.deepEqual(options('VSS Vintorez','DMR','stock'),['none','cheek']);
   assert.deepEqual(options('S686','SG','stock'),['none','loops']);
-  assert.deepEqual(options('Kar98k','SR','stock'),['none','loops']);
+  assert.deepEqual(options('Kar98k','SR','stock'),['none','cheek','loops']);
   assert.deepEqual(options('M24','SR','stock'),['none','cheek']);
   assert.deepEqual(options('AKM','AR','stock'),['none']);
   assert.deepEqual(options('G18C','Pistol','stock'),['none']);
   assert.equal(slotsFor(gun('Micro Uzi','SMG')).stock,'folding');
   assert.equal(slotsFor(gun('AWM','SR')).stock,'cheek');
-  assert.equal(slotsFor(gun('Kar98k','SR')).stock,'loops');
+  assert.equal(slotsFor(gun('Kar98k','SR')).stock,'cheek');
 });
 
 test('current 43.2 attachment tooltips are modelled only where applicable',()=>{

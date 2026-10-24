@@ -6,6 +6,17 @@ This document replaces the previous “Data & Patch” tool tab. It preserves th
 
 For the current approach to both original, owner-authored formulas and measured game data, see [DATA_ACCURACY_POLICY.md](../DATA_ACCURACY_POLICY.md).
 
+## Update 24 October 2026 — verified optic fit and Kar98k dual stock choice
+
+- Added an **Optic** chooser to the existing Attachments & Recoil page. It checks weapon-specific fitting only; the separate **Scope Sensitivity Matcher** still handles all turning-speed/sensitivity calculations without alteration.
+- Source: PUBG Update 43.2 item tables (Steam build 26072644) at https://pubg.gs/attachments/ . Cross-check the individual weapon pages: https://pubg.gs/weapons/kar98k/ , https://pubg.gs/weapons/skorpion/ , https://pubg.gs/weapons/micro-uzi/ , https://pubg.gs/weapons/tommy-gun/ , https://pubg.gs/weapons/vector/ , https://pubg.gs/weapons/p92/ .
+- For guns that support 8x/15x, show both. This includes some less obvious weapons such as **M16A4** and **Mk47 Mutant**, as well as AWM, Kar98k, Lynx AMR, SLR, M24, Dragunov, Mini14, Mk12, Mk14 and SKS. Other guns with compatible UpperSmall/UpperDefault scope tags are offered up to 6x. Compact SMGs/pistols with only UpperReddot/UpperHolo get red dot and holographic choices, not arbitrarily all scopes.
+- With no compatible detachable sight found in the standard-mode item table (e.g. integrated P90/VSS sights, R1895, S686, Sawn-off), the chooser correctly displays **No optic** and is disabled.
+- **Kar98k stock**: PUBG Update 43.2 lists *both* **Cheek Pad (DMR, SR)** and **Bullet Loops (SG, SR, Win94)**; the old app listed only Bullet Loops. Both options now appear. Existing Bullet Loops reload-speed math and Cheek Pad recoil-control values are unchanged.
+- Selector resets an optic when switching weapons if it doesn't fit the new gun; all controls have accessible text labels. The optic choice is informational and is **not** applied to horizontal/vertical recoil, bullet drop, scope match or weapon damage.
+- `tests/optic-compatibility-43-2.test.cjs` safeguards the source-derived mapping; `tests/attachment-fit-43-2.test.cjs` now asserts the Kar98k dual stock choice.
+- **Remaining research:** aim/ADS behavior is not represented by a scope’s mere fit. Source build sometimes contains alternative-mode and test variants; preserve the standard-mode grouping and do not use optic selection to adjust empirical sensitivity values.
+
 ## Update 24 October 2026 — additional weapon recoil parameters
 
 - **Source:** PUBG PC Update 43.2, build 26072644, extraction dated 2026-10-21, from https://pubg.gs/about/ and each gun's `RecoilConfig` fields at https://pubg.gs/weapons/ .
