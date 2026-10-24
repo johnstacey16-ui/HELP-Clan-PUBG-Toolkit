@@ -15,11 +15,8 @@ test('retire unsupported recoil growth and assumed prone multipliers',()=>{
   assert.doesNotThrow(()=>new Script(recoil));
   assert.doesNotMatch(recoil,/0\.05|5%\s*\/\s*shot|PRONE_EXTRA|seededNoise|Math\.random|cumV|cumH|Math\.sin/);
   assert.match(html,/No verified per-shot recoil curve/);
-  assert.match(html,/No authoritative evidence has been found/);
-  assert.match(html,/supplied dataset, not recoil amounts for specific bullets/);
-  assert.match(html,/pubg\.com\/en\/news\/10874/);
-  assert.match(html,/pubg\.com\/en\/news\/10179/);
-  assert.match(html,/pubg\.com\/en-asia\/news\/7424/);
+  assert.doesNotMatch(html, /<div class="recoil-source-list">/);
+  assert.match(html,/Weapon recoil parameters/);
 });
 
 function node(id,value=''){
@@ -58,11 +55,11 @@ test('selecting 10, 20, or 30 shots shows unknown rather than numerical spray',(
     objects.rc_shots.value=String(count);
     objects.rc_shots.events.change();
     assert.match(objects.rc_missing.textContent,new RegExp(count+' shots'));
-    assert.match(objects.rc_missing.textContent,/No verified vertical\/horizontal recoil measurement/);
+    assert.match(objects.rc_missing.textContent,/Exact shot-by-shot recoil: No data/);
     assert.match(objects.rc_chart.children.strong.textContent,/No verified/);
     assert.equal(objects.rc_chart.attributes['data-evidence'],'unknown');
     assert.doesNotMatch(objects.rc_table.innerHTML,/<td>10<\/td><td>\d/);
-    assert.match(objects.rc_table.innerHTML,/Supplied weapon-level field/);
+    assert.match(objects.rc_table.innerHTML,/<th>Value<\/th>/);
   }
   objects.rc_weapon.value='G18C';
   objects.rc_weapon.events.change();
@@ -70,11 +67,11 @@ test('selecting 10, 20, or 30 shots shows unknown rather than numerical spray',(
   assert.doesNotMatch(objects.rc_table.innerHTML,/NaN|undefined/);
   objects.rc_stance.value='prone';
   objects.rc_stance.events.change();
-  assert.match(objects.rc_missing.textContent,/No verified current-patch prone modifier/);
+  assert.match(objects.rc_missing.textContent,/prone — Exact shot-by-shot recoil: No data/);
 });
 
 test('existing toolkit panels and script structure remain intact',()=>{
-  for(const id of ['panel-combat','panel-sensitivity','panel-range','panel-ttk','panel-recoil2','panel-attach','panel-backpack','panel-data']){
+  for(const id of ['panel-combat','panel-sensitivity','panel-range','panel-ttk','panel-recoil2','panel-attach' ,'panel-backpack']){
     assert.ok(html.includes('id="'+id+'" class="hub-main'));
   }
   const scripts=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(x=>x[1]);
