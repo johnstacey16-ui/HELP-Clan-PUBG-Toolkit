@@ -835,7 +835,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
 <div class="wrap">
   <div class="eyebrow">Loadout · Attachments</div>
   <h1>Attachments &amp; Recoil</h1>
-  <p class="sub">Configure muzzle, grip, stock and magazine options for your chosen weapon.</p>
+  <p class="sub">Check compatible optics and attachments for each weapon, then compare the recoil and magazine effects.</p>
 
   <div class="card">
     <div class="section-h">Loadout</div>
@@ -853,7 +853,9 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
       <div class="field"><label for="at_grip">Grip</label><select id="at_grip"></select></div>
       <div class="field"><label for="at_stock">Stock</label><select id="at_stock"></select></div>
       <div class="field"><label for="at_mag">Magazine</label><select id="at_mag"></select></div>
+      <div class="field"><label for="at_sight">Optic</label><select id="at_sight"></select></div>
     </div>
+    <div class="note" id="at_opticNote"></div>
   </div>
 
   <div class="card">
@@ -2395,10 +2397,38 @@ const CHOKE_COMPAT = new Set(["S686","Sawn-off"]);
 const DUCKBILL_COMPAT = new Set(["S12K"]);
 const FOLDING_STOCK_LIST = new Set(["MP9","Micro Uzi","Skorpion"]);
 const CHEEK_PAD_LIST = new Set([
-  "AWM","SVD Dragunov","SLR","M24","MK14 EBR","SKS","VSS Vintorez"
+  "AWM","SVD Dragunov","SLR","M24","MK14 EBR","SKS","VSS Vintorez","Kar98k"
 ]);
 const BULLET_LOOPS_LIST = new Set(["S686","Kar98k"]);
 
+// Verified optic fit from PUBG PC Update 43.2 attachment table. No sight
+// options are generated from weapon class: integrated or unsupported optics
+// (e.g. P90, VSS, Sawed-off, S686) remain unavailable.
+const SIGHT_6X_COMPAT = new Set([
+  "ACE 32","AKM","AUG A3","AWM","Beryl M762","DBS","SVD Dragunov",
+  "FAMAS","SLR","G36C","Groza","M416","JS9","Kar98k","K2","Lynx AMR",
+  "M16A4","M249","M24","MG3","MP5K","Mini 14","Mk12","MK14 EBR",
+  "MK47 Mutant","O12","QBZ95","RPD","SCAR-L","SKS","S12K",
+  "UMP9","Vector"
+]);
+const SIGHT_8X_COMPAT = new Set([
+  "AWM","SVD Dragunov","SLR","Kar98k","Lynx AMR","M16A4",
+  "M24","Mini 14","Mk12","MK14 EBR","MK47 Mutant","SKS"
+]);
+const SIGHT_RED_DOT_ONLY = new Set([
+  "Desert Eagle","G18C","P92","MP9","Micro Uzi","Skorpion","Tommy Gun"
+]);
+const SIGHT_LABELS = {
+  none:"No optic",reddot:"Red Dot Sight",holo:"Holographic Sight",
+  "2x":"2x Scope","3x":"3x Scope","4x":"4x Scope","6x":"6x Scope",
+  "8x":"8x Scope","15x":"15x Scope"
+};
+function opticChoicesFor(w){
+  if(SIGHT_8X_COMPAT.has(w.name))return ["none","reddot","holo","2x","3x","4x","6x","8x","15x"];
+  if(SIGHT_6X_COMPAT.has(w.name))return ["none","reddot","holo","2x","3x","4x","6x"];
+  if(SIGHT_RED_DOT_ONLY.has(w.name))return ["none","reddot","holo"];
+  return ["none"];
+}
 // Buttons and presets use "compensator"/"flash"/"suppressor" as stable
 // option keys; each muzzle is filtered to options the selected gun accepts.
 function attachmentChoicesFor(w,group){
@@ -2524,6 +2554,10 @@ function extendedCapFor(w,kind="extended"){
     populateSlot("at_muzzle","muzzle", w, $("at_muzzle").value||"none");
     populateSlot("at_grip","grip", w, $("at_grip").value||"none");
     populateSlot("at_stock","stock", w, $("at_stock").value||"none");
+    const sight=$("at_sight"),sightChoices=opticChoicesFor(w);
+    const previousSight=sightChoices.includes(sight.value)?sight.value:"none";
+    sight.disabled=sightChoices.length===1;
+    sight.innerHTML=sightChoices.map(id=>`<option value="${id}"${id===previousSight?" selected":""}>${SIGHT_LABELS[id]}</option>`).join("");
     // magazine select
     const magSel = $("at_mag");
     if(!slots.magazine || !w.mag){ magSel.innerHTML = `<option value="none">No slot</option>`; magSel.disabled = true; }
@@ -2546,6 +2580,13 @@ function extendedCapFor(w,kind="extended"){
     const gVal = slots.grip ? $("at_grip").value : "none";
     const sVal = slots.stock ? $("at_stock").value : "none";
     const magVal = (slots.magazine && w.mag) ? $("at_mag").value : "none";
+    const sightChoices=opticChoicesFor(w);
+    const selectedSight=sightChoices.includes($("at_sight").value)?$("at_sight").value:"none";
+    $("at_opticNote").textContent=
+      (sightChoices.length===1 ? "No compatible detachable optic is listed for this weapon."
+      : selectedSight==="none" ? "Select an optic to confirm fit."
+      : SIGHT_LABELS[selectedSight]+" fits this weapon.")+
+      " Optics do not change recoil calculations here; use Scope Sensitivity Matcher for turning speed.";
     const m = ATTACH_MOD.muzzle[mVal] || ATTACH_MOD.muzzle.none;
     const g = ATTACH_MOD.grip[gVal] || ATTACH_MOD.grip.none;
     const selectedStock = attachmentChoicesFor(w,"stock").includes(sVal) ? sVal : "none";
@@ -2597,11 +2638,11 @@ function extendedCapFor(w,kind="extended"){
     $("at_note").innerHTML = note;
   }
   ["at_weapon"].forEach(id=>$(id).addEventListener("change", update));
-  ["at_muzzle","at_grip","at_stock","at_mag"].forEach(id=>$(id).addEventListener("change", recompute));
+  ["at_muzzle","at_grip","at_stock","at_mag","at_sight"].forEach(id=>$(id).addEventListener("change", recompute));
   $("at_presetVert").onclick = ()=>{ trySet("at_muzzle","compensator"); trySet("at_grip","vertical"); trySet("at_stock","tactical"); recompute(); };
   $("at_presetHoriz").onclick = ()=>{ trySet("at_muzzle","compensator"); trySet("at_grip","half"); trySet("at_stock","tactical"); recompute(); };
   $("at_presetBal").onclick = ()=>{ trySet("at_muzzle","compensator"); trySet("at_grip","thumb"); trySet("at_stock","tactical"); recompute(); };
-  $("at_presetClear").onclick = ()=>{ trySet("at_muzzle","none"); trySet("at_grip","none"); trySet("at_stock","none"); trySet("at_mag","none"); recompute(); };
+  $("at_presetClear").onclick = ()=>{ trySet("at_muzzle","none"); trySet("at_grip","none"); trySet("at_stock","none"); trySet("at_mag","none"); trySet("at_sight","none"); recompute(); };
   function trySet(id,val){ const sel=$(id); if(!sel.disabled && [...sel.options].some(o=>o.value===val)) sel.value = val; }
   update();
 })();
