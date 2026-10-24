@@ -14,14 +14,29 @@ const options=name=>Array.from(data.opticChoicesFor({name}));
 
 test('long-range 8x/15x optics appear only for confirmed weapons',()=>{
   for(const gun of ['AWM','Kar98k','Lynx AMR','SLR','M24','SVD Dragunov','Mini 14','Mk12','MK14 EBR','SKS','M16A4','MK47 Mutant']){
-    assert.deepEqual(options(gun),['none','reddot','holo','2x','3x','4x','6x','8x','15x'],gun);
+    assert.deepEqual(options(gun),['none','reddot','holo','dot','2x','3x','4x','hybrid','thermal4x','6x','8x','15x'],gun);
   }
   for(const gun of ['AKM','M416','RPD','M249','S12K','DBS','UMP9','Vector','JS9']){
     const choices=options(gun);
     assert.ok(choices.includes('6x')&&!choices.includes('8x')&&!choices.includes('15x'),gun);
+    assert.ok(choices.includes('dot')&&choices.includes('hybrid')&&choices.includes('thermal4x'),gun+' game-file optics');
   }
 });
 
+test('43.2 extra scopes use compatible 6x/8x mount groups only',()=>{
+  for(const gun of ['M416','AWM','AKM','RPD','DBS','M16A4']){
+    const choices=options(gun);
+    assert.ok(choices.includes('dot'),gun+'/dot');
+    assert.ok(choices.includes('hybrid'),gun+'/hybrid');
+    assert.ok(choices.includes('thermal4x'),gun+'/thermal');
+  }
+  for(const gun of ['G18C','MP9','Skorpion','P92','P90']){
+    const choices=options(gun);
+    assert.ok(!choices.includes('dot'),gun+'/dot unsupported');
+    assert.ok(!choices.includes('hybrid'),gun+'/hybrid unsupported');
+    assert.ok(!choices.includes('thermal4x'),gun+'/thermal unsupported');
+  }
+});
 test('handguns and compact SMGs offer only their listed red dot and holo sights',()=>{
   for(const gun of ['Desert Eagle','G18C','P92','MP9','Micro Uzi','Skorpion','Tommy Gun']){
     assert.deepEqual(options(gun),['none','reddot','holo'],gun);
