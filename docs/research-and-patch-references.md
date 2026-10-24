@@ -6,6 +6,15 @@ This document replaces the previous “Data & Patch” tool tab. It preserves th
 
 For the current approach to both original, owner-authored formulas and measured game data, see [DATA_ACCURACY_POLICY.md](../DATA_ACCURACY_POLICY.md).
 
+## Update 24 October 2026 — remove universal 42-round magazine assumption
+
+- Source reconciliation identified that the `42 rounds` printed on the extracted `Extended Mag (AR, DMR, LMG, S12K)` item record is **not** the number of rounds every compatible weapon can load. See the raw attachment-item table: https://pubg.gs/attachments/
+- The earlier toolkit fallback gave **42 rounds to AKM, Beryl, AUG, Groza, G36C, SCAR-L, M16A4, QBZ, K2 and FAMAS**, which conflicts with their documented **40-round weapon magazines**. Corrected the fallback to **40 Extended / 40 Extended QuickDraw** for the explicitly supported ten 30-round ARs. Weapon tables: https://pubg.wiki.gg/wiki/Extended_Mag_%28AR%2C_DMR%2C_S12K%29 , https://www.pubgsearch.com/weapons/beryl-m762 . M416 retains its separate documented **42 Extended / 40 Extended QuickDraw** exception; do not generalize that figure.
+- Added specific Extended / Extended QuickDraw capacity entries that agree across PUBG weapon tables: **SKS 20/20, SLR 20/20, VSS 20/20, Mini 14 30/30, Mk12 30/30**. The accompanying modern 2026 weapon listing and historical tables are https://www.pubgsearch.com/weapons and https://pubg.wiki.gg/wiki/Extended_Mag_%28DMR%2C_SR%29 and https://pubg.wiki.gg/wiki/Extended_QuickDraw_Mag_%28DMR%2C_SR%29 .
+- **Do not infer the item-level 8/7-round DMR/SR values for every DMR.** They apply to specific bolt-action rifles such as AWM and M24, not to a 10- or 20-round DMR.
+- **ACE 32, Mk14 EBR and Dragunov remain intentionally unresolved** where multiple current/community tables report 40/42, 20/22 or 18/20 respectively. The calculator shows **No data** for an extended magazine on those guns until variant/source semantics are resolved.
+- Existing 43.2 scopes, recoil details, damage, pellet tables and sensitivity formulas remain unchanged. Add regression tests for all revised entries and unknown values.
+
 ## Update 24 October 2026 — verified optic fit and Kar98k dual stock choice
 
 - Added an **Optic** chooser to the existing Attachments & Recoil page. It checks weapon-specific fitting only; the separate **Scope Sensitivity Matcher** still handles all turning-speed/sensitivity calculations without alteration.
