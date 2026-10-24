@@ -2520,6 +2520,29 @@ function attachmentChoicesFor(w,group){
   }
   return ["none"];
 }
+// Presets optimise the simplified recoil modifiers from current compatible
+// weapon attachments, not a hard-coded loadout shared between every gun.
+// These are model scores, not an exact physical spray simulation.
+function bestAttachmentPreset(w,focus){
+  const muzzles=attachmentChoicesFor(w,"muzzle");
+  const grips=attachmentChoicesFor(w,"grip");
+  const stocks=attachmentChoicesFor(w,"stock");
+  let best={muzzle:"none",grip:"none",stock:"none"}, bestScore=-Infinity;
+  for(const muzzle of muzzles)for(const grip of grips)for(const stock of stocks){
+    const m=muzzle==="compensator" ? compensatorFor(w) : ATTACH_MOD.muzzle[muzzle];
+    const g=ATTACH_MOD.grip[grip],s=ATTACH_MOD.stock[stock];
+    const v=m.v+g.v+s.v,h=m.h+g.h+s.h;
+    const recovery=(ATTACH_MOD.muzzle[muzzle].recov||0)+(g.recov||0)+(s.recov||0);
+    const vertical=-v,horizontal=-h;
+    const score=focus==="vertical"
+      ? vertical*1000 + horizontal + recovery*0.01
+      : focus==="horizontal"
+      ? horizontal*1000 + vertical + recovery*0.01
+      : (vertical+horizontal)*100 - Math.abs(vertical-horizontal)*25 + recovery;
+    if(score>bestScore+1e-9){bestScore=score;best={muzzle,grip,stock};}
+  }
+  return best;
+}
 // Class-specific compensators: AR/DMR/S12K +15V/+10H; SMG +25V/+20H;
 // DMR/SR compensator +20V/+20H. Other tooltips aren't identical across classes.
 function compensatorFor(w){
@@ -2709,9 +2732,17 @@ function extendedCapFor(w,kind="extended"){
   }
   ["at_weapon"].forEach(id=>$(id).addEventListener("change", update));
   ["at_muzzle","at_grip","at_stock","at_mag","at_sight"].forEach(id=>$(id).addEventListener("change", recompute));
-  $("at_presetVert").onclick = ()=>{ trySet("at_muzzle","compensator"); trySet("at_grip","vertical"); trySet("at_stock","tactical"); recompute(); };
-  $("at_presetHoriz").onclick = ()=>{ trySet("at_muzzle","compensator"); trySet("at_grip","half"); trySet("at_stock","tactical"); recompute(); };
-  $("at_presetBal").onclick = ()=>{ trySet("at_muzzle","compensator"); trySet("at_grip","thumb"); trySet("at_stock","tactical"); recompute(); };
+  function applyPreset(focus){
+    const w=PT.WBYNAME[$("at_weapon").value];
+    const best=bestAttachmentPreset(w,focus);
+    trySet("at_muzzle",best.muzzle);
+    trySet("at_grip",best.grip);
+    trySet("at_stock",best.stock);
+    recompute();
+  }
+  $("at_presetVert").onclick = ()=>applyPreset("vertical");
+  $("at_presetHoriz").onclick = ()=>applyPreset("horizontal");
+  $("at_presetBal").onclick = ()=>applyPreset("balanced");
   $("at_presetClear").onclick = ()=>{ trySet("at_muzzle","none"); trySet("at_grip","none"); trySet("at_stock","none"); trySet("at_mag","none"); trySet("at_sight","none"); recompute(); };
   function trySet(id,val){ const sel=$(id); if(!sel.disabled && [...sel.options].some(o=>o.value===val)) sel.value = val; }
   update();
