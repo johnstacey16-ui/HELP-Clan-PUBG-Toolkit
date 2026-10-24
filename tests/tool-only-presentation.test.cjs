@@ -42,7 +42,8 @@ test('source and patch research is archived in docs, not displayed in the app',(
 });
 
 test('players still see critical No data and uncertainty warnings',()=>{
-  assert.match(html,/Damage is per pellet only; total damage, hits to kill and TTK are unknown/);
+  assert.match(html,/Minimum shells assume all /);
+  assert.match(html,/Actual shots may need more/);
   assert.match(html,/Attachment percentages are estimates/);
   assert.match(html,/RPD reload time is not verified/);
   assert.match(html,/Exact shot-by-shot recoil: No data/);
