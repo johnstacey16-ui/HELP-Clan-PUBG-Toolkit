@@ -2271,8 +2271,8 @@ const ATTACH_MOD = {
   muzzle: {
     none: {v:0,h:0,recov:0,label:"None"},
     compensator: {v:-0.25,h:-0.20,recov:0,label:"Compensator"},
-    suppressor: {v:-0.05,h:-0.05,recov:0,label:"Suppressor"},
-    flash: {v:-0.05,h:0,recov:0,label:"Flash Hider"},
+    suppressor: {v:0,h:0,recov:0,label:"Suppressor"},
+    flash: {v:-0.10,h:-0.10,recov:0,label:"Flash Hider"},
   },
   grip: {
     none: {v:0,h:0,recov:0,label:"None"},
@@ -2361,8 +2361,8 @@ function extendedCapFor(w){
       const ext = extendedCapFor(w);
       magSel.innerHTML = `<option value="none">None (${w.mag})</option>
         <option value="extended">Extended (${ext})</option>
-        <option value="quickdraw">QuickDraw (${w.mag}, −30% reload)</option>
-        <option value="extquick">Extended QuickDraw (${ext}, −30% reload)</option>`;
+        <option value="quickdraw">QuickDraw (${w.mag}, +60% reload speed)</option>
+        <option value="extquick">Extended QuickDraw (${ext}, +15% reload speed)</option>`;
       if(![...magSel.options].some(o=>o.value===magSel.dataset.sel)) magSel.value = magSel.dataset.sel || "none";
     }
     recompute();
@@ -2385,13 +2385,13 @@ function extendedCapFor(w){
     const baseCap = w.mag || null;
     const ext = extendedCapFor(w);
     let newCap = baseCap;
-    let reloadChange = 0;
+    let reloadSpeedMultiplier = 1;
     if(magVal==="extended") newCap = ext;
-    else if(magVal==="quickdraw"){ newCap = baseCap; reloadChange = -0.30; }
-    else if(magVal==="extquick"){ newCap = ext; reloadChange = -0.30; }
+    else if(magVal==="quickdraw"){ newCap = baseCap; reloadSpeedMultiplier = 1.60; }
+    else if(magVal==="extquick"){ newCap = ext; reloadSpeedMultiplier = 1.15; }
     const isLmgPatched = LMG_PATCH_42_3.has(w.name);
-    const realBaseReload = w.reload; // from the originally supplied WEAPONS array (RPD is this toolkit's own placeholder)
-    let reloadMult = 1 + reloadChange;
+    const realBaseReload = w.reload; // RPD remains a non-animation placeholder
+    let reloadMult = 1 / reloadSpeedMultiplier;
     if(isLmgPatched) reloadMult *= 0.75; // official: LMG reload times reduced ~25% (Update 42.3)
     $("at_vrecoil").textContent = (vChange*100).toFixed(0)+"%";
     $("at_hrecoil").textContent = (hChange*100).toFixed(0)+"%";
@@ -2420,9 +2420,8 @@ function extendedCapFor(w){
 })();
 
 /* ================= 5. BACKPACK CALCULATOR ================= */
-// Standard capacities unchanged. Jammer Pack 3-tier capacities and Blue Zone protection levels are sourced
-// from the official Update 41.1 patch notes (pubg.com/en/news/9926): Lv.1/2/3 match standard backpack
-// capacity at the same level (150/200/250), with Low/Medium/High Blue Zone damage protection respectively.
+// Update 41.1 verifies Jammer and normal backpack carry bonuses match;
+// do not confuse the +150/+200/+250 pack additions with total character capacity.
 // Update 28.2 integrated the former +50 Utility Belt bonus into character
 // base capacity: old innate 20 + belt 50 = 70; Update 41.1 confirms Jammer
 // Packs grant exactly the same +150/+200/+250 as standard backpacks.
