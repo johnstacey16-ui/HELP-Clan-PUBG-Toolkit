@@ -803,8 +803,8 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
   </div>
 
   <div class="card">
-    <div class="section-h">Supplied weapon-level recoil fields</div>
-    <p class="helptext">Weapon-level parameters, not shot-by-shot recoil.</p>
+    <div class="section-h">Weapon recoil parameters</div>
+    
     <div style="overflow-x:auto;max-width:100%">
       <table id="rc_table"></table>
     </div>
@@ -1244,9 +1244,9 @@ const panelsEl = document.getElementById("panels");
       <div class="toolbar" id="wClassFilters"></div>
       <div class="sort-hint">Click any column header to sort by it (click again to reverse) — hover a header for what it means.</div>
       <div style="overflow-x:auto;overflow-y:visible"><table id="wTable"></table></div>
-      <div class="missing-note">Shotguns and any weapon without a supplied crossover figure show — in the Head/Chest/armor columns; no threshold was invented for them.</div>
-      <div class="missing-note">G18C's recovery-speed and min-H% figures weren't included in the recoil data supplied — shown as — rather than estimated.</div>
-      <p class="missing-note" style="color:var(--dim)">These thresholds are point-blank values with no distance falloff modeled. At real engagement ranges the actual crossover point may sit lower than shown — treat this as a baseline, not a guarantee at range.</p>
+      <div class="missing-note">— means no available value.</div>
+      
+      <p class="missing-note" style="color:var(--dim)">Armor thresholds apply at point blank.</p>
       <div class="section-h">Column legends</div>
       <div class="helptext" style="margin-bottom:6px">Armor threshold colors (Head/Chest → armor columns):</div>
       <div class="color-legend">
@@ -1279,13 +1279,6 @@ const panelsEl = document.getElementById("panels");
     <div class="card" style="margin-top:16px" id="how-thresholds-work">
       <div class="section-h" style="margin-top:0">How the crossover thresholds work</div>
       <p class="helptext">A crossover point is the durability value at which damaged higher-tier armor stops being worth more than a fresh piece of the tier below. Higher tiers absorb more damage per hit but wear down with use; a fresh lower tier is undamaged, so at some durability the two protect equally well, and below it the fresh lower tier wins.</p>
-      <div class="section-h">Assumptions in this dataset</div>
-      <ul class="assumptions">
-        <li>Head and chest damage are the supplied base-damage × multiplier calculations, not the game's live formula.</li>
-        <li>Thresholds shown as "Always keep" mean no durability point in the supplied data made the fresh lower tier equal or better.</li>
-        <li>Shotguns and any weapon without a supplied crossover row are omitted from armor sections rather than estimated.</li>
-        <li>This is a decision reference built from a fixed dataset, not a live PUBG mechanics simulator — treat it as a snapshot, not an authority on the current patch.</li>
-      </ul>
     </div>`;
   const ROWS = WEAPONS.map(w=>({...w, helm:HELM[norm(w.name)], vest:VEST[norm(w.name)]}));
  
@@ -1982,54 +1975,31 @@ function drawLineChart(canvas, series, opts={}){
   }
 
   function updateDrop(w, range) {
-    const data = DROP_TABLES[w.name];
-    const measuredVelocity = MEASURED_MUZZLE_VEL[w.name];
-    $("rg_muzzlecmp").textContent = measuredVelocity==null ? "No data" : measuredVelocity+" m/s";
-    const point = dropAtRange(w, range);
+    const data=DROP_TABLES[w.name],velocity=MEASURED_MUZZLE_VEL[w.name];
+    $("rg_muzzlecmp").textContent=velocity==null?"No data":velocity+" m/s";
+    const point=dropAtRange(w,range);
     if(point==null){
-      $("rg_drop").textContent = "No data";
-      $("rg_holdover").textContent = "No data";
-      $("rg_dropNote").innerHTML = data ?
-        "<b>Unmeasured at "+range+"m:</b> bullet-drop figures are only available at "+
-        data.map(p=>p[0]+"m").join(", ")+". No interpolation or extrapolation is used. Source: WinnerMeta telemetry (beta)." :
-        "<b>No sourced bullet-drop values</b> for "+w.name+".";
+      $("rg_drop").textContent="No data";
+      $("rg_holdover").textContent="No data";
+      $("rg_dropNote").textContent=data?
+        "No drop reading at "+range+"m. Available: "+data.map(p=>p[0]+"m").join(", ")+
+        ".":"No drop readings for this weapon.";
       return;
     }
-    const angular = range>0 ? ((point/100)/range)*1000 : 0;
-    $("rg_drop").textContent = point.toFixed(1);
-    $("rg_holdover").textContent = angular.toFixed(2);
-    $("rg_dropNote").innerHTML =
-      "<b>Checkpoint "+range+"m:</b> WinnerMeta beta telemetry reports this drop estimate. "+
-      "Angular drop is mathematically derived from that checkpoint, not a validated in-game scope holdover.";
+    $("rg_drop").textContent=point.toFixed(1);
+    $("rg_holdover").textContent=(range>0?(point/100)/range*1000:0).toFixed(2);
+    $("rg_dropNote").textContent="Recorded at "+range+"m. Angular drop is calculated from this reading.";
   }
-
-  function updateEvidence(w, range){
-    const rows = rowsFor(w);
+  function updateEvidence(w,range){
+    const rows=rowsFor(w);
     if(!rows){
-      $("rg_approxNote").innerHTML =
-        '<div class="note"><b>No data:</b> This weapon has no recorded damage-distance checkpoints. Nothing is estimated.</div>';
+      $("rg_approxNote").textContent="No damage readings available.";
       return;
     }
-    const start = rows[0][0], end = rows[rows.length-1][0];
-    const perPellet = isPelletShotgun(w);
-    let message =
-      "<div class=\"note\"><b>Source limit: "+start+"–"+end+"m.</b> "+
-      "Only the published damage checkpoints from pubgstatistics.com are used. "+
-      "Beyond "+end+"m and at unsampled distances, damage is unknown — not zero and not held flat.</div>";
-    if(perPellet){
-      const pellet = measuredValueAt(rows,range);
-      message +=
-        "<div class=\"note\"><b>Shotgun: damage per pellet only.</b> "+
-        (pellet==null ? "No recorded per-pellet damage at this distance. " :
-        "Measured base damage at "+range+"m: <b>"+pellet.toFixed(1)+" per pellet</b> (before hitbox and armor). ")+
-        "The number of pellets that hit a person is not verified, for hip-fire or ADS. "+
-        "The older spread angles and assumed target size were not verified for the current game, "+
-        "so total player damage, HTK and TTK are intentionally <b>No data</b>.</div>";
-    } else {
-      message +=
-        '<div class="note"><b>Calculated result:</b> Damage to the selected body area uses a published base-damage checkpoint plus the existing hit-area, weapon-class and armor multipliers. It is not a direct observation of this exact combat scenario.</div>';
-    }
-    $("rg_approxNote").innerHTML = message;
+    const first=rows[0][0],last=rows[rows.length-1][0];
+    $("rg_approxNote").textContent=isPelletShotgun(w)?
+      "Available range: "+first+"–"+last+"m. Damage is per pellet only; total damage, hits to kill and TTK are unknown.":
+      "Available range: "+first+"–"+last+"m. Damage uses the selected hitbox and armor.";
   }
 
   function updatePoint(w,range){
@@ -2165,15 +2135,15 @@ function drawLineChart(canvas, series, opts={}){
     setBar("tk_reload",r.withReload,6);
     let tkNote;
     if(SHOTGUN_PELLETS[w.name]){
-      tkNote="No verified pellet hit-count data for this shotgun. Per-pellet damage does not establish actual damage, hits-to-kill or time-to-kill of a full shot, even at point blank.";
+      tkNote="Shotgun pellet hits are unknown, so damage and TTK are unavailable.";
     } else if(r.dmg==null){
-      tkNote=w.name+" has no published 0m damage checkpoint. Point-blank damage and TTK are not inferred from another distance.";
+      tkNote="No 0m damage reading for "+w.name+"; TTK unavailable.";
     } else if(r.withReload==null){
-      tkNote="Pure firing-time TTK is calculated from the sourced 0m damage and RPM, but no sourced reload duration is available for "+w.name+". TTK including reload is therefore unknown.";
+      tkNote="Reload time is unavailable for "+w.name+"; total TTK cannot be calculated.";
     } else if(r.reloads>0){
-      tkNote="Calculated firing time including "+r.reloads+" reload(s) at "+reloadSecondsFor(w).toFixed(2)+"s each. This is modelled from supplied figures, not direct combat telemetry.";
+      tkNote="Includes "+r.reloads+" reload(s).";
     } else {
-      tkNote="Calculated from sourced 0m base damage, existing armor/hitbox multipliers and RPM. No reload is needed.";
+      tkNote="No reload needed for this calculation.";
     }
     $("tk_note").textContent=tkNote;
     renderCompare();
@@ -2228,21 +2198,13 @@ function drawLineChart(canvas, series, opts={}){
     ];
 
     $("rc_table").innerHTML =
-      "<thead><tr><th>Weapon parameter</th><th>Supplied value</th><th>What this means</th></tr></thead>"+
+      "<thead><tr><th>Weapon parameter</th><th>Value</th></tr></thead>"+
       "<tbody>"+fields.map(([label,value])=>
-        "<tr><td>"+label+"</td><td>"+value+
-        "</td><td>Supplied weapon-level field; not a measured bullet-by-bullet movement</td></tr>"
+        "<tr><td>"+label+"</td><td>"+value+"</td></tr>"
       ).join("")+"</tbody>";
 
-    const stanceNote = stance==="prone" ?
-      " No verified current-patch prone modifier or per-shot path is loaded." :
-      stance==="crouched" ?
-      " A crouch multiplier may be supplied above, but it does not establish per-shot displacement." :
-      " Standing is the selected stance.";
     $("rc_missing").textContent =
-      "Requested: "+w.name+", "+count+" shots, "+stance+
-      ". No verified vertical/horizontal recoil measurement exists for each shot."+
-      stanceNote;
+      w.name+" · "+count+" shots · "+stance+" — Exact shot-by-shot recoil: No data.";
 
     // Keep an explicit unknown state, never replace it with seeded randomness
     // or a mathematical curve unrelated to PUBG's actual recoil implementation.
@@ -2365,7 +2327,7 @@ function extendedCapFor(w){
     let reloadMult = 1 + reloadChange;
     if(isLmgPatched) reloadMult *= 0.75; // official: LMG reload times reduced ~25% (Update 42.3)
     $("at_vrecoil").textContent = (vChange*100).toFixed(0)+"%";
-    $("at_hrecoil").textContent = (hChange*100).toFixed(0)+"%"+(isLmgPatched?" (plus a sourced −30% max-horizontal cut from Update 42.3, shown in the note below, not folded into this %)":"");
+    $("at_hrecoil").textContent = (hChange*100).toFixed(0)+"%";
     $("at_recovery").textContent = "+"+(recovChange*100).toFixed(0)+"%";
     const finalReload = realBaseReload*reloadMult;
     $("at_reload").textContent = reloadMult<1
@@ -2373,11 +2335,11 @@ function extendedCapFor(w){
       : finalReload.toFixed(1)+"s";
     $("at_capBase").textContent = baseCap ?? "—";
     $("at_capNew").textContent = newCap ?? "—";
-    let note = `Slot access for ${w.name}: muzzle ${slots.muzzle?"("+slots.muzzle+")":"none"}, grip ${slots.grip?"(has lower rail)":"none"}, stock ${slots.stock?"(tactical)":"none"}, magazine ${slots.magazine?"("+slots.magazine+")":"none"}. Modifier values are approximate community/datamined figures unless noted otherwise — see Data &amp; Patch Info for what's explicitly sourced vs. extrapolated by class.`;
-    if(w.name==="RPD") note += ` RPD's ${realBaseReload.toFixed(1)}s base reload is this toolkit's own placeholder, not part of the originally supplied dataset like every other weapon's reload time here.`;
-    if(gVal==="tilted") note += ` Tilted Grip also gives an official +25% camera-shake control (Update 41.1) — not reflected in the recoil % above since this toolkit doesn't otherwise track camera shake.`;
-    if(gVal==="angled") note += ` Angled Foregrip was removed from world spawn in Update 41.1 — its role was folded into Half Grip, which is why Half Grip's horizontal figure is higher than it used to be.`;
-    if(isLmgPatched) note += ` ${w.name} is an LMG: per Update 42.3, max horizontal recoil is reduced 30% and reload time ~25%, on top of any attachments selected here (these are sourced weapon-level patch changes, not attachment effects, so they're called out separately rather than folded into the deltas above).`;
+    let note = `Attachment percentages are estimates, not guaranteed in-game results.`;
+    if(w.name==="RPD") note += ` RPD reload time is not verified.`;
+    
+    
+    
     $("at_note").innerHTML = note;
   }
   ["at_weapon"].forEach(id=>$(id).addEventListener("change", update));
@@ -2439,7 +2401,7 @@ const BP_THROW = [
     const level = +$("bp_level").value;
     const cap = BACKPACKS[type][level];
     $("bp_jammerNote").innerHTML = type==="jammer"
-      ? `<div class="note">Jammer Pack Lv.${level}: ${JAMMER_PROTECTION[level]} Blue Zone damage protection (Update 41.1). Capacity is its own tier — 150/200/250 across Lv.1-3, lower than the standard backpack's 170/220/270 at the same level. PUBG hasn't published exact Blue Zone absorption numbers, so protection is shown as Low/Medium/High only, not a percentage.</div>` : "";
+      ? `<div class="note">Jammer Pack Lv.${level}: ${JAMMER_PROTECTION[level]} Blue Zone protection.</div>` : "";
     let used = 0;
     const cats = {Ammo:0, "Healing & Boosts":0, Throwables:0};
     const ammoKeys = new Set(BP_AMMO.map(a=>a[0])), healKeys = new Set(BP_HEAL.map(a=>a[0]));
@@ -2464,7 +2426,7 @@ const BP_THROW = [
     $("bp_breakdown").innerHTML = Object.entries(cats).map(([k,v])=>`<div class="catrow">${k}<b>${v.toFixed(1)}</b></div>`).join("");
     $("bp_warn").innerHTML = rem<0
       ? `<b>Over capacity by ${Math.abs(rem).toFixed(1)}.</b> Consider dropping some ammo or grenades to get back under the limit.`
-      : `Frag/Molotov weights are documented as 18 in this tool (source material lists 16 or 18 depending on the list) — see Data &amp; Patch Info.`;
+      : "";
   }
   document.addEventListener("input", e=>{ if(e.target.matches('#panel-backpack input[data-bp], #panel-backpack select#bp_level, #panel-backpack select#bp_type')) calc(); });
   document.addEventListener("change", e=>{ if(e.target.matches('#panel-backpack select#bp_level, #panel-backpack select#bp_type')) calc(); });
