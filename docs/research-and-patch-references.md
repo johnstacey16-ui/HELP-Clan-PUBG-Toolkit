@@ -65,6 +65,19 @@ Added shared `LMG_RELOAD_2026` and `reloadSecondsForWeapon(w)` used by **both** 
 
 The seven panels, original Scope Sensitivity Matcher maths, projectile/drop tables, recoil metadata, backpacks, magazine capacity rules and shotgun evidence boundaries are untouched.
 
+## 24 October 2026 — Mk14 magazine-family reconciliation
+
+- PUBG **43.2 game extraction** shows the Mk14 accepts **both AR/DMR/LMG/S12K and DMR/SR magazine families**, instead of only the current calculator's one generic DMR/SR option: https://pubg.gs/weapons/mk14/ and https://pubg.gs/attachments/ .
+- The **wiki's separate family tables** list the Mk14's DMR/SR **Extended 22 rounds**, DMR/SR **Extended QuickDraw 20**, and AR/DMR **Extended and Extended QuickDraw 20**. The difference is a named attachment-family distinction, not simply two measurements of one magazine:
+  - https://pubg.fandom.com/wiki/Extended_Mag_%28DMR%2C_SR%29
+  - https://pubg.wiki.gg/wiki/Extended_QuickDraw_Mag_%28DMR%2C_SR%29
+  - https://pubg.wiki.gg/wiki/Extended_Mag_%28AR%2C_DMR%2C_S12K%29
+  - https://pubg.wiki.gg/wiki/Extended_QuickDraw_Mag_%28AR%2C_DMR%2C_S12K%29
+- The Attachments calculator now provides **explicitly labeled alternatives** on Mk14: DMR/SR Extended 22, DMR/SR Extended QuickDraw 20, AR/DMR Extended 20, and AR/DMR Extended QuickDraw 20. The accompanying warning says the loaded-round figures are from *weapon/attachment tables* and still require a direct 43.2 in-game check, rather than claiming game-file item inventory size proves loaded rounds.
+- The magazine selector now preserves a previously chosen compatible option when switching guns, and resets any Mk14-only option to None when the next weapon doesn't accept it.
+- **ACE32 40/42 and Dragunov 18/20 remain unresolved** because available source pages don't establish a single current standard-mode loaded capacity for each magazine variant. Neither is bulk-imported.
+- The creator's Scope Sensitivity Matcher maths, existing recoil/shotgun/damage values, loadout weights and other weapons' magazine tables are unchanged.
+
 ## 24 October 2026 — complete source-backed recoil data for all 45 weapons
 
 The previous import recorded 20 weapon records. This batch adds **25 individually checked Update 43.2 RecoilConfig records**, bringing the named `RECOIL_DETAIL_43_2` table to **all 45 toolkit weapons**. Every record includes only fields the extractor actually exposes; full individual per-shot spray paths are not established.
