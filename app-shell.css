@@ -989,3 +989,22 @@ body {
   #panel-sensitivity #px_table th { font-size: 10px; white-space: normal; }
   #panel-sensitivity #px_table td { font-size: 11px; }
 }
+
+
+/* All seven tools now share one navigation group. The button/icon alignment
+   applies equally to Combat DB and every other calculator. */
+#app-toolnav { gap: 0; }
+#app-toolnav .nav-tool { min-height: 52px; }
+#app-toolnav .nav-tool-icon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  border-radius: 9px;
+}
+#app-toolnav .nav-tool-svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+}
