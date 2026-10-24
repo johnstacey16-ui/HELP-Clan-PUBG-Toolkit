@@ -478,8 +478,12 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
           <div class="topbar-title" id="active-tool-heading" tabindex="-1">Scope Sensitivity Matcher</div>
         </div>
       </div>
+      <div class="topbar-brand" aria-label="HELP CLAN">
+        <span class="topbar-brand-name"><span class="brand-help">HELP</span> <span class="brand-clan">CLAN</span></span>
+        <span class="topbar-brand-tagline">PUBG FIELD TOOLKIT</span>
+      </div>
       <div class="topbar-actions">
-        <span class="topbar-online"><span></span> READY TO DEPLOY</span>
+        <span class="topbar-online"><span></span> TOOLS ONLINE</span>
         <span class="topbar-index" id="active-tool-index" aria-label="Tool 1 of 7">01 <i>/</i> 07</span>
       </div>
     </header>
@@ -552,10 +556,12 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
       </div>
  
       <div class="divider"><span>Matched sensitivity per scope</span><i></i></div>
+      <div class="scope-results-scroll" role="region" aria-label="Matched scope sensitivities" tabindex="0">
       <table class="ref" id="px_table">
         <thead><tr><th>Scope</th><th>A</th><th>B</th><th>Matched sensitivity</th><th>In range?</th></tr></thead>
         <tbody></tbody>
       </table>
+      </div>
       <div class="note">Confirm calculated sensitivity values in-game. Out of range means the scope cannot reach the exact match.</div>
     </div>
   </div>
@@ -776,12 +782,20 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
 <div id="panel-recoil2" class="hub-main">
 <div class="wrap">
   <div class="eyebrow">Combat · Recoil</div>
-  <div class="recoil-release-row" aria-label="Full shot-by-shot recoil analysis coming soon">
-    <span class="recoil-coming-soon"><span class="recoil-status-dot" aria-hidden="true"></span>COMING SOON</span>
-    <span class="recoil-release-caption">FULL SHOT-BY-SHOT ANALYSIS</span>
+  <div class="recoil-release-row" role="status" aria-label="Detailed recoil analysis coming soon">
+    <div class="recoil-release-content">
+      <span class="recoil-release-caption">RECOIL ANALYZER · IN DEVELOPMENT</span>
+      <span class="recoil-coming-soon"><span class="recoil-status-dot" aria-hidden="true"></span>COMING SOON</span>
+      <span class="recoil-release-detail">Full shot-by-shot spray analysis is on the way. The weapon recoil parameters below are available now.</span>
+    </div>
+    <div class="recoil-release-graphic" aria-hidden="true">
+      <span class="recoil-target-ring recoil-ring-outer"></span>
+      <span class="recoil-target-ring recoil-ring-inner"></span>
+      <span class="recoil-target-center"></span>
+    </div>
   </div>
   <h1>Recoil Evidence Explorer</h1>
-  <p class="sub">Check the available recoil parameters below. Detailed per-shot recoil patterns are in development.</p>
+  <p class="sub">Explore weapon recoil parameters while full spray-pattern analysis is being built.</p>
 
   <div class="card">
     <div class="section-h">Choose a weapon and question</div>
