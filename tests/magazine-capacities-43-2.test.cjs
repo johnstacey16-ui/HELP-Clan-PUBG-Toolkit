@@ -53,10 +53,16 @@ test('Extended and Extended QuickDraw capacities must not be conflated',()=>{
     assert.equal(extendedCapFor(w(gun),'extended'),mag,gun+' Extended');
     assert.equal(extendedCapFor(w(gun),'extquick'),mag,gun+' Extended QuickDraw');
   }
-  for(const gun of ['ACE 32','MK14 EBR','SVD Dragunov']){
+  for(const gun of ['ACE 32','SVD Dragunov']){
     assert.equal(extendedCapFor(w(gun),'extended'),null,gun+' unresolved ambiguity');
     assert.equal(extendedCapFor(w(gun),'extquick'),null,gun+' unresolved EQ ambiguity');
   }
+  // Mk14 has two overlapping, weapon-compatible magazine families.
+  assert.equal(extendedCapFor(w('MK14 EBR'),'extended'),22,'DMR/SR Extended');
+  assert.equal(extendedCapFor(w('MK14 EBR'),'extquick'),20,'DMR/SR Extended QuickDraw');
+  assert.equal(extendedCapFor(w('MK14 EBR'),'extended_ar'),20,'AR/DMR Extended');
+  assert.equal(extendedCapFor(w('MK14 EBR'),'extquick_ar'),20,'AR/DMR Extended QuickDraw');
+  assert.equal(extendedCapFor(w('SLR'),'extended_ar'),null,'do not invent AR family capacity for SLR');
   assert.equal(extendedCapFor(w('M416'),'extended'),42);
   assert.equal(extendedCapFor(w('M416'),'extquick'),40);
 });
@@ -81,7 +87,8 @@ test('UI displays the distinct capacities and hides fake RPD reloads',()=>{
   assert.match(html,/const eq  = extendedCapFor\(w,"extquick"\)/);
   assert.match(html,/const extQuick = extendedCapFor\(w,"extquick"\)/);
   assert.match(html,/newCap = extQuick; reloadSpeedMultiplier = 1\.15/);
-  assert.match(html,/Extended QuickDraw \(\$\{eq==null\?"No data":eq\}/);
+  assert.match(html,/Extended QuickDraw\\$\\{w.name===/);
+  assert.match(html,/Extended QuickDraw \\(AR\\/DMR\\) \\(20/);
   assert.match(html,/\$\("at_capNew"\)\.textContent = newCap \?\? "No data"/);
   assert.match(html,/finalReload==null \? "No data" : reloadMult<1/);
   assert.doesNotMatch(html,/Math\.ceil\(w\.mag\*1\.3\)/);
