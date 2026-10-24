@@ -2174,50 +2174,75 @@ function drawLineChart(canvas, series, opts={}){
   fillWeaponSelect($("tk_weapon"), "AKM");
   fillWeaponSelect($("tk_cmpA"), "AKM");
   fillWeaponSelect($("tk_cmpB"), "UMP9");
-  $("tk_cmpC").innerHTML += PT.WEAPONS.map(w=>`<option>${w.name}</option>`).join("");
+  $("tk_cmpC").innerHTML += PT.WEAPONS.map(w=>"<option>"+w.name+"</option>").join("");
+  const display = (value, digits) => value == null ? "No data" : Number(value).toFixed(digits);
   function reloadSecondsFor(w){
-    let base = w.reload; // real per-weapon figure from the originally supplied WEAPONS array
-    if(LMG_PATCH_42_3.has(w.name)) base *= 0.75; // official: LMG reload times reduced ~25% (Update 42.3)
+    if(w.name==="RPD") return null; // current reload value is a toolkit placeholder, not evidence
+    let base = w.reload;
+    if(base==null) return null;
+    if(LMG_PATCH_42_3.has(w.name)) base *= 0.75; // sourced approximate balance change
     return base;
   }
   function computeFor(w, hitbox, armor){
     const dmg = finalDamageAt(w, 0, hitbox, armor);
+    if(dmg==null){
+      return {dmg:null,htk:null,pure:null,withReload:null,reloads:null};
+    }
     const htk = htkFor(dmg);
-    const pure = pureTtk(htk, w.rpm);
+    const pure = pureTtk(htk,w.rpm);
+    if(htk==null || pure==null) return {dmg,htk:null,pure:null,withReload:null,reloads:null};
     const reloads = w.mag ? Math.max(0, Math.ceil(htk/w.mag)-1) : 0;
-    const withReload = pure + reloads*reloadSecondsFor(w);
+    const reloadTime = reloads>0 ? reloadSecondsFor(w) : 0;
+    const withReload = reloadTime == null ? null : pure + reloads*reloadTime;
     return {dmg,htk,pure,withReload,reloads};
   }
   function update(){
-    const w = PT.WBYNAME[$("tk_weapon").value];
-    const hitbox = $("tk_hitbox").value, armor = +$("tk_armor").value;
-    const r = computeFor(w, hitbox, armor);
-    $("tk_dmg").textContent = r.dmg.toFixed(1);
-    $("tk_htk").textContent = isFinite(r.htk)?r.htk:"–";
-    $("tk_pure").textContent = r.pure.toFixed(2);
-    $("tk_reload").textContent = r.withReload.toFixed(2);
-    setBar("tk_dmg", r.dmg, w.dmg*1.3);
-    setBar("tk_htk", r.htk, 8);
-    setBar("tk_pure", r.pure, 2);
-    setBar("tk_reload", r.withReload, 6);
-    const rs = reloadSecondsFor(w);
-    let tkNote = r.reloads>0
-      ? `This fight needs ~${r.reloads} reload(s) at ${rs.toFixed(2)}s each${w.name==="RPD"?" (this toolkit's own placeholder — RPD's reload time wasn't in the originally supplied data, unlike every other weapon here)":""}${LMG_PATCH_42_3.has(w.name)&&w.name!=="RPD"?", including the sourced Update 42.3 LMG −25% reload reduction":""}.`
-      : `This fight doesn't run past one magazine, so no reload is added.`;
-    if(shotgunFullPatternDamage(w) != null) tkNote += ` Damage assumes all ${SHOTGUN_PELLETS[w.name].count} pellets connect (pellet spread at range isn't modeled, so real damage will be lower past point-blank).`;
-    $("tk_note").innerHTML = tkNote;
+    const w=PT.WBYNAME[$("tk_weapon").value];
+    const hitbox=$("tk_hitbox").value, armor=+$("tk_armor").value;
+    const r=computeFor(w,hitbox,armor);
+    $("tk_dmg").textContent=display(r.dmg,1);
+    $("tk_htk").textContent=r.htk==null?"No data":r.htk;
+    $("tk_pure").textContent=display(r.pure,2);
+    $("tk_reload").textContent=display(r.withReload,2);
+    setBar("tk_dmg",r.dmg,w.dmg*1.3);
+    setBar("tk_htk",r.htk,8);
+    setBar("tk_pure",r.pure,2);
+    setBar("tk_reload",r.withReload,6);
+    let tkNote;
+    if(SHOTGUN_PELLETS[w.name]){
+      tkNote="No verified pellet hit-count data for this shotgun. Per-pellet damage does not establish actual damage, hits-to-kill or time-to-kill of a full shot, even at point blank.";
+    } else if(r.dmg==null){
+      tkNote=w.name+" has no published 0m damage checkpoint. Point-blank damage and TTK are not inferred from another distance.";
+    } else if(r.withReload==null){
+      tkNote="Pure firing-time TTK is calculated from the sourced 0m damage and RPM, but no sourced reload duration is available for "+w.name+". TTK including reload is therefore unknown.";
+    } else if(r.reloads>0){
+      tkNote="Calculated firing time including "+r.reloads+" reload(s) at "+reloadSecondsFor(w).toFixed(2)+"s each. This is modelled from supplied figures, not direct combat telemetry.";
+    } else {
+      tkNote="Calculated from sourced 0m base damage, existing armor/hitbox multipliers and RPM. No reload is needed.";
+    }
+    $("tk_note").textContent=tkNote;
     renderCompare();
   }
   function renderCompare(){
-    const hitbox = $("tk_hitbox").value, armor = +$("tk_armor").value;
-    const names = [$("tk_cmpA").value, $("tk_cmpB").value, $("tk_cmpC").value].filter(Boolean);
-    const rows = names.map(n=>{ const w=PT.WBYNAME[n]; return {name:n, ...computeFor(w,hitbox,armor)}; });
-    $("tk_cmpTable").innerHTML = `<tr><th>Weapon</th><th>Dmg</th><th>HTK</th><th>Pure TTK</th><th>Incl. reload</th></tr>` +
-      rows.map(r=>`<tr><td>${r.name}</td><td>${r.dmg.toFixed(1)}</td><td>${isFinite(r.htk)?r.htk:"–"}</td><td>${r.pure.toFixed(2)}</td><td>${r.withReload.toFixed(2)}</td></tr>`).join("");
+    const hitbox=$("tk_hitbox").value, armor=+$("tk_armor").value;
+    const names=[$("tk_cmpA").value,$("tk_cmpB").value,$("tk_cmpC").value].filter(Boolean);
+    const rows=names.map(n=>{const w=PT.WBYNAME[n];return {name:n,...computeFor(w,hitbox,armor)};});
+    $("tk_cmpTable").innerHTML=
+      '<tr><th>Weapon</th><th>Dmg</th><th>HTK</th><th>Pure TTK</th><th>Incl. reload</th></tr>'+
+      rows.map(r=>'<tr><td>'+r.name+'</td><td>'+display(r.dmg,1)+
+        '</td><td>'+(r.htk==null?'No data':r.htk)+
+        '</td><td>'+display(r.pure,2)+
+        '</td><td>'+display(r.withReload,2)+'</td></tr>').join("");
   }
-  ["tk_weapon","tk_hitbox","tk_armor"].forEach(id=>{ $(id).addEventListener("input", update); $(id).addEventListener("change", update); });
-  $("tk_detailed").addEventListener("change", ()=>{ fillHitboxSelect($("tk_hitbox"), $("tk_detailed").checked); update(); });
-  ["tk_cmpA","tk_cmpB","tk_cmpC"].forEach(id=>$(id).addEventListener("change", renderCompare));
+  ["tk_weapon","tk_hitbox","tk_armor"].forEach(id=>{
+    $(id).addEventListener("input",update);
+    $(id).addEventListener("change",update);
+  });
+  $("tk_detailed").addEventListener("change",()=>{
+    fillHitboxSelect($("tk_hitbox"),$("tk_detailed").checked);
+    update();
+  });
+  ["tk_cmpA","tk_cmpB","tk_cmpC"].forEach(id=>$(id).addEventListener("change",renderCompare));
   update();
 })();
 
