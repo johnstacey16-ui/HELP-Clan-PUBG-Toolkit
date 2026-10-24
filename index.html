@@ -697,8 +697,9 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
       <div class="stat"><div class="n" id="rg_dmg">–</div><div class="l" id="rg_dmgLabel">Damage at range</div><div class="bar"><div class="bar-fill" id="rg_dmg_bar"></div></div></div>
       <div class="stat"><div class="n" id="rg_htk">–</div><div class="l" id="rg_htkLabel">Hits to kill</div><div class="bar"><div class="bar-fill" id="rg_htk_bar"></div></div></div>
       <div class="stat"><div class="n" id="rg_ttk">–</div><div class="l">TTK (seconds)</div><div class="bar"><div class="bar-fill" id="rg_ttk_bar"></div></div></div>
-      <div class="stat"><div class="n" id="rg_flight">–</div><div class="l">Flight time (not measured)</div></div>
+      <div class="stat"><div class="n" id="rg_flight">–</div><div class="l">Minimum flight time (ideal)</div></div>
     </div>
+    <p class="helptext" style="margin-top:8px">Ideal minimum: distance ÷ muzzle velocity, assuming no drag. Actual projectile travel time is longer.</p>
   </div>
 
   <div class="card">
@@ -706,7 +707,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
     <div class="grid3">
       <div class="stat"><div class="n" id="rg_drop">–</div><div class="l">Drop below aim point (cm)</div></div>
       <div class="stat"><div class="n" id="rg_holdover">–</div><div class="l">Angular drop (derived mrad)</div></div>
-      <div class="stat"><div class="n" id="rg_muzzlecmp">–</div><div class="l">Muzzle velocity (measured)</div></div>
+      <div class="stat"><div class="n" id="rg_muzzlecmp">–</div><div class="l" id="rg_velocityLabel">Muzzle velocity (game files)</div></div>
     </div>
     <div class="note" id="rg_dropNote"></div>
   </div>
@@ -1908,6 +1909,15 @@ const GAME_MUZZLE_VEL_43_2 = {
 function knownMuzzleVelocity(w){
   return GAME_MUZZLE_VEL_43_2[w.name] ?? MEASURED_MUZZLE_VEL[w.name] ?? null;
 }
+// Physical lower bound for a projectile fired toward a range marker:
+// the projectile cannot arrive quicker than straight-line distance at its
+// initial muzzle speed if air drag slows it. This is *not* in-game flight
+// time, not a drag simulation, and does not fill observed drop tables.
+function minimumIdealFlightTime(w,range){
+  const speed=knownMuzzleVelocity(w);
+  return Number.isFinite(range) && range>=0 && Number.isFinite(speed) && speed>0
+    ? range/speed : null;
+}
 function hasDropData(w){ return DROP_TABLES[w.name] != null; }
 function dropAtRange(w, range){
   return measuredValueAt(DROP_TABLES[w.name], range);
@@ -1917,9 +1927,11 @@ function hasExactFalloff(w){ return FALLOFF_TABLES[w.name] != null; }
 // single pellet's damage (matches pubgstatistics.com's per-pellet figure), not the shot's total output.
 // Counts/per-pellet damage sourced from pubgstatistics.com's "X-Y base damage (one pellet up to the full
 // pattern)" wording, fetched 2026-09-10: DBS 28-252, S686 26-234, S12K 23-207, Sawn-off 21-168.
-// Sawn-off is 8 pellets (168/21), not 9 — a document handed to this toolkit claimed 9, but the math on
-// its own source doesn't support that, so this uses 8. O12 fires a slug, not pellets, so it's excluded
-// and keeps using its existing single dmg value.
+// Current 43.2 game-file extract says Sawn-off fires NINE pellets per shell.
+// The pubgstatistics.com 21–168 display implies eight; that headline range
+// conflicts with the newer raw gun-file pellet count, so use the game-file
+// count of 9 without fabricating pellet-hit distribution. Older wikis also
+// describe an eight-pellet historical setup. O12 fires a slug, not pellets.
 const SHOTGUN_PELLETS = {
   "DBS":{count:9, dmgPerPellet:28},
   "S686":{count:9, dmgPerPellet:26},
@@ -2088,6 +2100,9 @@ function drawLineChart(canvas, series, opts={}){
   function updateDrop(w, range) {
     const data=DROP_TABLES[w.name],velocity=knownMuzzleVelocity(w);
     $("rg_muzzlecmp").textContent=velocity==null?"No data":velocity+" m/s";
+    $("rg_velocityLabel").textContent=Object.prototype.hasOwnProperty.call(GAME_MUZZLE_VEL_43_2,w.name)
+      ? "Muzzle velocity (43.2 game files)"
+      : "Muzzle velocity (historical measurement)";
     const point=dropAtRange(w,range);
     if(point==null){
       $("rg_drop").textContent="No data";
@@ -2127,8 +2142,11 @@ function drawLineChart(canvas, series, opts={}){
     $("rg_dmg").textContent = damage==null ? "No data" : damage.toFixed(1);
     $("rg_htk").textContent = htk==null ? "No data" : String(htk);
     $("rg_ttk").textContent = ttk==null ? "No data" : ttk.toFixed(2);
-    // Muzzle velocity alone cannot determine actual travel time at distance.
-    $("rg_flight").textContent = "No data";
+    // Ideal minimum is not real PUBG flight time: drag and the curved
+    // trajectory make actual travel slower. Preserve a clear unknown state
+    // when no velocity or measured range is available.
+    const idealFlight=range==null ? null : minimumIdealFlightTime(w,range);
+    $("rg_flight").textContent = idealFlight==null ? "No data" : idealFlight.toFixed(3)+" s";
     setBar("rg_dmg",damage, (pellet ? SHOTGUN_PELLETS[w.name].dmgPerPellet : w.dmg)*1.3);
     setBar("rg_htk",htk,8);
     setBar("rg_ttk",ttk,2);
