@@ -6,6 +6,12 @@ This document replaces the previous “Data & Patch” tool tab. It preserves th
 
 For the current approach to both original, owner-authored formulas and measured game data, see [DATA_ACCURACY_POLICY.md](../DATA_ACCURACY_POLICY.md).
 
+## 24 October 2026 — Tommy Gun recoil precision
+
+- PUBG Update 43.2 raw `RecoilConfig.HorizontalTendency` reports **0.033**, not 0.03, for the Tommy Gun. The legacy Combat DB rounded away one relevant precision digit. Updated `RECOIL_RAW["Tommy Gun"][4]` to the exact game-file scalar, retaining its rightward sign, 15 vertical recoil speed, 11 horizontal speed and 30% minimum-horizontal scalar.
+- Source: https://pubg.gs/weapons/tommy-gun/ (Steam build 26072644, extracted 2026-10-21).
+- Verified the nearby UMP, MP5K and Skorpion recoil entries but left null fields where the source does not provide a corresponding RecoilConfig field. All 45 extra-parameter records, owner-created sensitivity maths and unverified per-shot spray states remain unchanged.
+
 ## 24 October 2026 — attachment presets now use sourced per-weapon recoil values
 
 - The previous **Best vertical**, **Best horizontal** and **Balanced** buttons set the same muzzle/grip/Tactical Stock choices for every gun. This often ignored compatible Heavy Stock, Folding Stock and individual muzzle/group differences. Despite their labels, they did not choose the best control under the toolkit's own established attachment model.
