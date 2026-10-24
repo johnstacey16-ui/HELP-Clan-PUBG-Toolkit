@@ -6,6 +6,16 @@ This document replaces the previous “Data & Patch” tool tab. It preserves th
 
 For the current approach to both original, owner-authored formulas and measured game data, see [DATA_ACCURACY_POLICY.md](../DATA_ACCURACY_POLICY.md).
 
+## Update 24 October 2026 — additional weapon recoil parameters
+
+- **Source:** PUBG PC Update 43.2, build 26072644, extraction dated 2026-10-21, from https://pubg.gs/about/ and each gun's `RecoilConfig` fields at https://pubg.gs/weapons/ .
+- Added **20 individually mapped weapon records** in `RECOIL_DETAIL_43_2`. The table covers selected rifles, SMGs, shotguns, RPD/M249 and pistols: UMP (toolkit label UMP9), MP5K, Micro Uzi, Tommy Gun, Vector, P90, MP9, P18C (toolkit G18C), RPD, M249, SLR, SKS, S12K, DBS, Sawed-Off (Sawn-off), VSS, M16A4, Dragunov (SVD Dragunov), ACE32 and Groza.
+- Each entry records independently available **prone recoil modifier, vertical recovery speed, bullets per horizontal direction switch, recoil climb and recoil fall**. **Null explicitly means this extractor didn't expose that field for that weapon.** No class-level substitution has been made.
+- Example exact values: RPD prone 0.32, vertical recovery 7, horizontal direction-switch 2 bullets; P18C prone 0.70, vertical recovery 11, direction-switch 1; UMP prone 0.70, recovery 7, direction-switch 2; MP5K prone 0.70, recovery 8.5, switch 2.
+- The Recoil Analyzer now shows those additional available **game-engine parameters** under the existing ones. It **does not convert them into a numerical 10/20/30-bullet spray simulation** or assume that switch cadence alone predicts horizontal displacement. The large Coming Soon notice and unknown shot-by-shot chart remain.
+- Reference weapon pages: https://pubg.gs/weapons/rpd/ , https://pubg.gs/weapons/p18c/ , https://pubg.gs/weapons/ump/ , https://pubg.gs/weapons/mp5k/ , https://pubg.gs/weapons/micro-uzi/ , https://pubg.gs/weapons/p90/ , https://pubg.gs/weapons/mp9/ , https://pubg.gs/weapons/tommy-gun/ , https://pubg.gs/weapons/vector/ , https://pubg.gs/weapons/m249/ , https://pubg.gs/weapons/slr/ , https://pubg.gs/weapons/sks/ , https://pubg.gs/weapons/s12k/ , https://pubg.gs/weapons/dbs/ , https://pubg.gs/weapons/sawed-off/ , https://pubg.gs/weapons/vss/ , https://pubg.gs/weapons/m16a4/ , https://pubg.gs/weapons/dragunov/ , https://pubg.gs/weapons/ace32/ , https://pubg.gs/weapons/groza/ .
+- Existing weapon, recoil and sensitivity inputs were not overwritten; this is a dedicated extra-parameter data layer.
+
 ## Update 24 October 2026 — source-mapped attachment selector
 
 - **Primary source:** https://pubg.gs/attachments/ extracted from PUBG 43.2 Steam build 26072644 (2026-10-21). The source explicitly lists weapon names attached to each muzzle, foregrip and stock by underlying attachment tag. Match our aliases (G18C/P18C; SVD/Dragunov; UMP9/UMP; Sawn-off/Sawed-Off; Mk14/MK14 EBR, etc).
