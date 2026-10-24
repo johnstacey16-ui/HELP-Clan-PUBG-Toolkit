@@ -10,6 +10,21 @@ const end=html.indexOf('WEAPONS.forEach(w=>',at);
 assert.ok(at>0&&end>at);
 const recoil=runInNewContext(html.slice(at,end)+';RECOIL_DETAIL_43_2');
 const keys=Object.keys(recoil);
+const legacyStart=html.indexOf('const RECOIL_RAW = {');
+const legacyStop=html.indexOf('const RECOIL_DETAIL_43_2 = {',legacyStart);
+assert.ok(legacyStart>0&&legacyStop>legacyStart);
+const legacyRecoil=runInNewContext(html.slice(legacyStart,legacyStop)+';RECOIL_RAW');
+
+test('Tommy Gun horizontal tendency retains all three precision digits from 43.2 files',()=>{
+  const tommy=legacyRecoil['Tommy Gun'];
+  assert.equal(tommy[3],'→');
+  assert.equal(tommy[4],0.033);
+  assert.equal(tommy[5],15);
+  assert.equal(tommy[6],11);
+  assert.equal(tommy[7],30);
+  assert.equal(recoil['Tommy Gun'].recoveryV,12);
+});
+
 const start=html.indexOf('/* ================= 3. RECOIL EVIDENCE EXPLORER ================= */');
 const finish=html.indexOf('/* ================= 4. ATTACHMENTS & RECOIL ================= */',start);
 const logic=html.slice(start,finish);
