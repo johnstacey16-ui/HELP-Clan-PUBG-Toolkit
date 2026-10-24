@@ -177,3 +177,42 @@ The block below is retained verbatim to avoid losing any original wording and fo
 </div>
 
 ```
+
+
+## Additional developer notes removed from the visible interface
+
+### Sensitivity scope matching
+
+The original sensitivity UI displayed this empirical conversion model:
+
+- \`pixel_speed = 3840 × (C + B) / ((A/60) × (10 + B))\`
+- \`C = (A/60) × (10 + B) × pixel_speed / 3840 − B\`
+- A/B are scope-specific empirical constants, **not officially documented engine constants**.
+- “Out of range” means the chosen scope cannot match the target turn rate within the game's available slider settings.
+- The original UI attributed the logic to “HELP clan manual v1.0,” stated the interactive build was assembled by Claude, and noted that the tool was not an official KRAFTON/PUBG product. That credit has been archived rather than displayed next to controls.
+
+### Combat database caveats
+
+- Armor crossover calculations are based on provided data rather than live match telemetry.
+- Head/chest values are source base damage multiplied by hit-area/class factors; these are calculated figures.
+- “Always keep” means that, within the supplied rows, fresh lower-tier armor did not beat the higher tier.
+- Shotguns without supplied armor crossover figures are deliberately omitted rather than guessed.
+- G18C has missing recoil recovery/minimum-horizontal fields.
+- Earlier on-screen text reminded users that armor crossovers are point-blank calculations; that caution is now condensed to a one-line reminder.
+
+### Range and TTK generated explanations
+
+- Range damage was restricted to actual published checkpoints. Previously the UI displayed the exact website name, limits, explanatory mathematics and separate source-status cards every time an input changed. Those details are retained here and in the accuracy policy; only the available distance and meaningful “No data” messages remain visible.
+- WinnerMeta gravity-drop data is beta telemetry, not directly measured in-game scope holdover. The mrad value displayed in the tool is calculated from the recorded drop and range.
+- Shotgun pellet count does not establish hits-to-kill or time-to-kill. Without measured pellet impacts those values remain unavailable.
+- The RPD reload duration is a placeholder and must not be described as sourced.
+
+### Attachment and backpack UI notes
+
+- Toolkit slot access is a combination of weapon-class rules and exceptions, not a fully validated per-weapon inventory.
+- Modifier percentages should not be described as official without a matching patch note. The interface retains the short warning “Attachment percentages are estimates.”
+- Angled Foregrip was removed from normal world loot in Update 41.1; its earlier modifier remains in the calculator's historical data. The update-history text was removed from the user-facing selector.
+- Tilted Grip, Half Grip, LMG recoil/reload balancing and Jammer Pack development history remain in the archived Data & Patch section above.
+- Jammer Pack protection is a qualitative Low/Medium/High level, not an exact damage-absorption percentage.
+- Original visible note about uncertain Frag/Molotov weight values (16 or 18 in various community lists) moved here; the calculator still uses 18.
+
