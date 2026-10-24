@@ -522,7 +522,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
   <div class="hdr"><b class="br1"></b><b class="br2"></b>
     <div class="eyebrow">// UNOFFICIAL FIELD REFERENCE TOOL</div>
     <div class="title">PUBG <span>SENSITIVITY</span> CALCULATOR</div>
-    <div class="credit">Logic: HELP clan manual v1.0 &nbsp;·&nbsp; Interactive build assembled by Claude &nbsp;·&nbsp; Not an official PUBG/KRAFTON tool</div>
+    
   </div>
  
   <div class="card" style="border-color:var(--amber-dim);">
@@ -589,7 +589,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
         <thead><tr><th>Scope</th><th>A</th><th>B</th><th>Matched sensitivity</th><th>In range?</th></tr></thead>
         <tbody></tbody>
       </table>
-      <div class="note">Formula: <b>pixel_speed = 3840 &times; (C + B) &divide; ((A/60) &times; (10 + B))</b>, inverse: <b>C = (A/60) &times; (10 + B) &times; pixel_speed &divide; 3840 &minus; B</b>. A/B are scope-specific constants from empirical fitting, not official engine values &mdash; treat matched values as precise relative-to-each-other, but still confirm feel in-game. A row marked <b>Out of range</b> means that scope's slider can't reach the exact matched value — set it as close to that number as the slider allows.</div>
+      <div class="note">Confirm calculated sensitivity values in-game. Out of range means the scope cannot reach the exact match.</div>
     </div>
   </div>
  
@@ -1949,7 +1949,7 @@ function drawLineChart(canvas, series, opts={}){
       rangeSlider.disabled = true;
       rangeSlider.min = "0"; rangeSlider.max = "0"; rangeSlider.value = "0";
       $("rg_rangeLabel").textContent = "No recorded distance";
-      $("rg_rangeEvidence").textContent = "No sourced damage checkpoints are available.";
+      $("rg_rangeEvidence").textContent = "No damage readings available.";
       previousWeaponName = w.name;
       return null;
     }
@@ -2051,7 +2051,7 @@ function drawLineChart(canvas, series, opts={}){
       "Measured base damage per pellet ("+rows[0][0]+"–"+rows[rows.length-1][0]+"m)" :
       "Calculated damage at measured checkpoints ("+rows[0][0]+"–"+rows[rows.length-1][0]+"m)";
     if(points.length) drawLineChart($("rg_chartDmg"), [{
-      label:pellet ? "Base damage / pellet" : "Damage from source checkpoints",
+      label:pellet ? "Base damage / pellet" : "Damage at recorded distances",
       color:"#8bd8e8", data:points
     }], {pointsOnly:true});
     if(pellet){
@@ -2231,7 +2231,7 @@ const ATTACH_MOD = {
   grip: {
     none: {v:0,h:0,recov:0,label:"None"},
     vertical: {v:-0.20,h:-0.05,recov:0,label:"Vertical Foregrip"},
-    angled: {v:0.05,h:-0.20,recov:0,label:"Angled Foregrip (removed from world spawn — Update 41.1)"},
+    angled: {v:0.05,h:-0.20,recov:0,label:"Angled Foregrip"},
     half: {v:-0.08,h:-0.16,recov:0.10,label:"Half Grip"},
     light: {v:0.05,h:0,recov:0.175,label:"Light Grip"},
     thumb: {v:-0.05,h:0,recov:0,label:"Thumb Grip"},
