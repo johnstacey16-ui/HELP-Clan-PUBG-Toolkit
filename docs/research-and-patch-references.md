@@ -6,6 +6,19 @@ This document replaces the previous “Data & Patch” tool tab. It preserves th
 
 For the current approach to both original, owner-authored formulas and measured game data, see [DATA_ACCURACY_POLICY.md](../DATA_ACCURACY_POLICY.md).
 
+## Update 24 October 2026 — source-mapped attachment selector
+
+- **Primary source:** https://pubg.gs/attachments/ extracted from PUBG 43.2 Steam build 26072644 (2026-10-21). The source explicitly lists weapon names attached to each muzzle, foregrip and stock by underlying attachment tag. Match our aliases (G18C/P18C; SVD/Dragunov; UMP9/UMP; Sawn-off/Sawed-Off; Mk14/MK14 EBR, etc).
+- **Muzzle selection:** AR/DMR/O12/S12K support Compensator, Flash Hider, Suppressor and newly added **Muzzle Brake**; eligible DMRs that also accept the DMR/SR muzzle have a separate **Compensator (AR/DMR)** option. DMR/SR compensator is +20% vertical and horizontal control; AR/DMR is +15% vertical and +10% horizontal; SMG compensator is +25% vertical and +20% horizontal.
+- **Muzzle Brake (AR/DMR/O12/S12K):** +10% vertical/+8% horizontal recoil control, +35% camera-shake control. Calculator models vertical/horizontal effects only and calls out camera shake separately.
+- **Handgun suppressor:** offered only to supported G18C/P18C, P92, R1895 and Skorpion. Ordinary SMG compensators are no longer incorrectly offered to Skorpion and MP9. Integrated muzzle weapons such as the VSS, P90, Lynx, RPD and M249 have no standard muzzle dropdown.
+- **Shotgun attachments:** add **Choke** for S686 and Sawn-off (13% pellet-spread tightening) and **Duckbill** for S12K (+50% vertical spread tightness). The site shows the attachment and explains that its recoil/HTK maths does **not** convert cone tightening into predicted pellet impacts. DBS offers neither from the standard 43.2 attachment list. O12 uses compatible rifle muzzle devices rather than a shotgun choke.
+- **Foregrips:** select only when the weapon is actually in the extracted compatibility set; remove the deprecated Angled Foregrip from selectable choices. Keep its original historical modifier definition for reference rather than changing any unrelated maths.
+- **Stocks:** add **Folding Stock** to MP9, Micro Uzi and Skorpion (+20% vertical control, +15% single-shot recovery); **Cheek Pad** to AWM, SVD, SLR, M24, Mk14, SKS and VSS (+20% vertical control plus unmodeled sway/muzzle rise); **Bullet Loops** to S686 and Kar98k. Only Kar98k's Bullet Loops entry carries the extracted +30% reload-speed tooltip: don't infer it for S686. Existing Tactical and Heavy Stock support remains per weapon.
+- Each stock and muzzle dropdown now enumerates **only the options listed for the selected weapon**, and reverts to None if a previous selection is invalid after changing weapons. Presets check availability and preserve the same user-facing workflow.
+- Preserved **all Scope Matcher formulas, original ballistic tables, theoretical shotgun shell-count maths, inventory values, and weapon-level recoil parameters**.
+- **Outstanding:** Sight mounts are not a selector in this simplified recoil tool. Full raw-game recoil-curve simulation is still Coming Soon. Interaction of recoil/ADS/sway modifiers remains an approximation where the real engine stacking order hasn't been established. Consider a dedicated attachment-compatibility panel if broadening into sights and all guns later.
+
 ## Update 24 October 2026 — 43.1/43.2 LMG crouch recoil fix
 
 - **M249 crouch recoil multiplier:** corrected **0.54 → 0.70**, as seen in the current game-derived 43.1–43.2 change log. Its derived reduction from standing changes from -46% to **-30%**.

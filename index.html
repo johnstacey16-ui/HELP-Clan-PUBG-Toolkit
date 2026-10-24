@@ -2290,8 +2290,12 @@ const ATTACH_MOD = {
   muzzle: {
     none: {v:0,h:0,recov:0,label:"None"},
     compensator: {v:-0.25,h:-0.20,recov:0,label:"Compensator"},
+    compensator_ar: {v:-0.15,h:-0.10,recov:0,label:"Compensator (AR/DMR)"},
     suppressor: {v:0,h:0,recov:0,label:"Suppressor"},
     flash: {v:-0.10,h:-0.10,recov:0,label:"Flash Hider"},
+    brake: {v:-0.10,h:-0.08,recov:0,label:"Muzzle Brake"},
+    choke: {v:0,h:0,recov:0,label:"Choke (SG)"},
+    duckbill: {v:0,h:0,recov:0,label:"Duckbill (SG)"},
   },
   grip: {
     none: {v:0,h:0,recov:0,label:"None"},
@@ -2307,6 +2311,9 @@ const ATTACH_MOD = {
     none: {v:0,h:0,recov:0,label:"None"},
     tactical: {v:0,h:0,recov:0.05,label:"Tactical Stock"},
     heavy: {v:-0.10,h:-0.10,recov:0.05,label:"Heavy Stock"},
+    folding: {v:-0.20,h:0,recov:0.15,label:"Folding Stock"},
+    cheek: {v:-0.20,h:0,recov:0,label:"Cheek Pad"},
+    loops: {v:0,h:0,recov:0,label:"Bullet Loops"},
   },
 };
 // Sourced from official PUBG patch notes (pubg.com/en/news):
@@ -2324,6 +2331,64 @@ const GRIP_LIST = new Set([
   "ACE 32","AUG A3","Beryl M762","Desert Eagle","G18C","G36C","M416","P92",
   "MP5K","Mk12","MK47 Mutant","O12","QBZ95","SCAR-L","SKS","Tommy Gun","UMP9","Vector","Skorpion"
 ]);
+// Update 43.2 attachment-item compatibility, taken from weapon tags.
+// The source has multiple suppressor/compensator variants. Show DMR/SR as
+// the primary compensator for DMRs and offer the AR/DMR variant separately.
+// All sets use the standard-mode gun names from our WEAPONS array.
+const MUZZLE_AR_COMPAT = new Set([
+  "ACE 32","AKM","AUG A3","Beryl M762","FAMAS","SLR",
+  "G36C","Groza","M416","K2","M16A4","Mini 14","Mk12",
+  "MK14 EBR","MK47 Mutant","O12","QBZ95","SCAR-L","SKS",
+  "S12K","SVD Dragunov"
+]);
+const MUZZLE_SR_COMPAT = new Set([
+  "AWM","SVD Dragunov","SLR","Kar98k","M24","Mini 14",
+  "Mk12","MK14 EBR","SKS"
+]);
+const MUZZLE_SMG_COMPAT = new Set([
+  "JS9","MP5K","Tommy Gun","UMP9","Micro Uzi","Vector"
+]);
+const MUZZLE_HANDGUN_COMPAT = new Set(["G18C","P92","R1895","Skorpion"]);
+const CHOKE_COMPAT = new Set(["S686","Sawn-off"]);
+const DUCKBILL_COMPAT = new Set(["S12K"]);
+const FOLDING_STOCK_LIST = new Set(["MP9","Micro Uzi","Skorpion"]);
+const CHEEK_PAD_LIST = new Set([
+  "AWM","SVD Dragunov","SLR","M24","MK14 EBR","SKS","VSS Vintorez"
+]);
+const BULLET_LOOPS_LIST = new Set(["S686","Kar98k"]);
+
+// Buttons and presets use "compensator"/"flash"/"suppressor" as stable
+// option keys; each muzzle is filtered to options the selected gun accepts.
+function attachmentChoicesFor(w,group){
+  if(group==="grip")return GRIP_LIST.has(w.name)
+    ? ["none","vertical","half","light","thumb","laser","tilted"]
+    : ["none"];
+  if(group==="stock"){
+    const options=["none"];
+    if(STOCK_LIST.has(w.name)) options.push("tactical");
+    if(HEAVY_STOCK_LIST.has(w.name)) options.push("heavy");
+    if(FOLDING_STOCK_LIST.has(w.name)) options.push("folding");
+    if(CHEEK_PAD_LIST.has(w.name)) options.push("cheek");
+    if(BULLET_LOOPS_LIST.has(w.name)) options.push("loops");
+    return options;
+  }
+  if(group==="muzzle"){
+    const options=["none"];
+    const name=w.name;
+    const ar=MUZZLE_AR_COMPAT.has(name),sr=MUZZLE_SR_COMPAT.has(name),smg=MUZZLE_SMG_COMPAT.has(name);
+    if(ar||sr||smg){
+      options.push("compensator","flash","suppressor");
+      if(ar&&sr) options.push("compensator_ar");
+      if(ar)options.push("brake");
+    } else if(MUZZLE_HANDGUN_COMPAT.has(name)) {
+      options.push("suppressor");
+    }
+    if(CHOKE_COMPAT.has(name))options.push("choke");
+    if(DUCKBILL_COMPAT.has(name))options.push("duckbill");
+    return options;
+  }
+  return ["none"];
+}
 // Class-specific compensators: AR/DMR/S12K +15V/+10H; SMG +25V/+20H;
 // DMR/SR compensator +20V/+20H. Other tooltips aren't identical across classes.
 function compensatorFor(w){
@@ -2367,9 +2432,17 @@ function slotsFor(w){
   if(w.name==="Lynx AMR" || w.name==="P90")
     return {muzzle:null, grip:null, stock:null, magazine:null};
   if(w.name==="RPD") return {muzzle:null, grip:null, stock:"tactical", magazine:"AR_LMG"}; // official: no muzzle, no foregrip
-  const muzzle = (w.cls==="SMG"&&w.name!=="MP9"&&w.name!=="P90") ? "SMG" : (w.cls==="SR"||w.cls==="DMR") ? "DMR_SR" : (w.cls==="AR"||w.name==="S12K"||w.name==="O12") ? "AR_DMR_S12K" : null;
+  const muzzle = (MUZZLE_SR_COMPAT.has(w.name)) ? "DMR_SR"
+    : MUZZLE_AR_COMPAT.has(w.name) ? "AR_DMR_S12K"
+    : MUZZLE_SMG_COMPAT.has(w.name) ? "SMG"
+    : MUZZLE_HANDGUN_COMPAT.has(w.name) ? "HANDGUN"
+    : CHOKE_COMPAT.has(w.name) ? "CHOKE"
+    : DUCKBILL_COMPAT.has(w.name) ? "DUCKBILL" : null;
   const grip = GRIP_LIST.has(w.name) ? "FOREGRIP" : null;
-  const stock = STOCK_LIST.has(w.name) ? "tactical" : null;
+  const stock = STOCK_LIST.has(w.name) ? "tactical"
+    : FOLDING_STOCK_LIST.has(w.name) ? "folding"
+    : CHEEK_PAD_LIST.has(w.name) ? "cheek"
+    : BULLET_LOOPS_LIST.has(w.name) ? "loops" : null;
   // Current magazine attachment table excludes the bolt-fed Kar98k and
   // revolver R1895. M249 (class MG in our dataset) explicitly takes LMG mags.
   const magazine = w.name==="Kar98k" || w.name==="R1895" || w.name==="MG3" || w.name==="O12"
@@ -2394,22 +2467,21 @@ function extendedCapFor(w,kind="extended"){
 (function(){
   const $ = id => document.getElementById(id);
   fillWeaponSelect($("at_weapon"), "AKM");
-  function populateSlot(selId, group, allowed, defaultKey){
+  function populateSlot(selId, group, w, defaultKey){
     const sel = $(selId);
-    if(!allowed){ sel.innerHTML = `<option value="none">No slot</option>`; sel.disabled = true; return; }
-    sel.disabled = false;
-    sel.innerHTML = Object.keys(ATTACH_MOD[group]).map(k=>`<option value="${k}" ${k===defaultKey?'selected':''}>${ATTACH_MOD[group][k].label}</option>`).join("");
+    const choices = attachmentChoicesFor(w,group);
+    const available = choices.length > 1;
+    sel.disabled = !available;
+    if(!available){ sel.innerHTML = `<option value="none">No slot</option>`; return; }
+    const selected = choices.includes(defaultKey) ? defaultKey : "none";
+    sel.innerHTML = choices.map(k=>`<option value="${k}" ${k===selected?'selected':''}>${ATTACH_MOD[group][k].label}</option>`).join("");
   }
   function update(){
     const w = PT.WBYNAME[$("at_weapon").value];
     const slots = slotsFor(w);
-    populateSlot("at_muzzle","muzzle", slots.muzzle, $("at_muzzle").value||"none");
-    populateSlot("at_grip","grip", slots.grip, $("at_grip").value||"none");
-    populateSlot("at_stock","stock", slots.stock, $("at_stock").value||"none");
-    if(slots.stock && !HEAVY_STOCK_LIST.has(w.name)){
-      const heavy=$("at_stock").querySelector('option[value="heavy"]');
-      if(heavy) heavy.remove();
-    }
+    populateSlot("at_muzzle","muzzle", w, $("at_muzzle").value||"none");
+    populateSlot("at_grip","grip", w, $("at_grip").value||"none");
+    populateSlot("at_stock","stock", w, $("at_stock").value||"none");
     // magazine select
     const magSel = $("at_mag");
     if(!slots.magazine || !w.mag){ magSel.innerHTML = `<option value="none">No slot</option>`; magSel.disabled = true; }
@@ -2434,7 +2506,7 @@ function extendedCapFor(w,kind="extended"){
     const magVal = (slots.magazine && w.mag) ? $("at_mag").value : "none";
     const m = ATTACH_MOD.muzzle[mVal] || ATTACH_MOD.muzzle.none;
     const g = ATTACH_MOD.grip[gVal] || ATTACH_MOD.grip.none;
-    const selectedStock = (sVal==="heavy" && !HEAVY_STOCK_LIST.has(w.name)) ? "none" : sVal;
+    const selectedStock = attachmentChoicesFor(w,"stock").includes(sVal) ? sVal : "none";
     const s = ATTACH_MOD.stock[selectedStock] || ATTACH_MOD.stock.none;
     const comp = mVal==="compensator" ? compensatorFor(w) : m;
     const vChange = comp.v + g.v + s.v;
@@ -2448,6 +2520,10 @@ function extendedCapFor(w,kind="extended"){
     if(magVal==="extended") newCap = ext;
     else if(magVal==="quickdraw"){ newCap = baseCap; reloadSpeedMultiplier = 1.60; }
     else if(magVal==="extquick"){ newCap = extQuick; reloadSpeedMultiplier = 1.15; }
+    // Bullet Loops (SG/SR) currently has a documented +30% reload-speed
+    // tooltip for the Kar98k variant. The S686 entry does not publish a
+    // comparable speed modifier, so do not infer one from the same name.
+    if(selectedStock==="loops" && w.name==="Kar98k") reloadSpeedMultiplier *= 1.30;
     const isLmgPatched = LMG_PATCH_42_3.has(w.name);
     const realBaseReload = w.reload; // RPD remains a non-animation placeholder
     let reloadMult = 1 / reloadSpeedMultiplier;
@@ -2465,6 +2541,14 @@ function extendedCapFor(w,kind="extended"){
     if(w.name==="RPD") note += ` RPD reload time is not verified.`;
     if((magVal==="extended" || magVal==="extquick") && newCap==null)
       note += " This magazine's capacity is not verified.";
+    if(mVal==="choke"||mVal==="duckbill")
+      note += " Shotgun muzzle effects tighten pellet spread; no hit probability is modeled.";
+    if(selectedStock==="cheek")
+      note += " Cheek Pad also improves sway and muzzle-rise control.";
+    if(gVal==="light")
+      note += " Lightweight Grip also improves initial-shot control and sway.";
+    if(mVal==="brake")
+      note += " Muzzle Brake also reduces camera shake.";
     
     
     
