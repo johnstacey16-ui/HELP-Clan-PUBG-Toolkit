@@ -6,6 +6,14 @@ This document replaces the previous “Data & Patch” tool tab. It preserves th
 
 For the current approach to both original, owner-authored formulas and measured game data, see [DATA_ACCURACY_POLICY.md](../DATA_ACCURACY_POLICY.md).
 
+## 24 October 2026 — Mini 14 exact recoil max and correct engine parameter labels
+
+- **Mini 14:** the legacy Combat DB had **3.1** for its `vRecoil` slot, which maps onto PUBG's `Vertical recoil max`. Current Update 43.2 game-file extraction reports **3.15** (not 3.1): https://pubg.gs/weapons/mini14/ and a separately recorded September build: https://pubgplanet.com/wiki/weapons/mini-14 . Updated **only** that legacy number.
+- Audit of the `RECOIL_RAW` layout confirms its `vRecoil` field means *maximum vertical recoil parameter*, not per-shot pixels/degrees of climb. Relabeled the Combat DB header, sorting option, weapon detail and Recoil Evidence Explorer accordingly. The former "vertical kick per shot" tooltip was materially misleading.
+- `vertSpeed`, `horizSpeed`, `minH` and signed `hBias` are game-engine scalar parameters—not a deterministic positional spray path. Tooltip wording now avoids asserting specific screen movement, per-shot displacement or sustained recoil consistency based on one scalar. Missing fields and shot-by-shot charts remain unknown.
+- Source field semantics: https://pubg.gs/about/ shows `TrajectoryConfig` and `RecoilConfig` provenance, and https://pubg.gs/weapons/m416/ gives a representative extracted gun record.
+- No original scope sensitivity constants or conversion formulas, attachment effects, game-file muzzle speeds, bullet-drop checkpoints, armor, shotgun pellet calculations or backpack capacities were changed. Recoil metadata coverage is still 45/45 for source-backed extra parameters.
+
 ## 24 October 2026 — honest muzzle-velocity provenance and ideal minimum flight time
 
 **Sources:** https://pubg.gs/ballistics/ , https://pubg.gs/about/ (PUBG PC Update 43.2, Steam build 26072644, extracted 2026-10-21); Vector's velocity still uses the earlier WinnerMeta sample already archived under `MEASURED_MUZZLE_VEL`.

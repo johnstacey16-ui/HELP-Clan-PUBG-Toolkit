@@ -1079,7 +1079,7 @@ const WEAPONS = [
 // "crouchPct" is (multiplier - 1) × 100, not a separate game asset field.
 const RECOIL_RAW = {
   "Desert Eagle": [null, 0.82,-18, "→",0.17, 15,12, 42],
-  "Mini 14":      [3.1,  0.75,-25,"→",0.15, 11.2,11,30],
+  "Mini 14":      [3.15, 0.75,-25,"→",0.15, 11.2,11,30], // 43.2 vertical recoil maximum
   "UMP9":         [null, null,null,"→",0.12, 10,9, 50],
   "SCAR-L":       [7.0,  0.84,-16,"→",0.10, 15,11, 40],
   "G36C":         [7.0,  0.84,-16,"→",0.10, 15,11, 40],
@@ -1315,7 +1315,7 @@ const panelsEl = document.getElementById("panels");
           <option value="vel-desc">Sort: Velocity ↓</option>
           <option value="headDmg-desc">Sort: Head dmg ↓</option>
           <option value="chestDmg-desc">Sort: Chest dmg ↓</option>
-          <option value="vRecoil-desc">Sort: V.Recoil ↓</option>
+          <option value="vRecoil-desc">Sort: Max V.Recoil ↓</option>
           <option value="minH-desc">Sort: Min H% ↓</option>
           <option value="dmg-asc">Sort: Damage ↑</option>
           <option value="name-asc">Sort: Name A-Z</option>
@@ -1337,12 +1337,12 @@ const panelsEl = document.getElementById("panels");
       </div>
       <div class="helptext" style="margin-bottom:6px">Recoil &amp; handling columns:</div>
       <dl class="legend">
-        <div><dt>V.Recoil</dt><dd>Vertical kick per shot — how much the gun climbs upward. Lower is easier to control.</dd></div>
+        <div><dt>Max V.Recoil</dt><dd>Maximum vertical recoil from the gun configuration; it is not a measured per-shot screen offset.</dd></div>
         <div><dt>Crouch Recoil</dt><dd>How much recoil drops while crouching. A lower multiplier means a bigger % reduction.</dd></div>
-        <div><dt>Horizontal Bias</dt><dd>Which way the gun drifts sideways during sustained fire (← or →) and how strongly — tells you which direction to counter-pull.</dd></div>
-        <div><dt>Vertical Speed</dt><dd>How fast the gun snaps upward after each shot. Higher is harder to control.</dd></div>
-        <div><dt>Horizontal Speed</dt><dd>How fast it jolts sideways after each shot. Higher is harder to control.</dd></div>
-        <div><dt>Minimum Horizontal %</dt><dd>The floor of a single shot's sideways kick, as a % of the max. Higher % means a more consistent spray; lower means more random.</dd></div>
+        <div><dt>Horizontal Bias</dt><dd>Signed horizontal tendency in the gun configuration. This does not determine an exact spray or counter-pull path.</dd></div>
+        <div><dt>Vertical Speed</dt><dd>Vertical recoil speed parameter; not a measurement of pixels or degrees moved per shot.</dd></div>
+        <div><dt>Horizontal Speed</dt><dd>Horizontal recoil speed parameter; not measured left/right travel for each bullet.</dd></div>
+        <div><dt>Minimum Horizontal %</dt><dd>Minimum horizontal recoil scalar (for example, 0.40 = 40%); alone it cannot predict sustained spray consistency.</dd></div>
       </dl>
     </div>
     <div class="card" style="margin-top:16px" id="realityCard"></div>
@@ -1377,7 +1377,7 @@ const panelsEl = document.getElementById("panels");
     cf.appendChild(chip);
   });
   const COLS = [["name","Weapon"],["cls","Class"],["dmg","Dmg"],["rpm","RPM"],["vel","Vel m/s"],["dps","DPS"],
-    ["mag","Mag"],["vRecoil","V.Recoil"],["crouchMod","Crouch Recoil"],["hBias","Horizontal Bias"],["vertSpeed","Vertical Speed"],
+    ["mag","Mag"],["vRecoil","Max V.Recoil"],["crouchMod","Crouch Recoil"],["hBias","Horizontal Bias"],["vertSpeed","Vertical Speed"],
     ["horizSpeed","Horizontal Speed"],["minH","Minimum Horizontal %"],["headDmg","Head"],["helmL3","Helm L3→L2"],["helmL2","Helm L2→L1"],
     ["chestDmg","Chest"],["vestL3","Vest L3→L2"],["vestL2","Vest L2→L1"]];
   const GROUPS = [["",1],["Core Stats",6],["Recoil & Handling",6],["Vs. Head / Helmet",3],["Vs. Chest / Vest",3]];
@@ -1389,12 +1389,12 @@ const panelsEl = document.getElementById("panels");
     vel:"Bullet velocity in meters per second",
     dps:"Theoretical sustained damage per second at max RPM",
     mag:"Magazine capacity",
-    vRecoil:"Vertical kick per shot — how much the gun climbs upward. Lower is easier to control.",
+    vRecoil:"Extracted maximum vertical recoil parameter. NOT measured screen movement per shot or a predicted recoil pattern.",
     crouchMod:"How much recoil drops while crouching. A lower multiplier means a bigger % reduction.",
-    hBias:"Which way the gun drifts sideways during sustained fire (← or →) and how strongly.",
-    vertSpeed:"How fast the gun snaps upward after each shot. Higher is harder to control.",
-    horizSpeed:"How fast it jolts sideways after each shot. Higher is harder to control.",
-    minH:"The floor of a single shot's sideways kick, as a % of the max. Higher means a more consistent spray.",
+    hBias:"Signed horizontal tendency parameter from gun configuration; a direction bias, not a verified full spray path.",
+    vertSpeed:"Vertical recoil speed parameter in the gun configuration; not degrees or pixels moved per shot.",
+    horizSpeed:"Horizontal recoil speed parameter in the gun configuration; not a measured horizontal shot offset.",
+    minH:"Minimum horizontal recoil scalar expressed as a percentage (0.40 = 40%). It does not predict the spray path.",
     headDmg:"Headshot damage against bare skin, no helmet",
     helmL3:"Durability at which a damaged Level 3 helmet stops being better than a fresh Level 2",
     helmL2:"Durability at which a damaged Level 2 helmet stops being better than a fresh Level 1",
@@ -1568,7 +1568,7 @@ document.addEventListener("keydown", e=>{ if(e.key==="Escape") closeModal(); });
         ["Magazine", w=>w.mag, "high"],
       ]],
       ["Recoil & Handling", [
-        ["V.Recoil", w=>w.vRecoil, "low"],
+        ["Max V.Recoil", w=>w.vRecoil, "low"],
         ["Crouch Recoil", w=> w.crouchMod!=null?`${w.crouchMod} (${w.crouchPct}%)`:null, null],
         ["Horizontal Bias", w=> w.hBiasDir?`${w.hBiasDir} ${w.hBiasVal}`:null, null],
         ["Vertical Speed", w=>w.vertSpeed, "low"],
@@ -2330,7 +2330,7 @@ function drawLineChart(canvas, series, opts={}){
     // Weapon parameter fields are not per-bullet displacement measurements.
     // Do not use any guessed scale such as 5% per shot or fixed 10/20/30 jumps.
     const fields = [
-      ["Vertical recoil field", format(w.vRecoil)],
+      ["Maximum vertical recoil (raw)", format(w.vRecoil)],
       ["Vertical recoil speed", format(w.vertSpeed)],
       ["Horizontal recoil speed", format(w.horizSpeed)],
       ["Minimum horizontal recoil", format(w.minH,"%")],
