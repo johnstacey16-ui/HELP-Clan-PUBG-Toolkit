@@ -2478,6 +2478,15 @@ const MAG_CAP_VERIFIED = {
   "M416":     {extended:42,extquick:40}, // PUBG magazine rebalance example
   "AWM":      {extended:8, extquick:7},  // 43.2 DMR/SR item data
   "M24":      {extended:8, extquick:7},
+  // Current weapon-specific tables: these 10/20-round DMRs do not use the
+  // attachment's "42 rounds" item label as their resulting gun capacity.
+  "SKS":      {extended:20,extquick:20},
+  "SLR":      {extended:20,extquick:20},
+  "VSS Vintorez":{extended:20,extquick:20},
+  "Mini 14":  {extended:30,extquick:30},
+  "Mk12":     {extended:30,extquick:30},
+  // Mk14 and Dragunov sources disagree on 20/22 or 18/20; remain No data.
+  // ACE 32 has 40/42 reports; avoid a silent family-level guess.
   "M249":     {extended:150,extquick:null}, // no checked EQ capacity
   "RPD":      {extended:110,extquick:null}, // official 42.3 max; EQ unverified
   "MK47 Mutant": {extended:30,extquick:null},
@@ -2492,11 +2501,13 @@ const MAG_CAP_VERIFIED = {
   "G18C":     {extended:25,extquick:25},
   "Desert Eagle":{extended:10,extquick:10}
 };
-// 30-round ARs accept the 43.2 MagazineLarge family; the extracted
-// attachment item lists 42/40. This class rule is a practical model, with
-// named exceptions taking priority above it, not a separate gun-by-gun test.
+// Most 30-round assault rifles have 40 loaded rounds with an extended mag.
+// The "42 rounds" shown on the shared 43.2 attachment item is not a reliable
+// universal *weapon-loaded* count. Only explicitly listed, independently
+// supported guns use this fallback. M416 overrides it with its sourced 42/40;
+// ACE 32 remains unknown until its reported 40/42 variants are reconciled.
 const MAG_LARGE_30_ROUND_MODEL = new Set([
-  "AKM","AUG A3","Beryl M762","G36C","Groza","M16A4","ACE 32",
+  "AKM","AUG A3","Beryl M762","G36C","Groza","M16A4",
   "SCAR-L","QBZ95","K2","FAMAS"
 ]);
 function slotsFor(w){
@@ -2531,7 +2542,7 @@ function extendedCapFor(w,kind="extended"){
   const exact=MAG_CAP_VERIFIED[w.name];
   if(exact && Object.prototype.hasOwnProperty.call(exact,kind)) return exact[kind];
   if(MAG_LARGE_30_ROUND_MODEL.has(w.name) && w.mag===30)
-    return kind==="extended" ? 42 : kind==="extquick" ? 40 : null;
+    return kind==="extended" || kind==="extquick" ? 40 : null;
   // Missing source figures stay unknown rather than masquerading as a
   // verified "+5" or "+30%" universal magazine rule.
   return null;
