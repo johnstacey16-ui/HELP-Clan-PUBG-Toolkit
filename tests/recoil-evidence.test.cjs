@@ -18,7 +18,8 @@ test('Coming Soon is visible at the top, with existing recoil parameters still a
   assert.ok(first>=0 && label>first && label<heading && tools>heading);
   assert.match(html.slice(label,heading),/COMING SOON/);
   assert.match(html.slice(first,tools),/FULL SHOT-BY-SHOT ANALYSIS/);
-  assert.match(html,/Detailed per-shot recoil patterns are in development/);
+  assert.match(html,/Full shot-by-shot spray analysis is on the way/);
+  assert.match(html,/recoil-release-row" role="status"/);
 });
 
 test('retire unsupported recoil growth and assumed prone multipliers',()=>{
