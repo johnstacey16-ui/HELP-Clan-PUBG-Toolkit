@@ -13,16 +13,17 @@ const legacy = fs.readFileSync(path.join(root, 'design-refresh.css'), 'utf8');
 
 const panelIds = [
   'panel-combat', 'panel-range', 'panel-ttk', 'panel-recoil2',
-  'panel-attach', 'panel-sensitivity', 'panel-backpack', 'panel-data'
+  'panel-attach', 'panel-sensitivity', 'panel-backpack'
 ];
 const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m => m[1]);
 
-test('all eight toolkit panels and their navigation links exist', () => {
+test('all seven toolkit panels and their navigation links exist', () => {
   for (const id of panelIds) {
     assert.match(html, new RegExp('id="' + id + '" class="hub-main'));
     assert.match(html, new RegExp('data-open-panel="' + id + '"'));
   }
-  assert.equal((html.match(/data-open-panel="panel-/g) || []).length, 8);
+  assert.equal((html.match(/data-open-panel="panel-/g) || []).length, 7);
+  assert.doesNotMatch(html, /id="panel-data"|data-open-panel="panel-data"/);
   const ids = [...html.matchAll(/id="([^"]+)"/g)].map(match => match[1]);
   assert.equal(ids.length, new Set(ids).size, 'No duplicate element IDs');
 });
@@ -62,7 +63,7 @@ test('desktop, mobile, back navigation and Escape all select the correct panel',
   const labels = [
     'Combat DB', 'Effective Range', 'TTK', 'Recoil Analyzer',
     'Attachments', 'Sensitivity & Recoil Matcher',
-    'Tactical Loadout & Gear', 'Data & Patch'
+    'Tactical Loadout & Gear'
   ];
   const buttons = panelIds.map((id, i) => {
     const button = createElement('button-' + id);

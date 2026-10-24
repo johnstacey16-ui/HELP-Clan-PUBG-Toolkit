@@ -1,0 +1,61 @@
+// Keep source research in GitHub documentation and keep the public page tool-only.
+// Run alongside existing smoke tests: node --test tests/*.test.cjs
+const { test } = require('node:test');
+const assert = require('node:assert/strict');
+const { readFileSync } = require('node:fs');
+const { resolve } = require('node:path');
+const { Script } = require('node:vm');
+
+const root = resolve(__dirname,'..');
+const html = readFileSync(resolve(root,'index.html'),'utf8');
+const docs = readFileSync(resolve(root,'docs/research-and-patch-references.md'),'utf8');
+const policy = readFileSync(resolve(root,'DATA_ACCURACY_POLICY.md'),'utf8');
+const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m=>m[1]);
+
+test('the live app has exactly seven tool panels, no research tab, and correct counter',()=>{
+  const visible = [...html.matchAll(/<div id="(panel-[^"]+)" class="hub-main/g)].map(m=>m[1]);
+  assert.deepEqual(visible,[
+    'panel-combat','panel-sensitivity','panel-range','panel-ttk',
+    'panel-recoil2','panel-attach','panel-backpack'
+  ]);
+  assert.equal((html.match(/data-open-panel="panel-/g)||[]).length,7);
+  assert.doesNotMatch(html,/id="panel-data"|data-open-panel="panel-data"|Data &amp; Patch Info/);
+  assert.doesNotMatch(html,/<div class="nav-group-label"><span>03<\/span>REFERENCE/);
+  assert.match(html,/id="active-tool-index" aria-label="Tool 1 of 7">01 <i>\/<\/i> 07/);
+  assert.match(html,/String\(panelIds\.length\)\.padStart/);
+  assert.match(html,/if\(panelIds\.includes\(id\) && id!==currentPanel\)/);
+});
+
+test('source and patch research is archived in docs, not displayed in the app',()=>{
+  assert.match(docs,/## Original Data & Patch HTML \(full archival copy\)/);
+  assert.match(docs,/pubgstatistics\.com/);
+  assert.match(docs,/winnermeta\.win/);
+  assert.match(docs,/Sensitivity scope matching/);
+  assert.match(docs,/pubg\.com\/en\/news\/10874/);
+  assert.match(policy,/unknown stays unknown/i);
+  assert.doesNotMatch(html,/<div class="recoil-source-list">/);
+  assert.doesNotMatch(html,/<b>Data sources:<\/b>/);
+  assert.doesNotMatch(html,/see Data &amp; Patch Info/i);
+  assert.doesNotMatch(html,/Source: supplied weapon DataAssets/);
+  assert.doesNotMatch(html,/WinnerMeta beta telemetry reports/);
+  assert.doesNotMatch(html,/Angle[d]? Foregrip \(removed from world spawn/);
+});
+
+test('players still see critical No data and uncertainty warnings',()=>{
+  assert.match(html,/Damage is per pellet only; total damage, hits to kill and TTK are unknown/);
+  assert.match(html,/Attachment percentages are estimates/);
+  assert.match(html,/RPD reload time is not verified/);
+  assert.match(html,/Exact shot-by-shot recoil: No data/);
+  assert.match(html,/No drop reading at /);
+  assert.match(html,/Over capacity by /);
+});
+
+test('all existing calculator scripts and public table anchors remain available',()=>{
+  assert.equal(scripts.length,5);
+  scripts.forEach((script,i)=>assert.doesNotThrow(()=>new Script(script),'Inline block '+i));
+  for(const id of ['wTable','rg_chartDmg','rg_brackets','tk_cmpTable','rc_table','at_weapon','bp_level']){
+    assert.match(html,new RegExp('id="'+id+'"'));
+  }
+  assert.match(html,/src="sticky-weapon-header.js" defer/);
+  assert.doesNotMatch(html,/getElementById\("dp_updated"\)/);
+});
