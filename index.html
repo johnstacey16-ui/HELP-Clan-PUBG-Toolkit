@@ -2276,17 +2276,18 @@ const ATTACH_MOD = {
   },
   grip: {
     none: {v:0,h:0,recov:0,label:"None"},
-    vertical: {v:-0.20,h:-0.05,recov:0,label:"Vertical Foregrip"},
+    vertical: {v:-0.15,h:0,recov:0,label:"Vertical Foregrip"},
     angled: {v:0.05,h:-0.20,recov:0,label:"Angled Foregrip"},
     half: {v:-0.08,h:-0.16,recov:0.10,label:"Half Grip"},
-    light: {v:0.05,h:0,recov:0.175,label:"Light Grip"},
-    thumb: {v:-0.05,h:0,recov:0,label:"Thumb Grip"},
-    laser: {v:0,h:-0.03,recov:0.05,label:"Laser Grip"},
+    light: {v:0,h:0,recov:0.20,label:"Light Grip"},
+    thumb: {v:-0.10,h:0,recov:0.10,label:"Thumb Grip"},
+    laser: {v:0,h:0,recov:0,label:"Laser Sight"},
     tilted: {v:-0.12,h:-0.06,recov:0,shake:-0.25,label:"Tilted Grip"},
   },
   stock: {
     none: {v:0,h:0,recov:0,label:"None"},
-    tactical: {v:0,h:0,recov:0.15,label:"Tactical Stock"},
+    tactical: {v:0,h:0,recov:0.05,label:"Tactical Stock"},
+    heavy: {v:-0.10,h:-0.10,recov:0.05,label:"Heavy Stock"},
   },
 };
 // Sourced from official PUBG patch notes (pubg.com/en/news):
@@ -2297,7 +2298,21 @@ const ATTACH_MOD = {
 //   control (Update 41.1). This toolkit doesn't model camera shake elsewhere, so "shake" is shown as a
 //   note only, not folded into the vertical/horizontal recoil totals.
 // slot access assigned by weapon class + the explicit exceptions given in the build spec, plus RPD (Update 42.3)
-const STOCK_LIST = new Set(["M16A4","M416","MK47 Mutant","ACE 32","Vector","MP5K","M249","RPD"]);
+// Weapon slot tags in PUBG game-file extract (Update 43.2).
+const STOCK_LIST = new Set(["M16A4","M416","MK47 Mutant","ACE 32","Vector","MP5K","MP9","M249","RPD"]);
+const HEAVY_STOCK_LIST = new Set(["M16A4","M416","MK47 Mutant","ACE 32","Vector","MP5K","M249","RPD"]);
+const GRIP_LIST = new Set([
+  "ACE 32","AUG A3","Beryl M762","Desert Eagle","G18C","G36C","M416","P92",
+  "MP5K","Mk12","MK47 Mutant","O12","QBZ95","SCAR-L","SKS","Tommy Gun","UMP9","Vector","Skorpion"
+]);
+// Class-specific compensators: AR/DMR/S12K +15V/+10H; SMG +25V/+20H;
+// DMR/SR compensator +20V/+20H. Other tooltips aren't identical across classes.
+function compensatorFor(w){
+  if(w.cls==="SMG")return {v:-0.25,h:-0.20};
+  if(w.cls==="DMR"||w.cls==="SR")return {v:-0.20,h:-0.20};
+  if(w.cls==="AR"||w.name==="S12K"||w.name==="O12")return {v:-0.15,h:-0.10};
+  return {v:0,h:0};
+}
 const MAG_EXPLICIT = { // [baseCap override not needed — use w.mag], extendedCap explicit
   "Vector":33, "UMP9":35, "MP5K":40, "Micro Uzi":35,
   "P92":20, "G18C":25, "Desert Eagle":10, "R1895":9,
@@ -2305,8 +2320,8 @@ const MAG_EXPLICIT = { // [baseCap override not needed — use w.mag], extendedC
 };
 function slotsFor(w){
   if(w.name==="RPD") return {muzzle:null, grip:null, stock:"tactical", magazine:"AR_LMG"}; // official: no muzzle, no foregrip
-  const muzzle = w.cls==="SMG" ? "SMG" : (w.cls==="SR"||w.cls==="DMR") ? "DMR_SR" : (w.cls==="AR"||w.name==="S12K") ? "AR_DMR_S12K" : null;
-  const grip = w.name==="AKM" ? null : (w.cls==="AR"||w.cls==="SMG"||w.cls==="DMR") ? "AR_SMG_DMR" : null;
+  const muzzle = (w.cls==="SMG"&&w.name!=="MP9"&&w.name!=="P90") ? "SMG" : (w.cls==="SR"||w.cls==="DMR") ? "DMR_SR" : (w.cls==="AR"||w.name==="S12K"||w.name==="O12") ? "AR_DMR_S12K" : null;
+  const grip = GRIP_LIST.has(w.name) ? "FOREGRIP" : null;
   const stock = STOCK_LIST.has(w.name) ? "tactical" : null;
   const magazine = (w.cls==="SR"||w.cls==="DMR") ? "DMR_SR" : (w.cls==="AR"||w.name==="S12K") ? "AR_DMR_S12K" : (w.cls==="SMG"||w.cls==="Pistol") ? "SMG_PISTOL" : null;
   return {muzzle, grip, stock, magazine};
@@ -2334,6 +2349,10 @@ function extendedCapFor(w){
     populateSlot("at_muzzle","muzzle", slots.muzzle, $("at_muzzle").value||"none");
     populateSlot("at_grip","grip", slots.grip, $("at_grip").value||"none");
     populateSlot("at_stock","stock", slots.stock, $("at_stock").value||"none");
+    if(slots.stock && !HEAVY_STOCK_LIST.has(w.name)){
+      const heavy=$("at_stock").querySelector('option[value="heavy"]');
+      if(heavy) heavy.remove();
+    }
     // magazine select
     const magSel = $("at_mag");
     if(!slots.magazine || !w.mag){ magSel.innerHTML = `<option value="none">No slot</option>`; magSel.disabled = true; }
@@ -2357,9 +2376,11 @@ function extendedCapFor(w){
     const magVal = (slots.magazine && w.mag) ? $("at_mag").value : "none";
     const m = ATTACH_MOD.muzzle[mVal] || ATTACH_MOD.muzzle.none;
     const g = ATTACH_MOD.grip[gVal] || ATTACH_MOD.grip.none;
-    const s = ATTACH_MOD.stock[sVal] || ATTACH_MOD.stock.none;
-    const vChange = m.v + g.v + s.v;
-    const hChange = m.h + g.h + s.h;
+    const selectedStock = (sVal==="heavy" && !HEAVY_STOCK_LIST.has(w.name)) ? "none" : sVal;
+    const s = ATTACH_MOD.stock[selectedStock] || ATTACH_MOD.stock.none;
+    const comp = mVal==="compensator" ? compensatorFor(w) : m;
+    const vChange = comp.v + g.v + s.v;
+    const hChange = comp.h + g.h + s.h;
     const recovChange = m.recov + g.recov + s.recov;
     const baseCap = w.mag || null;
     const ext = extendedCapFor(w);
