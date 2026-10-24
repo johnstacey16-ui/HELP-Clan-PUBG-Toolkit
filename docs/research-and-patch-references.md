@@ -6,6 +6,44 @@ This document replaces the previous “Data & Patch” tool tab. It preserves th
 
 For the current approach to both original, owner-authored formulas and measured game data, see [DATA_ACCURACY_POLICY.md](../DATA_ACCURACY_POLICY.md).
 
+## Update 24 October 2026 — confirmed game-data and official patch fixes
+
+This batch updates the **live backpack and attachment calculators**, and fills selected **RPD/P18C recoil fields**, without changing the Scope Sensitivity Matcher, measured range tables or shot-by-shot Coming Soon behavior.
+
+### Backpack / Jammer Pack
+
+- Standard and Jammer Pack each grant identical +150, +200, +250 capacity by level, verified in official Update 41.1: https://pubg.com/en/news/9926
+- The former +50 Utility Belt benefit became part of the character's innate capacity in Update 28.2: https://www.pubg.com/en/news/7083 ; the old 20 innate plus 50 belt yields **70 base**, so modeled totals for both pack types are **220, 270, 320**. These totals **do not add an unconfirmed vest capacity**. Historical wiki pages showing 170/220/270 without a utility belt predate its integration.
+- 9mm per round 0.375→**0.30** after Update 33.1's 20% weight reduction: https://d3tpthp8lq9ou3.cloudfront.net/en-asia/news/7988 and https://pubg.gs/ammo/9mm/
+- 7.62mm 0.70→**0.60** after Update 34.1: https://pubg.com/en/news/8170 and https://pubg.gs/ammo/7-62mm/
+- Med Kit 20→**15**, Painkiller 10→**6**, Adrenaline 20→**10** from official Update 42.1: https://pubg.com/en/news/10179
+- Frag 18→**27**, Molotov 18→**16**, C4 20→**35** from the **standard-mode** item records in PUBG Update 43.2 / Steam build 26072644 (extracted 21 Oct 2026): https://pubg.gs/throwables/ . Event variants sometimes have space 1; those are excluded.
+- Existing matching item values remain unchanged. These are inventory-space units, not real-world weights. The calculation still excludes carried gun/armor/attachment weight.
+
+### Recoil data
+
+- Added RPD weapon-level record from PUBG 43.2 game extraction: max vertical recoil 7.5, crouch multiplier 0.70, vertical speed 15.5, horizontal speed 11, horizontal minimum scalar 0.25→25%. https://pubg.gs/weapons/rpd/
+- G18C's in-game data calls the gun **P18C** (Blueprint WeapG18, weapon tag G18). Added vertical speed 15, horizontal speed 12, horizontal min scalar 0.15→15%. https://pubg.gs/weapons/p18c/
+- Leave *unknown* horizontal tendency, direction and full spray paths blank: no observed curve is claimed from these static values.
+
+### Attachments
+
+- Source: https://pubg.gs/attachments/ with class-specific, game-tooltip descriptions and slot-tag compatibility.
+- Compensator AR/DMR/S12K = +15% vertical/+10% horizontal control; SMG = +25%/+20%; DMR/SR = +20%/+20%. Calculator uses weapon-class choice for a simplified representative compensator rather than treating all three as identical.
+- Vertical Foregrip +15% vertical; Thumbgrip +10% vertical and +10% post-single-shot recovery; Halfgrip +8% vertical/+16% horizontal/+10% recovery; Lightweight +20% single-shot recovery; Tactical Stock +5% single-shot recovery; Heavy Stock +10% vertical/+10% horizontal/+5% recovery.
+- Laser Sight affects hip-fire accuracy, **not recoil**; suppressors likewise have no verified recoil-control bonus. Flash Hiders contribute +10% horizontal/+10% vertical on the classes shown in the 43.2 attachment table.
+- Replaced many broad class defaults for foregrip support using the source's weapon-specific slot tags. For example, AKM and Groza don't gain an imaginary foregrip; O12 and G18C/P18C do receive actual foregrip choices.
+- QuickDraw Mag +60% reload **speed** translates to ×1/1.6 reload **duration**, and Extended QuickDraw +15% speed to ×1/1.15; don't confuse percentage speed increase with the same percentage time reduction. The toolkit's baseline gun reload times and older approximated extended magazine capacities remain separate caveats.
+- Remaining unresolved: differences among multiple compensator families compatible with a single DMR; exact per-weapon extended capacities; shotgun choke/duckbill and folding/cheek-pad stocks; stacked modifier interactions. These are not all simulated in the simplified attachment calculator.
+
+### Deliberate non-changes
+
+- Do **not** replace published base weapon damage with pubg.gs's top-level headline damage: e.g. RPD has headline 67 versus 43 projectile hit damage.
+- Do **not** add made-up bullet drop to the missing 24 recorded-drop weapons.
+- Do **not** make RPD 3.5-second no-animation reload field a confirmed real reload animation.
+- Full per-shot recoil and observed shotgun pellet-hit counts remain unverified.
+- Remaining attachment and magazine approximations are tracked in `docs/missing-data-source-audit-2026-10-24.md`.
+
 ## October 2026 — Scope Sensitivity Matcher as the default
 
 - Scope Sensitivity Matcher is the site's **first and default tool**. Combat Database is second in the sidebar.
