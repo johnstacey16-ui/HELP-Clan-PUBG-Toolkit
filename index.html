@@ -1337,12 +1337,12 @@ const panelsEl = document.getElementById("panels");
       </div>
       <div class="helptext" style="margin-bottom:6px">Recoil &amp; handling columns:</div>
       <dl class="legend">
-        <div><dt>V.Recoil</dt><dd>Vertical kick per shot — how much the gun climbs upward. Lower is easier to control.</dd></div>
+        <div><dt>Max V.Recoil</dt><dd>Maximum vertical recoil from the gun configuration; it is not a measured per-shot screen offset.</dd></div>
         <div><dt>Crouch Recoil</dt><dd>How much recoil drops while crouching. A lower multiplier means a bigger % reduction.</dd></div>
-        <div><dt>Horizontal Bias</dt><dd>Which way the gun drifts sideways during sustained fire (← or →) and how strongly — tells you which direction to counter-pull.</dd></div>
-        <div><dt>Vertical Speed</dt><dd>How fast the gun snaps upward after each shot. Higher is harder to control.</dd></div>
-        <div><dt>Horizontal Speed</dt><dd>How fast it jolts sideways after each shot. Higher is harder to control.</dd></div>
-        <div><dt>Minimum Horizontal %</dt><dd>The floor of a single shot's sideways kick, as a % of the max. Higher % means a more consistent spray; lower means more random.</dd></div>
+        <div><dt>Horizontal Bias</dt><dd>Signed horizontal tendency in the gun configuration. This does not determine an exact spray or counter-pull path.</dd></div>
+        <div><dt>Vertical Speed</dt><dd>Vertical recoil speed parameter; not a measurement of pixels or degrees moved per shot.</dd></div>
+        <div><dt>Horizontal Speed</dt><dd>Horizontal recoil speed parameter; not measured left/right travel for each bullet.</dd></div>
+        <div><dt>Minimum Horizontal %</dt><dd>Minimum horizontal recoil scalar (for example, 0.40 = 40%); alone it cannot predict sustained spray consistency.</dd></div>
       </dl>
     </div>
     <div class="card" style="margin-top:16px" id="realityCard"></div>
