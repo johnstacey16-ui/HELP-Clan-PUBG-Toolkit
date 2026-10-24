@@ -68,7 +68,8 @@ test('range UI uses source indexes, not a fake 0–500m model',()=>{
   assert.match(html,/Minimum shells assume all /);
   assert.match(html,/shotgunMinShellsAt\(w,range,hitbox,armor\)/);
   assert.match(html,/Shots?gun/);
-  assert.match(html,/No data: measured per-pellet damage does not tell us how many pellets hit the target/);
+  assert.match(html,/<th>Minimum shells \(all pellets hit\)<\/th>/);
+  assert.match(html,/shotgunMinShellsAt\(w,range,hitbox,armor\)/);
   assert.doesNotMatch(html,/GENERIC_FALLOFF_FACTOR|interpolateFalloff|PELLET_SPREAD|pelletHitFraction|TARGET_WIDTH_M/);
 });
 
