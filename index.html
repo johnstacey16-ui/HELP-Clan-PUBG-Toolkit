@@ -708,7 +708,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
     <div class="section-h">Bullet drop at this range</div>
     <div class="grid3">
       <div class="stat"><div class="n" id="rg_drop">–</div><div class="l">Drop below aim point (cm)</div></div>
-      <div class="stat"><div class="n" id="rg_holdover">–</div><div class="l">Holdover (mrad)</div></div>
+      <div class="stat"><div class="n" id="rg_holdover">–</div><div class="l">Angular drop (derived mrad)</div></div>
       <div class="stat"><div class="n" id="rg_muzzlecmp">–</div><div class="l">Muzzle velocity (measured)</div></div>
     </div>
     <div class="note" id="rg_dropNote"></div>
@@ -735,7 +735,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
 <div class="wrap">
   <div class="eyebrow">Field Reference · Time To Kill</div>
   <h1>TTK Calculator</h1>
-  <p class="sub">Point-blank (0 m) TTK with armor and hitbox, including reload time from each weapon's actual reload figure if the fight runs past one magazine.</p>
+  <p class="sub">Point-blank TTK is calculated only where a sourced 0m damage checkpoint and the required inputs exist. Shotgun pellet-hit counts, unsupported 0m readings and unverified reload times are shown as No data.</p>
 
   <div class="card">
     <div class="section-h">Setup</div>
@@ -929,7 +929,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
         Attachment modifiers, RPD, LMG rebalance, Tilted Grip, Half Grip, Angled Foregrip, Jammer Pack: official PUBG patch notes (pubg.com/en/news — 42.3, 41.1, 43.1).<br>
         Backpack and item weights: PUBG wiki, pubgmap.io, and community capacity lists.<br>
         Bullet drop and holdover (21 weapons): winnermeta.win real-match telemetry, currently in beta; values are estimated from measured flight time and drift a few percent between 14-day sampling windows.<br>
-        Shotgun pellet-spread cone angles (Sawn-off, S12K, S686): pubgmap.io datamined game files.
+        Historical shotgun spread angles were once taken from a 2018 pubgmap.io build; they are not verified for the current patch and are no longer used to calculate hits, damage or TTK.
       </dd>
       <dt>Patch changes reflected here</dt>
       <dd>
@@ -942,7 +942,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
       <dt>Bullet drop</dt>
       <dd>Bullet drop is displayed only at explicitly provided WinnerMeta telemetry checkpoints for weapons that have them. At other distances, including past the last checkpoint, the tool displays No data rather than a power-law interpolation or flat continuation. Muzzle velocity by itself cannot establish actual flight time as the projectile slows; no estimated flight times are displayed.</dd>
       <dt>Known limitation</dt>
-      <dd>The measured falloff tables provide discrete checkpoints, not a continuous verified curve. Connecting chart points illustrates the source trend but does not imply measurements or guaranteed damage at intermediate distances. Player damage for pellet shotguns cannot be calculated without reliable pellet-impact evidence, so the tool does not provide one.</dd>
+      <dd>The measured falloff tables provide discrete checkpoints, not a continuous verified curve. Only isolated measurement markers are plotted; no damage line or intermediate values are asserted between source checkpoints. Player damage for pellet shotguns cannot be calculated without reliable pellet-impact evidence, so the tool does not provide one.</dd>
       <dt>Known gaps</dt>
       <dd>
         <ul class="gaps">
@@ -1788,7 +1788,7 @@ const CLASS_MULT_DETAILED = {
 const WEAPON_HEAD_MULT = {"SVD Dragunov":2.80};
 // Real per-weapon falloff tables [distance_m, baseDamage], sourced directly from each weapon's
 // pubgstatistics.com page (fetched 2026-09-10, patch 42.3 data unless the page said otherwise). Every
-// other weapon still uses the generic linear approximation below, clearly labeled in the UI.
+// distances outside published checkpoints are deliberately unknown; there is no generic falloff.
 const FALLOFF_TABLES = {
   "AWM":  [[0,105.0],[100,105.0],[150,104.9],[200,104.2],[250,103.1],[300,101.9],[400,99.4],[500,97.0]],
   "AKM":  [[0,48.0],[25,48.0],[50,48.0],[100,45.5],[150,42.4],[200,39.3],[250,37.0],[300,36.0],[400,36.0],[500,36.0]],
@@ -1845,9 +1845,8 @@ function sourcedRangeRows(w){
 }
 // Bullet drop, sourced from winnermeta.win (real match telemetry, fetched 2026-09-13). WinnerMeta only
 // publishes drop at 200m/400m/600m checkpoints (plus muzzle=0), not a full per-meter curve — this
-// toolkit interpolates between those checkpoints the same way it does for the falloff tables, and holds
-// the last known value flat beyond the final checkpoint (flagged in the UI). Their own site notes this
-// data is in beta and drawn from a rolling 14-day sample, not a fixed-patch official figure.
+// toolkit reports those checkpoints only; no interpolation or flat extension is used.
+// This is beta telemetry from a rolling 14-day sample, not a fixed-patch official figure.
 const DROP_TABLES = {
   "AUG A3": [[0,0],[200,35.2],[400,177.6]],
   "AKM":    [[0,0],[200,66.0],[400,341.6]],
@@ -1904,7 +1903,6 @@ const PELLET_FALLOFF = {
   "S12K":    [[0,23.0],[5,21.7],[10,18.6],[15,15.1],[20,11.7],[25,9.8],[30,8.4],[35,7.8],[40,7.4],[45,7.1],[50,6.8],[55,6.4],[60,6.0],[65,5.7],[70,5.4]],
   "Sawn-off":[[0,21.0],[2,21.0],[4,20.9],[6,20.4],[8,19.3],[10,17.9],[12,16.6],[14,15.0],[16,13.6],[18,12.3],[20,11.5],[22,11.2],[24,10.9],[26,10.7],[28,10.4],[30,10.2],[32,10.0],[34,9.7],[36,9.5],[38,9.3],[40,9.0],[42,8.8],[44,8.5],[46,8.3],[48,8.2],[50,8.0]],
 };
-function shotgunFullPatternDamage(w){ const p = SHOTGUN_PELLETS[w.name]; return p ? p.count*p.dmgPerPellet : null; }
 // Historical spread estimates were retired. Old cone-angle tables and assumed
 // target widths do not verify how many shotgun pellets actually hit a player.
 function baseDamageAtRange(w, range){
@@ -1966,9 +1964,20 @@ function drawLineChart(canvas, series, opts={}){
     ctx.beginPath(); ctx.moveTo(pad,gy); ctx.lineTo(W-pad,gy); ctx.stroke();
   }
   series.forEach(s=>{
-    ctx.strokeStyle = s.color; ctx.lineWidth = 2; ctx.beginPath();
-    s.data.forEach((p,i)=>{ const x=xAt(p.x), y=yAt(p.y); i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); });
-    ctx.stroke();
+    if(opts.pointsOnly){
+      // Separate markers denote actual published checkpoints; do not draw a
+      // connecting line that visually implies measured intermediate values.
+      ctx.fillStyle = s.color;
+      s.data.forEach(p=>{
+        ctx.beginPath();
+        ctx.arc(xAt(p.x),yAt(p.y),3.5,0,Math.PI*2);
+        ctx.fill();
+      });
+    } else {
+      ctx.strokeStyle = s.color; ctx.lineWidth = 2; ctx.beginPath();
+      s.data.forEach((p,i)=>{ const x=xAt(p.x), y=yAt(p.y); i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); });
+      ctx.stroke();
+    }
   });
   ctx.fillStyle = "#71899b"; ctx.font = "10px ui-monospace,monospace";
   ctx.fillText(String(Math.round(minX)), pad, H-14);
@@ -2128,7 +2137,7 @@ function drawLineChart(canvas, series, opts={}){
     if(points.length) drawLineChart($("rg_chartDmg"), [{
       label:pellet ? "Base damage / pellet" : "Damage from source checkpoints",
       color:"#8bd8e8", data:points
-    }]);
+    }], {pointsOnly:true});
     if(pellet){
       table.innerHTML =
         '<tr><th>Range</th><th>Hits to kill</th><th>TTK (s)</th></tr>'+
