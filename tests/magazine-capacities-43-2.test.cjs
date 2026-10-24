@@ -40,10 +40,25 @@ test('Extended and Extended QuickDraw capacities must not be conflated',()=>{
   }
   assert.equal(MAG_CAP_VERIFIED.M416.extended,42);
   assert.equal(MAG_CAP_VERIFIED.M416.extquick,40);
-  assert.equal(extendedCapFor(w('AKM'),'extended'),42,'43.2 large-mag model');
-  assert.equal(extendedCapFor(w('AKM'),'extquick'),40,'43.2 large-mag model');
+  assert.equal(extendedCapFor(w('AKM'),'extended'),40,'AKM weapon-specific 40-round mag');
+  assert.equal(extendedCapFor(w('AKM'),'extquick'),40,'AKM extended quickdraw');
   assert.equal(extendedCapFor(w('SLR'),'extquick'),null,'do not fabricate DMR EQ capacity');
   assert.equal(extendedCapFor(w('SVD Dragunov'),'extended'),null,'missing exact capacity');
+  // A shared 42-round item label must not override actual rounds on each gun.
+  for(const gun of ['AUG A3','Beryl M762','Groza','G36C','SCAR-L','QBZ95','M16A4','K2','FAMAS']){
+    assert.equal(extendedCapFor(w(gun),'extended'),40,gun+' weapon loaded rounds');
+    assert.equal(extendedCapFor(w(gun),'extquick'),40,gun+' EQ loaded rounds');
+  }
+  for(const [gun,mag] of [['SKS',20],['SLR',20],['VSS Vintorez',20],['Mini 14',30],['Mk12',30]]){
+    assert.equal(extendedCapFor(w(gun),'extended'),mag,gun+' Extended');
+    assert.equal(extendedCapFor(w(gun),'extquick'),mag,gun+' Extended QuickDraw');
+  }
+  for(const gun of ['ACE 32','MK14 EBR','SVD Dragunov']){
+    assert.equal(extendedCapFor(w(gun),'extended'),null,gun+' unresolved ambiguity');
+    assert.equal(extendedCapFor(w(gun),'extquick'),null,gun+' unresolved EQ ambiguity');
+  }
+  assert.equal(extendedCapFor(w('M416'),'extended'),42);
+  assert.equal(extendedCapFor(w('M416'),'extquick'),40);
 });
 
 test('weapon-specific magazine fit: M249 yes; Kar98k/revolver/MG3 no',()=>{
