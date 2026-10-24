@@ -2319,6 +2319,9 @@ const MAG_EXPLICIT = { // [baseCap override not needed — use w.mag], extendedC
   "RPD":110, // official: 50-round base magazine, expandable to 110 via AR/LMG magazine attachments (Update 42.3)
 };
 function slotsFor(w){
+  // Lynx AMR is optics-only, and P90 uses an integral 50-round magazine.
+  if(w.name==="Lynx AMR" || w.name==="P90")
+    return {muzzle:null, grip:null, stock:null, magazine:null};
   if(w.name==="RPD") return {muzzle:null, grip:null, stock:"tactical", magazine:"AR_LMG"}; // official: no muzzle, no foregrip
   const muzzle = (w.cls==="SMG"&&w.name!=="MP9"&&w.name!=="P90") ? "SMG" : (w.cls==="SR"||w.cls==="DMR") ? "DMR_SR" : (w.cls==="AR"||w.name==="S12K"||w.name==="O12") ? "AR_DMR_S12K" : null;
   const grip = GRIP_LIST.has(w.name) ? "FOREGRIP" : null;
@@ -2435,7 +2438,7 @@ const BACKPACKS = {
 const JAMMER_PROTECTION = {1:"Low", 2:"Medium", 3:"High"};
 const BP_CAP = BACKPACKS.standard; // kept for reference; calc() now reads BACKPACKS[type] directly
 const BP_AMMO = [ // [key,label,weight]
-  ["9mm","9mm (per round)",0.30], [".45acp",".45 ACP (per round)",0.40],
+  ["9mm","9mm (per round)",0.30], ["57","5.7mm / P90 (per round)",0.35], [".45acp",".45 ACP (per round)",0.40],
   ["556","5.56mm (per round)",0.50], ["762","7.62mm (per round)",0.60],
   ["300mag",".300 Magnum (per round)",1.00], ["12g","12 Gauge (per round)",1.25],
   ["bolt","Crossbow bolt (per round)",2.00],
