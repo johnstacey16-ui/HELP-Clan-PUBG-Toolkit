@@ -2567,8 +2567,13 @@ const MAG_CAP_VERIFIED = {
   "VSS Vintorez":{extended:20,extquick:20},
   "Mini 14":  {extended:30,extquick:30},
   "Mk12":     {extended:30,extquick:30},
-  // Mk14 and Dragunov sources disagree on 20/22 or 18/20; remain No data.
-  // ACE 32 has 40/42 reports; avoid a silent family-level guess.
+  // Mk14 accepts both AR/DMR and DMR/SR magazine families in 43.2.
+  // Wiki magazine-family tables list different loaded-round capacities:
+  // DMR/SR Extended 22; DMR/SR Extended QuickDraw 20;
+  // AR/DMR Extended and Extended QuickDraw 20.
+  "MK14 EBR": {extended:22,extquick:20,extended_ar:20,extquick_ar:20},
+  // Dragunov 18/20 and ACE 32 40/42 still require version/family resolution;
+  // do not guess their values from these Mk14-specific magazine families.
   "M249":     {extended:150,extquick:null}, // no checked EQ capacity
   "RPD":      {extended:110,extquick:null}, // official 42.3 max; EQ unverified
   "MK47 Mutant": {extended:30,extquick:null},
@@ -2658,11 +2663,17 @@ function extendedCapFor(w,kind="extended"){
       magSel.disabled = false;
       const ext = extendedCapFor(w,"extended");
       const eq  = extendedCapFor(w,"extquick");
+      const previous=magSel.value;
       magSel.innerHTML = `<option value="none">None (${w.mag})</option>
-        <option value="extended">Extended (${ext==null?"No data":ext})</option>
+        <option value="extended">Extended${w.name==="MK14 EBR"?" (DMR/SR)":""} (${ext==null?"No data":ext})</option>
         <option value="quickdraw">QuickDraw (${w.mag}, +60% reload speed)</option>
-        <option value="extquick">Extended QuickDraw (${eq==null?"No data":eq}, +15% reload speed)</option>`;
-      if(![...magSel.options].some(o=>o.value===magSel.dataset.sel)) magSel.value = magSel.dataset.sel || "none";
+        <option value="extquick">Extended QuickDraw${w.name==="MK14 EBR"?" (DMR/SR)":""} (${eq==null?"No data":eq}, +15% reload speed)</option>`+
+        (w.name==="MK14 EBR" ? `
+        <option value="extended_ar">Extended (AR/DMR) (20)</option>
+        <option value="extquick_ar">Extended QuickDraw (AR/DMR) (20, +15% reload speed)</option>` : "");
+      // Keep a compatible choice when comparing weapons; never carry over
+      // an MK14-specific magazine to an incompatible gun.
+      magSel.value=[...magSel.options].some(o=>o.value===previous)?previous:"none";
     }
     recompute();
   }
@@ -2696,6 +2707,8 @@ function extendedCapFor(w,kind="extended"){
     if(magVal==="extended") newCap = ext;
     else if(magVal==="quickdraw"){ newCap = baseCap; reloadSpeedMultiplier = 1.60; }
     else if(magVal==="extquick"){ newCap = extQuick; reloadSpeedMultiplier = 1.15; }
+    else if(magVal==="extended_ar") newCap = extendedCapFor(w,"extended_ar");
+    else if(magVal==="extquick_ar"){ newCap = extendedCapFor(w,"extquick_ar"); reloadSpeedMultiplier = 1.15; }
     // Bullet Loops (SG/SR) currently has a documented +30% reload-speed
     // tooltip for the Kar98k variant. The S686 entry does not publish a
     // comparable speed modifier, so do not infer one from the same name.
@@ -2715,8 +2728,10 @@ function extendedCapFor(w,kind="extended"){
     $("at_capNew").textContent = newCap ?? "No data";
     let note = `Attachment percentages are estimates, not guaranteed in-game results.`;
     if(w.name==="MG3") note += " MG3 real reload-animation time is not verified.";
-    if((magVal==="extended" || magVal==="extquick") && newCap==null)
+    if(["extended","extquick","extended_ar","extquick_ar"].includes(magVal) && newCap==null)
       note += " This magazine's capacity is not verified.";
+    if(w.name==="MK14 EBR" && magVal!=="none")
+      note += " Mk14 capacity depends on magazine family; values are from named weapon/attachment tables and await a direct 43.2 in-game capacity check.";
     if(mVal==="choke"||mVal==="duckbill")
       note += " Shotgun muzzle effects tighten pellet spread; no hit probability is modeled.";
     if(selectedStock==="cheek")
