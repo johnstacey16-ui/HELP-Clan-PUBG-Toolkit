@@ -782,32 +782,51 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
 <!-- ================= PER-SHOT RECOIL ANALYZER ================= -->
 <div id="panel-recoil2" class="hub-main">
 <div class="wrap">
-  <div class="eyebrow">Field Reference · Shot-By-Shot Model</div>
-  <h1>Per-Shot Recoil Analyzer</h1>
-  <p class="sub">Shot-by-shot vertical and horizontal recoil, modeled from this toolkit's existing recoil-pattern data (v.recoil, crouch modifier, horizontal bias, recovery speeds, min-H%). This is a model built on extracted stats, not the game engine's exact simulation.</p>
+  <div class="eyebrow">Field Reference · Recoil Evidence</div>
+  <h1>Recoil Evidence Explorer</h1>
+  <p class="sub">PUBG recoil changes over sustained fire, but we do not have verified per-bullet recoil curves for these weapons. This reference shows the available weapon-level parameters without inventing a 5%-per-shot increase or unverified jumps at bullets 10, 20 and 30.</p>
 
   <div class="card">
+    <div class="section-h">Choose a weapon and question</div>
     <div class="toolbar">
       <div class="field"><label for="rc_weapon">Weapon</label><select id="rc_weapon"></select></div>
       <div class="field"><label for="rc_stance">Stance</label>
         <select id="rc_stance"><option value="standing">Standing</option><option value="crouched">Crouched</option><option value="prone">Prone</option></select>
       </div>
-      <div class="field"><label for="rc_shots">Shots</label>
-        <select id="rc_shots"><option value="10">10</option><option value="20" selected>20</option><option value="30">30</option></select>
+      <div class="field"><label for="rc_shots">Spray length to check</label>
+        <select id="rc_shots"><option value="10">10 shots</option><option value="20" selected>20 shots</option><option value="30">30 shots</option></select>
       </div>
     </div>
-    <div id="rc_missing"></div>
+    <div id="rc_missing" class="recoil-evidence-note" role="status" aria-live="polite"></div>
   </div>
 
   <div class="card">
-    <div class="section-h">Cumulative displacement</div>
-    <canvas id="rc_chart" width="1100" height="260"></canvas>
+    <div class="section-h">Shot-by-shot recoil</div>
+    <div id="rc_chart" class="recoil-evidence-surface" role="status" aria-live="polite">
+      <div class="recoil-evidence-symbol" aria-hidden="true">?</div>
+      <div>
+        <strong>No verified per-shot recoil curve</strong>
+        <p>We cannot calculate an actual recoil path without a validated per-shot pattern. No graph is drawn from arbitrary growth rates.</p>
+      </div>
+    </div>
   </div>
 
   <div class="card">
-    <div class="section-h">Shot-by-shot table</div>
-    <div style="overflow-x:auto;max-height:360px;overflow-y:auto"><table id="rc_table"></table></div>
-    <div class="note">Model: vertical recoil grows ~5%/shot × vertical speed; horizontal recoil grows the same way and is scaled between min-H% and 100% of its max with a small random factor, signed by horizontal bias direction. Crouching applies the weapon's crouch modifier to the vertical component. This is a simplified pattern model for comparing weapons, not a frame-accurate recoil sim.</div>
+    <div class="section-h">Supplied weapon-level recoil fields</div>
+    <p class="helptext">These are raw fields from the toolkit's supplied dataset, not recoil amounts for specific bullets. Their in-game units and current-patch accuracy have not all been independently verified.</p>
+    <div style="overflow-x:auto;max-width:100%">
+      <table id="rc_table"></table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-h">What the official evidence tells us</div>
+    <div class="recoil-source-list">
+      <p><b>LMGs — Update 42.3 (August 2026):</b> KRAFTON described a vertical recoil peak during sustained fire and a lower-recoil recovery phase, not constant growth. <a href="https://pubg.com/en/news/10874" target="_blank" rel="noopener noreferrer">Developer letter</a>.</p>
+      <p><b>SLR — Update 42.1 (June 2026):</b> Vertical recoil buildup was reduced in the early and middle stages of sustained firing. <a href="https://pubg.com/en/news/10179" target="_blank" rel="noopener noreferrer">Official patch notes</a>.</p>
+      <p><b>MP5K — Update 30.1 (June 2024):</b> PUBG described vertical recoil increasing gradually, without publishing an exact percentage for every subsequent bullet. <a href="https://pubg.com/en-asia/news/7424" target="_blank" rel="noopener noreferrer">Official patch notes</a>.</p>
+      <p><b>10 / 20 / 30 bullet thresholds:</b> No authoritative evidence has been found that every weapon's recoil jumps at these precise shot counts. Until a current-patch recoil curve is measured or verified, exact shot-by-shot movement remains <b>No data</b>.</p>
+    </div>
   </div>
 </div>
 </div>
@@ -2255,65 +2274,60 @@ function drawLineChart(canvas, series, opts={}){
   update();
 })();
 
-/* ================= 3. PER-SHOT RECOIL ANALYZER ================= */
+/* ================= 3. RECOIL EVIDENCE EXPLORER ================= */
 (function(){
+  'use strict';
   const $ = id => document.getElementById(id);
   fillWeaponSelect($("rc_weapon"), "AKM");
-  // Deterministic pseudo-random noise, seeded per weapon+shot, so the same weapon/settings always
-  // reproduce the same pattern (previously used Math.random(), which changed on every recompute and
-  // couldn't be compared or copied reliably).
-  function seededNoise(seed){
-    const x = Math.sin(seed*12.9898)*43758.5453;
-    return x - Math.floor(x);
-  }
-  function weaponSeed(name){
-    let h = 0; for(let i=0;i<name.length;i++) h = (h*31 + name.charCodeAt(i)) >>> 0;
-    return h % 1000;
-  }
-  // Stance multipliers applied to the vertical component. "Crouched" reuses each weapon's own supplied
-  // crouchMod. "Prone" has no official generic figure, so it's modeled as a further approximate reduction
-  // on top of crouched, clearly flagged — except for RPD/M249/MG3, where Update 43.1 published exact
-  // firing-position recoil-control reductions (shown as a text note, not folded into this simplified model).
-  const PRONE_EXTRA = 0.85; // approximate, undocumented — extends the crouch bonus further
+  const format = (value, suffix="") =>
+    value == null || !Number.isFinite(value) ? "No data" : String(value)+suffix;
+
   function update(){
     const w = PT.WBYNAME[$("rc_weapon").value];
     const stance = $("rc_stance").value;
-    const n = +$("rc_shots").value;
-    const missing = [];
-    if(w.vRecoil==null) missing.push("vertical recoil");
-    if(w.vertSpeed==null) missing.push("vertical speed");
-    if(w.horizSpeed==null) missing.push("horizontal speed");
-    if(w.hBiasVal==null) missing.push("horizontal bias");
-    if(stance!=="standing" && w.crouchMod==null) missing.push("crouch modifier");
-    let missingNote = missing.length
-      ? `<div class="note"><b>INCOMPLETE DATA:</b> ${w.name} is missing ${missing.join(", ")} in the supplied recoil dataset — this model fills the gap with 0 (or, for crouch modifier, no reduction) rather than an invented value, so the chart may understate recoil for this weapon.</div>`
-      : "";
-    if(stance==="prone") missingNote += `<div class="note">Prone is modeled as an approximate extra ${((1-PRONE_EXTRA)*100).toFixed(0)}% reduction on top of the crouch bonus — no generic official prone figure has been published.${LMG_PATCH_42_3.has(w.name)?` For ${w.name} specifically, Update 43.1 did publish exact firing-position recoil-control reductions (not folded into this simplified stance model): ${w.name==="RPD"?"standing −10%, crouching −17%, prone −27%":w.name==="M249"?"crouching −17%, prone −27%":"standing −15%, crouching −17%"}.`:""}</div>`;
-    $("rc_missing").innerHTML = missingNote;
-    const vRecoil = w.vRecoil ?? 0, vertSpeed = w.vertSpeed ?? 0, horizSpeed = w.horizSpeed ?? 0;
-    const hBiasVal = w.hBiasVal ?? 0, minHpct = (w.minH ?? 50)/100;
-    const dir = w.hBiasDir==="←" ? -1 : 1;
-    let crouchMod = 1;
-    if(stance==="crouched") crouchMod = w.crouchMod ?? 1;
-    else if(stance==="prone") crouchMod = (w.crouchMod ?? 1) * PRONE_EXTRA;
-    const seed = weaponSeed(w.name);
-    let cumV = 0, cumH = 0;
-    const rows = [];
-    for(let i=1;i<=n;i++){
-      let vi = vRecoil * (1 + (i-1)*vertSpeed*0.05) * crouchMod;
-      let hMax = hBiasVal * (1 + (i-1)*horizSpeed*0.05);
-      let hi = hMax * (minHpct + (1-minHpct) * (0.8 + seededNoise(seed+i)*0.2)) * dir;
-      cumV += vi; cumH += hi;
-      rows.push({shot:i, v:vi, h:hi, cumV, cumH});
-    }
-    $("rc_table").innerHTML = `<tr><th>Shot</th><th>Vertical</th><th>Horizontal</th><th>Cum. Vertical</th><th>Cum. Horizontal</th><th>Displacement</th></tr>` +
-      rows.map(r=>`<tr><td>${r.shot}</td><td>${r.v.toFixed(2)}</td><td>${r.h.toFixed(2)}</td><td>${r.cumV.toFixed(2)}</td><td>${r.cumH.toFixed(2)}</td><td>${Math.sqrt(r.cumV**2+r.cumH**2).toFixed(2)}</td></tr>`).join("");
-    drawLineChart($("rc_chart"), [
-      {label:"Cum. Vertical", color:"#2ea6ff", data:rows.map(r=>({x:r.shot,y:r.cumV}))},
-      {label:"Cum. Horizontal", color:"#ffb545", data:rows.map(r=>({x:r.shot,y:r.cumH}))},
-    ]);
+    const count = Number($("rc_shots").value);
+    if(!w) return;
+
+    // Weapon parameter fields are not per-bullet displacement measurements.
+    // Do not use any guessed scale such as 5% per shot or fixed 10/20/30 jumps.
+    const fields = [
+      ["Vertical recoil field", format(w.vRecoil)],
+      ["Vertical recoil speed", format(w.vertSpeed)],
+      ["Horizontal recoil speed", format(w.horizSpeed)],
+      ["Minimum horizontal recoil", format(w.minH,"%")],
+      ["Horizontal tendency", w.hBiasVal == null ? "No data" :
+        (w.hBiasDir || "Direction not recorded")+" "+String(w.hBiasVal)],
+      ["Crouch recoil multiplier", format(w.crouchMod)]
+    ];
+
+    $("rc_table").innerHTML =
+      "<thead><tr><th>Weapon parameter</th><th>Supplied value</th><th>What this means</th></tr></thead>"+
+      "<tbody>"+fields.map(([label,value])=>
+        "<tr><td>"+label+"</td><td>"+value+
+        "</td><td>Supplied weapon-level field; not a measured bullet-by-bullet movement</td></tr>"
+      ).join("")+"</tbody>";
+
+    const stanceNote = stance==="prone" ?
+      " No verified current-patch prone modifier or per-shot path is loaded." :
+      stance==="crouched" ?
+      " A crouch multiplier may be supplied above, but it does not establish per-shot displacement." :
+      " Standing is the selected stance.";
+    $("rc_missing").textContent =
+      "Requested: "+w.name+", "+count+" shots, "+stance+
+      ". No verified vertical/horizontal recoil measurement exists for each shot."+
+      stanceNote;
+
+    // Keep an explicit unknown state, never replace it with seeded randomness
+    // or a mathematical curve unrelated to PUBG's actual recoil implementation.
+    const display = $("rc_chart");
+    display.setAttribute("data-evidence", "unknown");
+    const heading = display.querySelector("strong");
+    if(heading) heading.textContent = "No verified "+count+"-shot recoil curve for "+w.name;
   }
-  ["rc_weapon","rc_stance","rc_shots"].forEach(id=>{ $(id).addEventListener("input", update); $(id).addEventListener("change", update); });
+  ["rc_weapon","rc_stance","rc_shots"].forEach(id=>{
+    $(id).addEventListener("input", update);
+    $(id).addEventListener("change", update);
+  });
   update();
 })();
 
