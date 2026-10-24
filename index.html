@@ -1830,6 +1830,22 @@ const DROP_TABLES = {
 // WinnerMeta's own independently-measured muzzle velocity, for comparison against this toolkit's supplied
 // value — shown as a secondary reference, not used to override the supplied WEAPONS velocity anywhere.
 const MEASURED_MUZZLE_VEL = {"AUG A3":927, "AKM":762, "M416":921, "AWM":1009, "Kar98k":823, "Vector":389, "M24":860, "Beryl M762":786, "SCAR-L":916, "M249":953, "UMP9":368, "Groza":764, "Mini 14":1057, "SKS":845, "K2":924, "QBZ95":962, "MG3":860, "Mk12":955, "VSS Vintorez":440, "MP9":405, "G36C":927};
+// PUBG 43.2 extracted muzzle velocity: separate from WinnerMeta measured drop.
+const GAME_MUZZLE_VEL_43_2 = {
+  "Lynx AMR":1200, "AWM":945, "O12":625, "Kar98k":760, "M24":790,
+  "R1895":330, "Desert Eagle":450, "MK14 EBR":853, "SVD Dragunov":830,
+  "MK47 Mutant":780, "SLR":870, "AKM":715, "Groza":715, "SKS":800,
+  "VSS Vintorez":430, "Beryl M762":715, "M16A4":900, "ACE 32":720,
+  "Mk12":900, "SCAR-L":870, "QBZ95":870, "Mini 14":990, "UMP9":400,
+  "MG3":820, "K2":880, "G36C":870, "M249":915, "M416":880,
+  "AUG A3":890, "Tommy Gun":280, "FAMAS":925, "P90":716, "P92":380,
+  "MP5K":400, "JS9":400, "MP9":400, "DBS":360, "Micro Uzi":350,
+  "S686":370, "S12K":350, "G18C":375, "Skorpion":350,
+  "Sawn-off":330, "RPD":735
+};
+function knownMuzzleVelocity(w){
+  return GAME_MUZZLE_VEL_43_2[w.name] ?? MEASURED_MUZZLE_VEL[w.name] ?? null;
+}
 function hasDropData(w){ return DROP_TABLES[w.name] != null; }
 function dropAtRange(w, range){
   return measuredValueAt(DROP_TABLES[w.name], range);
@@ -2008,7 +2024,7 @@ function drawLineChart(canvas, series, opts={}){
   }
 
   function updateDrop(w, range) {
-    const data=DROP_TABLES[w.name],velocity=MEASURED_MUZZLE_VEL[w.name];
+    const data=DROP_TABLES[w.name],velocity=knownMuzzleVelocity(w);
     $("rg_muzzlecmp").textContent=velocity==null?"No data":velocity+" m/s";
     const point=dropAtRange(w,range);
     if(point==null){
