@@ -6,6 +6,14 @@ This document replaces the previous “Data & Patch” tool tab. It preserves th
 
 For the no-assumptions policy, also see [DATA_ACCURACY_POLICY.md](../DATA_ACCURACY_POLICY.md).
 
+## Update — 24 October 2026: theoretical shotgun HTK restored
+
+- The Effective Range and point-blank TTK panels now calculate a **best-case minimum shell count if all pellets hit the selected hitbox**. This uses per-pellet sampled damage, pellet count, existing hitbox/class/armour factors and a 100 HP target; source distance limits are unchanged.
+- This is an idealized calculation, **not a verified expectation for actual shotgun fights**. Hit probability, spread and pellet geometry remain unknown; actual kill times are not calculated. The public site displays only a short clarification while full methodology stays in GitHub.
+- The Sawn-off pellet count was corrected from 8 to 9 based on PUBG PC Update 4.3 patch notes, which explicitly changed it from 8 to 9: https://store.steampowered.com/news/posts/?appids=578080&enddate=1565443536
+- There is conflicting community data: https://www.pubgsearch.com/weapons/sawed-off still says 8 whereas https://pubg.gs/weapons/sawed-off says 9. Because these independent sources disagree on current stats, the corrected 9-pellet count is grounded in the official historical update, **not a new current-patch extraction**. Reverify with datamined or live current-patch data before claiming more precision.
+- Source per-pellet tables are maintained without any interpolated or post-cutoff extensions. The archived historical notes below are intentionally unchanged and may describe a previous version of the on-site UI.
+
 ## Source and patch notes (from the retired Data & Patch tab)
 
 ### Version

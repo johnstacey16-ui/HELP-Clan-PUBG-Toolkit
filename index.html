@@ -661,7 +661,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
 <div class="wrap">
   <div class="eyebrow">Combat · Effective Range</div>
   <h1>Effective Range &amp; Damage</h1>
-  <p class="sub">Check damage and range using available measurements. Shotguns show damage per pellet; unavailable results show No data.</p>
+  <p class="sub">Check damage and range at recorded distances. Shotguns also show a best-case minimum shell count, assuming every pellet hits.</p>
 
   <div class="card">
     <div class="section-h">Setup</div>
@@ -691,7 +691,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
     <div class="section-h">Result at this range</div>
     <div class="grid4">
       <div class="stat"><div class="n" id="rg_dmg">–</div><div class="l" id="rg_dmgLabel">Damage at range</div><div class="bar"><div class="bar-fill" id="rg_dmg_bar"></div></div></div>
-      <div class="stat"><div class="n" id="rg_htk">–</div><div class="l">Hits to kill</div><div class="bar"><div class="bar-fill" id="rg_htk_bar"></div></div></div>
+      <div class="stat"><div class="n" id="rg_htk">–</div><div class="l" id="rg_htkLabel">Hits to kill</div><div class="bar"><div class="bar-fill" id="rg_htk_bar"></div></div></div>
       <div class="stat"><div class="n" id="rg_ttk">–</div><div class="l">TTK (seconds)</div><div class="bar"><div class="bar-fill" id="rg_ttk_bar"></div></div></div>
       <div class="stat"><div class="n" id="rg_flight">–</div><div class="l">Flight time (not measured)</div></div>
     </div>
@@ -713,7 +713,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
   </div>
   <div class="card">
     <div class="section-h">Hits-to-kill and TTK at recorded checkpoints</div>
-    <p class="helptext" style="margin-bottom:10px">No data is shown for unknown distances or shotgun pellet-hit counts.</p>
+    <p class="helptext" style="margin-bottom:10px">Shotgun minimum shells assume every pellet hits the selected body area. Actual fights may require more.</p>
     <table id="rg_brackets"></table>
   </div>
 
@@ -748,7 +748,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
     <div class="section-h">Result</div>
     <div class="grid3">
       <div class="stat"><div class="n" id="tk_dmg">–</div><div class="l">Damage per shot</div><div class="bar"><div class="bar-fill" id="tk_dmg_bar"></div></div></div>
-      <div class="stat"><div class="n" id="tk_htk">–</div><div class="l">Hits to kill</div><div class="bar"><div class="bar-fill" id="tk_htk_bar"></div></div></div>
+      <div class="stat"><div class="n" id="tk_htk">–</div><div class="l" id="tk_htkLabel">Hits to kill</div><div class="bar"><div class="bar-fill" id="tk_htk_bar"></div></div></div>
       <div class="stat"><div class="n" id="tk_pure">–</div><div class="l">Pure TTK (s)</div><div class="bar"><div class="bar-fill" id="tk_pure_bar"></div></div></div>
     </div>
     <div class="grid3" style="margin-top:10px">
@@ -1829,7 +1829,7 @@ const SHOTGUN_PELLETS = {
   "DBS":{count:9, dmgPerPellet:28},
   "S686":{count:9, dmgPerPellet:26},
   "S12K":{count:9, dmgPerPellet:23},
-  "Sawn-off":{count:8, dmgPerPellet:21},
+  "Sawn-off":{count:9, dmgPerPellet:21},
 };
 // Per-PELLET damage falloff [distance_m, damagePerPellet] from each shotgun's pubgstatistics.com page
 // (patch 43.1/43.2, fetched 2026-10-22; "Shotgun values are per pellet"). Measured range only: DBS to 70m,
@@ -1861,6 +1861,22 @@ function finalDamageAt(w, range, hitbox, armorLevel, stance){
   const classMult = (part.bucket==="head" && WEAPON_HEAD_MULT[w.name]) || cm[part.bucket];
   const beforeArmor = base * part.hitArea * classMult;
   return beforeArmor * armorMultFor(part, armorLevel);
+}
+// Minimum shells needed in the idealized case that EVERY pellet connects
+// with the selected hitbox. This is a mathematical lower bound, not an
+// in-match prediction: hit probability and pellet spread are NOT modelled.
+// Only available at published per-pellet damage checkpoints.
+function shotgunMinShellsAt(w,range,hitbox,armorLevel){
+  const config=SHOTGUN_PELLETS[w.name];
+  const perPellet=measuredValueAt(PELLET_FALLOFF[w.name],range);
+  if(!config || perPellet==null || !Number.isInteger(config.count) || config.count<=0) return null;
+  const part=BODY_PARTS[hitbox] || BODY_PARTS.chest;
+  const multipliers=CLASS_MULT_DETAILED[w.cls];
+  if(!part || !multipliers) return null;
+  const classMult=(part.bucket==="head" && WEAPON_HEAD_MULT[w.name]) || multipliers[part.bucket];
+  if(!Number.isFinite(classMult) || !Number.isFinite(part.hitArea)) return null;
+  const damageIfAllConnect=perPellet*config.count*part.hitArea*classMult*armorMultFor(part,armorLevel);
+  return htkFor(damageIfAllConnect);
 }
 function htkFor(dmg){ return dmg == null ? null : (dmg>0 ? Math.ceil(100/dmg) : null); }
 function pureTtk(htk, rpm){ return htk == null ? null : (htk>1 ? (htk-1)/(rpm/60) : 0); }
@@ -1998,7 +2014,7 @@ function drawLineChart(canvas, series, opts={}){
     }
     const first=rows[0][0],last=rows[rows.length-1][0];
     $("rg_approxNote").textContent=isPelletShotgun(w)?
-      "Available range: "+first+"–"+last+"m. Damage is per pellet only; total damage, hits to kill and TTK are unknown.":
+      "Available range: "+first+"–"+last+"m. Minimum shells assume all "+SHOTGUN_PELLETS[w.name].count+" pellets hit the selected area; actual shots may need more. TTK is unknown.":
       "Available range: "+first+"–"+last+"m. Damage uses the selected hitbox and armor.";
   }
 
@@ -2009,9 +2025,10 @@ function drawLineChart(canvas, series, opts={}){
     const damage = range==null ? null :
       pellet ? measuredValueAt(PELLET_FALLOFF[w.name], range) :
       finalDamageAt(w,range,hitbox,armor);
-    const htk = pellet ? null : htkFor(damage);
+    const htk = pellet ? shotgunMinShellsAt(w,range,hitbox,armor) : htkFor(damage);
     const ttk = pellet ? null : pureTtk(htk,w.rpm);
     $("rg_dmgLabel").textContent = pellet ? "Measured base dmg / pellet" : "Damage at checkpoint";
+    $("rg_htkLabel").textContent = pellet ? "Minimum shells (all pellets hit)" : "Hits to kill";
     $("rg_dmg").textContent = damage==null ? "No data" : damage.toFixed(1);
     $("rg_htk").textContent = htk==null ? "No data" : String(htk);
     $("rg_ttk").textContent = ttk==null ? "No data" : ttk.toFixed(2);
@@ -2056,8 +2073,12 @@ function drawLineChart(canvas, series, opts={}){
     }], {pointsOnly:true});
     if(pellet){
       table.innerHTML =
-        '<tr><th>Range</th><th>Hits to kill</th><th>TTK (s)</th></tr>'+
-        '<tr><td colspan="3">No data: measured per-pellet damage does not tell us how many pellets hit the target.</td></tr>';
+        '<tr><th>Recorded range</th><th>Minimum shells (all pellets hit)</th><th>TTK</th></tr>'+
+        rows.map(([range])=>{
+          const min=shotgunMinShellsAt(w,range,hitbox,armor);
+          return "<tr><td>"+range+"m</td><td>"+(min==null?"No data":min)+
+            "</td><td>No data</td></tr>";
+        }).join("");
       return;
     }
     table.innerHTML =
@@ -2109,6 +2130,13 @@ function drawLineChart(canvas, series, opts={}){
     return base;
   }
   function computeFor(w, hitbox, armor){
+    if(SHOTGUN_PELLETS[w.name]){
+      // 0m exists in the published pellet tables: only the theoretical
+      // minimum shells is calculable; damage-to-player and time-to-kill
+      // still require knowing how many pellets connected.
+      return {dmg:null,htk:shotgunMinShellsAt(w,0,hitbox,armor),
+        pure:null,withReload:null,reloads:null,bestCase:true};
+    }
     const dmg = finalDamageAt(w, 0, hitbox, armor);
     if(dmg==null){
       return {dmg:null,htk:null,pure:null,withReload:null,reloads:null};
@@ -2126,6 +2154,7 @@ function drawLineChart(canvas, series, opts={}){
     const hitbox=$("tk_hitbox").value, armor=+$("tk_armor").value;
     const r=computeFor(w,hitbox,armor);
     $("tk_dmg").textContent=display(r.dmg,1);
+    $("tk_htkLabel").textContent=SHOTGUN_PELLETS[w.name] ? "Minimum shells (all pellets hit)" : "Hits to kill";
     $("tk_htk").textContent=r.htk==null?"No data":r.htk;
     $("tk_pure").textContent=display(r.pure,2);
     $("tk_reload").textContent=display(r.withReload,2);
@@ -2135,7 +2164,7 @@ function drawLineChart(canvas, series, opts={}){
     setBar("tk_reload",r.withReload,6);
     let tkNote;
     if(SHOTGUN_PELLETS[w.name]){
-      tkNote="Shotgun pellet hits are unknown, so damage and TTK are unavailable.";
+      tkNote="Minimum shells assumes all "+SHOTGUN_PELLETS[w.name].count+" pellets hit the selected area. Actual shots may need more; TTK unavailable.";
     } else if(r.dmg==null){
       tkNote="No 0m damage reading for "+w.name+"; TTK unavailable.";
     } else if(r.withReload==null){
@@ -2153,7 +2182,7 @@ function drawLineChart(canvas, series, opts={}){
     const names=[$("tk_cmpA").value,$("tk_cmpB").value,$("tk_cmpC").value].filter(Boolean);
     const rows=names.map(n=>{const w=PT.WBYNAME[n];return {name:n,...computeFor(w,hitbox,armor)};});
     $("tk_cmpTable").innerHTML=
-      '<tr><th>Weapon</th><th>Dmg</th><th>HTK</th><th>Pure TTK</th><th>Incl. reload</th></tr>'+
+      '<tr><th>Weapon</th><th>Dmg</th><th>HTK (SG: minimum)</th><th>Pure TTK</th><th>Incl. reload</th></tr>'+
       rows.map(r=>'<tr><td>'+r.name+'</td><td>'+display(r.dmg,1)+
         '</td><td>'+(r.htk==null?'No data':r.htk)+
         '</td><td>'+display(r.pure,2)+
