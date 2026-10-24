@@ -42,7 +42,7 @@ test('Extended and Extended QuickDraw capacities must not be conflated',()=>{
   assert.equal(MAG_CAP_VERIFIED.M416.extquick,40);
   assert.equal(extendedCapFor(w('AKM'),'extended'),40,'AKM weapon-specific 40-round mag');
   assert.equal(extendedCapFor(w('AKM'),'extquick'),40,'AKM extended quickdraw');
-  assert.equal(extendedCapFor(w('SLR'),'extquick'),null,'do not fabricate DMR EQ capacity');
+  assert.equal(extendedCapFor(w('SLR'),'extquick'),20,'source-backed SLR EQ capacity');
   assert.equal(extendedCapFor(w('SVD Dragunov'),'extended'),null,'missing exact capacity');
   // A shared 42-round item label must not override actual rounds on each gun.
   for(const gun of ['AUG A3','Beryl M762','Groza','G36C','SCAR-L','QBZ95','M16A4','K2','FAMAS']){
