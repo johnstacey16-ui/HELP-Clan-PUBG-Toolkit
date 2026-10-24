@@ -6,6 +6,14 @@ This document replaces the previous “Data & Patch” tool tab. It preserves th
 
 For the current approach to both original, owner-authored formulas and measured game data, see [DATA_ACCURACY_POLICY.md](../DATA_ACCURACY_POLICY.md).
 
+## Update 24 October 2026 — expanded muzzle velocity coverage
+
+- Source: https://pubg.gs/ballistics/ , generated from the PUBG **Update 43.2** Steam build 26072644 (extracted 2026-10-21).
+- Added an explicit `GAME_MUZZLE_VEL_43_2` mapping for **44 of 45** toolkit weapons, using original `Projectile muzzle velocity` in m/s and manually reconciled aliases (G18C = P18C, Sawn-off = Sawed-Off, AKM, etc.). The extraction lists Vector muzzle velocity as missing; preserve the older observed **389 m/s** for Vector rather than invent a replacement.
+- The Range panel now displays current 43.2 muzzle velocity when known. It has **not** acquired measured bullet-drop readings for the other 24 weapons. `DROP_TABLES` remains 21 source-derived data sets; unsampled drop and flight times remain **No data**.
+- The earlier WinnerMeta `MEASURED_MUZZLE_VEL` map remains as an explicitly separate historical measurement set. It can differ substantially from game asset values (e.g. AKM 762 vs 43.2 game file 715 m/s; M416 921 vs 880). The current live display intentionally prefers game-asset velocities and falls back to older WinnerMeta only when the asset source lacks a value.
+- This change affects displayed **velocity only**, not damage, drop, HTK, TTK, pellet connection probabilities, Scope Matcher formulas or recoil paths.
+
 ## Update 24 October 2026 — confirmed game-data and official patch fixes
 
 This batch updates the **live backpack and attachment calculators**, and fills selected **RPD/P18C recoil fields**, without changing the Scope Sensitivity Matcher, measured range tables or shot-by-shot Coming Soon behavior.
