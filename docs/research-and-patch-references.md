@@ -6,6 +6,14 @@ This document replaces the previous “Data & Patch” tool tab. It preserves th
 
 For the current approach to both original, owner-authored formulas and measured game data, see [DATA_ACCURACY_POLICY.md](../DATA_ACCURACY_POLICY.md).
 
+## Update 24 October 2026 — 43.1/43.2 LMG crouch recoil fix
+
+- **M249 crouch recoil multiplier:** corrected **0.54 → 0.70**, as seen in the current game-derived 43.1–43.2 change log. Its derived reduction from standing changes from -46% to **-30%**.
+- **MG3 crouch recoil multiplier:** corrected **0.50 → 0.60**, for derived -40% instead of -50%.
+- **RPD:** verified .70 crouch factor already in the 43.2 record; filled the corresponding -30% derived display field rather than leaving it blank.
+- Direct evidence: https://pubgplanet.com/wiki/changes (September 10, 2026 LMG modifications); https://pubg.gs/weapons/m249/ ; https://pubg.gs/weapons/mg3/ ; https://pubg.gs/weapons/rpd/ .
+- These are weapon-level modifiers only. The full shot-by-shot recoil analyzer still has no measured trajectory and continues to show **Coming Soon**. No new artificial recoil curve, per-shot increase or guessed stance modifier was introduced.
+
 ## Update 24 October 2026 — verified magazine capacity and compatibility corrections
 
 This follows the source-backed 43.2 inventory and attachment batch. It focuses on the **actual rounds loaded by specific weapons**, rather than a magazine attachment's own inventory-space weight. The public site remains concise.

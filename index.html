@@ -1071,6 +1071,9 @@ const WEAPONS = [
  
 // recoil-pattern data: v.recoil, crouch modifier (mult + %), h.bias (direction + value), vert/horiz recovery speed, min horizontal %
 // G18C's row was cut off in the source paste after h.bias — its vert/horiz speed and min-h% were not supplied, so they stay null rather than guessed.
+// Crouch recoil multipliers from current 43.1/43.2 game build:
+// M249: .70, MG3: .60, RPD: .70 (not the pre-43.1 M249 .54/MG3 .50).
+// "crouchPct" is (multiplier - 1) × 100, not a separate game asset field.
 const RECOIL_RAW = {
   "Desert Eagle": [null, 0.82,-18, "→",0.17, 15,12, 42],
   "Mini 14":      [3.1,  0.75,-25,"→",0.15, 11.2,11,30],
@@ -1108,15 +1111,15 @@ const RECOIL_RAW = {
   "MP9":          [null, null,null,null,null, 11,10.5,63],
   "P90":          [null, null,null,null,null, 11,10.5,63],
   "Skorpion":     [null, 0.85,-15,null,null, 15,14, 35],
-  "M249":         [7.0,  0.54,-46,null,null, 15,10, 20],
-  "MG3":          [null, 0.50,-50,null,null, 16,11.5,25],
+  "M249":         [7.0,  0.70,-30,null,null, 15,10, 20],
+  "MG3":          [null, 0.60,-40,null,null, 16,11.5,25],
   "S686":         [null, null,null,null,null, 13,11, 70],
   "DBS":          [null, null,null,null,null, 12,10, 75],
   "Sawn-off":     [null, null,null,null,null, 15,12, null],
   "P92":          [1.0,  null,null,null,null, 15,12, null],
   "R1895":        [null, null,null,null,null, 15,12, null],
   "G18C":         [null, null,null,null,null, 15,12,15], // P18C in 43.2 game data
-  "RPD":          [7.5,  0.70,null,null,null, 15.5,11,25], // Update 43.2 extracted gun data
+  "RPD":          [7.5,  0.70,-30,null,null, 15.5,11,25], // Update 43.2 extracted gun data
 };
 WEAPONS.forEach(w=>{
   const r = RECOIL_RAW[w.name];
