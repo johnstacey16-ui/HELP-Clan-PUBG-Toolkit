@@ -1020,7 +1020,7 @@ const WEAPONS = [
 ["Desert Eagle","Pistol",".45 ACP",false,62,300,450,310,7,2.0,["Semi"]],
 ["MK14 EBR","DMR","7.62mm",true,54,400,853,360,10,3.1,["Semi","Auto"]],
 ["SVD Dragunov","DMR","7.62mm",false,53,180,830,159,10,3.1,["Semi"]],
-["MK47 Mutant","AR","7.62mm",false,49,800,780,653,10,3.1,["Semi","Burst"]],
+["MK47 Mutant","AR","7.62mm",false,49,800,780,653,20,3.1,["Semi","Burst"]],
 ["SLR","DMR","7.62mm",false,49,330,870,270,10,3.1,["Semi"]],
 ["AKM","AR","7.62mm",false,48,600,715,480,30,3.1,["Semi","Auto"]],
 ["Groza","AR","7.62mm",true,47,750,715,588,30,3.1,["Semi","Auto"]],
@@ -1053,7 +1053,7 @@ const WEAPONS = [
 ["S686","SG","12 Gauge",false,26,240,370,104,2,2.3,["Semi"]],
 ["S12K","SG","12 Gauge",false,23,240,350,92,5,2.3,["Semi"]],
 ["G18C","Pistol","9mm",false,23,1000,375,383,17,2.3,["Semi","Auto"]],
-["Skorpion","SMG","9mm",false,22,850,350,312,10,3.1,["Semi","Auto"]],
+["Skorpion","SMG","9mm",false,22,850,350,312,20,3.1,["Semi","Auto"]],
 ["Sawn-off","SG","12 Gauge",false,21,240,330,84,2,3.0,["Semi"]],
 ["RPD","MG","7.62mm",false,43,750,735,538,50,3.5,["Auto"]],
 ].map(w=>({name:w[0],cls:w[1],ammo:w[2],crate:w[3],dmg:w[4],rpm:w[5],vel:w[6],dps:w[7],mag:w[8],reload:w[9],modes:w[10]}));
@@ -2329,11 +2329,36 @@ function compensatorFor(w){
   if(w.cls==="AR"||w.name==="S12K"||w.name==="O12")return {v:-0.15,h:-0.10};
   return {v:0,h:0};
 }
-const MAG_EXPLICIT = { // [baseCap override not needed — use w.mag], extendedCap explicit
-  "Vector":33, "UMP9":35, "MP5K":40, "Micro Uzi":35,
-  "P92":20, "G18C":25, "Desert Eagle":10, "R1895":9,
-  "RPD":110, // official: 50-round base magazine, expandable to 110 via AR/LMG magazine attachments (Update 42.3)
+// Each magazine family has weapon-specific limits. The global "extended
+// magazine adds 30%" shortcut was an approximation and does not represent
+// the official Extended vs Extended QuickDraw distinction.
+// Explicit values below derive from official patch notes and linked weapon
+// tables (full references in docs/research-and-patch-references.md).
+const MAG_CAP_VERIFIED = {
+  "M416":     {extended:42,extquick:40}, // PUBG magazine rebalance example
+  "AWM":      {extended:8, extquick:7},  // 43.2 DMR/SR item data
+  "M24":      {extended:8, extquick:7},
+  "M249":     {extended:150,extquick:null}, // no checked EQ capacity
+  "RPD":      {extended:110,extquick:null}, // official 42.3 max; EQ unverified
+  "MK47 Mutant": {extended:30,extquick:null},
+  "S12K":     {extended:10,extquick:10},
+  "Tommy Gun":{extended:50,extquick:50},
+  "Skorpion": {extended:40,extquick:40},
+  "Vector":   {extended:33,extquick:33},
+  "UMP9":     {extended:35,extquick:35},
+  "MP5K":     {extended:40,extquick:40},
+  "Micro Uzi":{extended:35,extquick:35},
+  "P92":      {extended:20,extquick:20},
+  "G18C":     {extended:25,extquick:25},
+  "Desert Eagle":{extended:10,extquick:10}
 };
+// 30-round ARs accept the 43.2 MagazineLarge family; the extracted
+// attachment item lists 42/40. This class rule is a practical model, with
+// named exceptions taking priority above it, not a separate gun-by-gun test.
+const MAG_LARGE_30_ROUND_MODEL = new Set([
+  "AKM","AUG A3","Beryl M762","G36C","Groza","M16A4","ACE 32",
+  "SCAR-L","QBZ95","K2","FAMAS"
+]);
 function slotsFor(w){
   // Lynx AMR is optics-only, and P90 uses an integral 50-round magazine.
   if(w.name==="Lynx AMR" || w.name==="P90")
@@ -2342,15 +2367,25 @@ function slotsFor(w){
   const muzzle = (w.cls==="SMG"&&w.name!=="MP9"&&w.name!=="P90") ? "SMG" : (w.cls==="SR"||w.cls==="DMR") ? "DMR_SR" : (w.cls==="AR"||w.name==="S12K"||w.name==="O12") ? "AR_DMR_S12K" : null;
   const grip = GRIP_LIST.has(w.name) ? "FOREGRIP" : null;
   const stock = STOCK_LIST.has(w.name) ? "tactical" : null;
-  const magazine = (w.cls==="SR"||w.cls==="DMR") ? "DMR_SR" : (w.cls==="AR"||w.name==="S12K") ? "AR_DMR_S12K" : (w.cls==="SMG"||w.cls==="Pistol") ? "SMG_PISTOL" : null;
+  // Current magazine attachment table excludes the bolt-fed Kar98k and
+  // revolver R1895. M249 (class MG in our dataset) explicitly takes LMG mags.
+  const magazine = w.name==="Kar98k" || w.name==="R1895" || w.name==="MG3" || w.name==="O12"
+    ? null
+    : w.name==="M249" ? "AR_LMG"
+    : (w.cls==="SR"||w.cls==="DMR") ? "DMR_SR"
+    : (w.cls==="AR"||w.name==="S12K") ? "AR_DMR_S12K"
+    : (w.cls==="SMG"||w.cls==="Pistol") ? "SMG_PISTOL" : null;
   return {muzzle, grip, stock, magazine};
 }
-function extendedCapFor(w){
-  if(MAG_EXPLICIT[w.name]!=null) return MAG_EXPLICIT[w.name];
-  if(!w.mag) return null;
-  const slots = slotsFor(w);
-  if(slots.magazine==="DMR_SR") return w.mag+5; // approximate, documented
-  if(slots.magazine) return Math.ceil(w.mag*1.3); // generic +30%, documented
+function extendedCapFor(w,kind="extended"){
+  const slots=slotsFor(w);
+  if(!slots.magazine || !w.mag) return null;
+  const exact=MAG_CAP_VERIFIED[w.name];
+  if(exact && Object.prototype.hasOwnProperty.call(exact,kind)) return exact[kind];
+  if(MAG_LARGE_30_ROUND_MODEL.has(w.name) && w.mag===30)
+    return kind==="extended" ? 42 : kind==="extquick" ? 40 : null;
+  // Missing source figures stay unknown rather than masquerading as a
+  // verified "+5" or "+30%" universal magazine rule.
   return null;
 }
 (function(){
@@ -2377,11 +2412,12 @@ function extendedCapFor(w){
     if(!slots.magazine || !w.mag){ magSel.innerHTML = `<option value="none">No slot</option>`; magSel.disabled = true; }
     else {
       magSel.disabled = false;
-      const ext = extendedCapFor(w);
+      const ext = extendedCapFor(w,"extended");
+      const eq  = extendedCapFor(w,"extquick");
       magSel.innerHTML = `<option value="none">None (${w.mag})</option>
-        <option value="extended">Extended (${ext})</option>
+        <option value="extended">Extended (${ext==null?"No data":ext})</option>
         <option value="quickdraw">QuickDraw (${w.mag}, +60% reload speed)</option>
-        <option value="extquick">Extended QuickDraw (${ext}, +15% reload speed)</option>`;
+        <option value="extquick">Extended QuickDraw (${eq==null?"No data":eq}, +15% reload speed)</option>`;
       if(![...magSel.options].some(o=>o.value===magSel.dataset.sel)) magSel.value = magSel.dataset.sel || "none";
     }
     recompute();
@@ -2402,12 +2438,13 @@ function extendedCapFor(w){
     const hChange = comp.h + g.h + s.h;
     const recovChange = m.recov + g.recov + s.recov;
     const baseCap = w.mag || null;
-    const ext = extendedCapFor(w);
+    const ext = extendedCapFor(w,"extended");
+    const extQuick = extendedCapFor(w,"extquick");
     let newCap = baseCap;
     let reloadSpeedMultiplier = 1;
     if(magVal==="extended") newCap = ext;
     else if(magVal==="quickdraw"){ newCap = baseCap; reloadSpeedMultiplier = 1.60; }
-    else if(magVal==="extquick"){ newCap = ext; reloadSpeedMultiplier = 1.15; }
+    else if(magVal==="extquick"){ newCap = extQuick; reloadSpeedMultiplier = 1.15; }
     const isLmgPatched = LMG_PATCH_42_3.has(w.name);
     const realBaseReload = w.reload; // RPD remains a non-animation placeholder
     let reloadMult = 1 / reloadSpeedMultiplier;
@@ -2416,13 +2453,15 @@ function extendedCapFor(w){
     $("at_hrecoil").textContent = (hChange*100).toFixed(0)+"%";
     $("at_recovery").textContent = "+"+(recovChange*100).toFixed(0)+"%";
     const finalReload = realBaseReload*reloadMult;
-    $("at_reload").textContent = reloadMult<1
+    $("at_reload").textContent = w.name==="RPD" ? "No data" : reloadMult<1
       ? finalReload.toFixed(1)+"s (−"+((1-reloadMult)*100).toFixed(0)+"%)"
       : finalReload.toFixed(1)+"s";
     $("at_capBase").textContent = baseCap ?? "—";
-    $("at_capNew").textContent = newCap ?? "—";
+    $("at_capNew").textContent = newCap ?? "No data";
     let note = `Attachment percentages are estimates, not guaranteed in-game results.`;
     if(w.name==="RPD") note += ` RPD reload time is not verified.`;
+    if((magVal==="extended" || magVal==="extquick") && newCap==null)
+      note += " This magazine's capacity is not verified.";
     
     
     
