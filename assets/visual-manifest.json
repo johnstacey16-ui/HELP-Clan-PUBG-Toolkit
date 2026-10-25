@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "project": "HELP Clan PUBG Toolkit",
+  "budget": {
+    "maxTotalImageBytes": 1572864,
+    "maxBytesByRole": {
+      "icon": 61440,
+      "thumbnail": 92160,
+      "hero": 184320
+    }
+  },
+  "rules": {
+    "allowedExtensions": [
+      "webp",
+      "avif",
+      "png",
+      "svg"
+    ],
+    "localAssetsOnly": true,
+    "requireDocumentedRights": true,
+    "informativeImagesNeedAltText": true
+  },
+  "assets": [
+    {
+      "id": "hit-zone-model-2",
+      "path": "assets/hit-zone-model-2.webp",
+      "panelId": "panel-hit-zone",
+      "role": "hero",
+      "width": 500,
+      "height": 750,
+      "decorative": true,
+      "alt": "",
+      "origin": "original-generated",
+      "rightsNote": "Original fictional adult model generated specifically for this toolkit; selected and approved by the owner in PR #40.",
+      "usage": "Photographic layer beneath accessible 13-zone SVG. SVG carries accessible zone descriptions and hit targets."
+    }
+  ]
+}
