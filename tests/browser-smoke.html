@@ -37,6 +37,23 @@
         check(child.body.classList.contains('sidebar-open'),'Mobile drawer opens');
         for(const id of ['panel-combat','panel-sensitivity','panel-hit-zone','panel-range','panel-ttk','panel-recoil2','panel-attach','panel-backpack'])open(id);
         check(!child.body.classList.contains('sidebar-open'),'Navigation closes drawer');
+        // Combat imagery pilot: correct art only for M416 and a truthful no-art fallback.
+        open('panel-combat');
+        const pilot = get('combat-pilot-image');
+        check(pilot.getAttribute('src')==='assets/weapon-m416-field.svg','Combat art must be local');
+        eq(pilot.getAttribute('width'),'960','M416 image reserves its width');
+        eq(pilot.getAttribute('height'),'320','M416 image reserves its height');
+        get('combat-pilot-open').click();
+        eq(text('modalTitle'),'M416','Pilot opens M416 weapon details');
+        check(!!child.querySelector('#modalBody .visual-modal-media img'),'M416 detail shows only the M416 artwork');
+        child.querySelector('#modalBody [data-action="close-modal"]').click();
+        const akmRow = child.querySelector('#wTable tr.rowclick[data-n="AKM"]');
+        check(!!akmRow,'AKM exists for no-artwork fallback verification');
+        akmRow.click();
+        eq(text('modalTitle'),'AKM','AKM details still work');
+        check(!!child.querySelector('#modalBody .visual-modal-unavailable'),'Missing artwork is clearly indicated');
+        check(!child.querySelector('#modalBody .visual-modal-media img'),'Wrong weapon artwork is never reused');
+        child.querySelector('#modalBody [data-action="close-modal"]').click();
 
         // All thirteen labels render without tapping; helmet and vest work independently.
         open('panel-hit-zone');
@@ -236,8 +253,25 @@
         get('bp_clear').click();
         eq(text('bp_used'),'0.0','Backpack Clear button');
 
-        document.body.dataset.smokeStatus='pass';
-        output.textContent='PASS: seven tools, navigation, sensitivity, range/TTK/recoil, magazines, and backpack';
+        // Decode the asset through real Chromium so an SVG typo/404 cannot pass
+        // solely through static-manifest checks.
+        const mediaProbe = new child.defaultView.Image();
+        mediaProbe.onload=()=>{
+          try {
+            eq(mediaProbe.naturalWidth,960,'Illustration decoded at intended width');
+            eq(mediaProbe.naturalHeight,320,'Illustration decoded at intended height');
+            document.body.dataset.smokeStatus='pass';
+            output.textContent='PASS: eight tools, navigation, combat M416 art/fallback, real SVG decoding, and calculator regressions';
+          }catch(error){
+            document.body.dataset.smokeStatus='fail';
+            output.textContent='FAIL: '+(error && error.stack || error);
+          }
+        };
+        mediaProbe.onerror=()=>{
+          document.body.dataset.smokeStatus='fail';
+          output.textContent='FAIL: M416 illustration HTTP/decode failure';
+        };
+        mediaProbe.src=new URL('assets/weapon-m416-field.svg',child.location.href).href;
       }catch(e){
         document.body.dataset.smokeStatus='fail';
         output.textContent='FAIL: '+(e && e.stack || e);
