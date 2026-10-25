@@ -16,8 +16,8 @@
 #panel-hit-zone #hz_status { border-left:3px solid #f6ba51;padding:10px 12px;background:rgba(236,172,64,.06); }
 #panel-hit-zone #hz_body { display:block;width:100%;max-width:530px;height:auto;margin:8px auto 0;aspect-ratio:500/760;touch-action:pan-y; }
 #panel-hit-zone #hz_body .hz-chip-frame { fill:#101f2a;stroke:#345b6c;stroke-width:1; }
-#panel-hit-zone #hz_body .hz-chip-name { font-family:ui-monospace,Consolas,monospace;font-size:12px;font-weight:500;letter-spacing:.15px;fill:#91b6c7;stroke:none; }
-#panel-hit-zone #hz_body .hz-chip-value { font-family:ui-monospace,Consolas,monospace;font-size:19px;font-weight:700;fill:#f4f8fa;letter-spacing:.5px;stroke:none; }
+#panel-hit-zone #hz_body .hz-chip-name { font-family:ui-monospace,Consolas,monospace;font-size:14px;font-weight:600;letter-spacing:0;fill:#a9ccda;stroke:none; }
+#panel-hit-zone #hz_body .hz-chip-value { font-family:ui-monospace,Consolas,monospace;font-size:21px;font-weight:700;fill:#f4f8fa;letter-spacing:.5px;stroke:none; }
 #panel-hit-zone #hz_body .hz-leader { fill:none;stroke:#3e879b;stroke-width:1.3;stroke-dasharray:3.2 3.2;opacity:.85; }
 #panel-hit-zone #hz_body .hz-leader-dot { fill:#67c7df;opacity:.85; }
 #panel-hit-zone #hz_body .hz-zone-card { pointer-events:none; }
