@@ -55,6 +55,20 @@
         check(!child.querySelector('#modalBody .visual-modal-media img'),'Wrong weapon artwork is never reused');
         child.querySelector('#modalBody [data-action="close-modal"]').click();
 
+        // Batch visuals: optics and existing controls still change independently.
+        open('panel-sensitivity');
+        change(get('px_scope'),'8x');
+        eq(get('visual-scope-image').getAttribute('src'),'assets/optic-8x.svg','Scope art matches selected magnification');
+        eq(text('visual-scope-label'),'8x reference optic','Visible optic label is updated');
+        change(get('px_scope'),'3x');
+        open('panel-attach');
+        check(!!get('visual-attachment-grid').querySelector('img'),'Attachment art exists');
+        check(!!text('visual-at-muzzle'),'Muzzle label reflects existing selection');
+        open('panel-backpack');
+        check(text('visual-pack-label').includes('Level 3'),'Backpack art describes chosen level');
+        open('panel-range');check(!!get('visual-range').querySelector('img'),'Range art exists');
+        open('panel-ttk');check(!!get('visual-ttk').querySelector('img'),'TTK art exists');
+        open('panel-recoil2');check(!!get('visual-recoil').querySelector('img'),'Recoil parameters art exists');
         // All thirteen labels render without tapping; helmet and vest work independently.
         open('panel-hit-zone');
         eq(get('active-tool-index').getAttribute('aria-label'),'Tool 3 of 8','Hit Zone Explorer is tool 03 of 08');

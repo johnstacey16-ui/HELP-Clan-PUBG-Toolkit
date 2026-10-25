@@ -542,6 +542,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
     <div class="card">
       <div class="card-title"><span class="n">01</span> Scope Sensitivity Matcher</div>
       <p class="card-sub">Matches actual screen turn-rate (pixel speed) across scopes, since equal menu sensitivity values do <b>not</b> produce equal turn speed &mdash; each scope has its own A/B constants. Set the scope you like, and get matched values for every other scope.</p>
+      <div class="visual-inline-preview" id="visual-scope-preview"><img id="visual-scope-image" src="assets/optic-3x.svg" width="320" height="200" loading="lazy" decoding="async" alt="Representative 3x scope"><div><span class="visual-media-kicker">OPTIC · REPRESENTATIVE ART</span><strong id="visual-scope-label">3x reference optic</strong><small>Original illustration only. Conversion uses the unchanged sensitivity maths.</small></div></div>
       <div class="grid">
         <div class="field"><label for="px_scope">Reference scope</label>
           <select id="px_scope">
@@ -675,6 +676,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
   <div class="eyebrow">Combat · Effective Range</div>
   <h1>Effective Range &amp; Damage</h1>
   <p class="sub">Check damage and range at recorded distances. Shotguns also show a best-case minimum shell count, assuming every pellet hits.</p>
+<figure class="visual-reference-banner" id="visual-range"><img src="assets/range-target.svg" width="320" height="200" loading="lazy" decoding="async" alt="Range target reference"><figcaption><strong>Range target reference</strong><span>Illustrative target only; charts show recorded checkpoints.</span></figcaption></figure>
 
   <div class="card">
     <div class="section-h">Setup</div>
@@ -741,6 +743,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
   <div class="eyebrow">Combat · Time To Kill</div>
   <h1>TTK Calculator</h1>
   <p class="sub">Compare point-blank damage, hits to kill and time to kill. Missing values show No data.</p>
+<figure class="visual-reference-banner" id="visual-ttk"><img src="assets/ttk-timer.svg" width="320" height="200" loading="lazy" decoding="async" alt="Combat timing reference"><figcaption><strong>Combat timing reference</strong><span>Timer artwork only; calculated results remain authoritative.</span></figcaption></figure>
 
   <div class="card">
     <div class="section-h">Setup</div>
@@ -802,6 +805,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
   </div>
   <h1>Recoil Evidence Explorer</h1>
   <p class="sub">Explore weapon recoil parameters while full spray-pattern analysis is being built.</p>
+<figure class="visual-reference-banner" id="visual-recoil"><img src="assets/recoil-parameters.svg" width="320" height="200" loading="lazy" decoding="async" alt="Recoil parameter reference"><figcaption><strong>Recoil parameter reference</strong><span>No synthetic spray or unverified shot-by-shot curve.</span></figcaption></figure>
 
   <div class="card">
     <div class="section-h">Choose a weapon and question</div>
@@ -852,6 +856,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
     <div class="toolbar">
       <div class="field"><label for="at_weapon">Weapon</label><select id="at_weapon"></select></div>
     </div>
+    <div class="visual-gear-grid" id="visual-attachment-grid" aria-label="Attachment category illustrations"><div class="visual-gear-tile"><img src="assets/gear-muzzle.svg" width="320" height="200" loading="lazy" decoding="async" alt="Representative Muzzle attachment"><strong>Muzzle</strong><small id="visual-at-muzzle">Not selected</small></div><div class="visual-gear-tile"><img src="assets/gear-grip.svg" width="320" height="200" loading="lazy" decoding="async" alt="Representative Grip attachment"><strong>Grip</strong><small id="visual-at-grip">Not selected</small></div><div class="visual-gear-tile"><img src="assets/gear-magazine.svg" width="320" height="200" loading="lazy" decoding="async" alt="Representative Magazine attachment"><strong>Magazine</strong><small id="visual-at-mag">Not selected</small></div><div class="visual-gear-tile"><img src="assets/optic-3x.svg" width="320" height="200" loading="lazy" decoding="async" alt="Representative Optic attachment"><strong>Optic</strong><small id="visual-at-sight">Not selected</small></div></div><p class="visual-art-disclaimer">Original category illustrations, not exact PUBG attachment models. The controls below determine compatibility.</p>
     <div class="preset-btns">
       <button type="button" class="chip" id="at_presetVert">Best vertical control</button>
       <button type="button" class="chip" id="at_presetHoriz">Best horizontal</button>
@@ -890,7 +895,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
 <div class="wrap">
   <div class="eyebrow">Loadout · Backpack</div>
   <h1>Backpack Calculator</h1>
-  <p class="sub">Plan ammo, healing, boosts and throwables within your carrying capacity, including your vest.</p>
+  <p class="sub">Plan ammo, healing, boosts and throwables within your carrying capacity, including your vest.</p><div class="visual-backpack-row"><div class="visual-pack-lead"><img src="assets/gear-backpack.svg" width="320" height="200" loading="lazy" decoding="async" alt="Representative backpack"><div><strong id="visual-pack-label">Standard Backpack · Level 3</strong><small>Illustration only. The controls calculate actual capacity.</small></div></div><div class="visual-pack-items"><span><img src="assets/gear-ammo.svg" width="320" height="200" loading="lazy" decoding="async" alt="Representative Ammo artwork">Ammo</span><span><img src="assets/gear-medical.svg" width="320" height="200" loading="lazy" decoding="async" alt="Representative Healing artwork">Healing</span><span><img src="assets/gear-grenade.svg" width="320" height="200" loading="lazy" decoding="async" alt="Representative Throwables artwork">Throwables</span></div></div>
 
   <div class="card">
     <div class="toolbar">
@@ -1130,6 +1135,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
 <script src="js/sensitivity.js"></script>
 
 <script src="js/toolkit-calculators.js"></script>
+<script src="visual-controls.js"></script>
  
 <script src="sticky-weapon-header.js" defer></script>
 </body>
