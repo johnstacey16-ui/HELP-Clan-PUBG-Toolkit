@@ -173,6 +173,15 @@ function compensatorFor(w){
 // the official Extended vs Extended QuickDraw distinction.
 // Explicit values below derive from official patch notes and linked weapon
 // tables (full references in docs/research-and-patch-references.md).
+// Historical name: the rows below include both directly published and
+// cross-source reconciled capacities. Provenance is specified explicitly
+// so the latter cannot be misrepresented as direct in-game verification.
+const MAG_CAP_EVIDENCE = Object.freeze({
+  "M416": "official-15.1-weapon-example",
+  "ACE 32": "cross-source-magazine-type-reconciliation",
+  "MK14 EBR": "weapon-specific-family-tables",
+  "SVD Dragunov": "unresolved-family-and-type"
+});
 const MAG_CAP_VERIFIED = {
   "M416":     {extended:42,extquick:40}, // Official PUBG Update 15.1 magazine example.
   // ACE32's source-published 40/42 pair is mapped using PUBG's official

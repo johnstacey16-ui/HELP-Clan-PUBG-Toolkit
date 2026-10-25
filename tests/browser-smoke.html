@@ -71,6 +71,52 @@
         change(get('at_mag'),'extended');
         eq(text('at_capNew'),'No data','Dragunov unresolved magazine-family capacity');
 
+        // Exercise every weapon in the actual dropdown, including unknown
+        // magazines. No numeric output may be NaN or a fractional round.
+        const gunNames=Array.from(get('at_weapon').options).map(o=>o.value).filter(Boolean);
+        eq(gunNames.length,45,'All 45 weapons selectable in Attachments');
+        for(const gun of gunNames){
+          change(get('at_weapon'),gun);
+          const magazine=get('at_mag');
+          if(magazine.disabled){
+            eq(magazine.value,'none',gun+' has no magazine attachment slot');
+            continue;
+          }
+          const optionIds=Array.from(magazine.options).map(o=>o.value);
+          check(optionIds.includes('extended') && optionIds.includes('extquick'),
+            gun+' must offer known magazine item types');
+          let maxCap=null,quickCap=null;
+          for(const id of ['extended','extquick']){
+            change(magazine,id);
+            const raw=text('at_capNew');
+            check(raw==='No data'||/^[1-9][0-9]*$/.test(raw),
+              gun+' '+id+' must show a valid integer or No data (got '+raw+')');
+            if(raw!=='No data' && id==='extended') maxCap=Number(raw);
+            if(raw!=='No data' && id==='extquick') quickCap=Number(raw);
+          }
+          if(maxCap!==null&&quickCap!==null)
+            check(quickCap<=maxCap,gun+' Extended QuickDraw cannot exceed Extended');
+        }
+        change(get('at_weapon'),'SVD Dragunov');
+        for(const kind of ['extended','extquick','extended_ar','extquick_ar']){
+          change(get('at_mag'),kind);
+          eq(text('at_capNew'),'No data','Unresolved Dragunov '+kind+' stays unknown');
+        }
+        change(get('at_weapon'),'ACE 32');
+        change(get('at_mag'),'extended');
+        eq(text('at_capNew'),'42','ACE Extended maximum capacity');
+        change(get('at_mag'),'extquick');
+        eq(text('at_capNew'),'40','ACE Extended QuickDraw capacity');
+
+        // For each gun, any missing recoil parameter still reads No data;
+        // never manufacture a shot-by-shot curve from the key count.
+        open('panel-recoil2');
+        for(const gun of gunNames){
+          change(get('rc_weapon'),gun);
+          check(/No verified [0-9]+-shot recoil curve/.test(text('rc_chart')),
+            gun+' must not invent a recoil trace');
+        }
+
         open('panel-backpack');
         change(get('bp_type'),'jammer');
         change(get('bp_level'),'1');
