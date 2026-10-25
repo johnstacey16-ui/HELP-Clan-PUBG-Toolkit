@@ -28,7 +28,7 @@ These are **deliberately used empirical conversion formulas**, not a claim to re
 - Actual damage to a real target and pellet shotgun **TTK remain No data**; the tool continues to show base per-pellet damage separately and never plots values beyond the shotgun source's last checkpoint.
 - **Sawn-off pellet count discrepancy:** the historical toolkit used 8, and some community websites still say 8. PUBG's PC Update 4.3 patch notes explicitly increased the Sawn-off from 8 to 9 pellets, supported by other weapon databases; use 9 for the ideal-case calculation. This is a historical official change, not a fresh independent in-game verification of the October 2026 patch. Primary notes: https://store.steampowered.com/news/posts/?appids=578080&enddate=1565443536 (PUBG's update 4.3 release, September 2019). Compare https://pubg.gs/weapons/sawed-off/ and conflicting https://www.pubgsearch.com/weapons/sawed-off.
 - Non-shotgun damage is displayed only at the source's published distances; hitbox/armor results are clearly labeled as calculations from those points.
-- WinnerMeta beta drop checkpoints are only shown at recorded distances, without power-law interpolation or flat continuation.
+- WinnerMeta gravity-drop estimates are derived from telemetry flight times (½gt²), not measured point-of-impact drop or scope holdover. Show only published distance buckets, without interpolation or extension.
 - Flight time from *muzzle velocity* alone is not reliable beyond the muzzle, so effective-range flight time is **No data** rather than a fabricated constant-speed figure.
 - Even a line drawn between measured endpoints can imply false confidence. This toolkit uses individual plotted markers for measured checkpoints.
 
@@ -63,6 +63,6 @@ Run `node --test tests/*.test.cjs` after updating the toolkit. The `range-eviden
 
 - Weapon damage and published falloff checkpoints: https://pubgstatistics.com/weapons
 - The source explicitly states damage outside its recorded range is unknown.
-- WinnerMeta bullet-drop observations: https://winnermeta.win
+- WinnerMeta telemetry-derived gravity estimates: https://winnermeta.win
 
 These notes describe current decisions and are not a ban on future owner-authored formulas or modeled calculations. Preserve the source maths and update this file whenever behavior changes.

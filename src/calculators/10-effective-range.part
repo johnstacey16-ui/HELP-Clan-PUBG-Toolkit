@@ -54,13 +54,13 @@
       $("rg_drop").textContent="No data";
       $("rg_holdover").textContent="No data";
       $("rg_dropNote").textContent=data?
-        "No drop reading at "+range+"m. Available: "+data.map(p=>p[0]+"m").join(", ")+
-        ".":"No drop readings for this weapon.";
+        "No gravity-drop estimate at "+range+"m. Available: "+data.map(p=>p[0]+"m").join(", ")+
+        ".":"No gravity-drop estimates for this weapon.";
       return;
     }
     $("rg_drop").textContent=point.toFixed(1);
     $("rg_holdover").textContent=(range>0?(point/100)/range*1000:0).toFixed(2);
-    $("rg_dropNote").textContent="Recorded at "+range+"m. Angular drop is calculated from this reading.";
+    $("rg_dropNote").textContent="Estimated gravity displacement from telemetry at "+range+"m. Equivalent angle is not scope holdover.";
   }
   function updateEvidence(w,range){
     const rows=rowsFor(w);
