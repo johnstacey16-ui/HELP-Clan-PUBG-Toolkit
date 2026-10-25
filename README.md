@@ -2,14 +2,14 @@
 
 ## Hit Zone Damage Explorer — work in progress
 
-The feature's persistent plan is [HIT_ZONE_EXPLORER_ROADMAP.md](HIT_ZONE_EXPLORER_ROADMAP.md), with the technical specification at [docs/hit-zone-explorer-architecture.md](docs/hit-zone-explorer-architecture.md). The damage adapter, SVG and controller have been connected and tested on the `feature/hit-zone-explorer-visual` integration branch, including a real Chrome mobile/desktop visual review. Until merge and production verification, the published `main` version remains unchanged.
+The feature's persistent plan is [HIT_ZONE_EXPLORER_ROADMAP.md](HIT_ZONE_EXPLORER_ROADMAP.md), with the technical specification at [docs/hit-zone-explorer-architecture.md](docs/hit-zone-explorer-architecture.md). The Hit Zone Explorer's calculations, SVG, controller and browser tests are implemented and documented. See the [roadmap](HIT_ZONE_EXPLORER_ROADMAP.md) for the currently verified release/deployment status; a passing branch test is not by itself proof of production deployment.
 
 To continue in another chat: **"Continue the Hit Zone Damage Explorer in johnstacey16-ui/HELP-Clan-PUBG-Toolkit from HIT_ZONE_EXPLORER_ROADMAP.md. Work on the next unchecked task and update the roadmap when done."**
 
 
 ## Hit Zone Damage Explorer (eighth tool)
 
-This feature is implemented on the `feature/hit-zone-explorer-visual` integration branch (draft [PR #39](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/pull/39)); `main` remains the live seven-tool version until the PR is merged.
+The Hit Zone Explorer was developed in [PR #39](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/pull/39). It adds the eighth sidebar tool. Check the [roadmap](HIT_ZONE_EXPLORER_ROADMAP.md) for the latest deployment status.
 
 Use the **Hit Zone Damage Explorer** sidebar tool to select a weapon, a **recorded distance**, a helmet level and a separate vest level. A single **front-facing body map** immediately shows the numeric result in **all 13 hit zones**, with left and right limb values mirrored. Clicking a zone is optional and reveals the multiplier breakdown. Screen-reader users have labelled keyboard-focusable SVG hit areas and an equivalent 13-row table.
 
@@ -49,7 +49,7 @@ To start viewing traffic:
 3. Visit the production URL (`https://help-clan-pubg-toolkit.vercel.app`) after the new deployment is ready.
 4. Return to Vercel **Analytics** to see visitors and page views. If the dashboard still has no data, inspect the browser Network panel for `/_vercel/insights/script.js` and a tracking request; blockers and privacy settings can prevent collection.
 
-This toolkit has a single HTML page with eight client-side tool sections on the feature branch. Standard Web Analytics tracks the **site's page views**, not distinct clicks between its internal tools. Tracking internal tool usage would require separately designed events (subject to the Vercel plan's event support) or deliberate URL routing. Do not alter the Scope Sensitivity Matcher merely to create tracking events.
+This toolkit has a single HTML page with eight client-side tool sections. Standard Web Analytics tracks the **site's page views**, not distinct clicks between its internal tools. Tracking internal tool usage would require separately designed events (subject to the Vercel plan's event support) or deliberate URL routing. Do not alter the Scope Sensitivity Matcher merely to create tracking events.
 
 Further reference: https://vercel.com/docs/analytics/quickstart
 
