@@ -18,7 +18,7 @@ Default modes: **damage**, **hits-to-kill (100 HP)**, and **heatmap**. Never dis
 - [x] Starter HTML front-view SVG, scoped CSS, and unbundled JS controller created under `src/explorer/` (prototype only, **not deployed**, not yet validated visually).
 - [x] Cross-check standard hit-zone coverage and 30/40/55% armour reductions against extracted PC Update 43.2 data; documented in [source audit](docs/hit-zone-source-check-2026-10-25.md).
 - [ ] Reconcile per-weapon base-damage disagreements and weapon-specific overrides against versioned sources; do not overwrite owner-tested values without evidence.
-- [ ] **P1 — Data adapter:** add an independent helmet/vest calculation adapter to the shared calculator source, with tests for coverage, nil armour, weapon overrides, exact checkpoints and shotguns.
+- [x] **P1 — Data adapter:** independent helmet/vest calculations added to `src/calculators/00-damage-ballistics.part` and regenerated `js/toolkit-calculators.js`; `tests/hit-zone-adapter.test.cjs` covers all 13 zones, nil armour, helmet-only, vest-only, combined gear, Dragunov override, exact checkpoints, shotguns and bad levels. GitHub Actions passed on commit `7fcb1c2` ([CI run](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40178640515)).
 - [ ] **P2 — Visual asset:** finish polished, mobile-legible, keyboard-accessible front-only SVG with 13 region keys and mirrored limb shapes, equipment overlays and fixed-position result labels.
 - [ ] **P3 — Live panel:** wire the explorer into `index.html`, toolkit sidebar and navigation, CSS, and the assembled static JavaScript in source/build order. Do not publish a broken or unfinished eighth tab.
 - [ ] **P4 — Modes and detail:** implement damage / HTK / heatmap, optional region drill-down, explicit no-data and shotgun best-case labels.
@@ -39,7 +39,7 @@ Default modes: **damage**, **hits-to-kill (100 HP)**, and **heatmap**. Never dis
 ## Suggested implementation contract
 
 - Panel: `panel-hit-zone`; selectors: `hz_weapon`, `hz_distance`, `hz_helmet`, `hz_vest`, `hz_mode`.
-- View: `hz_body`, `hz_labels`, `hz_summary`, `hz_detail`, `hz_status`.
+- View: `hz_body`, `hz_labels` (optional annotation group), `hz_summary`, `hz_detail`, `hz_status`; scaffold uses `[data-hz-value]` text labels embedded in the SVG.
 - SVG region selector: `[data-hit-zone]` with values matching `DETAILED_PARTS`.
 - Calculation adapter accepts `{weapon, distance, helmetLevel, vestLevel}` and returns ordered objects `{id,label,damage,htk,hitAreaMultiplier,classMultiplier,armorMultiplier,armorSource,sourceStatus}`.
 - CSS scoped under `#panel-hit-zone` and accessible no-SVG fallback table.
@@ -57,8 +57,10 @@ Default modes: **damage**, **hits-to-kill (100 HP)**, and **heatmap**. Never dis
 
 ## Handoff / next task
 
-**Next unchecked task: P1 data adapter + tests, while tracking unresolved per-weapon source conflicts.** The initial files are `src/explorer/hit-zone-explorer.fragment.html`, `src/explorer/hit-zone-explorer.scaffold.css`, and `src/explorer/hit-zone-explorer.scaffold.part`. They must not be loaded on the live page as-is. Review `src/calculators/00-damage-ballistics.part`, `DATA_ACCURACY_POLICY.md`, and `docs/hit-zone-explorer-architecture.md`. Do not mark implementation stages complete just because starter files exist. After each coding session, check off only verified steps, note remaining issues here, and commit changes. The project is private; use the connected GitHub repository tools.
+**Next milestone: P2 — polish and verify the front-only SVG asset, accessibility and mobile value labels; weapon-source reconciliation remains an independent open data-quality item.** The already-created but UNWIRED starter files are `src/explorer/hit-zone-explorer.fragment.html`, `src/explorer/hit-zone-explorer.scaffold.css`, and `src/explorer/hit-zone-explorer.scaffold.part`. They must not be loaded on the live page as-is. The P1 adapter is already built and tested; wire the next stage to `getAllZoneDamageForWeapon(w, distance, helmetLevel, vestLevel)` and `sourcedRangeRows(w)`, consulting `docs/hit-zone-explorer-architecture.md`. Do not mark implementation stages complete just because starter files exist. After each coding session, check off only verified steps, note remaining issues here, and commit changes. The project is private; use the connected GitHub repository tools.
 
 ## Progress log
+
+- **2026-10-25 (P1 completed)** — Added the pure all-zone adapter `getAllZoneDamageForWeapon` and gear-slot helpers within the existing calculator closure, rebuilt the browser JS from all six source fragments, and added dedicated tests. The full Node test suite and existing seven-tool Chrome smoke job passed in [GitHub Actions run 40178640515](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40178640515). No new panel has been made live. Next: P2 visual asset and mobile/keyboard checks. Known weapon source differences remain open.
 
 - **2026-10-25** — Requirements fixed; inspected current source layout, damage formula, static builder, navigation and smoke tests. Created a durable roadmap, architecture specification and three unwired prototype files. Cross-checked the 13 hit areas and helmet/vest coverage against 2026-10-21 game-data extraction, with weapon-specific source conflicts left open. No claim that the live new panel is finished.
