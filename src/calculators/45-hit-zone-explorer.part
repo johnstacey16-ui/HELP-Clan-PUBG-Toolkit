@@ -89,7 +89,12 @@ function initHitZoneExplorer({ panel, weapons, getCheckpoints, getZoneResults, i
         ' pellets from every shell strike this exact zone.');
       lines.push('Actual pellet spread, accuracy, protection durability and movement are not modelled. Real fights can require more shells.');
     }
-    if (zone.damage == null) lines.push('Actual whole-shell damage and actual shots-to-kill: No data.');
+    if(zone.damage == null){
+      const w=currentWeapon();
+      lines.push(w && isPelletShotgun(w)
+        ? 'Actual whole-shell damage and actual shots-to-kill: No data.'
+        : 'Damage and hits to kill at the selected distance: No data.');
+    }
     detail.textContent = lines.join('\n');
   }
   function render() {
