@@ -47,3 +47,7 @@ These `.part` files intentionally share the original lexical closure, so **they 
 Alongside `node --test tests/*.test.cjs`, run `node tests/browser-smoke.cjs` to launch an installed Chrome/Chromium browser against a temporary localhost server. No npm dependencies or external game data are required. This exercises the **actual committed HTML and JS** (including mobile navigation, scope matching, range, TTK, recoil evidence, magazine switching and Jammer backpack totals). GitHub Actions runs this on every pull request and push. Use `CHROME_BIN=/path/to/chromium` if Chrome is not on your PATH. The smoke page stays under `tests/` and is not linked from the public seven-tool app.
 
 Chrome checks test the **static site**, not the status of a production Vercel deployment.
+
+## Weapon data evidence checks
+
+`node --test tests/magazine-recoil-evidence-invariants.test.cjs` guards weapon-specific magazine rules and missing recoil values. The full `tests/browser-smoke.cjs` run now switches through all 45 weapons and tests available magazine choices and the absence of fabricated recoil traces. `MAG_CAP_EVIDENCE` distinguishes official examples from cross-source reconciliations in the development code. Research and evidence classifications remain in `DATA_ACCURACY_POLICY.md`, not a new public research tab.
