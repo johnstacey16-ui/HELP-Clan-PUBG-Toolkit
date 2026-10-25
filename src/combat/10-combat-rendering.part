@@ -1,0 +1,333 @@
+/* ---------------- SINGLE-PAGE CONTAINER ---------------- */
+const panelsEl = document.getElementById("panels");
+ 
+/* ---------------- 1. COMBAT DATABASE (weapons + helmet + vest crossover, merged) ---------------- */
+(function(){
+  const p = panelsEl;
+  p.innerHTML = `
+    <div class="card" id="combat-database">
+      <div class="panel-coord">A1 · Combat Database</div>
+      <div class="toolbar">
+        <input type="text" id="wSearch" placeholder="Search weapon name…">
+        <select id="wSort">
+          <option value="dmg-desc">Sort: Damage ↓</option>
+          <option value="dps-desc">Sort: DPS ↓</option>
+          <option value="rpm-desc">Sort: RPM ↓</option>
+          <option value="vel-desc">Sort: Velocity ↓</option>
+          <option value="headDmg-desc">Sort: Head dmg ↓</option>
+          <option value="chestDmg-desc">Sort: Chest dmg ↓</option>
+          <option value="vRecoil-desc">Sort: Max V.Recoil ↓</option>
+          <option value="minH-desc">Sort: Min H% ↓</option>
+          <option value="dmg-asc">Sort: Damage ↑</option>
+          <option value="name-asc">Sort: Name A-Z</option>
+        </select>
+      </div>
+      <div class="toolbar" id="wClassFilters"></div>
+      <div class="sort-hint">Click any column header to sort by it (click again to reverse) — hover a header for what it means.</div>
+      <div style="overflow-x:auto;overflow-y:visible"><table id="wTable"></table></div>
+      <div class="missing-note">— means no available value.</div>
+      
+      <p class="missing-note" style="color:var(--dim)">Armor thresholds apply at point blank.</p>
+      <div class="section-h">Column legends</div>
+      <div class="helptext" style="margin-bottom:6px">Armor threshold colors (Head/Chest → armor columns):</div>
+      <div class="color-legend">
+        <span class="clegend-item"><i class="dot" style="background:var(--keep)"></i>Always keep — the math never favors a fresh lower tier</span>
+        <span class="clegend-item"><i class="dot" style="background:var(--amber)"></i>15%+ — swap with a comfortable durability margin</span>
+        <span class="clegend-item"><i class="dot" style="background:var(--orange)"></i>8–14% — swap opportunistically, not urgently</span>
+        <span class="clegend-item"><i class="dot" style="background:var(--swap)"></i>Under 8% — crossover comes right before it breaks, little margin</span>
+      </div>
+      <div class="helptext" style="margin-bottom:6px">Recoil &amp; handling columns:</div>
+      <dl class="legend">
+        <div><dt>Max V.Recoil</dt><dd>Maximum vertical recoil from the gun configuration; it is not a measured per-shot screen offset.</dd></div>
+        <div><dt>Crouch Recoil</dt><dd>How much recoil drops while crouching. A lower multiplier means a bigger % reduction.</dd></div>
+        <div><dt>Horizontal Bias</dt><dd>Signed horizontal tendency in the gun configuration. This does not determine an exact spray or counter-pull path.</dd></div>
+        <div><dt>Vertical Speed</dt><dd>Vertical recoil speed parameter; not a measurement of pixels or degrees moved per shot.</dd></div>
+        <div><dt>Horizontal Speed</dt><dd>Horizontal recoil speed parameter; not measured left/right travel for each bullet.</dd></div>
+        <div><dt>Minimum Horizontal %</dt><dd>Minimum horizontal recoil scalar (for example, 0.40 = 40%); alone it cannot predict sustained spray consistency.</dd></div>
+      </dl>
+    </div>
+    <div class="card" style="margin-top:16px" id="realityCard"></div>
+    <div class="card" style="margin-top:16px" id="compare-weapons">
+      <div class="panel-coord">Compare weapons</div>
+      <p class="helptext" style="margin-bottom:12px">Pick up to three weapons to see every stat side-by-side. The stronger value in each row is highlighted green.</p>
+      <div class="compare-picker">
+        <select id="cmpA"></select>
+        <select id="cmpB"></select>
+        <select id="cmpC"><option value="">— none —</option></select>
+      </div>
+      <div style="overflow-x:auto"><table id="cmpTable"></table></div>
+    </div>
+    <div class="card" style="margin-top:16px" id="how-thresholds-work">
+      <div class="section-h" style="margin-top:0">How the crossover thresholds work</div>
+      <p class="helptext">A crossover point is the durability value at which damaged higher-tier armor stops being worth more than a fresh piece of the tier below. Higher tiers absorb more damage per hit but wear down with use; a fresh lower tier is undamaged, so at some durability the two protect equally well, and below it the fresh lower tier wins.</p>
+    </div>`;
+  const ROWS = WEAPONS.map(w=>({...w, helm:HELM[norm(w.name)], vest:VEST[norm(w.name)]}));
+ 
+  const classes = ["All",...new Set(WEAPONS.map(w=>w.cls))];
+  let activeClass = "All";
+  let armorFilter = "all";
+  let sortKey = "dmg", sortDir = "desc";
+  const cf = document.getElementById("wClassFilters");
+  classes.forEach(c=>{
+    const chip = document.createElement("div");
+    chip.className = "chip" + (c==="All"?" on":"");
+    chip.textContent = c;
+    chip.tabIndex = 0;
+    chip.onclick = ()=>{ activeClass=c; [...cf.children].forEach(x=>x.classList.remove("on")); chip.classList.add("on"); render(); };
+    chip.onkeydown = e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); chip.click(); } };
+    cf.appendChild(chip);
+  });
+  const COLS = [["name","Weapon"],["cls","Class"],["dmg","Dmg"],["rpm","RPM"],["vel","Vel m/s"],["dps","DPS"],
+    ["mag","Mag"],["vRecoil","Max V.Recoil"],["crouchMod","Crouch Recoil"],["hBias","Horizontal Bias"],["vertSpeed","Vertical Speed"],
+    ["horizSpeed","Horizontal Speed"],["minH","Minimum Horizontal %"],["headDmg","Head"],["helmL3","Helm L3→L2"],["helmL2","Helm L2→L1"],
+    ["chestDmg","Chest"],["vestL3","Vest L3→L2"],["vestL2","Vest L2→L1"]];
+  const GROUPS = [["",1],["Core Stats",6],["Recoil & Handling",6],["Vs. Head / Helmet",3],["Vs. Chest / Vest",3]];
+  const SORTABLE = new Set(["name","dmg","rpm","vel","dps","mag","vRecoil","vertSpeed","horizSpeed","minH","headDmg","chestDmg"]);
+  const TOOLTIPS = {
+    cls:"Weapon category (AR, SMG, SR, DMR, SG, MG, Pistol)",
+    dmg:"Base hitbox damage per hit, before armor reduction",
+    rpm:"Rounds per minute at maximum fire rate",
+    vel:"Bullet velocity in meters per second",
+    dps:"Theoretical sustained damage per second at max RPM",
+    mag:"Magazine capacity",
+    vRecoil:"Extracted maximum vertical recoil parameter. NOT measured screen movement per shot or a predicted recoil pattern.",
+    crouchMod:"How much recoil drops while crouching. A lower multiplier means a bigger % reduction.",
+    hBias:"Signed horizontal tendency parameter from gun configuration; a direction bias, not a verified full spray path.",
+    vertSpeed:"Vertical recoil speed parameter in the gun configuration; not degrees or pixels moved per shot.",
+    horizSpeed:"Horizontal recoil speed parameter in the gun configuration; not a measured horizontal shot offset.",
+    minH:"Minimum horizontal recoil scalar expressed as a percentage (0.40 = 40%). It does not predict the spray path.",
+    headDmg:"Headshot damage against bare skin, no helmet",
+    helmL3:"Durability at which a damaged Level 3 helmet stops being better than a fresh Level 2",
+    helmL2:"Durability at which a damaged Level 2 helmet stops being better than a fresh Level 1",
+    chestDmg:"Chest damage against bare skin, no vest",
+    vestL3:"Durability at which a damaged Level 3 vest stops being better than a fresh Level 2",
+    vestL2:"Durability at which a damaged Level 2 vest stops being better than a fresh Level 1",
+  };
+  function getVal(row,key){
+    if(key==="headDmg") return row.helm ? row.helm.dmg : null;
+    if(key==="chestDmg") return row.vest ? row.vest.dmg : null;
+    return row[key];
+  }
+  function setSort(key){
+    if(sortKey===key){ sortDir = sortDir==="desc"?"asc":"desc"; } else { sortKey=key; sortDir = key==="name"?"asc":"desc"; }
+    document.getElementById("wSort").value = `${sortKey}-${sortDir}`;
+    render();
+  }
+  function armorCell(entry, field){
+    if(!entry) return `<td>—</td>`;
+    const t = parseThreshold(entry[field]);
+    let cls;
+    if(t.always) cls = 'thresh-always';
+    else if(t.pct>=15) cls = 'thresh-yellow';
+    else if(t.pct>=8) cls = 'thresh-orange';
+    else cls = 'thresh-red';
+    return `<td class="${cls}">${entry[field]}</td>`;
+  }
+  function render(){
+    const q = document.getElementById("wSearch").value.toLowerCase();
+    let list = ROWS.filter(w=> w.name.toLowerCase().includes(q) && (activeClass==="All"||w.cls===activeClass)
+      && (armorFilter==="all" || (armorFilter==="vest"&&w.vest) || (armorFilter==="helm"&&w.helm)));
+    list.sort((a,b)=>{
+      if(sortKey==="name") return a.name.localeCompare(b.name)*(sortDir==="asc"?1:-1);
+      const av=getVal(a,sortKey), bv=getVal(b,sortKey);
+      const an = (av===null||av===undefined) ? -Infinity : av, bn = (bv===null||bv===undefined) ? -Infinity : bv;
+      return sortDir==="desc" ? bn-an : an-bn;
+    });
+    const t = document.getElementById("wTable");
+    const groupHtml = GROUPS.map(([label,span])=> label ? `<th colspan="${span}">${label}</th>` : `<th colspan="${span}"></th>`).join("");
+    const headHtml = COLS.map(([key,label])=>{
+      const arrow = sortKey===key ? `<span class="arrow">${sortDir==="desc"?"▼":"▲"}</span>` : "";
+      const tip = TOOLTIPS[key] ? ` title="${TOOLTIPS[key]}"` : "";
+      return SORTABLE.has(key) ? `<th data-key="${key}" tabindex="0"${tip}>${label}${arrow}</th>` : `<th${tip}>${label}</th>`;
+    }).join("");
+    t.innerHTML = `<tr class="grouprow">${groupHtml}</tr><tr class="colheader">${headHtml}</tr>` +
+      list.map(w=>`<tr class="rowclick" tabindex="0" data-n="${w.name}">
+        <td>${w.name} ${w.crate?'<span class="tag crate">CRATE</span>':''}</td>
+        <td>${w.cls?`<span class="tag">${w.cls}</span>`:'—'}</td>
+        <td>${w.dmg??'—'}</td>
+        <td>${w.rpm??'—'}</td>
+        <td>${w.vel??'—'}</td>
+        <td>${w.dps??'—'}</td>
+        <td>${w.mag??'—'}</td>
+        <td>${w.vRecoil??'—'}</td>
+        <td>${w.crouchMod!=null?`${w.crouchMod} (${w.crouchPct}%)`:'—'}</td>
+        <td>${w.hBiasDir?`${w.hBiasDir} ${w.hBiasVal}`:'—'}</td>
+        <td>${w.vertSpeed??'—'}</td>
+        <td>${w.horizSpeed??'—'}</td>
+        <td>${w.minH!=null?w.minH+'%':'—'}</td>
+        <td>${w.helm?w.helm.dmg:'—'}</td>
+        ${armorCell(w.helm,'l3')}${armorCell(w.helm,'l2')}
+        <td>${w.vest?w.vest.dmg:'—'}</td>
+        ${armorCell(w.vest,'l3')}${armorCell(w.vest,'l2')}
+      </tr>`).join("");
+    t.querySelectorAll("tr.rowclick").forEach(tr=>{
+      tr.onclick = ()=>openWeaponDetail(tr.dataset.n);
+      tr.onkeydown = e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); openWeaponDetail(tr.dataset.n); } };
+    });
+    t.querySelectorAll("th[data-key]").forEach(th=>{
+      th.onclick = ()=> setSort(th.dataset.key);
+      th.onkeydown = e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); setSort(th.dataset.key); } };
+    });
+  }
+  document.getElementById("wSearch").oninput = render;
+  document.getElementById("wSort").onchange = ()=>{
+    [sortKey,sortDir] = document.getElementById("wSort").value.split("-");
+    render();
+  };
+  // Hero stat tiles are informational only now — the table below always shows every weapon;
+  // clicking them to filter wasn't adding anything a search/class-chip couldn't already do.
+  document.querySelector("#statAll b").textContent = WEAPONS.length; // dynamic count, no longer hard-coded
+  render();
+})();
+ 
+function getStrengthsWeaknesses(w){
+  const rank = (arr,key)=> [...arr].sort((a,b)=>b[key]-a[key]).findIndex(x=>x.name===w.name)+1;
+  const dmgRank = rank(WEAPONS,"dmg");
+  const sameClass = WEAPONS.filter(x=>x.cls===w.cls);
+  const classRank = (key,asc)=>{
+    const sorted = [...sameClass].sort((a,b)=> asc ? a[key]-b[key] : b[key]-a[key]);
+    return sorted.findIndex(x=>x.name===w.name)+1;
+  };
+  const n = sameClass.length;
+  const strengths = [], weaknesses = [];
+  const cDmg = classRank("dmg"), cDps = classRank("dps"), cVel = classRank("vel"), cMag = classRank("mag");
+  if(n>1){
+    if(cDmg===1) strengths.push(`highest base damage of the ${n} ${w.cls} weapons`);
+    else if(cDmg<=Math.ceil(n/3)) strengths.push(`top-third damage among ${w.cls} weapons`);
+    if(cDps===1) strengths.push(`highest DPS of the ${n} ${w.cls} weapons`);
+    if(cVel===1) strengths.push(`fastest bullet velocity in its class`);
+    if(cMag===1) strengths.push(`largest magazine in its class (${w.mag} rounds)`);
+    if(cDmg===n) weaknesses.push(`lowest base damage of the ${n} ${w.cls} weapons`);
+    if(cMag===n && w.cls!=="SR") weaknesses.push(`smallest magazine in its class (${w.mag} rounds)`);
+    if(cVel===n) weaknesses.push(`slowest bullet velocity in its class`);
+  }
+  if(dmgRank<=5) strengths.push(`top-5 base damage across all ${WEAPONS.length} weapons`);
+  if(w.vel<450) weaknesses.push("low absolute bullet velocity — noticeable lead required at range");
+  if(!strengths.length) strengths.push(`mid-pack on damage, DPS, and magazine size within its ${n>1?w.cls+" class":"category"}`);
+  return {strengths, weaknesses};
+}
+function openWeaponDetail(name){
+  const w = WBYNAME[name]; if(!w) return;
+  const rank = (arr,key)=> [...arr].sort((a,b)=>b[key]-a[key]).findIndex(x=>x.name===w.name)+1;
+  const dmgRank = rank(WEAPONS,"dmg"), dpsRank = rank(WEAPONS,"dps");
+  const {strengths, weaknesses} = getStrengthsWeaknesses(w);
+  const helm = HELM[norm(w.name)], vest = VEST[norm(w.name)];
+  document.getElementById("modalBody").innerHTML = `
+    <button class="close" data-action="close-modal" aria-label="Close weapon detail">✕</button>
+    <div class="eyebrow">${w.cls}${w.crate?' · CRATE':''}</div>
+    <h3 id="modalTitle">${w.name}</h3>
+    <div class="kv">
+      <div><span>Damage</span> ${w.dmg}</div>
+      <div><span>RPM</span> ${w.rpm}</div>
+      <div><span>Velocity</span> ${w.vel} m/s</div>
+      <div><span>DPS</span> ${w.dps}</div>
+      <div><span>Magazine</span> ${w.mag}</div>
+      <div><span>Damage rank</span> #${dmgRank} of ${WEAPONS.length}</div>
+      <div><span>DPS rank</span> #${dpsRank} of ${WEAPONS.length}</div>
+    </div>
+    <div class="note">
+      <b>Provided-data notes:</b><br>
+      ${strengths.length?"Strengths: "+strengths.join("; ")+".":"No standout strengths from supplied stats."}<br>
+      ${weaknesses.length?"Weaknesses: "+weaknesses.join("; ")+".":"No notable weaknesses from supplied stats."}
+      ${helm?`<br><br>Headshot vs armor: ${helm.dmg} dmg. L3→L2 ${helm.l3} · L2→L1 ${helm.l2}.`:''}
+      ${vest?`<br>Chest vs armor: ${vest.dmg} dmg. L3→L2 ${vest.l3} · L2→L1 ${vest.l2}.`:''}
+    </div>`;
+  document.getElementById("overlay").classList.add("show");
+}
+function closeModal(){ document.getElementById("overlay").classList.remove("show"); }
+document.getElementById("overlay").onclick = e=>{ if(e.target.id==="overlay") closeModal(); };
+document.getElementById("overlay").addEventListener("click", e=>{ if(e.target.closest('[data-action="close-modal"]')) closeModal(); });
+document.addEventListener("keydown", e=>{ if(e.key==="Escape") closeModal(); });
+ 
+/* ---------------- 4. REALITY CHECK + COMPARE (folded into the Combat Database panel) ---------------- */
+(function(){
+  function counts(raw){
+    let alwaysL3=0; raw.forEach(r=>{ if(parseThreshold(r[2]).always) alwaysL3++; });
+    return {alwaysL3, total:raw.length};
+  }
+  const vc = counts(VEST_RAW), hc = counts(HELM_RAW);
+  document.getElementById("realityCard").innerHTML =
+    `<div class="section-h" style="margin-top:0">Reality check</div>
+     <p class="helptext" style="margin-bottom:0">Helmets barely ever cross over — ${hc.alwaysL3} of ${hc.total} weapons keep Level 3 head protection valuable at any durability above zero, versus only ${vc.alwaysL3} of ${vc.total} for vests. Chest damage is where the interesting swap decisions live; headshots almost always favor keeping the higher tier.</p>`;
+ 
+  const names = WEAPONS.map(w=>w.name);
+  const $ = id=>document.getElementById(id);
+  const optHtml = sel => names.map(n=>`<option ${n===sel?'selected':''}>${n}</option>`).join("");
+  $("cmpA").innerHTML = optHtml("AKM");
+  $("cmpB").innerHTML = optHtml("Beryl M762");
+  $("cmpC").innerHTML += names.map(n=>`<option>${n}</option>`).join("");
+  function render(){
+    const sel = [$("cmpA").value, $("cmpB").value, $("cmpC").value].filter(Boolean);
+    const ws = sel.map(n=>WBYNAME[n]);
+    const ROW_GROUPS = [
+      ["Core Stats", [
+        ["Class", w=>w.cls, null],
+        ["Damage", w=>w.dmg, "high"],
+        ["RPM", w=>w.rpm, "high"],
+        ["Velocity", w=>w.vel, "high", v=>v+" m/s"],
+        ["DPS", w=>w.dps, "high"],
+        ["Magazine", w=>w.mag, "high"],
+      ]],
+      ["Recoil & Handling", [
+        ["Max V.Recoil", w=>w.vRecoil, "low"],
+        ["Crouch Recoil", w=> w.crouchMod!=null?`${w.crouchMod} (${w.crouchPct}%)`:null, null],
+        ["Horizontal Bias", w=> w.hBiasDir?`${w.hBiasDir} ${w.hBiasVal}`:null, null],
+        ["Vertical Speed", w=>w.vertSpeed, "low"],
+        ["Horizontal Speed", w=>w.horizSpeed, "low"],
+        ["Minimum Horizontal %", w=> w.minH!=null?w.minH+'%':null, null],
+      ]],
+      ["Vs. Head / Helmet", [
+        ["Head dmg", w=> HELM[norm(w.name)]?HELM[norm(w.name)].dmg:null, "high"],
+        ["Helm L3→L2", w=> HELM[norm(w.name)]?HELM[norm(w.name)].l3:"—", null],
+        ["Helm L2→L1", w=> HELM[norm(w.name)]?HELM[norm(w.name)].l2:"—", null],
+      ]],
+      ["Vs. Chest / Vest", [
+        ["Chest dmg", w=> VEST[norm(w.name)]?VEST[norm(w.name)].dmg:null, "high"],
+        ["Vest L3→L2", w=> VEST[norm(w.name)]?VEST[norm(w.name)].l3:"—", null],
+        ["Vest L2→L1", w=> VEST[norm(w.name)]?VEST[norm(w.name)].l2:"—", null],
+      ]],
+      ["Verdict", [
+        ["Notable", w=>{
+          const {strengths, weaknesses} = getStrengthsWeaknesses(w);
+          const s = strengths.length ? "+ "+strengths.join("; ") : "";
+          const wk = weaknesses.length ? "− "+weaknesses.join("; ") : "";
+          return [s,wk].filter(Boolean).join("<br>");
+        }, null],
+      ]],
+    ];
+    const renderRow = ([label,fn,better,fmt])=>{
+      const wrap = label==="Notable";
+      const style = wrap ? ' style="white-space:normal;max-width:240px;font-size:11.5px;line-height:1.6"' : '';
+      const vals = ws.map(fn);
+      let winnerIdx = -1;
+      if(better && ws.length>1){
+        const nums = vals.map(v=> typeof v==='number' ? v : null);
+        if(nums.every(v=>v!==null)){
+          const best = better==="high" ? Math.max(...nums) : Math.min(...nums);
+          if(new Set(nums).size>1) winnerIdx = nums.indexOf(best);
+        }
+      }
+      return `<tr><td>${label}</td>${ws.map((w,i)=>{
+        const raw = vals[i];
+        const display = raw===null||raw===undefined ? "—" : (fmt ? fmt(raw) : raw);
+        const win = i===winnerIdx ? ' class="thresh-always"' : '';
+        return `<td${win}${style}>${display}</td>`;
+      }).join("")}</tr>`;
+    };
+    $("cmpTable").innerHTML =
+      `<tr><th></th>${ws.map(w=>`<th>${w.name}</th>`).join("")}</tr>` +
+      ROW_GROUPS.map(([label,groupRows])=>
+        `<tr class="grouplabel"><td colspan="${ws.length+1}">${label}</td></tr>` + groupRows.map(renderRow).join("")
+      ).join("");
+  }
+  ["cmpA","cmpB","cmpC"].forEach(id=>$(id).onchange = render);
+  render();
+})();
+
+// Expose only what other scripts on this page actually need — everything else above
+// (RECOIL_RAW, ALIAS, VEST_RAW, HELM_RAW, HELM, VEST, norm, buildIndex, parseThreshold, panelsEl,
+// getStrengthsWeaknesses, openWeaponDetail, closeModal) stays private to this script.
+PT.WEAPONS = WEAPONS;
+PT.WBYNAME = WBYNAME;
+})();
+ 
