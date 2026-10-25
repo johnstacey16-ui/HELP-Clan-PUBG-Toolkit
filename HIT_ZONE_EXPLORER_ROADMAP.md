@@ -16,7 +16,8 @@ Default modes: **damage**, **hits-to-kill (100 HP)**, and **heatmap**. Never dis
 - [x] Existing source inspected (2026-10-25): the toolkit already has 13 detailed hit-zone keys, class-based modifiers, weapon-specific head overrides, documented measured distance tables and basic 30/40/55% equipment reductions.
 - [x] Technical implementation blueprint recorded in [docs/hit-zone-explorer-architecture.md](docs/hit-zone-explorer-architecture.md).
 - [x] Starter HTML front-view SVG, scoped CSS, and unbundled JS controller created under `src/explorer/` (prototype only, **not deployed**, not yet validated visually).
-- [ ] Complete audited armour coverage and multiplier provenance against current PUBG data; keep uncertainties explicit, especially neck, clavicle and pelvis edge cases.
+- [x] Cross-check standard hit-zone coverage and 30/40/55% armour reductions against extracted PC Update 43.2 data; documented in [source audit](docs/hit-zone-source-check-2026-10-25.md).
+- [ ] Reconcile per-weapon base-damage disagreements and weapon-specific overrides against versioned sources; do not overwrite owner-tested values without evidence.
 - [ ] **P1 — Data adapter:** add an independent helmet/vest calculation adapter to the shared calculator source, with tests for coverage, nil armour, weapon overrides, exact checkpoints and shotguns.
 - [ ] **P2 — Visual asset:** finish polished, mobile-legible, keyboard-accessible front-only SVG with 13 region keys and mirrored limb shapes, equipment overlays and fixed-position result labels.
 - [ ] **P3 — Live panel:** wire the explorer into `index.html`, toolkit sidebar and navigation, CSS, and the assembled static JavaScript in source/build order. Do not publish a broken or unfinished eighth tab.
