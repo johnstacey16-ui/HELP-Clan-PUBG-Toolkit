@@ -1,0 +1,89 @@
+<!-- Hit Zone Explorer: UNWIRED layout scaffold.
+     Do NOT insert into the live index.html until P1 adapter and regression tests pass.
+     The controls and values intentionally have no fake starting numbers. -->
+<div id="panel-hit-zone" class="hub-main" aria-hidden="true">
+  <div class="wrap">
+    <div class="eyebrow">Combat · Hit Zone Damage</div>
+    <h1>Hit Zone Damage Explorer</h1>
+    <p class="sub">Choose a weapon, helmet, vest and measured distance. Damage for every body zone is visible at once. Select a zone only for more detail.</p>
+    <div class="card">
+      <div class="toolbar" aria-label="Damage explorer controls">
+        <div class="field"><label for="hz_weapon">Weapon</label><select id="hz_weapon"></select></div>
+        <div class="field"><label for="hz_distance">Recorded distance</label><select id="hz_distance"></select></div>
+        <div class="field"><label for="hz_helmet">Helmet</label><select id="hz_helmet">
+          <option value="0">None</option><option value="1">Level 1</option>
+          <option value="2">Level 2</option><option value="3">Level 3</option>
+        </select></div>
+        <div class="field"><label for="hz_vest">Vest</label><select id="hz_vest">
+          <option value="0">None</option><option value="1">Level 1</option>
+          <option value="2">Level 2</option><option value="3">Level 3</option>
+        </select></div>
+        <div class="field"><label for="hz_mode">Display</label><select id="hz_mode">
+          <option value="damage">Damage</option><option value="htk">Hits to kill</option>
+          <option value="heatmap">Heatmap + damage</option>
+        </select></div>
+      </div>
+      <p id="hz_status" class="note" role="status" aria-live="polite">The viewer has not been connected to the damage engine yet.</p>
+    </div>
+    <div class="hz-workspace">
+      <section class="card hz-figure-card" aria-label="Front-view hit zone map">
+        <div class="section-h">Front view — all zones</div>
+        <svg id="hz_body" viewBox="0 0 500 760" role="img" aria-labelledby="hz_bodyTitle hz_bodyDesc" xmlns="http://www.w3.org/2000/svg">
+          <title id="hz_bodyTitle">Front view of PUBG damage hit zones</title>
+          <desc id="hz_bodyDesc">Thirteen anatomically separated hit zones, with mirrored limbs. Numeric callouts show every zone simultaneously. Keyboard or touch selection provides details.</desc>
+          <defs><linearGradient id="hz-skin" x1="0" y1="0" x2=".4" y2="1"><stop stop-color="#273d48"/><stop offset="1" stop-color="#172834"/></linearGradient></defs>
+          <g class="hz-figure-outline" fill="url(#hz-skin)" stroke="#79c3d7" stroke-width="2" stroke-linejoin="round">
+            <g data-hit-zone="head" role="button" tabindex="0" aria-label="Head"><ellipse cx="250" cy="75" rx="34" ry="43"/></g>
+            <g data-hit-zone="neck" role="button" tabindex="0" aria-label="Neck"><path d="M233 117h34l-4 26h-26z"/></g>
+            <g data-hit-zone="clavicle" role="button" tabindex="0" aria-label="Clavicle"><path d="M237 143h26l43 17-11 22-45-9-45 9-11-22z"/></g>
+            <g data-hit-zone="chest" role="button" tabindex="0" aria-label="Chest"><path d="M207 180q43-14 86 0l-8 74h-70z"/></g>
+            <g data-hit-zone="upperStomach" role="button" tabindex="0" aria-label="Upper stomach"><path d="M215 254h70l-5 42h-60z"/></g>
+            <g data-hit-zone="lowerStomach" role="button" tabindex="0" aria-label="Lower stomach"><path d="M220 296h60l7 42h-74z"/></g>
+            <g data-hit-zone="pelvis" role="button" tabindex="0" aria-label="Pelvis"><path d="M213 338h74l-11 47-26 20-26-20z"/></g>
+            <g data-hit-zone="upperArm" role="button" tabindex="0" aria-label="Upper arm"><path d="M202 162q-17-14-30 5l-23 106 30 7 27-98z"/><path d="M298 162q17-14 30 5l23 106-30 7-27-98z"/></g>
+            <g data-hit-zone="forearm" role="button" tabindex="0" aria-label="Forearm"><path d="M149 273l30 7-17 98-31-4z"/><path d="M351 273l-30 7 17 98 31-4z"/></g>
+            <g data-hit-zone="hand" role="button" tabindex="0" aria-label="Hand"><path d="M131 374l31 4-11 53q-6 19-17 1z"/><path d="M369 374l-31 4 11 53q6 19 17 1z"/></g>
+            <g data-hit-zone="thigh" role="button" tabindex="0" aria-label="Thigh"><path d="M224 385l26 20-5 113-24 22-27-8 2-110z"/><path d="M276 385l-26 20 5 113 24 22 27-8-2-110z"/></g>
+            <g data-hit-zone="calf" role="button" tabindex="0" aria-label="Calf"><path d="M194 532l27 8 24-22-12 152-30 2z"/><path d="M306 532l-27 8-24-22 12 152 30 2z"/></g>
+            <g data-hit-zone="foot" role="button" tabindex="0" aria-label="Foot"><path d="M203 672h30l6 39q-1 15-33 15h-36q-7-13 7-24z"/><path d="M297 672h-30l-6 39q1 15 33 15h36q7-13-7-24z"/></g>
+          </g>
+          <!-- Data protection overlays, not the graphical boundaries of real-world equipment -->
+          <g class="hz-coverage" data-armour="helmet" aria-hidden="true" pointer-events="none">
+            <ellipse cx="250" cy="75" rx="34" ry="43"/><path d="M233 117h34l-4 26h-26z"/>
+          </g>
+          <g class="hz-coverage" data-armour="vest" aria-hidden="true" pointer-events="none">
+            <path d="M237 143h26l43 17-11 22-45-9-45 9-11-22z"/>
+            <path d="M207 180q43-14 86 0l-8 74h-70zM215 254h70l-5 42h-60zM220 296h60l7 42h-74zM213 338h74l-11 47-26 20-26-20z"/>
+          </g>
+          <!-- Always-visible value callouts; use the matching data-hz-value key -->
+          <g class="hz-callouts" font-family="monospace" font-size="12" fill="#d7f3f8">
+            <text x="305" y="58">Head <tspan data-hz-value="head">—</tspan></text>
+            <text x="28" y="132">Neck <tspan data-hz-value="neck">—</tspan></text>
+            <text x="317" y="148">Clavicle <tspan data-hz-value="clavicle">—</tspan></text>
+            <text x="26" y="196">Chest <tspan data-hz-value="chest">—</tspan></text>
+            <text x="317" y="243">Upper stomach <tspan data-hz-value="upperStomach">—</tspan></text>
+            <text x="16" y="292">Lower stomach <tspan data-hz-value="lowerStomach">—</tspan></text>
+            <text x="322" y="339">Pelvis <tspan data-hz-value="pelvis">—</tspan></text>
+            <text x="15" y="236">Upper arm <tspan data-hz-value="upperArm">—</tspan></text>
+            <text x="341" y="314">Forearm <tspan data-hz-value="forearm">—</tspan></text>
+            <text x="24" y="426">Hand <tspan data-hz-value="hand">—</tspan></text>
+            <text x="317" y="465">Thigh <tspan data-hz-value="thigh">—</tspan></text>
+            <text x="20" y="594">Calf <tspan data-hz-value="calf">—</tspan></text>
+            <text x="316" y="706">Foot <tspan data-hz-value="foot">—</tspan></text>
+          </g>
+        </svg>
+        <p class="hz-caption">Both left and right limbs use the same hit-zone values. Coverage tints indicate the current *game-model* protection zones.</p>
+      </section>
+      <aside class="card hz-detail-card" aria-label="Damage calculations">
+        <div class="section-h">Selected zone — optional detail</div>
+        <div id="hz_summary" aria-live="polite">Choose a loadout to see every hit-zone value.</div>
+        <div id="hz_detail">Select any body region to inspect the calculation.</div>
+      </aside>
+    </div>
+    <section class="card hz-results" aria-label="Text equivalent of all hit-zone values">
+      <div class="section-h">All zone results</div>
+      <div class="hz-table-scroll"><table><thead><tr><th>Hit zone</th><th>Value</th><th>Protection</th></tr></thead>
+      <tbody id="hz_rows"></tbody></table></div>
+    </section>
+  </div>
+</div>
