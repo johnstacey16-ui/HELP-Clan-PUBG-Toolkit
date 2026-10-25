@@ -35,7 +35,7 @@ const server=http.createServer((req,res)=>{
  const binary=chromePath();
  await new Promise((resolve,reject)=>server.listen(0,'127.0.0.1',err=>err?reject(err):resolve()));
  try{
-  for(const width of [390,1280]){
+  for(const width of [320,360,390,768,1280]){
    const dir=mkdtempSync(path.join(tmpdir(),'hz-viewer-'));
    try{
     const url='http://127.0.0.1:'+server.address().port+'/tests/hit-zone-preview.html';
