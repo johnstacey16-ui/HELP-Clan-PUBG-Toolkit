@@ -18,3 +18,5 @@ jobs:
         run: node tests/browser-smoke.cjs
       - name: Render-hit-zone SVG at phone and desktop widths
         run: node tests/hit-zone-preview-smoke.cjs
+      - name: Temporary integrated mobile screenshot audit
+        run: node tests/hit-zone-visual-capture.cjs
