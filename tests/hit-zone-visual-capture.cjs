@@ -6,7 +6,7 @@ const fs=require('node:fs');
 const path=require('node:path');
 const http=require('node:http');
 const os=require('node:os');
-const {spawnSync}=require('node:child_process');
+const {spawn,spawnSync}=require('node:child_process');
 const root=path.resolve(__dirname,'..');
 const mime={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8'};
 const server=http.createServer((req,res)=>{
@@ -33,8 +33,15 @@ const server=http.createServer((req,res)=>{
     '--no-first-run','--no-default-browser-check','--hide-scrollbars',
     '--window-size=390,1600','--force-device-scale-factor=1',
     '--virtual-time-budget=4500','--screenshot='+png,'--user-data-dir='+path.join(dir,'profile'),url];
-  const result=spawnSync(binary,args,{encoding:'utf8',timeout:28000});
-  if(result.status!==0||!fs.existsSync(png))throw Error('Chrome screenshot failed: '+result.status+' '+(result.stderr||'').slice(-700));
+  const child=spawn(binary,args,{stdio:['ignore','pipe','pipe']});
+  let errText='';
+  child.stderr.on('data',chunk=>errText+=String(chunk));
+  // Drain stdout to avoid a blocked child pipe.
+  child.stdout.resume();
+  const kill=setTimeout(()=>child.kill('SIGKILL'),28000);
+  const exit=await new Promise(resolve=>child.on('close',resolve));
+  clearTimeout(kill);
+  if(exit!==0||!fs.existsSync(png))throw Error('Chrome screenshot failed: '+exit+' '+errText.slice(-700));
   const image=fs.readFileSync(png);
   const sig=image.subarray(0,8).toString('hex');
   if(sig!=='89504e470d0a1a0a')throw Error('Invalid PNG screenshot');
