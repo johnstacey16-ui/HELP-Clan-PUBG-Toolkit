@@ -15,6 +15,7 @@ Default modes: **damage**, **hits-to-kill (100 HP)**, and **heatmap**. Never dis
 - [x] Product decisions agreed: single front view, simultaneous zone labels, independent helmet/vest, optional tap-for-detail.
 - [x] Existing source inspected (2026-10-25): the toolkit already has 13 detailed hit-zone keys, class-based modifiers, weapon-specific head overrides, documented measured distance tables and basic 30/40/55% equipment reductions.
 - [x] Technical implementation blueprint recorded in [docs/hit-zone-explorer-architecture.md](docs/hit-zone-explorer-architecture.md).
+- [x] Starter HTML front-view SVG, scoped CSS, and unbundled JS controller created under `src/explorer/` (prototype only, **not deployed**, not yet validated visually).
 - [ ] Complete audited armour coverage and multiplier provenance against current PUBG data; keep uncertainties explicit, especially neck, clavicle and pelvis edge cases.
 - [ ] **P1 — Data adapter:** add an independent helmet/vest calculation adapter to the shared calculator source, with tests for coverage, nil armour, weapon overrides, exact checkpoints and shotguns.
 - [ ] **P2 — Visual asset:** finish polished, mobile-legible, keyboard-accessible front-only SVG with 13 region keys and mirrored limb shapes, equipment overlays and fixed-position result labels.
@@ -55,8 +56,8 @@ Default modes: **damage**, **hits-to-kill (100 HP)**, and **heatmap**. Never dis
 
 ## Handoff / next task
 
-**Next unchecked task: coverage/source validation, then P1 data adapter.** Review `src/calculators/00-damage-ballistics.part`, `DATA_ACCURACY_POLICY.md`, and `docs/hit-zone-explorer-architecture.md`. Do not mark implementation stages complete just because starter files exist. After each coding session, check off only verified steps, note remaining issues here, and commit changes. The project is private; use the connected GitHub repository tools.
+**Next unchecked task: coverage/source validation, then P1 data adapter.** The initial files are `src/explorer/hit-zone-explorer.fragment.html`, `src/explorer/hit-zone-explorer.scaffold.css`, and `src/explorer/hit-zone-explorer.scaffold.part`. They must not be loaded on the live page as-is. Review `src/calculators/00-damage-ballistics.part`, `DATA_ACCURACY_POLICY.md`, and `docs/hit-zone-explorer-architecture.md`. Do not mark implementation stages complete just because starter files exist. After each coding session, check off only verified steps, note remaining issues here, and commit changes. The project is private; use the connected GitHub repository tools.
 
 ## Progress log
 
-- **2026-10-25** — Requirements fixed; inspected current source layout, damage formula, static builder, navigation and smoke tests. Created a durable roadmap + architecture/starter plan. No claim that the live new panel is finished.
+- **2026-10-25** — Requirements fixed; inspected current source layout, damage formula, static builder, navigation and smoke tests. Created a durable roadmap, architecture specification and three unwired prototype files. No claim that the live new panel is finished.
