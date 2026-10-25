@@ -1,6 +1,6 @@
 # Hit Zone Damage Explorer — Roadmap
 
-> **Persistent project handoff** for the HELP Clan PUBG Toolkit. Last updated: **2026-10-25 18:20 UTC, PR #39 merged into main, production Vercel deployment reported successful**.
+> **Persistent project handoff** for the HELP Clan PUBG Toolkit. Last updated: **2026-10-25, Model 2 preview approved for merge on PR #40; production deployment pending merge**.
 > For a new ChatGPT conversation, send the repository URL and say:
 > **"Continue the Hit Zone Damage Explorer from HIT_ZONE_EXPLORER_ROADMAP.md. Check the repository first, do the next unchecked task, run the applicable tests, and update this roadmap."**
 
@@ -20,7 +20,7 @@ Default modes: **damage**, **hits-to-kill (100 HP)**, and **heatmap**. Never dis
 - [x] Optimized Model 2 WebP is 40,064 bytes, 500×750 with alpha; its Git object was independently compared to the prepared asset (SHA `47975f9`). Added a browser image-loading/dimension assertion and extended WebP alpha header invariant on this review branch; enhanced image-decoding and transparency checks passed in [GitHub Actions run 40229170430](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40229170430). Vercel also reported this review commit READY.
 - [ ] Verify *deployed* HTTP image response and full-page appearance on real mobile/desktop browser; direct HTTP/DNS retrieval is blocked from this test environment, and on-device/manual inspection is outstanding.
 - [ ] Inspect readability, alignment and SVG keyboard focus with physical device/screen reader; automated geometry tests are not a substitute.
-- [ ] Owner to inspect and approve **Vercel preview**; DO NOT merge to main without approval.
+- [x] **Owner approved Model 2 preview on 2026-10-25** (stated they are happy with the finished preview). Authorized PR #40 to leave draft and merge after green checks; preserve the review history and production deployment check.
 
 ## Current state
 
