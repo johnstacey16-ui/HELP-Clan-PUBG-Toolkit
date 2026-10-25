@@ -55,11 +55,11 @@ test('helmet and vest are separate visual overlays and gear selectors',()=>{
   assert.match(styles,/#panel-hit-zone #hz_body\.has-vest \[data-armour=vest\]/);
   assert.doesNotMatch(markup,/data-armour="(?:limb|arm|leg)"/);
 });
-test('existing app remains seven-tool production until complete visual+browser validation',()=>{
+test('the front-view remains a single mobile-accessible eighth live panel',()=>{
   const html=read('index.html');
   const nav=read('js/app-navigation.js');
-  assert.doesNotMatch(html,/id="panel-hit-zone"/);
-  assert.doesNotMatch(nav,/"panel-hit-zone"/);
+  assert.match(html,/id="panel-hit-zone"/);
+  assert.match(nav,/"panel-hit-zone"/);
   assert.match(markup,/keyboard|touch/i);
   assert.match(styles,/@media\(max-width:780px\)/);
 });
