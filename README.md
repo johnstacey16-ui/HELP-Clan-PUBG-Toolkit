@@ -2,10 +2,35 @@
 
 ## Hit Zone Damage Explorer — work in progress
 
-The feature's persistent plan is [HIT_ZONE_EXPLORER_ROADMAP.md](HIT_ZONE_EXPLORER_ROADMAP.md), with the technical specification at [docs/hit-zone-explorer-architecture.md](docs/hit-zone-explorer-architecture.md). The damage adapter, SVG and controller have been connected on the `feature/hit-zone-explorer-visual` integration branch. This is an **unreleased draft** until the PR's regression and visual checks pass; the published `main` site remains unchanged. Roadmap work and source conflicts remain tracked separately.
+The feature's persistent plan is [HIT_ZONE_EXPLORER_ROADMAP.md](HIT_ZONE_EXPLORER_ROADMAP.md), with the technical specification at [docs/hit-zone-explorer-architecture.md](docs/hit-zone-explorer-architecture.md). The damage adapter, SVG and controller have been connected and tested on the `feature/hit-zone-explorer-visual` integration branch, including a real Chrome mobile/desktop visual review. Until merge and production verification, the published `main` version remains unchanged.
 
 To continue in another chat: **"Continue the Hit Zone Damage Explorer in johnstacey16-ui/HELP-Clan-PUBG-Toolkit from HIT_ZONE_EXPLORER_ROADMAP.md. Work on the next unchecked task and update the roadmap when done."**
 
+
+## Hit Zone Damage Explorer (eighth tool)
+
+This feature is implemented on the `feature/hit-zone-explorer-visual` integration branch (draft [PR #39](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/pull/39)); `main` remains the live seven-tool version until the PR is merged.
+
+Use the **Hit Zone Damage Explorer** sidebar tool to select a weapon, a **recorded distance**, a helmet level and a separate vest level. A single **front-facing body map** immediately shows the numeric result in **all 13 hit zones**, with left and right limb values mirrored. Clicking a zone is optional and reveals the multiplier breakdown. Screen-reader users have labelled keyboard-focusable SVG hit areas and an equivalent 13-row table.
+
+Available display modes:
+- **Damage** — calculated damage to a single exact zone at the selected published checkpoint, or **No data** where unavailable.
+- **Hits to kill** — theoretical repeated same-zone 100-HP hit count derived from that damage.
+- **Heatmap + damage** — the same source-backed damage values with relative colouring.
+- **Shotgun: theoretical minimum shells (all pellets hit)** — only selectable for sourced pellet shotguns; explicitly assumes *every pellet of every shell* hits one exact body region. This is **not** actual whole-shell damage, average shells to kill, or time to kill. For actual shotgun damage and HTK, the ordinary modes continue showing **No data**. Slug shotguns use the normal recorded damage model.
+
+Model scope: the standard intact **helmet** covers the head and neck; the standard intact **vest** covers clavicle, chest, two stomach sections and pelvis; **neither protects limbs**. No interpolation or extrapolation between measured distances, armour-durability simulation, pellet spread simulation, or gameplay-dynamic movement assumptions. Per-weapon source disagreements are documented in [hit-zone-source-check](docs/hit-zone-source-check-2026-10-25.md), not silently overwritten.
+
+Code: `src/calculators/00-damage-ballistics.part` contains the pure all-zone adapter, `src/calculators/45-hit-zone-explorer.part` handles the SVG interface, and `src/explorer/hit-zone-explorer.fragment.html` plus `.scaffold.css` define the viewer. `scripts/build-static.cjs` assembles the generated `js/toolkit-calculators.js` from the ordered parts.
+
+Tests:
+```sh
+node scripts/build-static.cjs --check
+node --test tests/*.test.cjs
+node tests/browser-smoke.cjs
+node tests/hit-zone-preview-smoke.cjs
+```
+The optional `node tests/hit-zone-visual-capture.cjs` developer helper captures a real Chrome mobile screenshot for design review; add `--desktop` for a 1440px screenshot. It is **not** part of default CI because it intentionally prints screenshot data for temporary inspection.
 
 ## Vercel Web Analytics
 
