@@ -71,8 +71,13 @@
         change(get('hz_weapon'),'O12');
         eq(get('hz_mode').value,'damage','Switching to slug automatically restores real-damage mode');
         check(idealOption.disabled,'Theoretical shell mode is disabled for slug weapons');
-        eq(get('hz_distance').value,'2','O12 uses first recorded 2m rather than fabricated 0m');
-        check(hzValue('chest')!=='No data','O12 slug is supported at 2m');
+        eq(get('hz_distance').value,'25','O12 preserves a shared published 25m checkpoint');
+        check(hzValue('chest')!=='No data','O12 slug is supported at its recorded 25m');
+        change(get('hz_weapon'),'DBS');
+        change(get('hz_distance'),'0');
+        change(get('hz_weapon'),'O12');
+        eq(get('hz_distance').value,'2','O12 starts at 2m when previous 0m is unsupported');
+        check(hzValue('chest')!=='No data','O12 slug is supported at its first recorded 2m');
         change(get('hz_weapon'),'M416');
         change(get('hz_distance'),'100');
         check(hzValue('chest')!=='No data','Published 100m damage available');
