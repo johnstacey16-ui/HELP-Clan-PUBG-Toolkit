@@ -24,10 +24,22 @@ function initHitZoneExplorer({ panel, weapons, getCheckpoints, getZoneResults, i
 
   const decimal = n => Number(n).toFixed(1);
   const showValue = (zone, mode) => {
+    // An idealized shotgun shell count is NOT measured damage or real HTK.
+    if(mode === 'ideal-shells'){
+      return zone && Number.isInteger(zone.idealMinShells) && zone.idealMinShells > 0
+        ? String(zone.idealMinShells) + (zone.idealMinShells===1 ? ' shell*' : ' shells*')
+        : 'No data';
+    }
     if (!zone || zone.damage == null || !Number.isFinite(zone.damage)) return 'No data';
     if (mode === 'htk') return zone.htk == null ? 'No data' : String(zone.htk) + ' hits';
     return decimal(zone.damage);
   };
+  function updateModeAvailability(){
+    const shotgun=currentWeapon() && isPelletShotgun(currentWeapon());
+    const ideal=modeSelect.querySelector('option[value="ideal-shells"]');
+    if(ideal) ideal.disabled=!shotgun;
+    if(!shotgun && modeSelect.value==='ideal-shells') modeSelect.value='damage';
+  }
   function currentWeapon() {
     return weapons.find(w => w.name === weaponSelect.value) || null;
   }
@@ -70,7 +82,14 @@ function initHitZoneExplorer({ panel, weapons, getCheckpoints, getZoneResults, i
       'Armour multiplier: ' + (zone.armorMultiplier == null ? 'No data' : zone.armorMultiplier),
       'Protective equipment: ' + (zone.armorSource || 'None'),
     ];
-    if (zone.damage == null) lines.push('No whole-hit damage data for this weapon and recorded distance.');
+    if(mode === 'ideal-shells' && zone.idealMinShells != null){
+      const w=currentWeapon();
+      const pellets=SHOTGUN_PELLETS[w.name].count;
+      lines.push('THEORETICAL LOWER BOUND ONLY — assumes all ' + pellets +
+        ' pellets from every shell strike this exact zone.');
+      lines.push('Actual pellet spread, accuracy, protection durability and movement are not modelled. Real fights can require more shells.');
+    }
+    if (zone.damage == null) lines.push('Actual whole-shell damage and actual shots-to-kill: No data.');
     detail.textContent = lines.join('\n');
   }
   function render() {
@@ -84,8 +103,10 @@ function initHitZoneExplorer({ panel, weapons, getCheckpoints, getZoneResults, i
       status.textContent = 'No recorded damage checkpoints for the chosen weapon.';
     } else {
       results = getZoneResults(w, distance, helmet, vest) || [];
-      status.textContent = (isPelletShotgun && isPelletShotgun(w))
-        ? 'No data for actual total shell damage or actual hits-to-kill: published values are per pellet.'
+      status.textContent = isPelletShotgun(w)
+        ? (mode === 'ideal-shells'
+          ? '* THEORETICAL MINIMUM SHELLS ONLY (best case: every pellet hits this exact zone). Not actual damage, expected shells or real TTK. Assumes intact gear.'
+          : 'No data for actual total shell damage or actual hits-to-kill: published values are per pellet. Select the separate theoretical minimum-shell mode for an all-pellets-hit lower bound.')
         : 'Calculated from a recorded source checkpoint at ' + distance + ' m. Assumes intact selected equipment; no interpolation or simulated armour durability.';
     }
     body.classList.toggle('has-helmet', helmet > 0);
@@ -138,7 +159,7 @@ function initHitZoneExplorer({ panel, weapons, getCheckpoints, getZoneResults, i
   weaponSelect.replaceChildren();
   for (const w of weapons) weaponSelect.add(new Option(w.name, w.name));
   if (weapons.some(w => w.name === 'M416')) weaponSelect.value = 'M416';
-  weaponSelect.addEventListener('change', () => { reloadCheckpoints(); render(); });
+  weaponSelect.addEventListener('change', () => { updateModeAvailability(); reloadCheckpoints(); render(); });
   for (const control of [distanceSelect, helmetSelect, vestSelect, modeSelect]) {
     control.addEventListener('change', render);
   }
@@ -151,6 +172,7 @@ function initHitZoneExplorer({ panel, weapons, getCheckpoints, getZoneResults, i
       }
     });
   }
+  updateModeAvailability();
   reloadCheckpoints();
   render();
 }
