@@ -64,7 +64,7 @@
         change(get('hz_weapon'),'M416');
         change(get('hz_distance'),'100');
         check(hzValue('chest')!=='No data','Published 100m damage available');
-        get('hz_body').querySelector('[data-hit-zone="calf"]').click();
+        get('hz_body').querySelector('[data-hit-zone="calf"]').dispatchEvent(new MouseEvent('click',{bubbles:true}));
         check(text('hz_detail').includes('Calf'),'Optional region detail responds to clicks');
         // Return to unchanged core calculator regression path.
         open('panel-range');
