@@ -29,12 +29,44 @@
         check(text('px_speed')!=='–' && text('px_speed')!=='','Scope result initially calculates');
         eq(child.querySelectorAll('#px_table tbody tr').length,7,'Seven scope conversions');
 
-        // Mobile drawer and all seven navigable tools.
+        // Mobile drawer and all eight navigable tools.
         get('mobile-nav-toggle').click();
         check(child.body.classList.contains('sidebar-open'),'Mobile drawer opens');
-        for(const id of ['panel-combat','panel-sensitivity','panel-range','panel-ttk','panel-recoil2','panel-attach','panel-backpack'])open(id);
+        for(const id of ['panel-combat','panel-sensitivity','panel-range','panel-ttk','panel-recoil2','panel-attach','panel-backpack','panel-hit-zone'])open(id);
         check(!child.body.classList.contains('sidebar-open'),'Navigation closes drawer');
 
+        // All thirteen labels render without tapping; helmet and vest work independently.
+        open('panel-hit-zone');
+        eq(get('hz_weapon').value,'M416','Hit-zone weapon initializes to M416');
+        eq(child.querySelectorAll('#hz_body [data-hit-zone]').length,13,'All body-zone shapes exist');
+        eq(child.querySelectorAll('#hz_body [data-hz-value]').length,13,'All hit-zone values shown simultaneously');
+        const hzValue=id=>child.querySelector('[data-hz-value="'+id+'"]').textContent.trim();
+        eq(hzValue('chest'),'44.0','M416 chest unarmoured at 0m');
+        eq(hzValue('head'),'94.0','M416 head unarmoured at 0m');
+        const bareThigh=hzValue('thigh');
+        change(get('hz_helmet'),'3');
+        eq(hzValue('head'),'42.3','Level 3 helmet reduces head');
+        eq(hzValue('chest'),'44.0','Helmet does not change chest');
+        change(get('hz_vest'),'2');
+        eq(hzValue('chest'),'26.4','Level 2 vest reduces chest');
+        eq(hzValue('head'),'42.3','Vest does not change head');
+        eq(hzValue('thigh'),bareThigh,'Vest cannot protect thigh');
+        change(get('hz_mode'),'htk');
+        eq(hzValue('chest'),'4x','HTK display uses four hits');
+        change(get('hz_mode'),'heatmap');
+        check(child.querySelector('[data-hit-zone="chest"]').style.fill.startsWith('hsl('),'Heatmap colours computed zone');
+        change(get('hz_weapon'),'DBS');
+        eq(hzValue('chest'),'No data','Pellet shotgun must not imply whole-shell damage');
+        check(text('hz_status').includes('per pellet'),'Shotgun missing-data warning remains');
+        change(get('hz_weapon'),'O12');
+        eq(get('hz_distance').value,'2','O12 uses first recorded 2m rather than fabricated 0m');
+        check(hzValue('chest')!=='No data','O12 slug is supported at 2m');
+        change(get('hz_weapon'),'M416');
+        change(get('hz_distance'),'100');
+        check(hzValue('chest')!=='No data','Published 100m damage available');
+        get('hz_body').querySelector('[data-hit-zone="calf"]').click();
+        check(text('hz_detail').includes('Calf'),'Optional region detail responds to clicks');
+        // Return to unchanged core calculator regression path.
         open('panel-range');
         change(get('rg_weapon'),'S686');
         check(text('rg_htk')!=='No data','Shotgun minimum shells available');
