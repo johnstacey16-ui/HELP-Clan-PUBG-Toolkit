@@ -10,13 +10,15 @@
 <div id="result" data-qa="pending">Preparing isolated figure...</div>
 <div id="mount"></div>
 <script>
-(async()=>{
+(()=>{
 const result=document.getElementById('result');
 function assert(cond,reason){if(!cond)throw Error(reason);}
 try{
-const response=await fetch('../src/explorer/hit-zone-explorer.fragment.html',{cache:'no-store'});
-assert(response.ok,'Source fragment fetch failed');
-document.getElementById('mount').innerHTML=await response.text();
+const request=new XMLHttpRequest();
+request.open('GET','../src/explorer/hit-zone-explorer.fragment.html',false);
+request.send();
+assert(request.status===200,'Source fragment fetch failed: HTTP '+request.status);
+document.getElementById('mount').innerHTML=request.responseText;
 const panel=document.getElementById('panel-hit-zone');
 const figure=document.getElementById('hz_body');
 assert(panel&&figure,'SVG front view missing');
@@ -25,7 +27,8 @@ const labels=[...figure.querySelectorAll('[data-hz-value]')];
 assert(markers.length===13 && labels.length===13,'Thirteen regions/labels must be shown');
 for(const [i,item] of labels.entries())item.textContent=i%3===0?'No data':i%3===1?'123.4':'9 hits';
 figure.classList.add('has-helmet','has-vest');
-await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+// Force style calculation now; do not depend on requestAnimationFrame in headless Chrome.
+void figure.getBoundingClientRect();
 const svgBox=figure.getBoundingClientRect();
 assert(svgBox.width>275,'On-phone figure below minimum workable width: '+svgBox.width);
 assert(svgBox.right<=innerWidth+1 && svgBox.left>=-1,'SVG extends beyond phone screen');
