@@ -8,19 +8,19 @@ const vm=require('node:vm');
 const html=require('./toolkit-test-source.cjs')();
 const css=fs.readFileSync(path.join(__dirname,'../app-shell.css'),'utf8');
 const nav=html.slice(html.indexOf('<nav id="app-toolnav"'),html.indexOf('</nav>',html.indexOf('<nav id="app-toolnav"'))+6);
-const expected=['panel-sensitivity','panel-combat','panel-range','panel-ttk','panel-recoil2','panel-attach','panel-backpack'];
+const expected=['panel-sensitivity','panel-combat','panel-range','panel-ttk','panel-recoil2','panel-attach','panel-backpack','panel-hit-zone'];
 
-test('all seven tool links live in one continuous sidebar group',()=>{
+test('all eight tool links live in one continuous sidebar group',()=>{
   assert.equal((nav.match(/class="nav-tool-group"/g)||[]).length,1,'Exactly one navigation group');
   assert.match(nav,/<div class="nav-group-label"><span>01<\/span>ALL TOOLS<\/div>/);
   assert.doesNotMatch(nav,/GEAR &amp; LOADOUT|<span>02<\/span>/);
   assert.deepEqual([...nav.matchAll(/data-open-panel="([^"]+)"/g)].map(x=>x[1]),expected);
-  assert.equal((nav.match(/<\/button>/g)||[]).length,7);
+  assert.equal((nav.match(/<\/button>/g)||[]).length,8);
 });
 
 test('every tool has a well-formed button with the exact same icon and label structure',()=>{
   const buttons=[...nav.matchAll(/<button\b([^>]*)>([\s\S]*?)<\/button>/g)];
-  assert.equal(buttons.length,7);
+  assert.equal(buttons.length,8);
   for(let i=0;i<buttons.length;i++){
     const [,attrs,inside]=buttons[i];
     assert.doesNotMatch(attrs,/<|>/,'Button '+i+' has malformed opening markup');
