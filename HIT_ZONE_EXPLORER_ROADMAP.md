@@ -1,6 +1,6 @@
 # Hit Zone Damage Explorer — Roadmap
 
-> **Persistent project handoff** for the HELP Clan PUBG Toolkit. Last updated: **2026-10-25, Model 2 preview approved for merge on PR #40; production deployment pending merge**.
+> **Persistent project handoff** for the HELP Clan PUBG Toolkit. Last updated: **2026-10-25, Model 2 release: PR #40 merged into main, production Vercel READY, post-merge tests passed**.
 > For a new ChatGPT conversation, send the repository URL and say:
 > **"Continue the Hit Zone Damage Explorer from HIT_ZONE_EXPLORER_ROADMAP.md. Check the repository first, do the next unchecked task, run the applicable tests, and update this roadmap."**
 
@@ -21,6 +21,14 @@ Default modes: **damage**, **hits-to-kill (100 HP)**, and **heatmap**. Never dis
 - [ ] Verify *deployed* HTTP image response and full-page appearance on real mobile/desktop browser; direct HTTP/DNS retrieval is blocked from this test environment, and on-device/manual inspection is outstanding.
 - [ ] Inspect readability, alignment and SVG keyboard focus with physical device/screen reader; automated geometry tests are not a substitute.
 - [x] **Owner approved Model 2 preview on 2026-10-25** (stated they are happy with the finished preview). Authorized PR #40 to leave draft and merge after green checks; preserve the review history and production deployment check.
+
+### Model 2 release outcome — 2026-10-25
+
+- [x] Owner approved the Model 2 preview; [PR #40](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/pull/40) was marked ready for review and **squash-merged** into `main`.
+- [x] Final reviewed merge commit: `26b2c031dbc443f753c4ecc04816f402fe07c92d`; existing seven companion tools, 13 hit zones, persistent labels, armour controls and damage mathematics retained.
+- [x] [Post-merge Actions run 40229526333](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40229526333) passed.
+- [x] Vercel production build for merge commit `26b2c03` reported **READY** and assigned `help-clan-pubg-toolkit.vercel.app`.
+- [ ] Manual physical-device/screen-reader and direct public production HTTP appearance checks remain recommended; deployment readiness and automated Chromium checks are not a substitute for hands-on visual inspection.
 
 ## Current state
 
