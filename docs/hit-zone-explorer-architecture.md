@@ -40,7 +40,7 @@ Use exactly `DETAILED_PARTS`:
 | calf | Calf | limb | none |
 | foot | Foot | limb | none |
 
-**Check/source-validate this mapping before declaring in-game verification.** Existing local model currently uses exactly these zones. There is no front/back multiplier. Both arms and legs are mirrored with one computed damage value per logical region. Visually distinguish zone outlines from armour overlays.
+Baseline coverage and bone multipliers cross-checked against [October 2026 source audit](hit-zone-source-check-2026-10-25.md). This is community-extracted PC game data, not live match damage. Weapon values and special overrides still have unresolved cross-source differences. Existing local model currently uses exactly these zones. There is no front/back multiplier. Both arms and legs are mirrored with one computed damage value per logical region. Visually distinguish zone outlines from armour overlays.
 
 ## Computation contract
 
@@ -68,6 +68,8 @@ This is a **design sketch**, not yet production code. Add explicit validation fo
 **Damage:** `measuredBaseDamage × BODY_PARTS[id].hitArea × classBucketMult × armorMultFor(part, selectedLevel)`. **HTK:** `ceil(100 / damage)` for finite positive damage, 0 HP damage unsupported. **Heatmap:** visual encoding of computed actual numeric values, not a new calculation. Avoid colour-only semantics.
 
 **Shotguns:** `baseDamageAtRange` intentionally returns `null` for pellet shotguns because it has only *per-pellet* source data. The existing `shotgunMinShellsAt` is specifically **best case all pellets connect**, so never relabel it actual damage or TTK. O12 slug still uses exact checkpoints, with first published distance 2 m.
+
+**Durability:** first-release standard equipment selectors assume intact gear. Destroyed vests retain special partial protection and are outside this first implementation. Avoid implying the level selector simulates damaged gear.
 
 **Data metadata:** display the checkpoint and known source note from `DATA_ACCURACY_POLICY.md`. Build quality gates into tests for nulls / latest weapon changes. No source = “No data”, not zero.
 
