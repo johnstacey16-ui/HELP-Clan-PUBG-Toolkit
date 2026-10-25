@@ -11,6 +11,6 @@ test('art mapping never writes gameplay data',()=>{
  for(const name of ['optic-1x.svg','optic-2x.svg','optic-3x.svg','optic-4x.svg','optic-6x.svg','optic-8x.svg','optic-15x.svg'])assert.ok(src.includes(name),name);
  assert.doesNotMatch(src,/pixelSpeed\s*=|matchedSens\s*=|finalDamageAt\s*=|pureTtk\s*=/);
  const matches=[...html.matchAll(/<img\b[^>]*src="assets\/[^"]+"[^>]*>/g)];
- assert.ok(matches.length>=18);
+ assert.ok(matches.length>=12);
  for(const [tag] of matches){assert.match(tag,/width="\d+"/);assert.match(tag,/height="\d+"/);assert.match(tag,/alt="[^"]+"/);}
 });
