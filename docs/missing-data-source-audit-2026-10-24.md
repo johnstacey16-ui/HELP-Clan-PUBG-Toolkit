@@ -1,3 +1,5 @@
+> **25 October 2026 gear/patch update:** Backpack now includes selectable vest's +50 capacity and 8 additional source-backed ammo/throwable entries, and attachment UI discloses unscored side effects. The older figures below remain a historical audit, not the current code state. See DATA_ACCURACY_POLICY.md.
+
 > **25 October 2026 follow-up:** Nine additional WinnerMeta telemetry-bin estimate tables have been verified and added; current `DROP_TABLES` coverage is **30/45**, with **15 missing**. See [gravity-drop-evidence-2026-10-25.md](gravity-drop-evidence-2026-10-25.md). The historical counts below describe the earlier 24 October snapshot and have not been silently reinterpreted.
 
 > **25 October 2026 correction:** WinnerMeta's published drop figures are estimates from flight time (½gt²), not observed impact displacement or validated sight holdover. The historical research notes below must not be used to fill missing observed trajectories.

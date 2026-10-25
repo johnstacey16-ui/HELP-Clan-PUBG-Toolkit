@@ -66,3 +66,13 @@ Run `node --test tests/*.test.cjs` after updating the toolkit. The `range-eviden
 - WinnerMeta telemetry-derived gravity estimates: https://winnermeta.win
 
 These notes describe current decisions and are not a ban on future owner-authored formulas or modeled calculations. Preserve the source maths and update this file whenever behavior changes.
+
+## 25 October 2026: vest capacity, item weights, and attachment effects
+
+Update 28.2 folded the Utility Belt +50 into character base carrying capacity (70), but **not** the equipped vest's +50. Standard and Jammer packs each provide +150/+200/+250: totals are **270/320/370 wearing a vest** and **220/270/320 without one**. The calculator defaults to vest equipped but lets players choose. Sources: https://pubg.com/en/news/7083 , https://pubg.gs/gear/ .
+
+PC 43.2 game-file sources: https://pubg.gs/ammo/ , https://pubg.gs/consumables/ , https://pubg.gs/throwables/ ; Steam build 26072644, extracted 2026-10-21. Existing common weights match. Newly covered: .50 Caliber 1/round; BZ Grenade 23, Decoy 12, Sticky Bomb 20, Spike Trap 18, Mini Smoke Grenade 10, Emergency Cover Flare 27, Emergency Support Flare 35. Exclude event/test duplicates (e.g. a 1-unit Frag or Molotov). Some items are limited to particular maps/modes.
+
+PUBG item effects from https://pubg.gs/attachments/ : 43.2 item tooltip reductions largely match existing vertical/horizontal/recovery data. Attachment Optimizer score **excludes** ADS, hip-fire accuracy, initial-shot control, camera shake and sway. Display those secondary effects in the selected-attachment note rather than fabricating conversions into simulated spray. Keep the creator's sensitivity formulas and current preset scoring unchanged.
+
+Official Update 43.2: https://pubg.com/en/news/11136 (PC Oct 14, Console Oct 22). New console controller presets do not publish an alternative sensitivity-conversion equation. Official Update 43.1: https://pubg.com/en/news/11057 . LMG posture changes are already subsequent to the earlier tuning and are captured by the source's 43.2 game-file recoil parameters; **do not apply the 43.1 nerfs a second time**. 43.1 console hitbox improvements explicitly did not rebalance weapon damage, recoil or rate of fire.

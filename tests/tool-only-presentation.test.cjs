@@ -44,7 +44,7 @@ test('source and patch research is archived in docs, not displayed in the app',(
 test('players still see critical No data and uncertainty warnings',()=>{
   assert.match(html,/Minimum shells assume all /);
   assert.match(html,/Actual shots may need more/);
-  assert.match(html,/Attachment percentages are estimates/);
+  assert.match(html,/combined reductions and suggested setups remain a simplified model/);
   assert.match(html,/MG3 real reload-animation time is not verified/);
   assert.match(html,/const LMG_RELOAD_2026 = Object\.freeze/);
   assert.match(html,/Exact shot-by-shot recoil: No data/);
