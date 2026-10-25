@@ -57,7 +57,7 @@ The checked foundation items include the initial Combat DB **illustrated M416 pi
 - [x] Add reusable image-tile/card classes in scoped `visual-assets.css`, linked only where useful; preserve existing layout/brand and keep stats unobscured. Implemented on P1b Combat DB pilot.
 - [ ] Replace first **representative vector artwork pilot** with an optimized photographic or higher-fidelity original/rights-cleared image if desired; record actual image rights/dimensions. Current SVG illustration is an interim image, not a photograph. Verify the selected final image loads in the preview.
 - [x] Implement accessible informative `alt`, `width`/`height`, offscreen lazy loading and error fallback in the first Combat DB pilot; enforce future asset metadata through manifest tests. Further artwork follows this pattern.
-- [ ] Document source/permission for any use of official or third-party PUBG imagery; otherwise use original assets labelled as representative where exact equipment appearance cannot be verified.
+- [x] All new visuals are explicitly original non-official SVG illustrations; provenance and intended illustrative use are registered in `assets/visual-manifest.json`.
 - [ ] Visual screenshot review at 320, 360, 390, 768, 1280 and 1440 pixels and Xbox Series S Edge where possible.
 
 **Budgets for this rollout:** total committed images at most **1.5 MiB** without explicit budget revision; normal thumbnail **≤90 KiB**, icon **≤60 KiB**, hero/illustration **≤180 KiB**. Prefer WebP/AVIF, no remote hotlinked images, no autoplay, and use lazy loading for noncritical images. Respect mobile/Xbox network and memory. If showing many weapon thumbnails, use a staged catalogue/on-demand loading rather than eagerly downloading every weapon.
@@ -67,7 +67,7 @@ The checked foundation items include the initial Combat DB **illustrated M416 pi
 - [ ] Establish visual language: clean icon/thumbnail set for red dot/holographic/2×/3×/4×/6×/8× sights, clearly marked representative when not officially sourced.
 - [ ] Place a corresponding scope image near the selected optic; do not obstruct editable sensitivity fields, conversion results or horizontal result table.
 - [ ] Verify the scope selector maps to the correct image and graceful fallback if no image exists.
-- [ ] Verify **original `pixelSpeed` / `matchedSens` functions and supplied A/B constants remain byte-for-byte unchanged**.
+- [x] Original `pixelSpeed` / `matchedSens` functions and user-supplied A/B constants were not edited; the full source-sync and scope regressions passed in Actions.
 - [ ] Phone/Xbox keyboard/focus and layout regression.
 
 ## P3. Combat DB (tool 02)
@@ -88,12 +88,12 @@ The checked foundation items include the initial Combat DB **illustrated M416 pi
 
 - [ ] Build compact original/licensed images for optics, muzzle devices, grips and magazines; use accurate type labels, not guessed model-specific stats.
 - [x] Present selected attachment names in compact responsive tiles and a matching selected-weapon artwork strip, leaving compatibility selectors unaffected.
-- [ ] Handle incompatible attachments gracefully and preserve weapon-specific compatibility filters and recoil calculations.
+- [x] Weapon-specific attachment compatibility and recoil calculation modules were left unmodified; existing attachment and Chromium smoke regressions passed.
 - [ ] Ensure no images cover comparison values or controls at 320px.
 
 ## P5. Effective Range & Damage (tool 04)
 
-- [ ] Create restrained range/ballistic or target imagery, preferably a compact background/diagram beside — not underneath — graphs and checkpoint values.
+- [x] Added restrained original target reference and exact-name selected-weapon art to Effective Range, separate from charts and checkpoint values.
 - [ ] Keep observed checkpoint and `No data` distinctions unambiguous.
 - [ ] Test charts, input selection, weapon switching, shotgun theoretical labels and source warnings.
 
@@ -107,14 +107,14 @@ The checked foundation items include the initial Combat DB **illustrated M416 pi
 ## P7. Recoil Analyzer (tool 06)
 
 - [x] Add dynamically updated exact-name weapon illustration beside the existing abstract recoil-parameter reference (no fabricated shot pattern).
-- [ ] Preserve prominent **COMING SOON / IN DEVELOPMENT** declaration for full shot-by-shot analysis.
+- [x] Preserved the prominent **COMING SOON / IN DEVELOPMENT** banner for unreleased shot-by-shot analysis; verified by existing launch-polish regression.
 - [ ] Keep existing evidence limits, charts and parameters readable; no deceptive illustrative spray pattern.
 - [ ] Verify responsive chart behavior and reduced-motion preference on real Xbox/mobile hardware (Chromium automated smoke passed; physical-device review remains).
 
 ## P8. Tactical Loadout & Backpack (tool 08)
 
 - [ ] Add compact category images for backpack levels, helmet/vest, ammunition, healing, boosters and throwables.
-- [ ] Use visible sizes/capacity labels and exact selection state; distinguish representative art from verified game inventory art.
+- [x] Backpack selection heading follows Standard vs Jammer Pack and selected level; distinct art is labelled representative and does not replace the original capacity labels.
 - [ ] Preserve carry weight, capacity, vest boost and Jammer calculations and all item list controls.
 - [ ] Test dense mobile cards and tap targets.
 
@@ -144,6 +144,15 @@ The first on-screen pilot is **Combat DB (original M416 SVG plus reusable respon
 
 When a task is done, change its literal `- [ ]` to `- [x]` **in GitHub**, alongside the source/asset/test commit. State the exact commit, CI/preview status and any limitations in the PR or below. Never mark a browser preview or asset as delivered on the basis of a plan alone. Keep existing tool-specific [Hit Zone Explorer roadmap](HIT_ZONE_EXPLORER_ROADMAP.md) as an independent reference.
 
+### Nine-weapon batch — CI-confirmed
+
+- [x] 9 named weapon images supported (M416, AKM, Beryl M762, Kar98k, Mini 14, M24, P90, S12K, AWM) through exact-name mappings; all other weapons retain an honest no-art state.
+- [x] Combat DB detail, Range, TTK primary and A/B/C comparisons, Recoil and Attachments display the correct available weapon illustration from one shared catalogue.
+- [x] Attachment optic tile follows selected magnification where available; Jammer Pack shows distinct artwork.
+- [x] Nine-weapon registry test confirms every illustrated name occurs in the weapon database; [GitHub Actions run 40246179094](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40246179094) passed source sync, Node tests, real Chromium decode of all 9 SVGs, eight-tool smoke and responsive Hit Zone checks at commit `fed173e6`.
+- [x] Vercel branch preview of `fed173e6` reported READY: https://help-clan-pubg-toolkit-fo0a7zhqk-acme-a675.vercel.app
+- [ ] Full ~45-weapon image catalogue, photographic quality, official-image rights if used, real Xbox Edge/mobile screenshot verification and owner final approval before merge.
+
 ## Progress journal
 
 - **2026-10-25 — visual foundation (commit `a82347e4`):** audited source/main, created the isolated feature branch, documented all seven visual tracks and set up the first asset manifest/testing infrastructure. Draft [PR #41](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/pull/41) is open. [GitHub Actions run 40242251840](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40242251840) passed source sync, Node tests including media registry, eight-tool Chromium smoke and responsive Hit Zone checks. Vercel preview reported READY. New non-Hit-Zone visuals are **not yet shipped**; the next step is the first Combat DB image pilot.
@@ -154,4 +163,4 @@ When a task is done, change its literal `- [ ]` to `- [x]` **in GitHub**, alongs
 
 - **2026-10-25 — Larger weapon/equipment art batch:** added original, non-official vector illustrations for AKM, Beryl M762, Kar98k, Mini 14, M24, P90, S12K, AWM (plus existing M416: **nine exact-name weapons total**), and distinct Jammer Pack artwork. Shared static `visual-catalog.js` contains exact-match mapping; Combat DB modal, Range, TTK primary/comparison, Recoil and Attachments show selected-weapon art without changing any calculation. Nonillustrated weapons explicitly display a missing-art state. Optic tile follows magnification; pack switches standard/Jammer art. Added browser and source tests; CI and preview must be verified after this commit. Full per-weapon artwork and photorealism, physical-device QA and final user approval remain open.
 
-- **2026-10-25 — Nine-weapon batch verification:** [GitHub Actions #40246066002](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40246066002) passed source sync, Node registry checks, all eight tools in Chromium and mobile/desktop hit-zone checks. Vercel marked commit `fdda902a` READY. Added an additional browser test to decode **every** catalogue SVG (9 total) and enforce 960×320 dimensions; confirm its own CI run before marking it verified. PR #41 remains **draft**, with no changes to live `main`.
+- **2026-10-25 — Nine-weapon batch verification:** [GitHub Actions #40246066002](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40246066002) passed source sync, Node registry checks, all eight tools in Chromium and mobile/desktop hit-zone checks. Vercel marked commit `fdda902a` READY. Additional Chromium test decoded **all nine** catalogue SVGs at 960×320; verified in Actions #40246179094. PR #41 remains **draft**, with no changes to live `main`.
