@@ -32,3 +32,12 @@ The static site works without npm, bundling, or a framework. JavaScript now live
 5. `js/toolkit-calculators.js` — damage/range/TTK, attachments and backpack models.
 
 Keep this order: downstream calculators use the Combat DB's `PT.WBYNAME` and `PT.WEAPONS`. Plain `<script src>` (without async/defer) preserves the original execution sequence. Tests hydrate the actual external files for existing formula checks. Run `node --test tests/*.test.cjs` after code changes.
+
+## Editing source files
+
+For safer data and calculator work, the two larger browser scripts are also divided into **editable, ordered source sections**:
+
+- `src/combat/00-weapon-data-armor.part` and `10-combat-rendering.part` separate weapon/recoil registries and armor maths from the Combat DB interface.
+- `src/calculators/` separates damage/ballistics, effective range, TTK, recoil evidence, attachments, and backpack maths.
+
+These `.part` files intentionally share the original lexical closure, so **they are source fragments, not independently loadable browser scripts**. After changing one, run `node scripts/build-static.cjs` to regenerate the two committed browser files; `node scripts/build-static.cjs --check` (also covered by tests) detects out-of-sync outputs. Vercel still directly serves plain `index.html` and static assets with no dependencies, build command or analytics changes. Do not edit the generated `js/combat-database.js` or `js/toolkit-calculators.js` in isolation.

@@ -486,9 +486,19 @@ function drawLineChart(canvas, series, opts={}){
   fillWeaponSelect($("tk_cmpB"), "UMP9");
   $("tk_cmpC").innerHTML += PT.WEAPONS.map(w=>"<option>"+w.name+"</option>").join("");
   const display = (value, digits) => value == null ? "No data" : Number(value).toFixed(digits);
+  const displayReload = r => r.withReload == null ? "No data" :
+    (r.reloadConfidence==="estimate" ? "≈" : "")+display(r.withReload,2);
   // Shared with Attachments calculator: official LMG reload durations are
   // post-patch values and must not have the 25% reduction applied twice.
   function reloadSecondsFor(w){ return reloadSecondsForWeapon(w); }
+  // The standard TTK excludes reloads. Only low-capacity weapons requiring
+  // an additional magazine depend on these optional timings.
+  function reloadConfidenceForWeapon(w, reloads){
+    if(reloads===0) return "not-needed";
+    if(w.name==="MG3") return "unknown";
+    return Object.prototype.hasOwnProperty.call(LMG_RELOAD_2026,w.name)
+      ? "published" : "estimate";
+  }
   function computeFor(w, hitbox, armor){
     if(SHOTGUN_PELLETS[w.name]){
       // 0m exists in the published pellet tables: only the theoretical
@@ -507,7 +517,7 @@ function drawLineChart(canvas, series, opts={}){
     const reloads = w.mag ? Math.max(0, Math.ceil(htk/w.mag)-1) : 0;
     const reloadTime = reloads>0 ? reloadSecondsFor(w) : 0;
     const withReload = reloadTime == null ? null : pure + reloads*reloadTime;
-    return {dmg,htk,pure,withReload,reloads};
+    return {dmg,htk,pure,withReload,reloads,reloadConfidence:reloadConfidenceForWeapon(w,reloads)};
   }
   function update(){
     const w=PT.WBYNAME[$("tk_weapon").value];
@@ -530,7 +540,7 @@ function drawLineChart(canvas, series, opts={}){
     } else if(r.withReload==null){
       tkNote="Reload time is unavailable for "+w.name+"; total TTK cannot be calculated.";
     } else if(r.reloads>0){
-      tkNote="Includes "+r.reloads+" reload(s).";
+      tkNote="Includes "+r.reloads+" reload(s). "+(r.reloadConfidence==="published" ? "Uses published LMG reload timing." : "Reload timing is an estimate, not independently verified.");
     } else {
       tkNote="No reload needed for this calculation.";
     }
@@ -546,7 +556,7 @@ function drawLineChart(canvas, series, opts={}){
       rows.map(r=>'<tr><td>'+r.name+'</td><td>'+display(r.dmg,1)+
         '</td><td>'+(r.htk==null?'No data':r.htk)+
         '</td><td>'+display(r.pure,2)+
-        '</td><td>'+display(r.withReload,2)+'</td></tr>').join("");
+        '</td><td>'+displayReload(r)+'</td></tr>').join("");
   }
   ["tk_weapon","tk_hitbox","tk_armor"].forEach(id=>{
     $(id).addEventListener("input",update);
