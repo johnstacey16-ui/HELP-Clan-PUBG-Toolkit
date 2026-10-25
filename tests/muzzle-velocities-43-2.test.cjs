@@ -29,7 +29,7 @@ test('43.2 game-file velocities override stale telemetry without changing drop',
   assert.match(html,/const data=DROP_TABLES\[w.name\],velocity=knownMuzzleVelocity\(w\);/);
   assert.match(html,/const point=dropAtRange\(w,range\)/);
   assert.match(html,/if\(point==null\)\{/);
-  assert.match(html,/"No drop reading at "/);
+  assert.match(html,/"No gravity-drop estimate at "/);
   const start=html.indexOf('const DROP_TABLES = {');
   const stop=html.indexOf('const MEASURED_MUZZLE_VEL',start);
   const drop=vm.runInNewContext(html.slice(start,stop)+';DROP_TABLES');
