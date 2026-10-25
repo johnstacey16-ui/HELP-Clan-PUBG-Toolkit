@@ -7,7 +7,7 @@ const { resolve } = require('node:path');
 const { Script } = require('node:vm');
 
 const root = resolve(__dirname,'..');
-const html = readFileSync(resolve(root,'index.html'),'utf8');
+const html = require('./toolkit-test-source.cjs')();
 const docs = readFileSync(resolve(root,'docs/research-and-patch-references.md'),'utf8');
 const policy = readFileSync(resolve(root,'DATA_ACCURACY_POLICY.md'),'utf8');
 const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m=>m[1]);

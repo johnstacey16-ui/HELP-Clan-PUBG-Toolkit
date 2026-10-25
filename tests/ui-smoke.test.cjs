@@ -7,7 +7,7 @@ const vm = require('node:vm');
 const path = require('node:path');
 
 const root = path.resolve(__dirname, '..');
-const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+const html = require('./toolkit-test-source.cjs')();
 const shell = fs.readFileSync(path.join(root, 'app-shell.css'), 'utf8');
 const legacy = fs.readFileSync(path.join(root, 'design-refresh.css'), 'utf8');
 

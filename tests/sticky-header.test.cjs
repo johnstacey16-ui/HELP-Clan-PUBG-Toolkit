@@ -7,7 +7,7 @@ const { resolve } = require('node:path');
 const vm = require('node:vm');
 
 const root = resolve(__dirname, '..');
-const html = readFileSync(resolve(root, 'index.html'), 'utf8');
+const html = require('./toolkit-test-source.cjs')();
 const stylesheet = readFileSync(resolve(root, 'app-shell.css'), 'utf8');
 const script = readFileSync(resolve(root, 'sticky-weapon-header.js'), 'utf8');
 
