@@ -56,8 +56,8 @@ Default modes: **damage**, **hits-to-kill (100 HP)**, and **heatmap**. Never dis
 
 ## Handoff / next task
 
-**Next unchecked task: coverage/source validation, then P1 data adapter.** The initial files are `src/explorer/hit-zone-explorer.fragment.html`, `src/explorer/hit-zone-explorer.scaffold.css`, and `src/explorer/hit-zone-explorer.scaffold.part`. They must not be loaded on the live page as-is. Review `src/calculators/00-damage-ballistics.part`, `DATA_ACCURACY_POLICY.md`, and `docs/hit-zone-explorer-architecture.md`. Do not mark implementation stages complete just because starter files exist. After each coding session, check off only verified steps, note remaining issues here, and commit changes. The project is private; use the connected GitHub repository tools.
+**Next unchecked task: P1 data adapter + tests, while tracking unresolved per-weapon source conflicts.** The initial files are `src/explorer/hit-zone-explorer.fragment.html`, `src/explorer/hit-zone-explorer.scaffold.css`, and `src/explorer/hit-zone-explorer.scaffold.part`. They must not be loaded on the live page as-is. Review `src/calculators/00-damage-ballistics.part`, `DATA_ACCURACY_POLICY.md`, and `docs/hit-zone-explorer-architecture.md`. Do not mark implementation stages complete just because starter files exist. After each coding session, check off only verified steps, note remaining issues here, and commit changes. The project is private; use the connected GitHub repository tools.
 
 ## Progress log
 
-- **2026-10-25** — Requirements fixed; inspected current source layout, damage formula, static builder, navigation and smoke tests. Created a durable roadmap, architecture specification and three unwired prototype files. No claim that the live new panel is finished.
+- **2026-10-25** — Requirements fixed; inspected current source layout, damage formula, static builder, navigation and smoke tests. Created a durable roadmap, architecture specification and three unwired prototype files. Cross-checked the 13 hit areas and helmet/vest coverage against 2026-10-21 game-data extraction, with weapon-specific source conflicts left open. No claim that the live new panel is finished.
