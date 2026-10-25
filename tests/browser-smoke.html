@@ -113,7 +113,7 @@
         open('panel-recoil2');
         for(const gun of gunNames){
           change(get('rc_weapon'),gun);
-          check(text('rc_chart').includes('No verified per-shot recoil curve'),
+          check(/No verified [0-9]+-shot recoil curve/.test(text('rc_chart')),
             gun+' must not invent a recoil trace');
         }
 
