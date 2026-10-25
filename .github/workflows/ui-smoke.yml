@@ -12,11 +12,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Verify generated JavaScript matches source sections
+        run: node scripts/build-static.cjs --check
       - name: Verify toolkit panels, scripts and navigation
         run: node --test tests/*.test.cjs
-      - name: Exercise all seven tools in headless Chrome
+      - name: Exercise all eight tools in headless Chrome
         run: node tests/browser-smoke.cjs
       - name: Render-hit-zone SVG at phone and desktop widths
         run: node tests/hit-zone-preview-smoke.cjs
-      - name: Temporary integrated mobile screenshot audit
-        run: node tests/hit-zone-visual-capture.cjs --desktop
