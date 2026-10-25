@@ -28,6 +28,19 @@ Make all seven remaining tools look like one premium, readable PUBG companion ap
 
 The checked foundation items include the initial Combat DB **illustrated M416 pilot**; **all 7 target tools now have an initial original illustration pilot, 0 of 7 has a completed full artwork catalogue**. Photo-grade cataloguing and all other tools are pending.
 
+### Batch milestone — six-panel first visual pass (verified 2026-10-25)
+
+- [x] All seven target tools now have at least one local, original artwork element (Combat DB M416 from the earlier pilot; six additional tool panels in the new batch).
+- [x] Scope Matcher: seven representative optic illustrations, connected to the magnification selector; original sensitivity formulas untouched.
+- [x] Attachments: four responsive category illustrations and the selected attachment names beside their matching controls.
+- [x] Backpack: backpack/ammo/medical/throwable art with a label that follows pack type and level selections.
+- [x] Effective Range and TTK: restrained reference artwork with source-backed numbers left unobscured.
+- [x] Recoil Analyzer: an evidence-parameter illustration, not a fictional shot-by-shot recoil trace; the existing Coming Soon notice remains.
+- [x] 17 new self-contained local SVGs registered with original-art provenance and size/alt metadata.
+- [x] [GitHub Actions 40244407117](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40244407117) passed Node/asset tests, bundle check, eight-tool Chromium interaction smoke and 320–1280px Hit Zone layout tests after the full batch.
+- [x] Vercel marked the batch preview READY at commit `20e48831`.
+- [ ] Physical device screenshot review, full per-weapon/item catalogue, further fidelity improvements and final owner preview approval. **Keep PR #41 in draft; no production merge yet.**
+
 ## P0. Baseline and guardrails
 
 - [x] Inspect eight live panel IDs and navigation: `panel-sensitivity`, `panel-combat`, `panel-hit-zone`, `panel-range`, `panel-ttk`, `panel-recoil2`, `panel-attach`, `panel-backpack`.
@@ -137,4 +150,4 @@ When a task is done, change its literal `- [ ]` to `- [x]` **in GitHub**, alongs
 
 - **2026-10-25 — Combat DB illustrated pilot:** added a 960×320 original representative M416 field illustration (not official/photographic), responsive `visual-assets.css`, a visible image card and M416 detail art with clear fallback for all other weapons. Registered source/rights, kept every weapon statistic and Model 2 calculation untouched. Added art/manifest regression tests. After adding a correct SVG MIME mapping to the local test server, [CI run 40243494382](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40243494382) passed **134 Node tests, source sync, real Chromium image decoding/weapon modal fallback, all eight tool regressions and 320–1280px Hit Zone QA**. Vercel reported preview READY for commit `63093cd2`, at https://help-clan-pubg-toolkit-44ze3y6rf-acme-a675.vercel.app/#panel-combat. **Manual appearance review and production release are not complete.**
 
-- **2026-10-25 — Batched six-panel original art pass:** optic illustrations for 1x/2x/3x/4x/6x/8x/15x with dynamic scope image; four attachment category tiles with current selection text; backpack and category art; reference graphics for Range, TTK and Recoil. All assets locally hosted and recorded in manifest. Scope/attachment/backpack visual state is presentation-only in `visual-controls.js`. These are representative SVG illustrations, **not** official equipment images or a complete visual catalogue. Full item-by-item artwork, device review and release remain unchecked. Check CI status after commit.
+- **2026-10-25 — Batched six-panel original art pass:** optic illustrations for 1x/2x/3x/4x/6x/8x/15x with dynamic scope image; four attachment category tiles with current selection text; backpack and category art; reference graphics for Range, TTK and Recoil. All assets locally hosted and recorded in manifest. Scope/attachment/backpack visual state is presentation-only in `visual-controls.js`. These are representative SVG illustrations, **not** official equipment images or a complete visual catalogue. Full item-by-item artwork, device review and release remain unchecked. [Batch CI run 40244407117](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40244407117) passed and Vercel preview for commit `20e48831` reported READY.
