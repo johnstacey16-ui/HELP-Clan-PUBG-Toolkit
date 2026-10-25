@@ -283,6 +283,10 @@ function getAllZoneDamageForWeapon(w, distance, helmetLevel, vestLevel){
     return {
       id, label:part.label,
       damage, htk:damage==null ? null : htkFor(damage),
+      // Separately labelled lower bound; all pellets must hit this exact zone
+      // for every shell. Never a prediction of real shotgun damage/HTK.
+      idealMinShells:isPelletShotgun && sourceStatus==="per-pellet-only"
+        ? shotgunMinShellsAt(w,distance,id,armorLevel) : null,
       hitAreaMultiplier:part.hitArea,
       classMultiplier,
       armorMultiplier:armorMultFor(part,armorLevel),

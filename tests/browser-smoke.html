@@ -29,12 +29,117 @@
         check(text('px_speed')!=='–' && text('px_speed')!=='','Scope result initially calculates');
         eq(child.querySelectorAll('#px_table tbody tr').length,7,'Seven scope conversions');
 
-        // Mobile drawer and all seven navigable tools.
+        // Sidebar and numbered navigation follow the user-requested position.
+        const sidebarIds=[...child.querySelectorAll('#app-toolnav [data-open-panel]')].map(b=>b.dataset.openPanel);
+        eq(sidebarIds.join(','),['panel-sensitivity','panel-combat','panel-hit-zone','panel-range','panel-ttk','panel-recoil2','panel-attach','panel-backpack'].join(','),'Hit Zone Explorer appears immediately above Effective Range');
+        // Mobile drawer and all eight navigable tools.
         get('mobile-nav-toggle').click();
         check(child.body.classList.contains('sidebar-open'),'Mobile drawer opens');
-        for(const id of ['panel-combat','panel-sensitivity','panel-range','panel-ttk','panel-recoil2','panel-attach','panel-backpack'])open(id);
+        for(const id of ['panel-combat','panel-sensitivity','panel-hit-zone','panel-range','panel-ttk','panel-recoil2','panel-attach','panel-backpack'])open(id);
         check(!child.body.classList.contains('sidebar-open'),'Navigation closes drawer');
 
+        // All thirteen labels render without tapping; helmet and vest work independently.
+        open('panel-hit-zone');
+        eq(get('active-tool-index').getAttribute('aria-label'),'Tool 3 of 8','Hit Zone Explorer is tool 03 of 08');
+        eq(get('hz_weapon').value,'M416','Hit-zone weapon initializes to M416');
+        eq(child.querySelectorAll('#hz_body [data-hit-zone]').length,13,'All body-zone shapes exist');
+        eq(child.querySelectorAll('#hz_body [data-hz-value]').length,13,'All hit-zone values shown simultaneously');
+        const hzValue=id=>child.querySelector('[data-hz-value="'+id+'"]').textContent.trim();
+        eq(hzValue('chest'),'44.0','M416 chest unarmoured at 0m');
+        eq(hzValue('head'),'94.0','M416 head unarmoured at 0m');
+        const bareThigh=hzValue('thigh');
+        change(get('hz_helmet'),'3');
+        eq(hzValue('head'),'42.3','Level 3 helmet reduces head');
+        eq(hzValue('chest'),'44.0','Helmet does not change chest');
+        change(get('hz_vest'),'2');
+        eq(hzValue('chest'),'26.4','Level 2 vest reduces chest');
+        eq(hzValue('head'),'42.3','Vest does not change head');
+        eq(hzValue('thigh'),bareThigh,'Vest cannot protect thigh');
+        change(get('hz_mode'),'htk');
+        eq(hzValue('chest'),'4 hits','HTK display labels hits unambiguously');
+        check(text('hz_status').includes('100 HP'),'HTK explains the 100 HP single-zone assumption');
+        eq(child.querySelector('[data-hit-zone="chest"]').getAttribute('aria-label'),'Chest: 4 hits','Keyboard label describes hits instead of a multiplier');
+        change(get('hz_mode'),'heatmap');
+        check(!!child.querySelector('[data-hit-zone="chest"]').style.fill,'Heatmap colours computed zone');
+        change(get('hz_weapon'),'DBS');
+        eq(hzValue('chest'),'No data','Pellet shotgun must not imply whole-shell damage');
+        check(text('hz_status').includes('per pellet'),'Shotgun missing-data warning remains');
+        const idealOption=child.querySelector('#hz_mode option[value="ideal-shells"]');
+        check(!idealOption.disabled,'Theoretical minimum-shell mode only opens for pellet shotguns');
+        change(get('hz_mode'),'ideal-shells');
+        eq(hzValue('chest'),'1 shell*','DBS lower-bound count is rendered as shells, not damage');
+        check(text('hz_status').includes('THEORETICAL MINIMUM'),'Ideal-shell warning prominent');
+        check(text('hz_detail').includes('THEORETICAL LOWER BOUND'),'Ideal-shell detail explicitly avoids claiming a real hit count');
+        change(get('hz_weapon'),'S12K');
+        change(get('hz_distance'),'25');
+        eq(hzValue('chest'),'2 shells*','S12K 25m level 2 vest idealized shell floor');
+        eq(hzValue('thigh'),'2 shells*','S12K theoretical result available for unarmoured limb');
+        change(get('hz_weapon'),'O12');
+        eq(get('hz_mode').value,'damage','Switching to slug automatically restores real-damage mode');
+        check(idealOption.disabled,'Theoretical shell mode is disabled for slug weapons');
+        eq(get('hz_distance').value,'25','O12 preserves a shared published 25m checkpoint');
+        check(hzValue('chest')!=='No data','O12 slug is supported at its recorded 25m');
+        change(get('hz_weapon'),'DBS');
+        change(get('hz_distance'),'0');
+        change(get('hz_weapon'),'O12');
+        eq(get('hz_distance').value,'2','O12 starts at 2m when previous 0m is unsupported');
+        check(hzValue('chest')!=='No data','O12 slug is supported at its first recorded 2m');
+        change(get('hz_weapon'),'M416');
+        change(get('hz_distance'),'100');
+        check(hzValue('chest')!=='No data','Published 100m damage available');
+        get('hz_body').querySelector('[data-hit-zone="calf"]').dispatchEvent(new MouseEvent('click',{bubbles:true}));
+        check(text('hz_detail').includes('Calf'),'Optional region detail responds to clicks');
+        eq(get('hz_body').querySelector('[data-hit-zone="calf"]').getAttribute('aria-pressed'),'true','Pointer-selected zone exposes state');
+        eq(get('hz_body').querySelector('[data-hit-zone="chest"]').getAttribute('aria-pressed'),'false','Other zones are not selected');
+        const keyboardZone=get('hz_body').querySelector('[data-hit-zone="head"]');
+        keyboardZone.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true}));
+        check(text('hz_detail').includes('Head:'),'Keyboard Enter opens the optional zone breakdown');
+        check(keyboardZone.getAttribute('aria-label').includes('Head:'),'Keyboard target announces zone and value');
+        eq(keyboardZone.getAttribute('aria-controls'),'hz_detail','Keyboard targets connect to the detail panel');
+        eq(keyboardZone.getAttribute('aria-pressed'),'true','Keyboard-selected zone exposes state');
+        eq(get('hz_body').querySelector('[data-hit-zone="calf"]').getAttribute('aria-pressed'),'false','Keyboard selection clears old zone');
+        eq(child.querySelectorAll('#hz_rows tr').length,13,'Accessible table includes all body regions');
+        check(!!child.querySelector('#panel-hit-zone table caption'),'Table has a descriptive accessibility caption');
+        eq(child.querySelectorAll('#panel-hit-zone thead th[scope="col"]').length,3,'Result headings declare column scope');
+        // All 45 combat weapons must render 13 consistent readouts and safe
+        // no-data states without leaking NaN, Infinity, or per-pellet damage.
+        const hitZoneWeaponNames=[...get('hz_weapon').options].map(o=>o.value).filter(Boolean);
+        eq(hitZoneWeaponNames.length,45,'Hit-zone selector includes all 45 toolkit weapons');
+        const pelletNames=new Set(['DBS','S686','S12K','Sawn-off']);
+        change(get('hz_mode'),'damage');
+        for(const gun of hitZoneWeaponNames){
+          change(get('hz_weapon'),gun);
+          const hasCheckpoint=!get('hz_distance').disabled;
+          const isPellet=pelletNames.has(gun);
+          eq(child.querySelectorAll('#hz_rows tr').length,13,gun+' all-zone table updates');
+          const chips=[...child.querySelectorAll('#hz_body [data-hz-value]')].map(el=>el.textContent.trim());
+          eq(chips.length,13,gun+' all regions have simultaneous values');
+          for(const chip of chips){
+            check(chip==='No data'||/^\d+(?:\.\d+)?$/.test(chip),
+              gun+' must show measured damage or No data (got '+chip+')');
+          }
+          if(isPellet){
+            check(chips.every(v=>v==='No data'),gun+' actual shell totals remain unknown');
+            check(!idealOption.disabled,gun+' theoretical mode enabled');
+            if(hasCheckpoint){
+              change(get('hz_mode'),'ideal-shells');
+              const idealChips=[...child.querySelectorAll('#hz_body [data-hz-value]')].map(el=>el.textContent.trim());
+              check(idealChips.every(v=>/^[1-9]\d* shells?\*$/.test(v)),
+                gun+' all thirteen zones show a labelled theoretical lower bound');
+              change(get('hz_mode'),'damage');
+            }
+          }else{
+            check(idealOption.disabled,gun+' theoretical pellet mode unavailable');
+            check(chips.every(v=>hasCheckpoint ? /^\d+(?:\.\d+)?$/.test(v) : v==='No data'),
+              gun+' must not show inconsistent source status between zones');
+          }
+        }
+        change(get('hz_weapon'),'M416');
+        change(get('hz_distance'),'0');
+        change(get('hz_helmet'),'0');
+        change(get('hz_vest'),'0');
+        eq(hzValue('chest'),'44.0','Weapon sweep leaves selector usable at the unarmoured 0m checkpoint');
+        // Return to unchanged core calculator regression path.
         open('panel-range');
         change(get('rg_weapon'),'S686');
         check(text('rg_htk')!=='No data','Shotgun minimum shells available');

@@ -15,7 +15,7 @@ assert.ok(start!==-1 && end>start,'Damage model and hit-zone adapter source boun
 const context=vm.createContext({});
 vm.runInContext(src.slice(start,end)+
   '\nthis.model={BODY_PARTS,DETAILED_PARTS,CLASS_MULT_DETAILED,WEAPON_HEAD_MULT,'+
-  'getAllZoneDamageForWeapon,armorLevelForHitZone,hitZoneEquipmentType,finalDamageAt,htkFor};',context);
+  'getAllZoneDamageForWeapon,armorLevelForHitZone,hitZoneEquipmentType,finalDamageAt,shotgunMinShellsAt,htkFor};',context);
 const m=context.model;
 const weapon=(name,cls)=>({name,cls});
 const asMap=rows=>Object.fromEntries(rows.map(row=>[row.id,row]));
@@ -49,6 +49,31 @@ test('M416 chest 0 m uses the documented real checkpoint and class/hit multiplie
   assert.equal(vestTwo.chest.htk,4);
   assert.equal(vestTwo.chest.armorSource,'Vest');
 });
+test('trajectory projectile hit damage is not confused with distinct gun-config BaseDamage',()=>{
+  // PUBG 43.2 files expose WeaponGunConfig.BaseDamage and a separate
+  // TrajectoryConfig.HitDamage. The latter matches the independent 0m
+  // recorded damage table for these five checked weapons; see
+  // docs/hit-zone-damage-field-audit.md for versioned references.
+  const checked=[
+    ['M416','AR',39,40],
+    ['AKM','AR',40,48],
+    ['AUG A3','AR',20,40],
+    ['SVD Dragunov','DMR',46,53],
+    ['RPD','MG',67,43]
+  ];
+  for(const [name,cls,gunConfigBase,projectileHitDamage] of checked){
+    const rows=profile(name,cls,0,0,0);
+    const clsFactor=m.CLASS_MULT_DETAILED[cls].torso;
+    near(rows.chest.damage,projectileHitDamage*1.1*clsFactor,name+' 0m chest uses trajectory damage');
+    assert.notEqual(rows.chest.damage,gunConfigBase*1.1*clsFactor,
+      name+' must not mistakenly import gun-config BaseDamage');
+    assert.equal(rows.chest.sourceStatus,'measured-checkpoint');
+    assert.equal(rows.chest.armorSource,'None');
+  }
+  near(profile('SVD Dragunov','DMR',0).head.damage,53*2.8,
+    'Source-listed special Dragunov head value retained provisionally');
+});
+
 test('helmet alone affects head and neck, and does not change torso or limbs',()=>{
   const a=profile('M416','AR',0,0,0);
   const b=profile('M416','AR',0,3,0);
@@ -125,6 +150,26 @@ test('pellet shotguns never show per-pellet numbers as actual shell damage or HT
     }
   }
   assert.equal(profile('DBS','SG',71).head.sourceStatus,'no-data');
+  assert.equal(profile('DBS','SG',71).head.idealMinShells,null);
+});
+test('shotgun ideal minimum shells are sourced only from recorded per-pellet data and do not masquerade as actual damage',()=>{
+  const w=weapon('S12K','SG');
+  const zero=profile('S12K','SG',25,0,0);
+  const vestTwo=profile('S12K','SG',25,0,2);
+  const helmetThree=profile('S12K','SG',25,3,2);
+  assert.equal(zero.chest.idealMinShells,m.shotgunMinShellsAt(w,25,'chest',0));
+  assert.equal(vestTwo.chest.idealMinShells,m.shotgunMinShellsAt(w,25,'chest',2));
+  assert.equal(helmetThree.head.idealMinShells,m.shotgunMinShellsAt(w,25,'head',3));
+  assert.equal(zero.chest.idealMinShells,2);
+  assert.equal(vestTwo.chest.idealMinShells,2);
+  assert.equal(helmetThree.thigh.idealMinShells,zero.thigh.idealMinShells);
+  assert.equal(vestTwo.head.idealMinShells,zero.head.idealMinShells);
+  assert.equal(vestTwo.chest.damage,null);
+  assert.equal(vestTwo.chest.htk,null);
+  assert.equal(profile('M416','AR').chest.idealMinShells,null);
+  for(const id of m.DETAILED_PARTS){
+    assert.equal(profile('S12K','SG',25,3,2)[id].sourceStatus,'per-pellet-only');
+  }
 });
 test('out-of-range equipment inputs cannot silently become no-armour readings',()=>{
   for(const value of [-1,4,1.5,NaN,Infinity,'2',null]){
@@ -136,9 +181,9 @@ test('out-of-range equipment inputs cannot silently become no-armour readings',(
   assert.throws(()=>m.getAllZoneDamageForWeapon(weapon('Unknown','X'),0,0,0),
     {name:'TypeError'});
 });
-test('calculator bundle contains adapter while the released UI is still only seven tools',()=>{
+test('calculator bundle contains adapter and live panel is wired to UI',()=>{
   const sourceBundle=fs.readFileSync(path.join(root,'js/toolkit-calculators.js'),'utf8');
   assert.match(sourceBundle,/function getAllZoneDamageForWeapon\(/);
   const index=fs.readFileSync(path.join(root,'index.html'),'utf8');
-  assert.doesNotMatch(index,/id="panel-hit-zone"/,'P1 must not ship an untested panel');
+  assert.match(index,/id="panel-hit-zone"/);
 });

@@ -2,7 +2,7 @@
 // HELP Clan workspace navigation. Calculator scripts and existing content remain unchanged.
 (function(){
   'use strict';
-  const panelIds = ["panel-sensitivity","panel-combat","panel-range","panel-ttk","panel-recoil2","panel-attach","panel-backpack"];
+  const panelIds = ["panel-sensitivity","panel-combat","panel-hit-zone","panel-range","panel-ttk","panel-recoil2","panel-attach","panel-backpack"];
   const navButtons = Array.from(document.querySelectorAll('#app-toolnav [data-open-panel]'));
   const toggle = document.getElementById('mobile-nav-toggle');
   const scrim = document.getElementById('sidebar-scrim');

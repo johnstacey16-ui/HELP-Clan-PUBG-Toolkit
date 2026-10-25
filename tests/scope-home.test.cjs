@@ -17,7 +17,7 @@ const nav=html.slice(html.indexOf('<nav id="app-toolnav"'),html.indexOf('</nav>'
 
 test('main site starts on Scope Sensitivity Matcher with Combat DB second',()=>{
   const order=[...nav.matchAll(/data-open-panel="([^"]+)"/g)].map(m=>m[1]);
-  assert.deepEqual(order.slice(0,3),['panel-sensitivity','panel-combat','panel-range']);
+  assert.deepEqual(order.slice(0,4),['panel-sensitivity','panel-combat','panel-hit-zone','panel-range']);
   assert.match(nav,/data-open-panel="panel-sensitivity" aria-controls="panel-sensitivity" aria-current="page"/);
   assert.match(nav,/Scope Sensitivity Matcher/);
   assert.match(html,/<div id="panel-sensitivity" class="hub-main active">/);
@@ -54,10 +54,10 @@ test('owner-authored empirical formulas and scope values are preserved',()=>{
   assert.match(docs,/owner-supplied scope-specific A\/B constants/);
 });
 
-test('existing calculations and all seven panels compile',()=>{
+test('existing calculations and all eight panels compile',()=>{
   assert.equal(inlineScripts.length,5);
   inlineScripts.forEach((s,i)=>assert.doesNotThrow(()=>new vm.Script(s),'block '+i));
-  assert.equal((nav.match(/data-open-panel="panel-/g)||[]).length,7);
+  assert.equal((nav.match(/data-open-panel="panel-/g)||[]).length,8);
   for(const id of ['panel-range','panel-ttk','panel-recoil2','panel-attach','panel-backpack']){
     assert.match(html,new RegExp('id="'+id+'" class="hub-main'));
   }
