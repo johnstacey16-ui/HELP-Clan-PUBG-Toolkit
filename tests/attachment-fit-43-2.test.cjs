@@ -5,7 +5,7 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const path=require('node:path');
 const vm=require('node:vm');
-const html=fs.readFileSync(path.join(__dirname,'../index.html'),'utf8');
+const html=require('./toolkit-test-source.cjs')();
 const start=html.indexOf('const ATTACH_MOD = {');
 const end=html.indexOf('(function(){\n  const $ = id => document.getElementById(id);',start);
 assert.ok(start>0&&end>start);

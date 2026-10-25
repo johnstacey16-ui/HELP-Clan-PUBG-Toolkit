@@ -4,7 +4,7 @@ const assert=require('node:assert/strict');
 const {readFileSync}=require('node:fs');
 const {resolve}=require('node:path');
 const {runInNewContext,Script}=require('node:vm');
-const html=readFileSync(resolve(__dirname,'../index.html'),'utf8');
+const html=require('./toolkit-test-source.cjs')();
 const at=html.indexOf('const RECOIL_DETAIL_43_2 = {');
 const end=html.indexOf('WEAPONS.forEach(w=>',at);
 assert.ok(at>0&&end>at);

@@ -5,7 +5,7 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const vm=require('node:vm');
 const path=require('node:path');
-const html=fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');
+const html=require('./toolkit-test-source.cjs')();
 
 function section(a,b){
   const start=html.indexOf(a),end=html.indexOf(b,start);

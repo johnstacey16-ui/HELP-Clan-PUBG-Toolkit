@@ -20,3 +20,15 @@ To start viewing traffic:
 This toolkit has a single HTML page with seven client-side tool sections. Standard Web Analytics tracks the **site's page views**, not distinct clicks between its internal tools. Tracking internal tool usage would require separately designed events (subject to the Vercel plan's event support) or deliberate URL routing. Do not alter the Scope Sensitivity Matcher merely to create tracking events.
 
 Further reference: https://vercel.com/docs/analytics/quickstart
+
+## Code organization (25 October 2026)
+
+The static site works without npm, bundling, or a framework. JavaScript now lives in five ordered files loaded synchronously at the end of `index.html`:
+
+1. `js/app-navigation.js` — seven-tool sidebar, history and mobile menu.
+2. `js/shared.js` — the shared `PT` namespace.
+3. `js/combat-database.js` — weapon and recoil registries, Combat DB and armor logic.
+4. `js/sensitivity.js` — unchanged owner-built sensitivity calculations.
+5. `js/toolkit-calculators.js` — damage/range/TTK, attachments and backpack models.
+
+Keep this order: downstream calculators use the Combat DB's `PT.WBYNAME` and `PT.WEAPONS`. Plain `<script src>` (without async/defer) preserves the original execution sequence. Tests hydrate the actual external files for existing formula checks. Run `node --test tests/*.test.cjs` after code changes.

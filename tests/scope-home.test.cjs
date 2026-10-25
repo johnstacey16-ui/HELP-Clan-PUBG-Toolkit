@@ -6,7 +6,7 @@ const {readFileSync}=require('node:fs');
 const {resolve}=require('node:path');
 const vm=require('node:vm');
 
-const html=readFileSync(resolve(__dirname,'../index.html'),'utf8');
+const html=require('./toolkit-test-source.cjs')();
 const docs=readFileSync(resolve(__dirname,'../DATA_ACCURACY_POLICY.md'),'utf8');
 const sensitivityStart=html.indexOf('<div id="panel-sensitivity"');
 const rangeStart=html.indexOf('<!-- ================= EFFECTIVE RANGE',sensitivityStart);

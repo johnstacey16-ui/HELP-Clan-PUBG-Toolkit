@@ -7,7 +7,7 @@ const { resolve } = require('node:path');
 const { Script } = require('node:vm');
 
 const root = resolve(__dirname,'..');
-const html = readFileSync(resolve(root,'index.html'),'utf8');
+const html = require('./toolkit-test-source.cjs')();
 const docs = readFileSync(resolve(root,'docs/research-and-patch-references.md'),'utf8');
 const policy = readFileSync(resolve(root,'DATA_ACCURACY_POLICY.md'),'utf8');
 const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m=>m[1]);
@@ -23,7 +23,7 @@ test('the live app has exactly seven tool panels, no research tab, and correct c
   assert.doesNotMatch(html,/<div class="nav-group-label"><span>03<\/span>REFERENCE/);
   assert.match(html,/id="active-tool-index" aria-label="Tool 1 of 7">01 <i>\/<\/i> 07/);
   assert.match(html,/String\(panelIds\.length\)\.padStart/);
-  assert.match(html,/if\(panelIds\.includes\(id\) && id!==currentPanel\)/);
+  assert.match(html,/const target = panelIds\.includes\(id\) \? id : panelIds\[0\]/);
 });
 
 test('source and patch research is archived in docs, not displayed in the app',()=>{

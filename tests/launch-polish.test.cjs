@@ -7,7 +7,7 @@ const {resolve}=require('node:path');
 const vm=require('node:vm');
 
 const root=resolve(__dirname,'..');
-const html=readFileSync(resolve(root,'index.html'),'utf8');
+const html=require('./toolkit-test-source.cjs')();
 const css=readFileSync(resolve(root,'app-shell.css'),'utf8');
 const header=html.slice(html.indexOf('<header id="app-topbar">'),html.indexOf('</header>',html.indexOf('<header id="app-topbar">')));
 const recoil=html.slice(html.indexOf('<div id="panel-recoil2"'),html.indexOf('<!-- ================= ATTACHMENTS'));

@@ -5,7 +5,7 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const path=require('node:path');
 const vm=require('node:vm');
-const html=fs.readFileSync(path.join(__dirname,'../index.html'),'utf8');
+const html=require('./toolkit-test-source.cjs')();
 const css=fs.readFileSync(path.join(__dirname,'../app-shell.css'),'utf8');
 const nav=html.slice(html.indexOf('<nav id="app-toolnav"'),html.indexOf('</nav>',html.indexOf('<nav id="app-toolnav"'))+6);
 const expected=['panel-sensitivity','panel-combat','panel-range','panel-ttk','panel-recoil2','panel-attach','panel-backpack'];

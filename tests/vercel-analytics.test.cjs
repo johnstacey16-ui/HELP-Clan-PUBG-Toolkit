@@ -5,7 +5,7 @@ const { readFileSync } = require('node:fs');
 const { resolve } = require('node:path');
 const { Script } = require('node:vm');
 
-const html = readFileSync(resolve(__dirname, '../index.html'), 'utf8');
+const html = require('./toolkit-test-source.cjs')();
 
 test('installs exactly one first-party Vercel Analytics script in the document head', () => {
   const tag = '<script defer src="/_vercel/insights/script.js"></script>';

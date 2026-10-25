@@ -3,7 +3,7 @@ const assert=require('node:assert/strict');
 const {readFileSync}=require('node:fs');
 const {resolve}=require('node:path');
 const vm=require('node:vm');
-const html=readFileSync(resolve(__dirname,'../index.html'),'utf8');
+const html=require('./toolkit-test-source.cjs')();
 const a=html.indexOf('const MEASURED_MUZZLE_VEL = '),b=html.indexOf('function hasDropData(w)',a);
 assert.ok(a>0&&b>a);
 const data=vm.runInNewContext(html.slice(a,b)+
