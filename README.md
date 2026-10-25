@@ -2,7 +2,7 @@
 
 ## Hit Zone Damage Explorer — work in progress
 
-The feature's persistent plan is [HIT_ZONE_EXPLORER_ROADMAP.md](HIT_ZONE_EXPLORER_ROADMAP.md), with the technical specification at [docs/hit-zone-explorer-architecture.md](docs/hit-zone-explorer-architecture.md). The first **unwired** markup, styles, SVG and JS controller scaffolds are stored in `src/explorer/`. They are deliberately **not included in the seven-tool live site** until the calculation adapter, armour coverage review and browser tests are completed.
+The feature's persistent plan is [HIT_ZONE_EXPLORER_ROADMAP.md](HIT_ZONE_EXPLORER_ROADMAP.md), with the technical specification at [docs/hit-zone-explorer-architecture.md](docs/hit-zone-explorer-architecture.md). The damage adapter, SVG and controller have been connected on the `feature/hit-zone-explorer-visual` integration branch. This is an **unreleased draft** until the PR's regression and visual checks pass; the published `main` site remains unchanged. Roadmap work and source conflicts remain tracked separately.
 
 To continue in another chat: **"Continue the Hit Zone Damage Explorer in johnstacey16-ui/HELP-Clan-PUBG-Toolkit from HIT_ZONE_EXPLORER_ROADMAP.md. Work on the next unchecked task and update the roadmap when done."**
 
@@ -24,7 +24,7 @@ To start viewing traffic:
 3. Visit the production URL (`https://help-clan-pubg-toolkit.vercel.app`) after the new deployment is ready.
 4. Return to Vercel **Analytics** to see visitors and page views. If the dashboard still has no data, inspect the browser Network panel for `/_vercel/insights/script.js` and a tracking request; blockers and privacy settings can prevent collection.
 
-This toolkit has a single HTML page with seven client-side tool sections. Standard Web Analytics tracks the **site's page views**, not distinct clicks between its internal tools. Tracking internal tool usage would require separately designed events (subject to the Vercel plan's event support) or deliberate URL routing. Do not alter the Scope Sensitivity Matcher merely to create tracking events.
+This toolkit has a single HTML page with eight client-side tool sections on the feature branch. Standard Web Analytics tracks the **site's page views**, not distinct clicks between its internal tools. Tracking internal tool usage would require separately designed events (subject to the Vercel plan's event support) or deliberate URL routing. Do not alter the Scope Sensitivity Matcher merely to create tracking events.
 
 Further reference: https://vercel.com/docs/analytics/quickstart
 
@@ -32,7 +32,7 @@ Further reference: https://vercel.com/docs/analytics/quickstart
 
 The static site works without npm, bundling, or a framework. JavaScript now lives in five ordered files loaded synchronously at the end of `index.html`:
 
-1. `js/app-navigation.js` — seven-tool sidebar, history and mobile menu.
+1. `js/app-navigation.js` — eight-tool sidebar, history and mobile menu.
 2. `js/shared.js` — the shared `PT` namespace.
 3. `js/combat-database.js` — weapon and recoil registries, Combat DB and armor logic.
 4. `js/sensitivity.js` — unchanged owner-built sensitivity calculations.
@@ -51,7 +51,7 @@ These `.part` files intentionally share the original lexical closure, so **they 
 
 ## Real-browser regression checks
 
-Alongside `node --test tests/*.test.cjs`, run `node tests/browser-smoke.cjs` to launch an installed Chrome/Chromium browser against a temporary localhost server. No npm dependencies or external game data are required. This exercises the **actual committed HTML and JS** (including mobile navigation, scope matching, range, TTK, recoil evidence, magazine switching and Jammer backpack totals). GitHub Actions runs this on every pull request and push. Use `CHROME_BIN=/path/to/chromium` if Chrome is not on your PATH. The smoke page stays under `tests/` and is not linked from the public seven-tool app.
+Alongside `node --test tests/*.test.cjs`, run `node tests/browser-smoke.cjs` to launch an installed Chrome/Chromium browser against a temporary localhost server. No npm dependencies or external game data are required. This exercises the **actual committed HTML and JS** (including mobile navigation, scope matching, range, TTK, recoil evidence, magazine switching and Jammer backpack totals). GitHub Actions runs this on every pull request and push. Use `CHROME_BIN=/path/to/chromium` if Chrome is not on your PATH. The smoke page stays under `tests/` and is not linked from the public toolkit app.
 
 Chrome checks test the **static site**, not the status of a production Vercel deployment.
 
