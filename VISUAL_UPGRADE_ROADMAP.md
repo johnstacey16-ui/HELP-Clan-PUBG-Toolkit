@@ -133,4 +133,4 @@ When a task is done, change its literal `- [ ]` to `- [x]` **in GitHub**, alongs
 
 ## Progress journal
 
-- **2026-10-25 — visual foundation:** audited source/main, created the isolated feature branch, documented all seven visual tracks and set up the first asset manifest/testing infrastructure. New non-Hit-Zone visuals are **not yet shipped**. Await first image pilot; CI outcomes to be confirmed on draft PR.
+- **2026-10-25 — visual foundation (commit `a82347e4`):** audited source/main, created the isolated feature branch, documented all seven visual tracks and set up the first asset manifest/testing infrastructure. Draft [PR #41](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/pull/41) is open. [GitHub Actions run 40242251840](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40242251840) passed source sync, Node tests including media registry, eight-tool Chromium smoke and responsive Hit Zone checks. Vercel preview reported READY. New non-Hit-Zone visuals are **not yet shipped**; the next step is the first Combat DB image pilot.
