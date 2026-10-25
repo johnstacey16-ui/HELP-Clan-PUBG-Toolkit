@@ -33,6 +33,19 @@
       "origin": "original-generated",
       "rightsNote": "Original fictional adult model generated specifically for this toolkit; selected and approved by the owner in PR #40.",
       "usage": "Photographic layer beneath accessible 13-zone SVG. SVG carries accessible zone descriptions and hit targets."
+    },
+    {
+      "id": "weapon-m416-field",
+      "path": "assets/weapon-m416-field.svg",
+      "panelId": "panel-combat",
+      "role": "thumbnail",
+      "width": 960,
+      "height": 320,
+      "decorative": false,
+      "alt": "Original illustrative side profile of an M416-style assault rifle",
+      "origin": "original-designed",
+      "rightsNote": "Original vector field illustration authored for this toolkit; no PUBG or third-party image is reproduced.",
+      "usage": "First Combat DB artwork pilot; M416 only; transparent SVG with representative, non-official styling; fallback for other weapons."
     }
   ]
 }

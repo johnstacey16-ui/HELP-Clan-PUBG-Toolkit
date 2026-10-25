@@ -26,7 +26,7 @@ Make all seven remaining tools look like one premium, readable PUBG companion ap
 - [ ] **P9 — Shared UI refinement and cross-tool cohesion**.
 - [ ] **P10 — Acceptance testing, owner preview and release**.
 
-The checked foundation items are documentation, audit and automated guardrails; **0 of 7 remaining tools have new images so far**.
+The checked foundation items include the initial Combat DB **illustrated M416 pilot**; **1 of 7 target tools has an initial art pilot, 0 of 7 is completely finished**. Photo-grade cataloguing and all other tools are pending.
 
 ## P0. Baseline and guardrails
 
@@ -41,8 +41,8 @@ The checked foundation items are documentation, audit and automated guardrails; 
 - [x] Add `assets/visual-manifest.json`: register shipped assets, origin/usage, dimensions and accessibility intent.
 - [x] Add `tests/visual-asset-registry.test.cjs`: reject missing/unlisted imagery, malformed metadata, excessive file budgets and invalid WebP assets.
 - [x] Record source rights, image and page budgets, named layouts, Xbox Edge considerations and fallbacks in this document.
-- [ ] Add reusable image-tile/card classes in a scoped `visual-assets.css`, linked only where useful; preserve the existing layout/brand and do not obscure stats.
-- [ ] Create and optimise the **first new real asset** (WebP, with size/dimensions/rights recorded), verify it loads from the preview build.
+- [x] Add reusable image-tile/card classes in scoped `visual-assets.css`, linked only where useful; preserve existing layout/brand and keep stats unobscured. Implemented on P1b Combat DB pilot.
+- [ ] Replace first **representative vector artwork pilot** with an optimized photographic or higher-fidelity original/rights-cleared image if desired; record actual image rights/dimensions. Current SVG illustration is an interim image, not a photograph. Verify the selected final image loads in the preview.
 - [ ] Support informative `alt` versus decorative `alt=""`, consistent visual loading/error states, `width`/`height` to avoid layout shift, lazy loading for offscreen images, sensible eager loading only for a hero visible at startup.
 - [ ] Document source/permission for any use of official or third-party PUBG imagery; otherwise use original assets labelled as representative where exact equipment appearance cannot be verified.
 - [ ] Visual screenshot review at 320, 360, 390, 768, 1280 and 1440 pixels and Xbox Series S Edge where possible.
@@ -59,9 +59,9 @@ The checked foundation items are documentation, audit and automated guardrails; 
 
 ## P3. Combat DB (tool 02)
 
-- [ ] Create source-backed weapon thumbnail pipeline, beginning with a **single M416 pilot** and subsequently a staged catalogue for all supported weapons.
-- [ ] Display a matching weapon visual beside selected weapon summary; image changes whenever weapon selection changes.
-- [ ] Provide a compact no-image placeholder and avoid false equivalence when several gun skins/models exist.
+- [x] Build an **original, representative M416 illustration pilot** and register it in the image manifest; local SVG is 960×320 and is not presented as an official game screenshot. A full source-backed weapon thumbnail catalogue remains pending.
+- [x] Display the M416 artwork in its weapon detail and a visible Combat DB pilot card. Other weapons show a **no-artwork** fallback rather than the wrong rifle. A full per-weapon image lookup remains pending.
+- [x] Provide an explicit no-image text state and broken-file fallback; art is labelled representative and never substituted for another weapon.
 - [ ] Optionally add a small visual key for helmet/vest, but preserve precise damage/armour tables, numbers and stickied table header.
 - [ ] Test all weapon names/image lookup and no missing source data; never substitute a different gun image.
 
@@ -127,10 +127,12 @@ The checked foundation items are documentation, audit and automated guardrails; 
 
 ## Implementation order and update discipline
 
-The first on-screen pilot is **Combat DB (single weapon + reusable pattern)**, then Scope Matcher, then Attachments, followed by Range, TTK, Recoil and Backpack. This reduces risk before expanding to a full artwork catalogue.
+The first on-screen pilot is **Combat DB (original M416 SVG plus reusable responsive pattern)**, then Scope Matcher, then Attachments, followed by Range, TTK, Recoil and Backpack. This reduces risk before expanding to a full artwork catalogue.
 
 When a task is done, change its literal `- [ ]` to `- [x]` **in GitHub**, alongside the source/asset/test commit. State the exact commit, CI/preview status and any limitations in the PR or below. Never mark a browser preview or asset as delivered on the basis of a plan alone. Keep existing tool-specific [Hit Zone Explorer roadmap](HIT_ZONE_EXPLORER_ROADMAP.md) as an independent reference.
 
 ## Progress journal
 
 - **2026-10-25 — visual foundation (commit `a82347e4`):** audited source/main, created the isolated feature branch, documented all seven visual tracks and set up the first asset manifest/testing infrastructure. Draft [PR #41](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/pull/41) is open. [GitHub Actions run 40242251840](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40242251840) passed source sync, Node tests including media registry, eight-tool Chromium smoke and responsive Hit Zone checks. Vercel preview reported READY. New non-Hit-Zone visuals are **not yet shipped**; the next step is the first Combat DB image pilot.
+
+- **2026-10-25 — Combat DB illustrated pilot:** added a 960×320 original representative M416 field illustration (not official/photographic), responsive `visual-assets.css`, a visible image card and M416 detail art with clear fallback for all other weapons. Registered source/rights, kept every weapon statistic and Model 2 calculation untouched. Added art/manifest regression tests. **GitHub CI and visual preview verification pending for this commit**; don't count P1b/Combat DB as finished yet.

@@ -296,6 +296,20 @@ const panelsEl = document.getElementById("panels");
   p.innerHTML = `
     <div class="card" id="combat-database">
       <div class="panel-coord">A1 · Combat Database</div>
+      <section class="visual-media-card combat-visual-pilot" aria-label="Featured weapon art">
+        <div class="visual-media-frame">
+          <img id="combat-pilot-image" src="assets/weapon-m416-field.svg" width="960" height="320"
+            alt="Original illustrative side profile of an M416-style assault rifle"
+            loading="lazy" decoding="async">
+          <div class="visual-media-placeholder" id="combat-pilot-fallback" hidden>Artwork unavailable</div>
+        </div>
+        <div class="visual-media-copy">
+          <span class="visual-media-kicker">FIELD IMAGE · FIRST LOOK</span>
+          <strong class="visual-media-title">M416</strong>
+          <p>Representative weapon illustration. Statistics below come from the toolkit's existing data, not the artwork.</p>
+          <button id="combat-pilot-open" class="visual-media-cta" type="button">Inspect M416 statistics</button>
+        </div>
+      </section>
       <div class="toolbar">
         <input type="text" id="wSearch" placeholder="Search weapon name…">
         <select id="wSort">
@@ -350,6 +364,12 @@ const panelsEl = document.getElementById("panels");
       <div class="section-h" style="margin-top:0">How the crossover thresholds work</div>
       <p class="helptext">A crossover point is the durability value at which damaged higher-tier armor stops being worth more than a fresh piece of the tier below. Higher tiers absorb more damage per hit but wear down with use; a fresh lower tier is undamaged, so at some durability the two protect equally well, and below it the fresh lower tier wins.</p>
     </div>`;
+  // The visual pilot is independent of the data table and calculations.
+  document.getElementById("combat-pilot-open").addEventListener("click",()=>openWeaponDetail("M416"));
+  document.getElementById("combat-pilot-image").addEventListener("error",()=>{
+    document.getElementById("combat-pilot-image").hidden=true;
+    document.getElementById("combat-pilot-fallback").hidden=false;
+  });
   const ROWS = WEAPONS.map(w=>({...w, helm:HELM[norm(w.name)], vest:VEST[norm(w.name)]}));
  
   const classes = ["All",...new Set(WEAPONS.map(w=>w.cls))];
@@ -501,10 +521,15 @@ function openWeaponDetail(name){
   const dmgRank = rank(WEAPONS,"dmg"), dpsRank = rank(WEAPONS,"dps");
   const {strengths, weaknesses} = getStrengthsWeaknesses(w);
   const helm = HELM[norm(w.name)], vest = VEST[norm(w.name)];
+  // Never display M416 artwork against any other weapon.
+  const weaponArt = w.name === "M416"
+    ? '<figure class="visual-modal-media"><img src="assets/weapon-m416-field.svg" width="960" height="320" loading="lazy" decoding="async" alt="Original illustrative side profile of an M416-style assault rifle"><figcaption>Representative artwork, not an official PUBG asset</figcaption></figure>'
+    : '<p class="visual-modal-unavailable">Artwork not available for this weapon yet. Statistics are unaffected.</p>';
   document.getElementById("modalBody").innerHTML = `
     <button class="close" data-action="close-modal" aria-label="Close weapon detail">✕</button>
     <div class="eyebrow">${w.cls}${w.crate?' · CRATE':''}</div>
     <h3 id="modalTitle">${w.name}</h3>
+    ${weaponArt}
     <div class="kv">
       <div><span>Damage</span> ${w.dmg}</div>
       <div><span>RPM</span> ${w.rpm}</div>

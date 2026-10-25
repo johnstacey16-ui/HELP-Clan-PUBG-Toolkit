@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="320" viewBox="0 0 960 320" fill="none">
+<title>Representative modern assault rifle field illustration</title>
+<desc>Original stylised M416-inspired side profile; decorative reference art, not an official in-game equipment image.</desc>
+<defs>
+<linearGradient id="metal" x1="0" y1="106" x2="0" y2="216" gradientUnits="userSpaceOnUse"><stop stop-color="#798c97"/><stop offset=".18" stop-color="#344550"/><stop offset=".52" stop-color="#1c2b36"/><stop offset=".85" stop-color="#283b45"/><stop offset="1" stop-color="#0c141b"/></linearGradient>
+<linearGradient id="polymer" x1="0" y1="94" x2="0" y2="258" gradientUnits="userSpaceOnUse"><stop stop-color="#384852"/><stop offset=".55" stop-color="#111b24"/><stop offset="1" stop-color="#060e16"/></linearGradient>
+<linearGradient id="bronze" x1="0" y1="132" x2="0" y2="204" gradientUnits="userSpaceOnUse"><stop stop-color="#c9b085"/><stop offset=".5" stop-color="#7b6448"/><stop offset="1" stop-color="#463a2d"/></linearGradient>
+<linearGradient id="rail" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#98a4a6"/><stop offset=".48" stop-color="#3b535e"/><stop offset="1" stop-color="#16252d"/></linearGradient>
+</defs>
+<g opacity=".2" stroke="#90d7df" stroke-width="1"><path d="M46 233h850M46 82h850" stroke-dasharray="2 11"/><path d="M48 76v14M896 76v14M48 226v14M896 226v14"/><circle cx="469" cy="158" r="116" stroke-dasharray="4 15"/><path d="M469 24v19M469 277v19"/></g>
+<g stroke-linejoin="round" stroke-linecap="round">
+<!-- Adjustable stock with inset skeleton and butt pad -->
+<path d="M58 117l31-19 76 17 24 24h94v47H191l-25 34-81 9-30-22z" fill="url(#polymer)" stroke="#81929a" stroke-width="3"/>
+<path d="M75 131l16-11 64 12 17 15v30l-21 25-53 5-11-11 41-46z" fill="#0a151e" stroke="#627783" stroke-width="2"/>
+<path d="M60 111l-14 8 1 99 17 8 16-12-2-90z" fill="#171e26" stroke="#b0b5ad" stroke-width="3"/>
+<path d="M191 147h113v29H191z" fill="url(#rail)" stroke="#6b7d87" stroke-width="2"/><path d="M200 153h93M200 170h93" stroke="#b3b4a3" opacity=".5"/>
+<!-- Buffer, trigger and receiver -->
+<path d="M290 124l52-17 154 11 18 72-38 17-147-9-30-32z" fill="url(#metal)" stroke="#9ba8aa" stroke-width="3"/>
+<path d="M339 132h129l11 50-36 11-101-8z" fill="#20313b" stroke="#70828a" stroke-width="2.4"/>
+<path d="M351 141h87l22 12-10 22h-96z" fill="#263944" stroke="#6d8188"/>
+<rect x="350" y="147" width="44" height="11" rx="3" fill="#111e27" stroke="#647980"/>
+<path d="M410 161h18v18h-18z" fill="#101920" stroke="#94a09c"/>
+<circle cx="458" cy="142" r="8" fill="#c9b185" stroke="#4b5050" stroke-width="3"/><circle cx="458" cy="142" r="3" fill="#1e3039"/>
+<path d="M335 199q30 12 86 7l-10 22-26 43-31-8 9-34-28-4z" fill="url(#polymer)" stroke="#8a928f" stroke-width="3"/>
+<path d="M353 216l-7 23 13 4 12-20" stroke="#718991" stroke-width="2"/>
+<path d="M408 196c9 32 25 29 35 24l6-23" stroke="#a2b4b6" stroke-width="5"/>
+<!-- Magazine, canted and fluted -->
+<path d="M454 199l56-9 30 80-17 15-45-4-25-63z" fill="url(#polymer)" stroke="#a3a69d" stroke-width="3"/>
+<path d="M471 214l24 56M486 209l22 58M501 205l20 56" stroke="#61727a" stroke-width="4" opacity=".75"/>
+<path d="M479 280l45 3-7 9-32-4z" fill="#ab9170" opacity=".7"/>
+<!-- Handguard with M-LOK cuts -->
+<path d="M502 122l224 4 23 17-5 38-226 8-21-17z" fill="url(#metal)" stroke="#93a5a6" stroke-width="3"/>
+<path d="M518 140h210l6 9-7 16-206 7z" fill="#142430" stroke="#546f7b" stroke-width="1.5"/>
+<g fill="#07131b" stroke="#8d9d9d" stroke-width="1.5" opacity=".96">
+<rect x="530" y="147" width="29" height="9" rx="4"/><rect x="573" y="147" width="29" height="9" rx="4"/><rect x="616" y="147" width="29" height="9" rx="4"/><rect x="659" y="147" width="29" height="9" rx="4"/><rect x="702" y="147" width="23" height="9" rx="4"/>
+</g>
+<path d="M522 172h211M511 134h228" stroke="#d3b589" stroke-width="2" opacity=".47"/>
+<!-- Continuous rail and fore sight -->
+<path d="M307 114h445v12H307z" fill="url(#rail)" stroke="#afbbb5" stroke-width="2"/>
+<g stroke="#cad1c4" stroke-width="2.5" opacity=".75"><path d="M322 115v11m19-11v11m19-11v11m19-11v11m19-11v11m19-11v11m19-11v11m19-11v11m19-11v11m19-11v11m19-11v11m19-11v11m19-11v11m19-11v11m19-11v11m19-11v11m19-11v11m19-11v11m19-11v11m19-11v11m19-11v11m19-11v11m19-11v11m19-11v11"/></g>
+<!-- Simple low-profile optic -->
+<path d="M375 114V94h19V82h49v12h22v20z" fill="url(#metal)" stroke="#9eaaa5" stroke-width="3"/><path d="M395 89h43v15h-43z" fill="#080f15" stroke="#9bb4ba" stroke-width="3"/><circle cx="418" cy="96" r="4" fill="#96e4eb" opacity=".8"/>
+<path d="M727 113V96l18-7v36" fill="url(#metal)" stroke="#9da9a9" stroke-width="3"/>
+<!-- Gas system, front barrel and brake -->
+<path d="M740 141h130v14H740z" fill="url(#rail)" stroke="#b2b9b2" stroke-width="2"/>
+<path d="M742 159h117v8H742z" fill="#101b23" stroke="#5c6c6a"/>
+<path d="M869 137h20l7 6v13h-27z" fill="url(#metal)" stroke="#bec4b3" stroke-width="2"/>
+<path d="M879 141v11m9-11v11" stroke="#111920" stroke-width="3"/>
+<path d="M314 125h172M505 184h223" stroke="#e8c798" stroke-width="1.5" opacity=".55"/>
+</g>
+<path d="M72 244h164m510 0h134" stroke="#72b8c4" stroke-width="1" opacity=".32"/>
+</svg>

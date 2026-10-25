@@ -44,6 +44,11 @@ test('manifest describes all shipped image assets and a bounded budget',()=>{
    assert.equal(bytes.subarray(0,4).toString(),'RIFF','invalid RIFF '+entry.path);
    assert.equal(bytes.subarray(8,12).toString(),'WEBP','invalid WebP '+entry.path);
   }
+  if(ext==='svg'){
+   const svg=bytes.toString('utf8');
+   assert.match(svg,/^<svg\s[^>]*xmlns="http:\/\/www\.w3\.org\/2000\/svg"/);
+   assert.doesNotMatch(svg,/<script|<foreignObject|\bon\w+\s*=|(?:href|src)\s*=\s*["']https?:/i,'SVG must contain no executable or remote resources');
+  }
   total+=bytes.length;
   listed.add(path.basename(entry.path));
  }
