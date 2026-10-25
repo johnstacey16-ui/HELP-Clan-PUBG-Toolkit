@@ -1,5 +1,12 @@
 # HELP-Clan-PUBG-Toolkit
 
+## Hit Zone Damage Explorer — work in progress
+
+The feature's persistent plan is [HIT_ZONE_EXPLORER_ROADMAP.md](HIT_ZONE_EXPLORER_ROADMAP.md), with the technical specification at [docs/hit-zone-explorer-architecture.md](docs/hit-zone-explorer-architecture.md). The first **unwired** markup, styles, SVG and JS controller scaffolds are stored in `src/explorer/`. They are deliberately **not included in the seven-tool live site** until the calculation adapter, armour coverage review and browser tests are completed.
+
+To continue in another chat: **"Continue the Hit Zone Damage Explorer in johnstacey16-ui/HELP-Clan-PUBG-Toolkit from HIT_ZONE_EXPLORER_ROADMAP.md. Work on the next unchecked task and update the roadmap when done."**
+
+
 ## Vercel Web Analytics
 
 This is a static HTML/JavaScript site, **not** a Next.js/React application. Its analytics integration uses Vercel's official first-party script directly in `index.html`:
