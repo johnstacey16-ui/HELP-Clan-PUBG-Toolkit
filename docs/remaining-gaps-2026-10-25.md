@@ -67,3 +67,24 @@ Current coverage is **30/45**. Existing estimates are WinnerMeta's flight-time-d
 ## Attachment scoring boundaries
 
 https://pubg.gs/attachments/ lists compatible item families and effects; the existing optimizer's exhaustive 45-weapon tests check only its declared additive recoil score. It is **not a measured shooting-range outcome** and cannot validate secondary ADS, hipfire, camera-shake or recoil-pattern changes without ground-truth trials. A selected accessory's non-scored effects now appear in the attachment note, without blending into the preset's vertical/horizontal score.
+
+## Access limitations and practical research stop rules (25 October clarification)
+
+The author's observation that some weapon recoil parameters may live in inaccessible or encrypted files is a plausible explanation, especially for incomplete SMG, shotgun and special/crate weapons. It is **not confirmed per-field** from the public extractor alone, so documentation should say *not exposed by currently available source* rather than *proven encrypted*.
+
+Audit of existing `RECOIL_RAW` nulls grouped by toolkit class (nulls in any one of eight fields):
+
+| Class | Incomplete records | Total weapons |
+|---|---:|---:|
+| SMG | 9 | 9 |
+| Shotgun (SG) | 4 | 5 |
+| MG/LMG | 3 | 3 |
+| Sniper rifle (SR) | 3 | 4 |
+| Pistol | 4 | 4 |
+| DMR | 2 | 7 |
+| AR | 3 | 13 |
+| **Total** | **28** | **45** |
+
+Source: `src/combat/00-weapon-data-armor.part` current `RECOIL_RAW`, reconciled against `WEAPONS`. The game-file reader at https://pubg.gs/about/ exposes RecoilConfig fields for some weapons, but does not guarantee every property or the actual per-shot curve. Keep nulls absent until a patch-matched, exact-field source is found. Record provenance; stop unproductive repeated searches rather than pretending decryption is trivial.
+
+Separately, the ACE32 magazine 40/42 pair has now been mapped to Extended QuickDraw 40 / Extended 42 based on official Update 15.1's magazine-type trade-off and the 43.2 item table. Dragunov's 18/20 pair still requires family-specific validation. See `DATA_ACCURACY_POLICY.md`.
