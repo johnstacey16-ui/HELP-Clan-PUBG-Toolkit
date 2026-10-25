@@ -136,9 +136,9 @@ test('out-of-range equipment inputs cannot silently become no-armour readings',(
   assert.throws(()=>m.getAllZoneDamageForWeapon(weapon('Unknown','X'),0,0,0),
     {name:'TypeError'});
 });
-test('calculator bundle contains adapter while the released UI is still only seven tools',()=>{
+test('calculator bundle contains adapter and live panel is wired to UI',()=>{
   const sourceBundle=fs.readFileSync(path.join(root,'js/toolkit-calculators.js'),'utf8');
   assert.match(sourceBundle,/function getAllZoneDamageForWeapon\(/);
   const index=fs.readFileSync(path.join(root,'index.html'),'utf8');
-  assert.doesNotMatch(index,/id="panel-hit-zone"/,'P1 must not ship an untested panel');
+  assert.match(index,/id="panel-hit-zone"/);
 });
