@@ -1,3 +1,5 @@
+> **25 October 2026 follow-up:** Eight additional WinnerMeta telemetry-bin estimate tables have been verified and added; current `DROP_TABLES` coverage is **29/45**, with **16 missing**. See [gravity-drop-evidence-2026-10-25.md](gravity-drop-evidence-2026-10-25.md). The historical counts below describe the earlier 24 October snapshot and have not been silently reinterpreted.
+
 > **25 October 2026 correction:** WinnerMeta's published drop figures are estimates from flight time (½gt²), not observed impact displacement or validated sight holdover. The historical research notes below must not be used to fill missing observed trajectories.
 
 # Missing data and source-recovery audit — 24 October 2026
