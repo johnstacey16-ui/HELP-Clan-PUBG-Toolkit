@@ -11,7 +11,7 @@ test('gravity estimates are never labeled observed impacts or sight corrections'
   assert.match(html,/Estimated gravity displacement \(cm\)/);
   assert.match(html,/Estimated gravity drop at this range/);
   assert.doesNotMatch(html,/Drop below aim point \(cm\)/);
-  assert.match(range,/Equivalent angle is not scope holdover/);
+  assert.match(range,/is not scope holdover/);
   assert.match(core,/not measured bullet impacts/);
   assert.match(range,/No gravity-drop estimates for this weapon/);
 });

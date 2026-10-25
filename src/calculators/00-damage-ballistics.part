@@ -143,6 +143,7 @@ const DROP_TABLES = {
   "MK47 Mutant":[[0,0],[200,54.7],[400,265.4]],
   "P90":    [[0,0],[200,66.4]],
   "MP5K":   [[0,0],[200,219.3]],
+  "FAMAS":  [[0,0],[200,34.9]],
 };
 // WinnerMeta's own independently-measured muzzle velocity, for comparison against this toolkit's supplied
 // value — shown as a secondary reference, not used to override the supplied WEAPONS velocity anywhere.
