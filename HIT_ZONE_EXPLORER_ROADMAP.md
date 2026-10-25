@@ -10,6 +10,15 @@ Build a polished **front-view only** PUBG hit-zone damage explorer inside the ex
 
 Default modes: **damage**, **hits-to-kill (100 HP)**, and **heatmap**. Never display invented values to fill holes in data. The toolkit's existing sensitivity and other calculators must remain unchanged.
 
+## Model 2 photorealistic visual upgrade — review branch (2026-10-25)
+
+- [x] Owner selected and approved the original fictional adult **Model 2** portrait as the visual direction.
+- [x] Isolate the work on `feature/hit-zone-photoreal-model-2` created from latest `main`.
+- [x] Swap the former opaque mannequin appearance for a photographic alpha-channel image beneath the interactive SVG; keep **all 13** focusable hit-zone regions, existing results and independent armour covers.
+- [x] Retain the 13 callouts, sourced distance options, damage, HTK, heatmap and theoretical-shell modes without modifying calculator logic.
+- [ ] Verify generated asset loading and 320px–desktop hit-zone placement in a real browser; review readability and focus rings on actual devices.
+- [ ] Owner to inspect and approve **Vercel preview**; DO NOT merge to main without approval.
+
 ## Current state
 
 - [x] Product decisions agreed: single front view, simultaneous zone labels, independent helmet/vest, optional tap-for-detail.

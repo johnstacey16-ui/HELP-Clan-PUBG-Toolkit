@@ -54,3 +54,13 @@
 @media(prefers-reduced-motion:reduce) {
   #panel-hit-zone #hz_body [data-hit-zone], #panel-hit-zone [data-armour] { transition:none; }
 }
+
+/* Photographic model is noninteractive; transparent anatomically aligned zones
+   retain focus, heatmap, click and keyboard selection over the real pixels. */
+#panel-hit-zone #hz_body .hz-photo { pointer-events:none; }
+#panel-hit-zone #hz_body .hz-figure-outline [data-hit-zone] { fill:rgba(19,118,152,.035);stroke:rgba(103,215,236,.34);stroke-width:1.6; }
+#panel-hit-zone #hz_body .hz-figure-outline [data-hit-zone]:hover,
+#panel-hit-zone #hz_body .hz-figure-outline [data-hit-zone].selected { fill:rgba(255,189,94,.19);stroke:#ffcf86;stroke-width:2.8; }
+#panel-hit-zone #hz_body .hz-figure-outline [data-hit-zone]:focus-visible { fill:rgba(255,255,255,.16);stroke:#fff;stroke-width:3.4; }
+#panel-hit-zone #hz_body.has-helmet [data-armour=helmet],
+#panel-hit-zone #hz_body.has-vest [data-armour=vest] { opacity:.15; }
