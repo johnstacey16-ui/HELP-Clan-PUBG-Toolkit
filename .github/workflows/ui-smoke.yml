@@ -16,3 +16,5 @@ jobs:
         run: node --test tests/*.test.cjs
       - name: Exercise all seven tools in headless Chrome
         run: node tests/browser-smoke.cjs
+      - name: Render-hit-zone SVG at phone and desktop widths
+        run: node tests/hit-zone-preview-smoke.cjs
