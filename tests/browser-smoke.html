@@ -122,7 +122,8 @@
           }
         }
         change(get('hz_weapon'),'M416');
-        eq(hzValue('chest'),'44.0','Weapon sweep leaves selector usable on its first checkpoint');
+        change(get('hz_distance'),'0');
+        eq(hzValue('chest'),'44.0','Weapon sweep leaves selector usable at the documented 0m checkpoint');
         // Return to unchanged core calculator regression path.
         open('panel-range');
         change(get('rg_weapon'),'S686');
