@@ -11,7 +11,7 @@ To continue in another chat: **"Continue the Hit Zone Damage Explorer in johnsta
 
 The Hit Zone Explorer was developed in [PR #39](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/pull/39). It adds the eighth sidebar tool. Check the [roadmap](HIT_ZONE_EXPLORER_ROADMAP.md) for the latest deployment status.
 
-Use the **Hit Zone Damage Explorer** sidebar tool to select a weapon, a **recorded distance**, a helmet level and a separate vest level. A single **front-facing body map** immediately shows the numeric result in **all 13 hit zones**, with left and right limb values mirrored. Clicking a zone is optional and reveals the multiplier breakdown. Screen-reader users have labelled keyboard-focusable SVG hit areas and an equivalent 13-row table.
+Use the **Hit Zone Damage Explorer** sidebar tool to select a weapon, a **recorded distance**, a helmet level and a separate vest level. A single **front-facing body map** immediately shows the numeric result in **all 13 hit zones**, with left and right limb values mirrored. Clicking a zone is optional and reveals the multiplier breakdown. Screen-reader users have labelled keyboard-focusable SVG hit areas with announced selection state and an equivalent 13-row, captioned results table. HTK labels say “N hits” and explicitly assume 100 HP and repeated hits on the same region.
 
 Available display modes:
 - **Damage** — calculated damage to a single exact zone at the selected published checkpoint, or **No data** where unavailable.

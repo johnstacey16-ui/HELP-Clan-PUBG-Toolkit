@@ -51,6 +51,8 @@ for(let i=0;i<frames.length;i++){
  }
 }
 assert(markers.every(el=>el.getAttribute('tabindex')==='0'),'All hit zones keyboard focusable');
+assert(markers.every(el=>el.getAttribute('aria-controls')==='hz_detail'&&el.getAttribute('aria-pressed')==='false'),'Zones expose detail target and initial state');
+assert(!!panel.querySelector('table caption'),'Tabular equivalent has a caption');
 assert(!!figure.querySelector('[data-armour=helmet]')&&!!figure.querySelector('[data-armour=vest]'),'Separate armour overlays');
 result.textContent='PASS: 13 always-visible, non-overlapping callouts; no horizontal overflow; mobile SVG ready for live QA';
 result.dataset.qa='pass';

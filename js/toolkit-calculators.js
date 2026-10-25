@@ -1193,7 +1193,11 @@ function initHitZoneExplorer({ panel, weapons, getCheckpoints, getZoneResults, i
   function selectZone(id) {
     if (!results.some(r => r.id === id)) return;
     selectedZone = id;
-    zones.forEach(el => el.classList.toggle('selected', el.dataset.hitZone === id));
+    zones.forEach(el => {
+      const active=el.dataset.hitZone === id;
+      el.classList.toggle('selected', active);
+      el.setAttribute('aria-pressed', String(active));
+    });
     renderDetail();
   }
   function renderDetail() {
@@ -1240,7 +1244,9 @@ function initHitZoneExplorer({ panel, weapons, getCheckpoints, getZoneResults, i
         ? (mode === 'ideal-shells'
           ? '* THEORETICAL MINIMUM SHELLS ONLY (best case: every pellet hits this exact zone). Not actual damage, expected shells or real TTK. Assumes intact gear.'
           : 'No data for actual total shell damage or actual hits-to-kill: published values are per pellet. Select the separate theoretical minimum-shell mode for an all-pellets-hit lower bound.')
-        : 'Calculated from a recorded source checkpoint at ' + distance + ' m. Assumes intact selected equipment; no interpolation or simulated armour durability.';
+        : 'Calculated from a recorded source checkpoint at ' + distance + ' m. Assumes intact selected equipment; no interpolation or simulated armour durability.' +
+          (mode === 'htk' ? ' Hits to kill assumes 100 HP and repeated shots striking the same hit zone.' :
+           mode === 'heatmap' ? ' Heatmap colour is relative to damage across this weapon\'s zones.' : '');
     }
     body.classList.toggle('has-helmet', helmet > 0);
     body.classList.toggle('has-vest', vest > 0);
@@ -1257,11 +1263,13 @@ function initHitZoneExplorer({ panel, weapons, getCheckpoints, getZoneResults, i
     panel.querySelectorAll('[data-hz-value]').forEach(node => {
       const zone = byZone.get(node.dataset.hzValue);
       const val = showValue(zone, mode);
-      node.textContent = mode === 'htk' ? val.replace(' hits', 'x') : val;
+      node.textContent = val;
     });
     zones.forEach(node => {
       const data = byZone.get(node.dataset.hitZone);
-      node.classList.toggle('selected', node.dataset.hitZone === selectedZone);
+      const active=node.dataset.hitZone === selectedZone;
+      node.classList.toggle('selected', active);
+      node.setAttribute('aria-pressed', String(active));
       node.style.removeProperty('fill');
       if (mode === 'heatmap' && data && Number.isFinite(data.damage)) {
         const t = high === low ? 0.5 : (data.damage - low) / (high - low);
@@ -1270,7 +1278,11 @@ function initHitZoneExplorer({ panel, weapons, getCheckpoints, getZoneResults, i
         node.style.fill = 'hsl(' + hue + ' 60% 29%)';
       }
       const value = showValue(data, mode);
-      node.setAttribute('aria-label', (data ? data.label : node.dataset.hitZone) + ': ' + value);
+      const accessibleValue = value === 'No data' ? value
+        : mode === 'ideal-shells' ? value + ', theoretical minimum (all pellets hit)'
+        : mode === 'damage' || mode === 'heatmap' ? value + ' damage'
+        : value;
+      node.setAttribute('aria-label', (data ? data.label : node.dataset.hitZone) + ': ' + accessibleValue);
     });
 
     const fragment = document.createDocumentFragment();

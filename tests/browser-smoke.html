@@ -52,7 +52,9 @@
         eq(hzValue('head'),'42.3','Vest does not change head');
         eq(hzValue('thigh'),bareThigh,'Vest cannot protect thigh');
         change(get('hz_mode'),'htk');
-        eq(hzValue('chest'),'4x','HTK display uses four hits');
+        eq(hzValue('chest'),'4 hits','HTK display labels hits unambiguously');
+        check(text('hz_status').includes('100 HP'),'HTK explains the 100 HP single-zone assumption');
+        eq(child.querySelector('[data-hit-zone="chest"]').getAttribute('aria-label'),'Chest: 4 hits','Keyboard label describes hits instead of a multiplier');
         change(get('hz_mode'),'heatmap');
         check(!!child.querySelector('[data-hit-zone="chest"]').style.fill,'Heatmap colours computed zone');
         change(get('hz_weapon'),'DBS');
@@ -83,11 +85,18 @@
         check(hzValue('chest')!=='No data','Published 100m damage available');
         get('hz_body').querySelector('[data-hit-zone="calf"]').dispatchEvent(new MouseEvent('click',{bubbles:true}));
         check(text('hz_detail').includes('Calf'),'Optional region detail responds to clicks');
+        eq(get('hz_body').querySelector('[data-hit-zone="calf"]').getAttribute('aria-pressed'),'true','Pointer-selected zone exposes state');
+        eq(get('hz_body').querySelector('[data-hit-zone="chest"]').getAttribute('aria-pressed'),'false','Other zones are not selected');
         const keyboardZone=get('hz_body').querySelector('[data-hit-zone="head"]');
         keyboardZone.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true}));
         check(text('hz_detail').includes('Head:'),'Keyboard Enter opens the optional zone breakdown');
         check(keyboardZone.getAttribute('aria-label').includes('Head:'),'Keyboard target announces zone and value');
+        eq(keyboardZone.getAttribute('aria-controls'),'hz_detail','Keyboard targets connect to the detail panel');
+        eq(keyboardZone.getAttribute('aria-pressed'),'true','Keyboard-selected zone exposes state');
+        eq(get('hz_body').querySelector('[data-hit-zone="calf"]').getAttribute('aria-pressed'),'false','Keyboard selection clears old zone');
         eq(child.querySelectorAll('#hz_rows tr').length,13,'Accessible table includes all body regions');
+        check(!!child.querySelector('#panel-hit-zone table caption'),'Table has a descriptive accessibility caption');
+        eq(child.querySelectorAll('#panel-hit-zone thead th[scope="col"]').length,3,'Result headings declare column scope');
         // All 45 combat weapons must render 13 consistent readouts and safe
         // no-data states without leaking NaN, Infinity, or per-pellet damage.
         const hitZoneWeaponNames=[...get('hz_weapon').options].map(o=>o.value).filter(Boolean);

@@ -36,6 +36,7 @@
 #panel-hit-zone .hz-caption { padding:2px 5px 0;font-size:12px;line-height:1.6; }
 #panel-hit-zone .hz-table-scroll { overflow-x:auto; }
 #panel-hit-zone table { width:100%;border-collapse:collapse;font:12px ui-monospace,monospace; }
+#panel-hit-zone table caption { padding:0 0 10px;text-align:left;font:12px/1.5 ui-monospace,monospace;color:#a9becc; }
 #panel-hit-zone th, #panel-hit-zone td { border-bottom:1px solid #2d4554;text-align:left;padding:10px 6px; }
 #panel-hit-zone th { color:#86cfde;text-transform:uppercase; }
 #panel-hit-zone #hz_detail, #panel-hit-zone #hz_summary { color:#cbd6de;font-size:13px;line-height:1.7;margin:10px 0;white-space:pre-line; }
