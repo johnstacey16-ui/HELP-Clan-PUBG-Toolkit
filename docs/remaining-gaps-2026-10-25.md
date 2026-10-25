@@ -57,7 +57,7 @@ For weapons not yet re-read individually from the current 43.2 pages, these are 
 - Skorpion
 - Sawn-off
 
-29+ one? Current coverage is **30/45**. Existing estimates are WinnerMeta's flight-time-derived **gravity-only** 50m-bin aggregates, not measured point of impact or sight holdover. Fan-modeled time-of-flight from the PUBG item files must not be inserted into the directly observed telemetry table. Source audit: docs/gravity-drop-evidence-2026-10-25.md.
+Current coverage is **30/45**. Existing estimates are WinnerMeta's flight-time-derived **gravity-only** 50m-bin aggregates, not measured point of impact or sight holdover. Fan-modeled time-of-flight from the PUBG item files must not be inserted into the directly observed telemetry table. Source audit: docs/gravity-drop-evidence-2026-10-25.md.
 
 ## Patch cross-check
 
