@@ -29,14 +29,18 @@
         check(text('px_speed')!=='–' && text('px_speed')!=='','Scope result initially calculates');
         eq(child.querySelectorAll('#px_table tbody tr').length,7,'Seven scope conversions');
 
+        // Sidebar and numbered navigation follow the user-requested position.
+        const sidebarIds=[...child.querySelectorAll('#app-toolnav [data-open-panel]')].map(b=>b.dataset.openPanel);
+        eq(sidebarIds.join(','),['panel-sensitivity','panel-combat','panel-hit-zone','panel-range','panel-ttk','panel-recoil2','panel-attach','panel-backpack'].join(','),'Hit Zone Explorer appears immediately above Effective Range');
         // Mobile drawer and all eight navigable tools.
         get('mobile-nav-toggle').click();
         check(child.body.classList.contains('sidebar-open'),'Mobile drawer opens');
-        for(const id of ['panel-combat','panel-sensitivity','panel-range','panel-ttk','panel-recoil2','panel-attach','panel-backpack','panel-hit-zone'])open(id);
+        for(const id of ['panel-combat','panel-sensitivity','panel-hit-zone','panel-range','panel-ttk','panel-recoil2','panel-attach','panel-backpack'])open(id);
         check(!child.body.classList.contains('sidebar-open'),'Navigation closes drawer');
 
         // All thirteen labels render without tapping; helmet and vest work independently.
         open('panel-hit-zone');
+        eq(get('active-tool-index').getAttribute('aria-label'),'Tool 3 of 8','Hit Zone Explorer is tool 03 of 08');
         eq(get('hz_weapon').value,'M416','Hit-zone weapon initializes to M416');
         eq(child.querySelectorAll('#hz_body [data-hit-zone]').length,13,'All body-zone shapes exist');
         eq(child.querySelectorAll('#hz_body [data-hz-value]').length,13,'All hit-zone values shown simultaneously');

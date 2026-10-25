@@ -8,7 +8,7 @@ const vm=require('node:vm');
 const html=require('./toolkit-test-source.cjs')();
 const css=fs.readFileSync(path.join(__dirname,'../app-shell.css'),'utf8');
 const nav=html.slice(html.indexOf('<nav id="app-toolnav"'),html.indexOf('</nav>',html.indexOf('<nav id="app-toolnav"'))+6);
-const expected=['panel-sensitivity','panel-combat','panel-range','panel-ttk','panel-recoil2','panel-attach','panel-backpack','panel-hit-zone'];
+const expected=['panel-sensitivity','panel-combat','panel-hit-zone','panel-range','panel-ttk','panel-recoil2','panel-attach','panel-backpack'];
 
 test('all eight tool links live in one continuous sidebar group',()=>{
   assert.equal((nav.match(/class="nav-tool-group"/g)||[]).length,1,'Exactly one navigation group');

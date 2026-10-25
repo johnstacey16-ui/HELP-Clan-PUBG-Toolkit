@@ -12,8 +12,8 @@ const shell = fs.readFileSync(path.join(root, 'app-shell.css'), 'utf8');
 const legacy = fs.readFileSync(path.join(root, 'design-refresh.css'), 'utf8');
 
 const panelIds = [
-  'panel-sensitivity', 'panel-combat', 'panel-range', 'panel-ttk',
-  'panel-recoil2', 'panel-attach', 'panel-backpack', 'panel-hit-zone'
+  'panel-sensitivity', 'panel-combat', 'panel-hit-zone', 'panel-range',
+  'panel-ttk', 'panel-recoil2', 'panel-attach', 'panel-backpack'
 ];
 const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m => m[1]);
 
@@ -61,8 +61,8 @@ function createElement(id) {
 test('desktop, mobile, back navigation and Escape all select the correct panel', () => {
   const panels = panelIds.map(id => createElement(id));
   const labels = [
-    'Scope Sensitivity Matcher', 'Combat DB', 'Effective Range', 'TTK',
-    'Recoil Analyzer', 'Attachments', 'Tactical Loadout & Gear', 'Hit Zone Damage Explorer'
+    'Scope Sensitivity Matcher', 'Combat DB', 'Hit Zone Damage Explorer', 'Effective Range',
+    'TTK', 'Recoil Analyzer', 'Attachments', 'Tactical Loadout & Gear'
   ];
   const buttons = panelIds.map((id, i) => {
     const button = createElement('button-' + id);

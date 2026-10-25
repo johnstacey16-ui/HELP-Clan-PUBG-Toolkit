@@ -17,7 +17,7 @@ const nav=html.slice(html.indexOf('<nav id="app-toolnav"'),html.indexOf('</nav>'
 
 test('main site starts on Scope Sensitivity Matcher with Combat DB second',()=>{
   const order=[...nav.matchAll(/data-open-panel="([^"]+)"/g)].map(m=>m[1]);
-  assert.deepEqual(order.slice(0,3),['panel-sensitivity','panel-combat','panel-range']);
+  assert.deepEqual(order.slice(0,4),['panel-sensitivity','panel-combat','panel-hit-zone','panel-range']);
   assert.match(nav,/data-open-panel="panel-sensitivity" aria-controls="panel-sensitivity" aria-current="page"/);
   assert.match(nav,/Scope Sensitivity Matcher/);
   assert.match(html,/<div id="panel-sensitivity" class="hub-main active">/);
