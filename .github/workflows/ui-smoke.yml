@@ -14,3 +14,5 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Verify toolkit panels, scripts and navigation
         run: node --test tests/*.test.cjs
+      - name: Exercise all seven tools in headless Chrome
+        run: node tests/browser-smoke.cjs

@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>HELP Toolkit Browser Smoke</title></head>
+<body data-smoke-status="pending">
+<pre id="result">Running real browser checks…</pre>
+<iframe id="app-frame" title="Toolkit under test" src="../index.html" width="390" height="780"></iframe>
+<script>
+(function(){
+  'use strict';
+  const output=document.getElementById('result'),frame=document.getElementById('app-frame');
+  const eq=(actual,expected,message)=>{if(actual!==expected)throw new Error(message+' (expected '+expected+', got '+actual+')');};
+  const check=(yes,message)=>{if(!yes)throw new Error(message);};
+  const change=(el,val,type='change')=>{check(!!el,'Missing input');el.value=val;el.dispatchEvent(new Event(type,{bubbles:true}));};
+  frame.addEventListener('load',()=>{
+    setTimeout(()=>{
+      try {
+        const child=frame.contentDocument;
+        check(!!child && !!child.getElementById('panel-sensitivity'),'Loaded real index.html');
+        const get=id=>{const element=child.getElementById(id);check(!!element,'Missing '+id);return element};
+        const text=id=>get(id).textContent.trim();
+        const open=id=>{
+          const button=child.querySelector('[data-open-panel="'+id+'"]');
+          check(!!button,'Missing navigation '+id);
+          button.click();
+          check(get(id).classList.contains('active'),'Panel did not open '+id);
+          eq(child.querySelectorAll('.hub-main.active').length,1,'Exactly one visible panel');
+        };
+        check(get('panel-sensitivity').classList.contains('active'),'Scope matcher must open first');
+        check(text('px_speed')!=='–' && text('px_speed')!=='','Scope result initially calculates');
+        eq(child.querySelectorAll('#px_table tbody tr').length,7,'Seven scope conversions');
+
+        // Mobile drawer and all seven navigable tools.
+        get('mobile-nav-toggle').click();
+        check(child.body.classList.contains('sidebar-open'),'Mobile drawer opens');
+        for(const id of ['panel-combat','panel-sensitivity','panel-range','panel-ttk','panel-recoil2','panel-attach','panel-backpack'])open(id);
+        check(!child.body.classList.contains('sidebar-open'),'Navigation closes drawer');
+
+        open('panel-range');
+        change(get('rg_weapon'),'S686');
+        check(text('rg_htk')!=='No data','Shotgun minimum shells available');
+        check(text('rg_approxNote').includes('all'),'Shotgun pellet limitation shown');
+        change(get('rg_weapon'),'M416');
+        check(text('rg_dmg')!=='No data','Rifle checkpoint damage appears');
+
+        open('panel-ttk');
+        check(text('tk_htk')!=='No data','TTK initializes');
+        change(get('tk_weapon'),'M416');
+        check(text('tk_pure')!=='No data','Weapon switch updates TTK');
+
+        open('panel-recoil2');
+        change(get('rc_weapon'),'RPD');
+        check(text('rc_missing').includes('No data'),'Exact recoil remains explicitly unknown');
+
+        open('panel-attach');
+        change(get('at_weapon'),'MK14 EBR');
+        change(get('at_mag'),'extended');
+        eq(text('at_capNew'),'22','Mk14 DMR/SR extended rounds');
+        change(get('at_mag'),'extended_ar');
+        eq(text('at_capNew'),'20','Mk14 AR/DMR extended rounds');
+        change(get('at_weapon'),'SLR');
+        check(Array.from(get('at_mag').options).some(o=>o.value==='extended_ar'),'SLR supports second magazine family');
+        change(get('at_mag'),'extended_ar');
+        eq(text('at_capNew'),'20','SLR AR magazine rounds');
+        change(get('at_weapon'),'ACE 32');
+        eq(get('at_mag').value,'none','Incompatible dual magazine must reset');
+        change(get('at_mag'),'extended');
+        eq(text('at_capNew'),'No data','ACE unresolved capacity must not be invented');
+
+        open('panel-backpack');
+        change(get('bp_type'),'jammer');
+        change(get('bp_level'),'1');
+        change(get('bp_vest'),'no');
+        eq(text('bp_cap'),'220','Jammer level 1 without vest');
+        change(get('bp_vest'),'yes');
+        eq(text('bp_cap'),'270','Jammer level 1 with vest');
+        const ammo=child.querySelector('input[data-bp="556"]');
+        change(ammo,'100','input');
+        eq(text('bp_used'),'50.0','100 rounds 5.56 inventory weight');
+        eq(text('bp_rem'),'220.0','Remaining carry capacity');
+        get('bp_clear').click();
+        eq(text('bp_used'),'0.0','Backpack Clear button');
+
+        document.body.dataset.smokeStatus='pass';
+        output.textContent='PASS: seven tools, navigation, sensitivity, range/TTK/recoil, magazines, and backpack';
+      }catch(e){
+        document.body.dataset.smokeStatus='fail';
+        output.textContent='FAIL: '+(e && e.stack || e);
+      }
+    },100);
+  });
+  setTimeout(()=>{
+    if(document.body.dataset.smokeStatus==='pending'){
+      document.body.dataset.smokeStatus='fail';
+      output.textContent='FAIL: Toolkit iframe never became ready';
+    }
+  },7000);
+})();
+</script>
+</body>
+</html>

@@ -843,7 +843,7 @@ const MAG_CAP_VERIFIED = {
   // AR/DMR Extended and Extended QuickDraw 20.
   "MK14 EBR": {extended:22,extquick:20,extended_ar:20,extquick_ar:20},
   // Dragunov 18/20 and ACE 32 40/42 still require version/family resolution;
-  // do not guess their values from these Mk14-specific magazine families.
+  // do not infer weapon-loaded counts from generic item tooltip capacities.
   "M249":     {extended:150,extquick:null}, // no checked EQ capacity
   "RPD":      {extended:110,extquick:null}, // official 42.3 max; EQ unverified
   "MK47 Mutant": {extended:30,extquick:null},
@@ -858,6 +858,12 @@ const MAG_CAP_VERIFIED = {
   "G18C":     {extended:25,extquick:25},
   "Desert Eagle":{extended:10,extquick:10}
 };
+// Game-file slot tags include BOTH AR/DMR and DMR/SR magazines on these DMRs.
+ // Keep their AR variant choices distinct from the DMR/SR item family.
+ // For Dragunov both family-specific loaded capacities remain unverified.
+const DUAL_MAG_FAMILY = new Set([
+  "SVD Dragunov","SLR","Mini 14","Mk12","MK14 EBR","SKS","VSS Vintorez"
+]);
 // Most 30-round assault rifles have 40 loaded rounds with an extended mag.
 // The "42 rounds" shown on the shared 43.2 attachment item is not a reliable
 // universal *weapon-loaded* count. Only explicitly listed, independently
@@ -898,6 +904,11 @@ function extendedCapFor(w,kind="extended"){
   if(!slots.magazine || !w.mag) return null;
   const exact=MAG_CAP_VERIFIED[w.name];
   if(exact && Object.prototype.hasOwnProperty.call(exact,kind)) return exact[kind];
+  // Other dual-family DMRs share confirmed weapon-loaded counts.  Never copy
+  // the generic AR attachment label of 42 rounds onto them.
+  if(DUAL_MAG_FAMILY.has(w.name) && (kind==="extended_ar"||kind==="extquick_ar"))
+    return exact && Object.prototype.hasOwnProperty.call(exact,kind==="extended_ar"?"extended":"extquick")
+      ? exact[kind==="extended_ar"?"extended":"extquick"] : null;
   if(MAG_LARGE_30_ROUND_MODEL.has(w.name) && w.mag===30)
     return kind==="extended" || kind==="extquick" ? 40 : null;
   // Missing source figures stay unknown rather than masquerading as a
@@ -933,16 +944,19 @@ function extendedCapFor(w,kind="extended"){
       magSel.disabled = false;
       const ext = extendedCapFor(w,"extended");
       const eq  = extendedCapFor(w,"extquick");
+      const both = DUAL_MAG_FAMILY.has(w.name);
       const previous=magSel.value;
+      const extAr=both?extendedCapFor(w,"extended_ar"):null;
+      const eqAr=both?extendedCapFor(w,"extquick_ar"):null;
       magSel.innerHTML = `<option value="none">None (${w.mag})</option>
-        <option value="extended">Extended${w.name==="MK14 EBR"?" (DMR/SR)":""} (${ext==null?"No data":ext})</option>
+        <option value="extended">Extended${both?" (DMR/SR)":""} (${ext==null?"No data":ext})</option>
         <option value="quickdraw">QuickDraw (${w.mag}, +60% reload speed)</option>
-        <option value="extquick">Extended QuickDraw${w.name==="MK14 EBR"?" (DMR/SR)":""} (${eq==null?"No data":eq}, +15% reload speed)</option>`+
-        (w.name==="MK14 EBR" ? `
-        <option value="extended_ar">Extended (AR/DMR) (20)</option>
-        <option value="extquick_ar">Extended QuickDraw (AR/DMR) (20, +15% reload speed)</option>` : "");
+        <option value="extquick">Extended QuickDraw${both?" (DMR/SR)":""} (${eq==null?"No data":eq}, +15% reload speed)</option>`+
+        (both ? `
+        <option value="extended_ar">Extended (AR/DMR) (${extAr==null?"No data":extAr})</option>
+        <option value="extquick_ar">Extended QuickDraw (AR/DMR) (${eqAr==null?"No data":eqAr}, +15% reload speed)</option>` : "");
       // Keep a compatible choice when comparing weapons; never carry over
-      // an MK14-specific magazine to an incompatible gun.
+      // dual-family magazine choices to a gun without that magazine family.
       magSel.value=[...magSel.options].some(o=>o.value===previous)?previous:"none";
     }
     recompute();
@@ -1001,7 +1015,10 @@ function extendedCapFor(w,kind="extended"){
     if(["extended","extquick","extended_ar","extquick_ar"].includes(magVal) && newCap==null)
       note += " This magazine's capacity is not verified.";
     if(w.name==="MK14 EBR" && magVal!=="none")
-      note += " Mk14 capacity depends on magazine family; values are from named weapon/attachment tables and await a direct 43.2 in-game capacity check.";
+      note += " Mk14 capacity depends on magazine family; values await a direct 43.2 in-game capacity check.";
+    if((w.name==="ACE 32" || w.name==="SVD Dragunov") &&
+      ["extended","extquick","extended_ar","extquick_ar"].includes(magVal))
+      note += " Published capacity variants disagree; an exact weapon-loaded count has not been verified.";
     if(mVal==="choke") note += " Choke tightens pellet spread by 13%; no hit probability is modeled.";
     if(mVal==="duckbill") note += " Duckbill tightens vertical pellet spread by 50%; no hit probability is modeled.";
     if(selectedStock==="cheek") note += " Cheek Pad also boosts sway control by 15% and muzzle-rise control by 20%.";
