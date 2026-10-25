@@ -64,7 +64,12 @@
         change(get('at_weapon'),'ACE 32');
         eq(get('at_mag').value,'none','Incompatible dual magazine must reset');
         change(get('at_mag'),'extended');
-        eq(text('at_capNew'),'No data','ACE unresolved capacity must not be invented');
+        eq(text('at_capNew'),'42','ACE Extended rounds, cross-source mapping');
+        change(get('at_mag'),'extquick');
+        eq(text('at_capNew'),'40','ACE Extended QuickDraw rounds');
+        change(get('at_weapon'),'SVD Dragunov');
+        change(get('at_mag'),'extended');
+        eq(text('at_capNew'),'No data','Dragunov unresolved magazine-family capacity');
 
         open('panel-backpack');
         change(get('bp_type'),'jammer');

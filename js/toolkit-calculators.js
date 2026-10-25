@@ -827,7 +827,11 @@ function compensatorFor(w){
 // Explicit values below derive from official patch notes and linked weapon
 // tables (full references in docs/research-and-patch-references.md).
 const MAG_CAP_VERIFIED = {
-  "M416":     {extended:42,extquick:40}, // PUBG magazine rebalance example
+  "M416":     {extended:42,extquick:40}, // Official PUBG Update 15.1 magazine example.
+  // ACE32's source-published 40/42 pair is mapped using PUBG's official
+  // Extended (higher capacity) vs Extended QuickDraw (slightly lower) rule.
+  // Cross-source reconciliation; direct 43.2 Xbox loaded-round check pending.
+  "ACE 32":   {extended:42,extquick:40},
   "AWM":      {extended:8, extquick:7},  // 43.2 DMR/SR item data
   "M24":      {extended:8, extquick:7},
   // Current weapon-specific tables: these 10/20-round DMRs do not use the
@@ -842,8 +846,10 @@ const MAG_CAP_VERIFIED = {
   // DMR/SR Extended 22; DMR/SR Extended QuickDraw 20;
   // AR/DMR Extended and Extended QuickDraw 20.
   "MK14 EBR": {extended:22,extquick:20,extended_ar:20,extquick_ar:20},
-  // Dragunov 18/20 and ACE 32 40/42 still require version/family resolution;
-  // do not infer weapon-loaded counts from generic item tooltip capacities.
+  // Dragunov's historical 18/20 pair is not mapped to exact magazine FAMILY
+  // and TYPE in a 43.2 Xbox loaded-round check. Keep all variants unknown
+  // instead of transferring another DMR's 20-round capacity.
+  // Never substitute generic attachment-item labels for weapon-loaded rounds.
   "M249":     {extended:150,extquick:null}, // no checked EQ capacity
   "RPD":      {extended:110,extquick:null}, // official 42.3 max; EQ unverified
   "MK47 Mutant": {extended:30,extquick:null},
@@ -868,7 +874,8 @@ const DUAL_MAG_FAMILY = new Set([
 // The "42 rounds" shown on the shared 43.2 attachment item is not a reliable
 // universal *weapon-loaded* count. Only explicitly listed, independently
 // supported guns use this fallback. M416 overrides it with its sourced 42/40;
-// ACE 32 remains unknown until its reported 40/42 variants are reconciled.
+// ACE 32's published 40/42 pair is now reconciled by magazine TYPE, not
+// silently applied to other 30-round ARs.
 const MAG_LARGE_30_ROUND_MODEL = new Set([
   "AKM","AUG A3","Beryl M762","G36C","Groza","M16A4",
   "SCAR-L","QBZ95","K2","FAMAS"
@@ -1016,9 +1023,11 @@ function extendedCapFor(w,kind="extended"){
       note += " This magazine's capacity is not verified.";
     if(w.name==="MK14 EBR" && magVal!=="none")
       note += " Mk14 capacity depends on magazine family; values await a direct 43.2 in-game capacity check.";
-    if((w.name==="ACE 32" || w.name==="SVD Dragunov") &&
+    if(w.name==="ACE 32" && ["extended","extquick"].includes(magVal))
+      note += " ACE32's 42/40 capacity mapping follows the official magazine trade-off and published weapon range; direct current-build Xbox confirmation is pending.";
+    if(w.name==="SVD Dragunov" &&
       ["extended","extquick","extended_ar","extquick_ar"].includes(magVal))
-      note += " Published capacity variants disagree; an exact weapon-loaded count has not been verified.";
+      note += " Dragunov's reported 18/20 variants are not mapped to exact magazine types and families in verified current-build data.";
     if(mVal==="choke") note += " Choke tightens pellet spread by 13%; no hit probability is modeled.";
     if(mVal==="duckbill") note += " Duckbill tightens vertical pellet spread by 50%; no hit probability is modeled.";
     if(selectedStock==="cheek") note += " Cheek Pad also boosts sway control by 15% and muzzle-rise control by 20%.";

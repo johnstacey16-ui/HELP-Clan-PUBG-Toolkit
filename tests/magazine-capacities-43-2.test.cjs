@@ -30,7 +30,7 @@ test('base magazines match official Mk47 and Skorpion notes',()=>{
 
 test('Extended and Extended QuickDraw capacities must not be conflated',()=>{
   for(const [name,ext,eq] of [
-    ['M416',42,40],['AWM',8,7],['M24',8,7],
+    ['M416',42,40],['ACE 32',42,40],['AWM',8,7],['M24',8,7],
     ['M249',150,null],['RPD',110,null],
     ['MK47 Mutant',30,null],
     ['S12K',10,10],['Tommy Gun',50,50],['Skorpion',40,40]
@@ -43,7 +43,7 @@ test('Extended and Extended QuickDraw capacities must not be conflated',()=>{
   assert.equal(extendedCapFor(w('AKM'),'extended'),40,'AKM weapon-specific 40-round mag');
   assert.equal(extendedCapFor(w('AKM'),'extquick'),40,'AKM extended quickdraw');
   assert.equal(extendedCapFor(w('SLR'),'extquick'),20,'source-backed SLR EQ capacity');
-  assert.equal(extendedCapFor(w('SVD Dragunov'),'extended'),null,'missing exact capacity');
+  assert.equal(extendedCapFor(w('SVD Dragunov'),'extended'),null,'Dragunov exact family capacities not known');
   // A shared 42-round item label must not override actual rounds on each gun.
   for(const gun of ['AUG A3','Beryl M762','Groza','G36C','SCAR-L','QBZ95','M16A4','K2','FAMAS']){
     assert.equal(extendedCapFor(w(gun),'extended'),40,gun+' weapon loaded rounds');
@@ -53,10 +53,8 @@ test('Extended and Extended QuickDraw capacities must not be conflated',()=>{
     assert.equal(extendedCapFor(w(gun),'extended'),mag,gun+' Extended');
     assert.equal(extendedCapFor(w(gun),'extquick'),mag,gun+' Extended QuickDraw');
   }
-  for(const gun of ['ACE 32','SVD Dragunov']){
-    assert.equal(extendedCapFor(w(gun),'extended'),null,gun+' unresolved ambiguity');
-    assert.equal(extendedCapFor(w(gun),'extquick'),null,gun+' unresolved EQ ambiguity');
-  }
+  assert.equal(extendedCapFor(w('SVD Dragunov'),'extended'),null,'Dragunov DMR/SR Extended unresolved');
+  assert.equal(extendedCapFor(w('SVD Dragunov'),'extquick'),null,'Dragunov DMR/SR EQ unresolved');
   // Mk14 has two overlapping, weapon-compatible magazine families.
   assert.equal(extendedCapFor(w('MK14 EBR'),'extended'),22,'DMR/SR Extended');
   assert.equal(extendedCapFor(w('MK14 EBR'),'extquick'),20,'DMR/SR Extended QuickDraw');
@@ -122,4 +120,17 @@ test('dual-compatible DMRs expose both item families but never invent Dragunov c
   }
   assert.match(html,/const both = DUAL_MAG_FAMILY\.has\(w\.name\)/);
   assert.match(html,/Published capacity variants disagree/);
+});
+
+test('ACE32 maps Extended 42 versus Extended QuickDraw 40 without making every weapon identical',()=>{
+  assert.equal(MAG_CAP_VERIFIED['ACE 32'].extended,42);
+  assert.equal(MAG_CAP_VERIFIED['ACE 32'].extquick,40);
+  assert.equal(extendedCapFor(w('ACE 32'),'extended'),42);
+  assert.equal(extendedCapFor(w('ACE 32'),'extquick'),40);
+  assert.equal(extendedCapFor(w('AKM'),'extended'),40);
+  assert.equal(extendedCapFor(w('AKM'),'extquick'),40);
+  assert.equal(extendedCapFor(w('SVD Dragunov'),'extended_ar'),null);
+  assert.equal(extendedCapFor(w('SVD Dragunov'),'extquick_ar'),null);
+  assert.match(html,/direct current-build Xbox confirmation is pending/);
+  assert.match(html,/reported 18\/20 variants are not mapped/);
 });
