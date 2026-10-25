@@ -16,6 +16,11 @@ test('photographic model is shipped as a small valid WebP with alpha',()=>{
   assert.equal(bytes.subarray(0,4).toString(),'RIFF');
   assert.equal(bytes.subarray(8,12).toString(),'WEBP');
   assert.ok(bytes.length<150_000,'keep main image under 150 KB');
+  assert.equal(bytes.subarray(12,16).toString(),'VP8X','extended WebP required for alpha check');
+  assert.ok((bytes[20] & 0x10)!==0,'photo must declare transparency in VP8X header');
+  const imageWidth=bytes.readUIntLE(24,3)+1;
+  const imageHeight=bytes.readUIntLE(27,3)+1;
+  assert.deepEqual([imageWidth,imageHeight],[500,750],'photo dimensions must match SVG coordinate mapping');
 });
 test('photo is beneath all 13 transparent focusable hit zone paths in both sources',()=>{
   assert.ok(live.includes(markup.trim()),'live markup must match canonical fragment');
