@@ -22,7 +22,7 @@ test('all eight toolkit panels and their navigation links exist', () => {
     assert.match(html, new RegExp('id="' + id + '" class="hub-main'));
     assert.match(html, new RegExp('data-open-panel="' + id + '"'));
   }
-  assert.equal((html.match(/data-open-panel="panel-/g) || []).length, 7);
+  assert.equal((html.match(/data-open-panel="panel-/g) || []).length, 8);
   assert.doesNotMatch(html, /id="panel-data"|data-open-panel="panel-data"/);
   const ids = [...html.matchAll(/id="([^"]+)"/g)].map(match => match[1]);
   assert.equal(ids.length, new Set(ids).size, 'No duplicate element IDs');
