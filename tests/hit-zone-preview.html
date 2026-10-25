@@ -54,9 +54,28 @@ assert(markers.every(el=>el.getAttribute('tabindex')==='0'),'All hit zones keybo
 assert(markers.every(el=>el.getAttribute('aria-controls')==='hz_detail'&&el.getAttribute('aria-pressed')==='false'),'Zones expose detail target and initial state');
 assert(!!panel.querySelector('table caption'),'Tabular equivalent has a caption');
 assert(!!figure.querySelector('[data-armour=helmet]')&&!!figure.querySelector('[data-armour=vest]'),'Separate armour overlays');
-result.textContent='PASS: 13 always-visible, non-overlapping callouts; no horizontal overflow; mobile SVG ready for live QA';
-result.dataset.qa='pass';
-document.body.dataset.previewStatus='pass';
+// The earlier geometry/layout checks can pass even if an SVG <image> is 404.
+// Decode the real WebP through the browser before reporting the preview as passed.
+const photo = new Image();
+photo.onload=()=>{
+ try{
+  assert(photo.naturalWidth===500 && photo.naturalHeight===750,
+    'Unexpected model image dimensions: '+photo.naturalWidth+'×'+photo.naturalHeight);
+  result.textContent='PASS: 13 visible values, no collisions or overflow, and Model 2 photo decoded';
+  result.dataset.qa='pass';
+  document.body.dataset.previewStatus='pass';
+ }catch(e){
+  result.textContent='FAIL: '+e.message;
+  result.dataset.qa='fail';
+  document.body.dataset.previewStatus='fail';
+ }
+};
+photo.onerror=()=>{
+ result.textContent='FAIL: Model 2 photo did not load';
+ result.dataset.qa='fail';
+ document.body.dataset.previewStatus='fail';
+};
+photo.src='../assets/hit-zone-model-2.webp';
 }catch(e){
 result.textContent='FAIL: '+e.message;
 result.dataset.qa='fail';

@@ -1,6 +1,6 @@
 # Hit Zone Damage Explorer — Roadmap
 
-> **Persistent project handoff** for the HELP Clan PUBG Toolkit. Last updated: **2026-10-25 18:20 UTC, PR #39 merged into main, production Vercel deployment reported successful**.
+> **Persistent project handoff** for the HELP Clan PUBG Toolkit. Last updated: **2026-10-25, Model 2 preview approved for merge on PR #40; production deployment pending merge**.
 > For a new ChatGPT conversation, send the repository URL and say:
 > **"Continue the Hit Zone Damage Explorer from HIT_ZONE_EXPLORER_ROADMAP.md. Check the repository first, do the next unchecked task, run the applicable tests, and update this roadmap."**
 
@@ -9,6 +9,18 @@
 Build a polished **front-view only** PUBG hit-zone damage explorer inside the existing static HTML/JS toolkit. The user selects **weapon, helmet level, vest level and a sourced distance**. All body regions show their results **simultaneously**; tapping a region is optional and only reveals its detailed calculation. **No rear view or turntable**. The vest must never be drawn/calculated as protecting limbs. Gear levels are independent. Prefer a crisp segmented SVG anatomy figure, not a noninteractive generated infographic.
 
 Default modes: **damage**, **hits-to-kill (100 HP)**, and **heatmap**. Never display invented values to fill holes in data. The toolkit's existing sensitivity and other calculators must remain unchanged.
+
+## Model 2 photorealistic visual upgrade — review branch (2026-10-25)
+
+- [x] Owner selected and approved the original fictional adult **Model 2** portrait as the visual direction.
+- [x] Isolate the work on `feature/hit-zone-photoreal-model-2` created from latest `main`.
+- [x] Swap the former opaque mannequin appearance for a photographic alpha-channel image beneath the interactive SVG; keep **all 13** focusable hit-zone regions, existing results and independent armour covers.
+- [x] Retain the 13 callouts, sourced distance options, damage, HTK, heatmap and theoretical-shell modes without modifying calculator logic.
+- [x] Review branch passed automated GitHub Actions [run 40228445201](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40228445201): source-sync, Node regression suite, all eight tools in Chromium, 320px–1280px hit-zone preview layout. Vercel reported preview READY at commit `f2e8e0b`.
+- [x] Optimized Model 2 WebP is 40,064 bytes, 500×750 with alpha; its Git object was independently compared to the prepared asset (SHA `47975f9`). Added a browser image-loading/dimension assertion and extended WebP alpha header invariant on this review branch; enhanced image-decoding and transparency checks passed in [GitHub Actions run 40229170430](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40229170430). Vercel also reported this review commit READY.
+- [ ] Verify *deployed* HTTP image response and full-page appearance on real mobile/desktop browser; direct HTTP/DNS retrieval is blocked from this test environment, and on-device/manual inspection is outstanding.
+- [ ] Inspect readability, alignment and SVG keyboard focus with physical device/screen reader; automated geometry tests are not a substitute.
+- [x] **Owner approved Model 2 preview on 2026-10-25** (stated they are happy with the finished preview). Authorized PR #40 to leave draft and merge after green checks; preserve the review history and production deployment check.
 
 ## Current state
 
