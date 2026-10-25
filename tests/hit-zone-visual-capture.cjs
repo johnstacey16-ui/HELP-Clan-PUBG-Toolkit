@@ -27,11 +27,12 @@ const server=http.createServer((req,res)=>{
   const candidates=[process.env.CHROME_BIN,'google-chrome','chromium','google-chrome-stable'].filter(Boolean);
   const binary=candidates.find(candidate=>spawnSync('which',[candidate],{encoding:'utf8'}).status===0);
   if(!binary)throw Error('Headless Chrome not found');
-  const png=path.join(dir,'hit-zone-mobile.png');
+  const desktop=process.argv.includes('--desktop');
+  const png=path.join(dir,desktop?'hit-zone-desktop.png':'hit-zone-mobile.png');
   const url='http://127.0.0.1:'+server.address().port+'/index.html#panel-hit-zone';
   const args=['--headless=new','--no-sandbox','--disable-gpu','--disable-dev-shm-usage',
     '--no-first-run','--no-default-browser-check','--hide-scrollbars',
-    '--window-size=390,1600','--force-device-scale-factor=1',
+    '--window-size='+(desktop?'1440,1100':'390,1600'),'--force-device-scale-factor=1',
     '--virtual-time-budget=4500','--screenshot='+png,'--user-data-dir='+path.join(dir,'profile'),url];
   const child=spawn(binary,args,{stdio:['ignore','pipe','pipe']});
   let errText='';
