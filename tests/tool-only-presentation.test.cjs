@@ -12,16 +12,16 @@ const docs = readFileSync(resolve(root,'docs/research-and-patch-references.md'),
 const policy = readFileSync(resolve(root,'DATA_ACCURACY_POLICY.md'),'utf8');
 const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m=>m[1]);
 
-test('the live app has exactly seven tool panels, no research tab, and correct counter',()=>{
+test('the live app has exactly eight tool panels, no research tab, and correct counter',()=>{
   const visible = [...html.matchAll(/<div id="(panel-[^"]+)" class="hub-main/g)].map(m=>m[1]);
   assert.deepEqual(visible,[
     'panel-combat','panel-sensitivity','panel-range','panel-ttk',
-    'panel-recoil2','panel-attach','panel-backpack'
+    'panel-recoil2','panel-attach','panel-backpack','panel-hit-zone'
   ]);
-  assert.equal((html.match(/data-open-panel="panel-/g)||[]).length,7);
+  assert.equal((html.match(/data-open-panel="panel-/g)||[]).length,8);
   assert.doesNotMatch(html,/id="panel-data"|data-open-panel="panel-data"|Data &amp; Patch Info/);
   assert.doesNotMatch(html,/<div class="nav-group-label"><span>03<\/span>REFERENCE/);
-  assert.match(html,/id="active-tool-index" aria-label="Tool 1 of 7">01 <i>\/<\/i> 07/);
+  assert.match(html,/id="active-tool-index" aria-label="Tool 1 of 8">01 <i>\/<\/i> 08/);
   assert.match(html,/String\(panelIds\.length\)\.padStart/);
   assert.match(html,/const target = panelIds\.includes\(id\) \? id : panelIds\[0\]/);
 });
