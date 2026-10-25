@@ -996,20 +996,23 @@ function extendedCapFor(w,kind="extended"){
       : finalReload.toFixed(2)+"s";
     $("at_capBase").textContent = baseCap ?? "—";
     $("at_capNew").textContent = newCap ?? "No data";
-    let note = `Attachment percentages are estimates, not guaranteed in-game results.`;
+    let note = `Attachment control percentages are from the 43.2 item descriptions; combined reductions and suggested setups remain a simplified model, not a measured spray.`;
     if(w.name==="MG3") note += " MG3 real reload-animation time is not verified.";
     if(["extended","extquick","extended_ar","extquick_ar"].includes(magVal) && newCap==null)
       note += " This magazine's capacity is not verified.";
     if(w.name==="MK14 EBR" && magVal!=="none")
       note += " Mk14 capacity depends on magazine family; values are from named weapon/attachment tables and await a direct 43.2 in-game capacity check.";
-    if(mVal==="choke"||mVal==="duckbill")
-      note += " Shotgun muzzle effects tighten pellet spread; no hit probability is modeled.";
-    if(selectedStock==="cheek")
-      note += " Cheek Pad also improves sway and muzzle-rise control.";
-    if(gVal==="light")
-      note += " Lightweight Grip also improves initial-shot control and sway.";
-    if(mVal==="brake")
-      note += " Muzzle Brake also reduces camera shake.";
+    if(mVal==="choke") note += " Choke tightens pellet spread by 13%; no hit probability is modeled.";
+    if(mVal==="duckbill") note += " Duckbill tightens vertical pellet spread by 50%; no hit probability is modeled.";
+    if(selectedStock==="cheek") note += " Cheek Pad also boosts sway control by 15% and muzzle-rise control by 20%.";
+    if(selectedStock==="tactical") note += " Tactical Stock also gives +10% ADS speed, sway and muzzle-rise control.";
+    if(selectedStock==="heavy") note += " Heavy Stock trades -10% ADS speed and hip-fire accuracy for recoil control.";
+    if(gVal==="half") note += " Half Grip carries a -10% sway-control trade-off.";
+    if(gVal==="light") note += " Lightweight Grip also improves initial-shot recoil control by 30%, sway by 20% and muzzle-rise by 10%.";
+    if(gVal==="thumb") note += " Thumbgrip also gives +40% ADS speed and +20% sway control.";
+    if(gVal==="laser") note += " Laser Sight improves hip-fire accuracy by 30%, not recoil.";
+    if(gVal==="tilted") note += " Tilted Grip also improves camera-shake control by 25%.";
+    if(mVal==="brake") note += " Muzzle Brake also improves camera-shake control by 35%.";
     
     
     
@@ -1041,6 +1044,8 @@ function extendedCapFor(w,kind="extended"){
 // Packs grant exactly the same +150/+200/+250 as standard backpacks.
 // These are total character carrying capacities, not item weights.
 const CHARACTER_BASE_CAPACITY = 70;
+// 28.2 incorporated the old Utility Belt into base capacity, not the equipped vest.
+const VEST_CAPACITY_BONUS = 50;
 const BACKPACK_CAPACITY_BONUS = Object.freeze({1:150, 2:200, 3:250});
 const BACKPACKS = {
   standard: Object.fromEntries(Object.entries(BACKPACK_CAPACITY_BONUS).map(([level,bonus])=>[level,CHARACTER_BASE_CAPACITY+bonus])),
@@ -1053,6 +1058,7 @@ const BP_AMMO = [ // [key,label,weight]
   ["556","5.56mm (per round)",0.50], ["762","7.62mm (per round)",0.60],
   ["300mag",".300 Magnum (per round)",1.00], ["12g","12 Gauge (per round)",1.25],
   ["bolt","Crossbow bolt (per round)",2.00],
+  ["50cal",".50 Caliber / Lynx AMR (per round)",1.00],
 ];
 const BP_HEAL = [
   ["bandage","Bandage",2], ["firstaid","First Aid Kit",10], ["medkit","Med Kit",15],
@@ -1061,6 +1067,12 @@ const BP_HEAL = [
 const BP_THROW = [
   ["frag","Frag Grenade",27], ["smoke","Smoke Grenade",14], ["stun","Stun Grenade",12],
   ["molotov","Molotov Cocktail",16], ["c4","C4",35],
+  // Standard 43.2 game inventory weights; additional throwables vary by map/mode.
+  ["bz","BZ Grenade",23], ["decoy","Decoy Grenade",12],
+  ["sticky","Sticky Bomb",20], ["spike","Spike Trap",18],
+  ["minismoke","Mini Smoke Grenade",10],
+  ["coverflare","Emergency Cover Flare",27],
+  ["supportflare","Emergency Support Flare",35],
 ];
 (function(){
   const $ = id => document.getElementById(id);
@@ -1085,7 +1097,7 @@ const BP_THROW = [
   function calc(){
     const type = $("bp_type").value;
     const level = +$("bp_level").value;
-    const cap = BACKPACKS[type][level];
+    const cap = BACKPACKS[type][level] + ($("bp_vest").value === "yes" ? VEST_CAPACITY_BONUS : 0);
     $("bp_jammerNote").innerHTML = type==="jammer"
       ? `<div class="note">Jammer Pack Lv.${level}: ${JAMMER_PROTECTION[level]} Blue Zone protection.</div>` : "";
     let used = 0;
@@ -1114,8 +1126,8 @@ const BP_THROW = [
       ? `<b>Over capacity by ${Math.abs(rem).toFixed(1)}.</b> Consider dropping some ammo or grenades to get back under the limit.`
       : "";
   }
-  document.addEventListener("input", e=>{ if(e.target.matches('#panel-backpack input[data-bp], #panel-backpack select#bp_level, #panel-backpack select#bp_type')) calc(); });
-  document.addEventListener("change", e=>{ if(e.target.matches('#panel-backpack select#bp_level, #panel-backpack select#bp_type')) calc(); });
+  document.addEventListener("input", e=>{ if(e.target.matches('#panel-backpack input[data-bp], #panel-backpack select#bp_level, #panel-backpack select#bp_type, #panel-backpack select#bp_vest')) calc(); });
+  document.addEventListener("change", e=>{ if(e.target.matches('#panel-backpack select#bp_level, #panel-backpack select#bp_type, #panel-backpack select#bp_vest')) calc(); });
   document.addEventListener("click", e=>{
     const btn = e.target.closest('#panel-backpack .bp-stepper button');
     if(!btn) return;

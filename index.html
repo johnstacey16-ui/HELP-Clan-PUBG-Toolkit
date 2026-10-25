@@ -883,7 +883,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
 <div class="wrap">
   <div class="eyebrow">Loadout · Backpack</div>
   <h1>Backpack Calculator</h1>
-  <p class="sub">Plan ammo, healing, boosts and throwables within your backpack capacity.</p>
+  <p class="sub">Plan ammo, healing, boosts and throwables within your carrying capacity, including your vest.</p>
 
   <div class="card">
     <div class="toolbar">
@@ -892,6 +892,9 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
       </div>
       <div class="field"><label for="bp_level">Level</label>
         <select id="bp_level"><option value="1">Level 1</option><option value="2">Level 2</option><option value="3" selected>Level 3</option></select>
+      </div>
+      <div class="field"><label for="bp_vest">Equipped vest (+50 space)</label>
+        <select id="bp_vest"><option value="yes" selected>Wearing a vest</option><option value="no">No vest</option></select>
       </div>
     </div>
     <div id="bp_jammerNote"></div>
