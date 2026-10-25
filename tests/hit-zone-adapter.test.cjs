@@ -49,6 +49,31 @@ test('M416 chest 0 m uses the documented real checkpoint and class/hit multiplie
   assert.equal(vestTwo.chest.htk,4);
   assert.equal(vestTwo.chest.armorSource,'Vest');
 });
+test('trajectory projectile hit damage is not confused with distinct gun-config BaseDamage',()=>{
+  // PUBG 43.2 files expose WeaponGunConfig.BaseDamage and a separate
+  // TrajectoryConfig.HitDamage. The latter matches the independent 0m
+  // recorded damage table for these five checked weapons; see
+  // docs/hit-zone-damage-field-audit.md for versioned references.
+  const checked=[
+    ['M416','AR',39,40],
+    ['AKM','AR',40,48],
+    ['AUG A3','AR',20,40],
+    ['SVD Dragunov','DMR',46,53],
+    ['RPD','MG',67,43]
+  ];
+  for(const [name,cls,gunConfigBase,projectileHitDamage] of checked){
+    const rows=profile(name,cls,0,0,0);
+    const clsFactor=m.CLASS_MULT_DETAILED[cls].torso;
+    near(rows.chest.damage,projectileHitDamage*1.1*clsFactor,name+' 0m chest uses trajectory damage');
+    assert.notEqual(rows.chest.damage,gunConfigBase*1.1*clsFactor,
+      name+' must not mistakenly import gun-config BaseDamage');
+    assert.equal(rows.chest.sourceStatus,'measured-checkpoint');
+    assert.equal(rows.chest.armorSource,'None');
+  }
+  near(profile('SVD Dragunov','DMR',0).head.damage,53*2.8,
+    'Source-listed special Dragunov head value retained provisionally');
+});
+
 test('helmet alone affects head and neck, and does not change torso or limbs',()=>{
   const a=profile('M416','AR',0,0,0);
   const b=profile('M416','AR',0,3,0);
