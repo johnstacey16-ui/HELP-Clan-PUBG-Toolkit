@@ -83,6 +83,11 @@
         check(hzValue('chest')!=='No data','Published 100m damage available');
         get('hz_body').querySelector('[data-hit-zone="calf"]').dispatchEvent(new MouseEvent('click',{bubbles:true}));
         check(text('hz_detail').includes('Calf'),'Optional region detail responds to clicks');
+        const keyboardZone=get('hz_body').querySelector('[data-hit-zone="head"]');
+        keyboardZone.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true}));
+        check(text('hz_detail').includes('Head:'),'Keyboard Enter opens the optional zone breakdown');
+        check(keyboardZone.getAttribute('aria-label').includes('Head:'),'Keyboard target announces zone and value');
+        eq(child.querySelectorAll('#hz_rows tr').length,13,'Accessible table includes all body regions');
         // Return to unchanged core calculator regression path.
         open('panel-range');
         change(get('rg_weapon'),'S686');
