@@ -88,6 +88,41 @@
         check(text('hz_detail').includes('Head:'),'Keyboard Enter opens the optional zone breakdown');
         check(keyboardZone.getAttribute('aria-label').includes('Head:'),'Keyboard target announces zone and value');
         eq(child.querySelectorAll('#hz_rows tr').length,13,'Accessible table includes all body regions');
+        // All 45 combat weapons must render 13 consistent readouts and safe
+        // no-data states without leaking NaN, Infinity, or per-pellet damage.
+        const hitZoneWeaponNames=[...get('hz_weapon').options].map(o=>o.value).filter(Boolean);
+        eq(hitZoneWeaponNames.length,45,'Hit-zone selector includes all 45 toolkit weapons');
+        const pelletNames=new Set(['DBS','S686','S12K','Sawn-off']);
+        change(get('hz_mode'),'damage');
+        for(const gun of hitZoneWeaponNames){
+          change(get('hz_weapon'),gun);
+          const hasCheckpoint=!get('hz_distance').disabled;
+          const isPellet=pelletNames.has(gun);
+          eq(child.querySelectorAll('#hz_rows tr').length,13,gun+' all-zone table updates');
+          const chips=[...child.querySelectorAll('#hz_body [data-hz-value]')].map(el=>el.textContent.trim());
+          eq(chips.length,13,gun+' all regions have simultaneous values');
+          for(const chip of chips){
+            check(chip==='No data'||/^\d+(?:\.\d+)?$/.test(chip),
+              gun+' must show measured damage or No data (got '+chip+')');
+          }
+          if(isPellet){
+            check(chips.every(v=>v==='No data'),gun+' actual shell totals remain unknown');
+            check(!idealOption.disabled,gun+' theoretical mode enabled');
+            if(hasCheckpoint){
+              change(get('hz_mode'),'ideal-shells');
+              const idealChips=[...child.querySelectorAll('#hz_body [data-hz-value]')].map(el=>el.textContent.trim());
+              check(idealChips.every(v=>/^[1-9]\d* shells?\*$/.test(v)),
+                gun+' all thirteen zones show a labelled theoretical lower bound');
+              change(get('hz_mode'),'damage');
+            }
+          }else{
+            check(idealOption.disabled,gun+' theoretical pellet mode unavailable');
+            check(chips.every(v=>hasCheckpoint ? /^\d+(?:\.\d+)?$/.test(v) : v==='No data'),
+              gun+' must not show inconsistent source status between zones');
+          }
+        }
+        change(get('hz_weapon'),'M416');
+        eq(hzValue('chest'),'44.0','Weapon sweep leaves selector usable on its first checkpoint');
         // Return to unchanged core calculator regression path.
         open('panel-range');
         change(get('rg_weapon'),'S686');
