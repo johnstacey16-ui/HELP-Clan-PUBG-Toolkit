@@ -18,6 +18,12 @@ The Scope Sensitivity Matcher uses owner-supplied scope-specific A/B constants a
 `matched_sensitivity = (A/60) × (10+B) × pixel_speed / 3840 − B`.
 These are **deliberately used empirical conversion formulas**, not a claim to reproduce an official game-engine implementation. They remain in the app and can be the default opening calculator.
 
+## Hit Zone Explorer: gun-config damage vs projectile hit damage
+
+A **2026-10-25** source audit distinguishes two separate PUBG PC Update 43.2 extracted fields: `WeaponGunConfig.BaseDamage` and `TrajectoryConfig.HitDamage`. They can be **very different** for one weapon. Five cross-checked examples (M416, AKM, AUG, Dragunov, RPD) show that the toolkit's existing recorded **0m projectile hit values** match the trajectory **HitDamage** field, not the gun configuration's separately labelled base value. See [the field audit](docs/hit-zone-damage-field-audit.md), with patch-specific links and regression tests. Do **not** bulk replace the toolkit's per-distance damage tables with the other field just because its display name says “Base damage”.
+
+The class-wide DMR head factor in the PC game-file table is ×2.35; the toolkit's **Dragunov-specific ×2.80** is sourced from an independent weapon page observed for an earlier patch, with official qualitative confirmation of a special higher-headshot behaviour. The exact per-weapon override in the current 43.2 game build has **not** been independently verified. Preserve that distinction and do not present every calculated value as a direct current-engine measurement.
+
 ## Effective Range — current recorded-distance behavior
 
 - Each weapon has its own list of *published distance checkpoints*. The range slider selects those actual source points only.
