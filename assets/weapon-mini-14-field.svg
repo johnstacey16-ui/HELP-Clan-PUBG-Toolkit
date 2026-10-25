@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="320" viewBox="0 0 960 320"><title>Representative Mini 14 field illustration</title><desc>Original non-official stylised side-profile concept art; dimensions and parts are illustrative rather than an exact game model.</desc>
+ <defs><linearGradient id="metal" x1="0" y1="0" x2=".4" y2="1"><stop stop-color="#8aa1a9"/><stop offset=".35" stop-color="#344c59"/><stop offset=".75" stop-color="#132734"/><stop offset="1" stop-color="#0b1721"/></linearGradient><linearGradient id="wood" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ab825e"/><stop offset=".45" stop-color="#714832"/><stop offset="1" stop-color="#332a2a"/></linearGradient></defs>
+ <g fill="none" stroke="#74adba" opacity=".22" stroke-width="1.5"><path d="M46 71h870M46 240h870" stroke-dasharray="2 11"/><circle cx="475" cy="158" r="105" stroke-dasharray="6 15"/><path d="M475 36v16M475 262v16"/></g>
+ <g stroke-linejoin="round" stroke-linecap="round"><path d="M52 127L163 110L296 137L311 202L253 213L191 225L75 217L52 187Z" fill="url(#wood)" stroke="#c5ac89" stroke-width="4"/><path d="M73 144L172 126L247 144L261 185L190 203L72 198Z" fill="#6d4931" opacity=".55"/><path d="M66 124v87" stroke="#e3c49f" stroke-width="10"/>
+ <path d="M281 134l117 -12 91 8 10 60 -217 12z" fill="url(#metal)" stroke="#adbec1" stroke-width="4"/>
+ <path d="M338 150h90v29h-90z" fill="#132b37" stroke="#728f9e" stroke-width="3"/>
+ <path d="M404 195h32l-12 64-35-3-8-30 16-18z" fill="url(#metal)" stroke="#a8b6b6" stroke-width="4"/>
+ <path d="M432 143h43l-5 15h-33z" fill="#1b303d" stroke="#8299a0" stroke-width="2"/>short<path d="M466 170Q548 159 675 164l22 24q-52 22-150 17z" fill="url(#wood)" stroke="#c1a283" stroke-width="3"/><path d="M388 116v-27m45 27v-17" stroke="#bac5c0" stroke-width="5"/><path d="M650 138h235v16h-235z" fill="url(#metal)" stroke="#c1c8c0" stroke-width="3"/>
+ <path d="M893 132h23v30h-23z" fill="url(#metal)" stroke="#c5c7b9" stroke-width="3"/><path d="M901 137v20" stroke="#0d1d26" stroke-width="5"/>
+ <path d="M498 123H662" stroke="#b0c2c3" stroke-width="8"/><path d="M506 121H660" stroke="#b78e60" stroke-width="2" opacity=".78"/>
+ 
+ </g><path d="M74 254h185m493 0h135" stroke="#b78e60" stroke-width="2" opacity=".35"/></svg>

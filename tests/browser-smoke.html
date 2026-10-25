@@ -37,7 +37,7 @@
         check(child.body.classList.contains('sidebar-open'),'Mobile drawer opens');
         for(const id of ['panel-combat','panel-sensitivity','panel-hit-zone','panel-range','panel-ttk','panel-recoil2','panel-attach','panel-backpack'])open(id);
         check(!child.body.classList.contains('sidebar-open'),'Navigation closes drawer');
-        // Combat imagery pilot: correct art only for M416 and a truthful no-art fallback.
+        // Combat weapon catalogue: exact art mapping for known guns and no-art fallback.
         open('panel-combat');
         const pilot = get('combat-pilot-image');
         check(pilot.getAttribute('src')==='assets/weapon-m416-field.svg','Combat art must be local');
@@ -51,8 +51,16 @@
         check(!!akmRow,'AKM exists for no-artwork fallback verification');
         akmRow.click();
         eq(text('modalTitle'),'AKM','AKM details still work');
-        check(!!child.querySelector('#modalBody .visual-modal-unavailable'),'Missing artwork is clearly indicated');
-        check(!child.querySelector('#modalBody .visual-modal-media img'),'Wrong weapon artwork is never reused');
+        const akmImage=child.querySelector('#modalBody .visual-modal-media img');
+        check(!!akmImage,'AKM now has its own representative art');
+        check(akmImage.getAttribute('src')==='assets/weapon-akm-field.svg','AKM must not reuse M416 art');
+        child.querySelector('#modalBody [data-action="close-modal"]').click();
+        const sksRow=child.querySelector('#wTable tr.rowclick[data-n="SKS"]');
+        check(!!sksRow,'SKS exists to verify no-art fallback');
+        sksRow.click();
+        eq(text('modalTitle'),'SKS','Non-illustrated weapon still opens details');
+        check(!!child.querySelector('#modalBody .visual-modal-unavailable'),'Unknown weapon artwork explicitly unavailable');
+        check(!child.querySelector('#modalBody .visual-modal-media img'),'No wrong rifle is substituted for SKS');
         child.querySelector('#modalBody [data-action="close-modal"]').click();
 
         // Batch visuals: optics and existing controls still change independently.
@@ -61,11 +69,29 @@
         eq(get('visual-scope-image').getAttribute('src'),'assets/optic-8x.svg','Scope art matches selected magnification');
         eq(text('visual-scope-label'),'8x reference optic','Visible optic label is updated');
         change(get('px_scope'),'3x');
-        open('panel-attach');
+        open('panel-range');
+        change(get('rg_weapon'),'AKM');
+        eq(get('visual-range-weapon-image').getAttribute('src'),'assets/weapon-akm-field.svg','Range weapon art follows AKM');
+        change(get('rg_weapon'),'SKS');
+        check(get('visual-range-weapon-image').hidden,'Range hides image for SKS');
+        open('panel-ttk');
+        change(get('tk_weapon'),'Kar98k');
+        eq(get('visual-ttk-weapon-image').getAttribute('src'),'assets/weapon-kar98k-field.svg','TTK selected weapon art is exact');
+        change(get('tk_cmpA'),'M416');
+        change(get('tk_cmpB'),'AKM');
+        check(get('visual-compare-a-image').getAttribute('src')==='assets/weapon-m416-field.svg','TTK A thumbnail is M416');
+        check(get('visual-compare-b-image').getAttribute('src')==='assets/weapon-akm-field.svg','TTK B thumbnail is AKM');
+        open('panel-recoil2');
+        change(get('rc_weapon'),'P90');
+        eq(get('visual-recoil-weapon-image').getAttribute('src'),'assets/weapon-p90-field.svg','Recoil art follows P90');
+                open('panel-attach');
         check(!!get('visual-attachment-grid').querySelector('img'),'Attachment art exists');
         check(!!text('visual-at-muzzle'),'Muzzle label reflects existing selection');
         open('panel-backpack');
         check(text('visual-pack-label').includes('Level 3'),'Backpack art describes chosen level');
+        change(get('bp_type'),'jammer');
+        eq(get('visual-pack-image').getAttribute('src'),'assets/gear-jammer.svg','Jammer Pack uses its own illustration');
+        change(get('bp_type'),'standard');
         open('panel-range');check(!!get('visual-range').querySelector('img'),'Range art exists');
         open('panel-ttk');check(!!get('visual-ttk').querySelector('img'),'TTK art exists');
         open('panel-recoil2');check(!!get('visual-recoil').querySelector('img'),'Recoil parameters art exists');

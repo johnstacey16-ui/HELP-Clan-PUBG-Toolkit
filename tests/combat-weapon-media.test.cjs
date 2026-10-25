@@ -16,11 +16,11 @@ test('original M416 artwork is shipped locally with responsive assets',()=>{
   assert.match(style,/@media\(max-width:700px\)/);
   assert.doesNotMatch(style,/position:fixed|position:absolute/i);
 });
-test('only M416 uses the illustration; all other weapon details get an explicit fallback',()=>{
+test('a verified exact-name art catalogue supplies M416 and other named weapon details',()=>{
   assert.match(source,/id="combat-pilot-image" src="assets\/weapon-m416-field\.svg"/);
   assert.match(source,/loading="lazy" decoding="async"/);
   assert.match(source,/id="combat-pilot-open"/);
-  assert.match(source,/w\.name === "M416"/);
+  assert.match(source,/Object\.prototype\.hasOwnProperty\.call\(artMap,w\.name\)/);
   assert.match(source,/Artwork not available for this weapon yet/);
   assert.match(source,/const weaponArt/);
   assert.match(source,/\$\{weaponArt\}/);
@@ -32,4 +32,19 @@ test('numeric weapon data and all 13 hit zones retain their existing source boun
   assert.equal((html.match(/data-hit-zone="/g)||[]).length,13);
   assert.ok(!source.includes('updateDamageModel'));
   assert.match(read('src/explorer/hit-zone-explorer.fragment.html'),/hit-zone-model-2\.webp/);
+});
+
+test('shared weapon art catalogue only defines entries present in the static weapon database',()=>{
+ const vm=require('node:vm');
+ const root=require('node:path').resolve(__dirname,'..');
+ const catalog=read('visual-catalog.js'),ctx={window:{}};
+ vm.runInNewContext(catalog,ctx);
+ const listed=ctx.window.HELP_VISUAL_WEAPONS;
+ const db=read('src/combat/00-weapon-data-armor.part');
+ assert.equal(Object.keys(listed).length,9);
+ for(const [name,file] of Object.entries(listed)){
+   assert.ok(db.includes('["'+name+'",'),'catalogue name absent from data: '+name);
+   assert.ok(fs.existsSync(require('node:path').join(root,'assets',file)),'missing artwork '+file);
+ }
+ assert.match(read('index.html'),/<script src="visual-catalog\.js"><\/script>/);
 });

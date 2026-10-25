@@ -677,6 +677,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
   <h1>Effective Range &amp; Damage</h1>
   <p class="sub">Check damage and range at recorded distances. Shotguns also show a best-case minimum shell count, assuming every pellet hits.</p>
 <figure class="visual-reference-banner" id="visual-range"><img src="assets/range-target.svg" width="320" height="200" loading="lazy" decoding="async" alt="Range target reference"><figcaption><strong>Range target reference</strong><span>Illustrative target only; charts show recorded checkpoints.</span></figcaption></figure>
+<div class="visual-selected-weapon" id="visual-range-weapon" aria-live="polite"><img id="visual-range-weapon-image" width="960" height="320" alt="" decoding="async" loading="lazy" hidden><div><span class="visual-media-kicker">OPTIONAL WEAPON ART</span><strong id="visual-range-weapon-title">Artwork not available</strong><small id="visual-range-weapon-note">Weapon stats are shown below. Reference artwork is not game data.</small></div></div>
 
   <div class="card">
     <div class="section-h">Setup</div>
@@ -744,6 +745,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
   <h1>TTK Calculator</h1>
   <p class="sub">Compare point-blank damage, hits to kill and time to kill. Missing values show No data.</p>
 <figure class="visual-reference-banner" id="visual-ttk"><img src="assets/ttk-timer.svg" width="320" height="200" loading="lazy" decoding="async" alt="Combat timing reference"><figcaption><strong>Combat timing reference</strong><span>Timer artwork only; calculated results remain authoritative.</span></figcaption></figure>
+<div class="visual-selected-weapon" id="visual-ttk-weapon" aria-live="polite"><img id="visual-ttk-weapon-image" width="960" height="320" alt="" decoding="async" loading="lazy" hidden><div><span class="visual-media-kicker">OPTIONAL WEAPON ART</span><strong id="visual-ttk-weapon-title">Artwork not available</strong><small id="visual-ttk-weapon-note">Weapon stats are shown below. Reference artwork is not game data.</small></div></div>
 
   <div class="card">
     <div class="section-h">Setup</div>
@@ -782,6 +784,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
       <div class="field"><label for="tk_cmpB">Weapon B</label><select id="tk_cmpB"></select></div>
       <div class="field"><label for="tk_cmpC">Weapon C</label><select id="tk_cmpC"><option value="">— none —</option></select></div>
     </div>
+    <div id="visual-ttk-comparisons" class="visual-weapon-comparisons" aria-label="Comparison weapon illustrations"><div class="visual-compare-tile" id="visual-compare-a"><img id="visual-compare-a-image" width="960" height="320" alt="" loading="lazy" decoding="async" hidden><strong id="visual-compare-a-title">Weapon A</strong><small id="visual-compare-a-note">Representative weapon artwork only</small></div><div class="visual-compare-tile" id="visual-compare-b"><img id="visual-compare-b-image" width="960" height="320" alt="" loading="lazy" decoding="async" hidden><strong id="visual-compare-b-title">Weapon B</strong><small id="visual-compare-b-note">Representative weapon artwork only</small></div><div class="visual-compare-tile" id="visual-compare-c"><img id="visual-compare-c-image" width="960" height="320" alt="" loading="lazy" decoding="async" hidden><strong id="visual-compare-c-title">Weapon C</strong><small id="visual-compare-c-note">Representative weapon artwork only</small></div></div>
     <table id="tk_cmpTable"></table>
   </div>
 </div>
@@ -806,6 +809,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
   <h1>Recoil Evidence Explorer</h1>
   <p class="sub">Explore weapon recoil parameters while full spray-pattern analysis is being built.</p>
 <figure class="visual-reference-banner" id="visual-recoil"><img src="assets/recoil-parameters.svg" width="320" height="200" loading="lazy" decoding="async" alt="Recoil parameter reference"><figcaption><strong>Recoil parameter reference</strong><span>No synthetic spray or unverified shot-by-shot curve.</span></figcaption></figure>
+<div class="visual-selected-weapon" id="visual-recoil-weapon" aria-live="polite"><img id="visual-recoil-weapon-image" width="960" height="320" alt="" decoding="async" loading="lazy" hidden><div><span class="visual-media-kicker">OPTIONAL WEAPON ART</span><strong id="visual-recoil-weapon-title">Artwork not available</strong><small id="visual-recoil-weapon-note">Weapon stats are shown below. Reference artwork is not game data.</small></div></div>
 
   <div class="card">
     <div class="section-h">Choose a weapon and question</div>
@@ -856,7 +860,8 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
     <div class="toolbar">
       <div class="field"><label for="at_weapon">Weapon</label><select id="at_weapon"></select></div>
     </div>
-    <div class="visual-gear-grid" id="visual-attachment-grid" aria-label="Attachment category illustrations"><div class="visual-gear-tile"><img src="assets/gear-muzzle.svg" width="320" height="200" loading="lazy" decoding="async" alt="Representative Muzzle attachment"><strong>Muzzle</strong><small id="visual-at-muzzle">Not selected</small></div><div class="visual-gear-tile"><img src="assets/gear-grip.svg" width="320" height="200" loading="lazy" decoding="async" alt="Representative Grip attachment"><strong>Grip</strong><small id="visual-at-grip">Not selected</small></div><div class="visual-gear-tile"><img src="assets/gear-magazine.svg" width="320" height="200" loading="lazy" decoding="async" alt="Representative Magazine attachment"><strong>Magazine</strong><small id="visual-at-mag">Not selected</small></div><div class="visual-gear-tile"><img src="assets/optic-3x.svg" width="320" height="200" loading="lazy" decoding="async" alt="Representative Optic attachment"><strong>Optic</strong><small id="visual-at-sight">Not selected</small></div></div><p class="visual-art-disclaimer">Original category illustrations, not exact PUBG attachment models. The controls below determine compatibility.</p>
+    <div class="visual-gear-grid" id="visual-attachment-grid" aria-label="Attachment category illustrations"><div class="visual-gear-tile"><img src="assets/gear-muzzle.svg" width="320" height="200" loading="lazy" decoding="async" alt="Representative Muzzle attachment"><strong>Muzzle</strong><small id="visual-at-muzzle">Not selected</small></div><div class="visual-gear-tile"><img src="assets/gear-grip.svg" width="320" height="200" loading="lazy" decoding="async" alt="Representative Grip attachment"><strong>Grip</strong><small id="visual-at-grip">Not selected</small></div><div class="visual-gear-tile"><img src="assets/gear-magazine.svg" width="320" height="200" loading="lazy" decoding="async" alt="Representative Magazine attachment"><strong>Magazine</strong><small id="visual-at-mag">Not selected</small></div><div class="visual-gear-tile"><img id="visual-at-sight-image" src="assets/optic-3x.svg" width="320" height="200" loading="lazy" decoding="async" alt="Representative Optic attachment"><strong>Optic</strong><small id="visual-at-sight">Not selected</small></div></div>
+<div class="visual-selected-weapon" id="visual-attach-weapon" aria-live="polite"><img id="visual-attach-weapon-image" width="960" height="320" alt="" decoding="async" loading="lazy" hidden><div><span class="visual-media-kicker">OPTIONAL WEAPON ART</span><strong id="visual-attach-weapon-title">Artwork not available</strong><small id="visual-attach-weapon-note">Weapon stats are shown below. Reference artwork is not game data.</small></div></div><p class="visual-art-disclaimer">Original category illustrations, not exact PUBG attachment models. The controls below determine compatibility.</p>
     <div class="preset-btns">
       <button type="button" class="chip" id="at_presetVert">Best vertical control</button>
       <button type="button" class="chip" id="at_presetHoriz">Best horizontal</button>
@@ -895,7 +900,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
 <div class="wrap">
   <div class="eyebrow">Loadout · Backpack</div>
   <h1>Backpack Calculator</h1>
-  <p class="sub">Plan ammo, healing, boosts and throwables within your carrying capacity, including your vest.</p><div class="visual-backpack-row"><div class="visual-pack-lead"><img src="assets/gear-backpack.svg" width="320" height="200" loading="lazy" decoding="async" alt="Representative backpack"><div><strong id="visual-pack-label">Standard Backpack · Level 3</strong><small>Illustration only. The controls calculate actual capacity.</small></div></div><div class="visual-pack-items"><span><img src="assets/gear-ammo.svg" width="320" height="200" loading="lazy" decoding="async" alt="Representative Ammo artwork">Ammo</span><span><img src="assets/gear-medical.svg" width="320" height="200" loading="lazy" decoding="async" alt="Representative Healing artwork">Healing</span><span><img src="assets/gear-grenade.svg" width="320" height="200" loading="lazy" decoding="async" alt="Representative Throwables artwork">Throwables</span></div></div>
+  <p class="sub">Plan ammo, healing, boosts and throwables within your carrying capacity, including your vest.</p><div class="visual-backpack-row"><div class="visual-pack-lead"><img id="visual-pack-image" src="assets/gear-backpack.svg" width="320" height="200" loading="lazy" decoding="async" alt="Representative backpack"><div><strong id="visual-pack-label">Standard Backpack · Level 3</strong><small>Illustration only. The controls calculate actual capacity.</small></div></div><div class="visual-pack-items"><span><img src="assets/gear-ammo.svg" width="320" height="200" loading="lazy" decoding="async" alt="Representative Ammo artwork">Ammo</span><span><img src="assets/gear-medical.svg" width="320" height="200" loading="lazy" decoding="async" alt="Representative Healing artwork">Healing</span><span><img src="assets/gear-grenade.svg" width="320" height="200" loading="lazy" decoding="async" alt="Representative Throwables artwork">Throwables</span></div></div>
 
   <div class="card">
     <div class="toolbar">
@@ -1130,6 +1135,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
 <script src="js/app-navigation.js"></script>
  
 <script src="js/shared.js"></script>
+<script src="visual-catalog.js"></script>
 <script src="js/combat-database.js"></script>
  
 <script src="js/sensitivity.js"></script>

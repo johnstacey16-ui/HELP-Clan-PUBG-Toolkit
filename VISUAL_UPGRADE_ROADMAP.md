@@ -76,7 +76,7 @@ The checked foundation items include the initial Combat DB **illustrated M416 pi
 - [x] Display the M416 artwork in its weapon detail and a visible Combat DB pilot card. Other weapons show a **no-artwork** fallback rather than the wrong rifle. A full per-weapon image lookup remains pending.
 - [x] Provide an explicit no-image text state and broken-file fallback; art is labelled representative and never substituted for another weapon.
 - [ ] Optionally add a small visual key for helmet/vest, but preserve precise damage/armour tables, numbers and stickied table header.
-- [ ] Test all weapon names/image lookup and no missing source data; never substitute a different gun image.
+- [x] Validate the 9-weapon original illustration catalogue with exact-name mapping against WEAPONS, browser switching tests, and fallback for remaining names; no wrong weapon image is substituted. The remaining full catalogue is still pending.
 
 ## Hit Zone Damage Explorer (tool 03) — frozen approved reference
 
@@ -87,7 +87,7 @@ The checked foundation items include the initial Combat DB **illustrated M416 pi
 ## P4. Attachments & Recoil (tool 07)
 
 - [ ] Build compact original/licensed images for optics, muzzle devices, grips and magazines; use accurate type labels, not guessed model-specific stats.
-- [ ] Display current attachment selection without crowding dependent controls.
+- [x] Present selected attachment names in compact responsive tiles and a matching selected-weapon artwork strip, leaving compatibility selectors unaffected.
 - [ ] Handle incompatible attachments gracefully and preserve weapon-specific compatibility filters and recoil calculations.
 - [ ] Ensure no images cover comparison values or controls at 320px.
 
@@ -99,14 +99,14 @@ The checked foundation items include the initial Combat DB **illustrated M416 pi
 
 ## P6. TTK Calculator (tool 05)
 
-- [ ] Add weapon comparison thumbnails that clearly distinguish weapon A/B (where comparison is supported).
+- [x] Add dynamic, exact-name weapon comparison thumbnails for A/B/C in TTK, with explicit missing-art fallback for nonillustrated weapons.
 - [ ] Keep hits-to-kill, reload notes, comparison charts and tabular data dominant.
-- [ ] Confirm changing weapon/armour updates image and results independently without stale placeholders.
+- [x] Decouple TTK single-weapon and A/B/C comparison images from calculations; exact name lookup and fallback are verified for illustrated and nonillustrated choices.
 - [ ] Do not change any HTK/TTK formula or weapon reload evidence.
 
 ## P7. Recoil Analyzer (tool 06)
 
-- [ ] Introduce weapon imagery or a restraint-focused recoil diagram/trace key without fabricating per-shot data.
+- [x] Add dynamically updated exact-name weapon illustration beside the existing abstract recoil-parameter reference (no fabricated shot pattern).
 - [ ] Preserve prominent **COMING SOON / IN DEVELOPMENT** declaration for full shot-by-shot analysis.
 - [ ] Keep existing evidence limits, charts and parameters readable; no deceptive illustrative spray pattern.
 - [ ] Verify responsive chart behavior and reduced-motion preference.
@@ -151,3 +151,5 @@ When a task is done, change its literal `- [ ]` to `- [x]` **in GitHub**, alongs
 - **2026-10-25 — Combat DB illustrated pilot:** added a 960×320 original representative M416 field illustration (not official/photographic), responsive `visual-assets.css`, a visible image card and M416 detail art with clear fallback for all other weapons. Registered source/rights, kept every weapon statistic and Model 2 calculation untouched. Added art/manifest regression tests. After adding a correct SVG MIME mapping to the local test server, [CI run 40243494382](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40243494382) passed **134 Node tests, source sync, real Chromium image decoding/weapon modal fallback, all eight tool regressions and 320–1280px Hit Zone QA**. Vercel reported preview READY for commit `63093cd2`, at https://help-clan-pubg-toolkit-44ze3y6rf-acme-a675.vercel.app/#panel-combat. **Manual appearance review and production release are not complete.**
 
 - **2026-10-25 — Batched six-panel original art pass:** optic illustrations for 1x/2x/3x/4x/6x/8x/15x with dynamic scope image; four attachment category tiles with current selection text; backpack and category art; reference graphics for Range, TTK and Recoil. All assets locally hosted and recorded in manifest. Scope/attachment/backpack visual state is presentation-only in `visual-controls.js`. These are representative SVG illustrations, **not** official equipment images or a complete visual catalogue. Full item-by-item artwork, device review and release remain unchecked. [Batch CI run 40244407117](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40244407117) passed and Vercel preview for commit `20e48831` reported READY.
+
+- **2026-10-25 — Larger weapon/equipment art batch:** added original, non-official vector illustrations for AKM, Beryl M762, Kar98k, Mini 14, M24, P90, S12K, AWM (plus existing M416: **nine exact-name weapons total**), and distinct Jammer Pack artwork. Shared static `visual-catalog.js` contains exact-match mapping; Combat DB modal, Range, TTK primary/comparison, Recoil and Attachments show selected-weapon art without changing any calculation. Nonillustrated weapons explicitly display a missing-art state. Optic tile follows magnification; pack switches standard/Jammer art. Added browser and source tests; CI and preview must be verified after this commit. Full per-weapon artwork and photorealism, physical-device QA and final user approval remain open.

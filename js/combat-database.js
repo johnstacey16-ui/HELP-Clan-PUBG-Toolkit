@@ -521,9 +521,11 @@ function openWeaponDetail(name){
   const dmgRank = rank(WEAPONS,"dmg"), dpsRank = rank(WEAPONS,"dps");
   const {strengths, weaknesses} = getStrengthsWeaknesses(w);
   const helm = HELM[norm(w.name)], vest = VEST[norm(w.name)];
-  // Never display M416 artwork against any other weapon.
-  const weaponArt = w.name === "M416"
-    ? '<figure class="visual-modal-media"><img src="assets/weapon-m416-field.svg" width="960" height="320" loading="lazy" decoding="async" alt="Original illustrative side profile of an M416-style assault rifle"><figcaption>Representative artwork, not an official PUBG asset</figcaption></figure>'
+  const artMap = window.HELP_VISUAL_WEAPONS || {};
+  const image = Object.prototype.hasOwnProperty.call(artMap,w.name) ? artMap[w.name] : null;
+  // Never substitute another gun's artwork, including for unavailable assets.
+  const weaponArt = image
+    ? '<figure class="visual-modal-media"><img src="assets/'+image+'" width="960" height="320" loading="lazy" decoding="async" alt="Representative '+w.name+' weapon illustration"><figcaption>Original conceptual artwork; not an official PUBG asset</figcaption></figure>'
     : '<p class="visual-modal-unavailable">Artwork not available for this weapon yet. Statistics are unaffected.</p>';
   document.getElementById("modalBody").innerHTML = `
     <button class="close" data-action="close-modal" aria-label="Close weapon detail">✕</button>
@@ -546,6 +548,14 @@ function openWeaponDetail(name){
       ${helm?`<br><br>Headshot vs armor: ${helm.dmg} dmg. L3→L2 ${helm.l3} · L2→L1 ${helm.l2}.`:''}
       ${vest?`<br>Chest vs armor: ${vest.dmg} dmg. L3→L2 ${vest.l3} · L2→L1 ${vest.l2}.`:''}
     </div>`;
+  const modalFigure=document.querySelector("#modalBody .visual-modal-media");
+  const modalImage=modalFigure && modalFigure.querySelector("img");
+  if(modalImage)modalImage.addEventListener("error",()=>{
+    const fallback=document.createElement("p");
+    fallback.className="visual-modal-unavailable";
+    fallback.textContent="Artwork could not load for this weapon. Statistics are unaffected.";
+    modalFigure.replaceWith(fallback);
+  });
   document.getElementById("overlay").classList.add("show");
 }
 function closeModal(){ document.getElementById("overlay").classList.remove("show"); }
