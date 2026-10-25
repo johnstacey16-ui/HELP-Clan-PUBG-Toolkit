@@ -14,10 +14,10 @@ const ctx=vm.createContext({});
 vm.runInContext(
   between('const WEAPONS = [','// w[9]')+
   '\n'+between('const ATTACH_MOD = {','(function(){\n  const $ = id => document.getElementById(id);')+
-  '\nthis.data={WEAPONS,MAG_CAP_VERIFIED,MAG_LARGE_30_ROUND_MODEL,slotsFor,extendedCapFor};',
+  '\nthis.data={WEAPONS,MAG_CAP_VERIFIED,MAG_LARGE_30_ROUND_MODEL,DUAL_MAG_FAMILY,slotsFor,extendedCapFor};',
   ctx
 );
-const {WEAPONS,MAG_CAP_VERIFIED,slotsFor,extendedCapFor}=ctx.data;
+const {WEAPONS,MAG_CAP_VERIFIED,DUAL_MAG_FAMILY,slotsFor,extendedCapFor}=ctx.data;
 const w=n=>{const weapon=WEAPONS.find(x=>x.name===n);assert.ok(weapon,'Missing '+n);return weapon;};
 
 test('base magazines match official Mk47 and Skorpion notes',()=>{
@@ -62,7 +62,7 @@ test('Extended and Extended QuickDraw capacities must not be conflated',()=>{
   assert.equal(extendedCapFor(w('MK14 EBR'),'extquick'),20,'DMR/SR Extended QuickDraw');
   assert.equal(extendedCapFor(w('MK14 EBR'),'extended_ar'),20,'AR/DMR Extended');
   assert.equal(extendedCapFor(w('MK14 EBR'),'extquick_ar'),20,'AR/DMR Extended QuickDraw');
-  assert.equal(extendedCapFor(w('SLR'),'extended_ar'),null,'do not invent AR family capacity for SLR');
+  assert.equal(extendedCapFor(w('SLR'),'extended_ar'),20,'SLR AR-family weapon-loaded rounds');
   assert.equal(extendedCapFor(w('M416'),'extended'),42);
   assert.equal(extendedCapFor(w('M416'),'extquick'),40);
 });
@@ -87,8 +87,8 @@ test('UI displays the distinct capacities and hides fake RPD reloads',()=>{
   assert.match(html,/const eq  = extendedCapFor\(w,"extquick"\)/);
   assert.match(html,/const extQuick = extendedCapFor\(w,"extquick"\)/);
   assert.match(html,/newCap = extQuick; reloadSpeedMultiplier = 1\.15/);
-  assert.ok(html.includes('Extended QuickDraw${w.name==='));
-  assert.ok(html.includes('Extended QuickDraw (AR/DMR) (20, +15% reload speed)'));
+  assert.ok(html.includes('Extended QuickDraw${both?'));
+  assert.ok(html.includes('Extended QuickDraw (AR/DMR) (${eqAr==null?"No data":eqAr}, +15% reload speed)'));
   assert.match(html,/\$\("at_capNew"\)\.textContent = newCap \?\? "No data"/);
   assert.match(html,/finalReload==null \? "No data" : reloadMult<1/);
   assert.doesNotMatch(html,/Math\.ceil\(w\.mag\*1\.3\)/);
@@ -102,4 +102,24 @@ test('all calculators and scope matcher still parse and retain limits',()=>{
   const scripts=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m=>m[1]);
   assert.equal(scripts.length,5);
   scripts.forEach((s,i)=>assert.doesNotThrow(()=>new vm.Script(s),'script '+i));
+});
+
+test('dual-compatible DMRs expose both item families but never invent Dragunov capacity',()=>{
+  const dual=['SVD Dragunov','SLR','Mini 14','Mk12','MK14 EBR','SKS','VSS Vintorez'];
+  assert.deepEqual(Array.from(DUAL_MAG_FAMILY).sort(),dual.sort());
+  for(const name of dual){
+    assert.ok(slotsFor(w(name)).magazine,name+' must accept DMR/SR mags');
+    if(name==='SVD Dragunov'){
+      assert.equal(extendedCapFor(w(name),'extended_ar'),null);
+      assert.equal(extendedCapFor(w(name),'extquick_ar'),null);
+    }else {
+      assert.ok(extendedCapFor(w(name),'extended_ar')>0,name+' AR/DMR Extended');
+      assert.ok(extendedCapFor(w(name),'extquick_ar')>0,name+' AR/DMR EQ');
+    }
+  }
+  for(const name of ['ACE 32','M416','M249','RPD','P90']){
+    assert.equal(extendedCapFor(w(name),'extended_ar'),null,name+' AR alternative must not leak');
+  }
+  assert.match(html,/const both = DUAL_MAG_FAMILY\.has\(w\.name\)/);
+  assert.match(html,/Published capacity variants disagree/);
 });

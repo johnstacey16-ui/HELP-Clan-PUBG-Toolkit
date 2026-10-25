@@ -41,3 +41,9 @@ For safer data and calculator work, the two larger browser scripts are also divi
 - `src/calculators/` separates damage/ballistics, effective range, TTK, recoil evidence, attachments, and backpack maths.
 
 These `.part` files intentionally share the original lexical closure, so **they are source fragments, not independently loadable browser scripts**. After changing one, run `node scripts/build-static.cjs` to regenerate the two committed browser files; `node scripts/build-static.cjs --check` (also covered by tests) detects out-of-sync outputs. Vercel still directly serves plain `index.html` and static assets with no dependencies, build command or analytics changes. Do not edit the generated `js/combat-database.js` or `js/toolkit-calculators.js` in isolation.
+
+## Real-browser regression checks
+
+Alongside `node --test tests/*.test.cjs`, run `node tests/browser-smoke.cjs` to launch an installed Chrome/Chromium browser against a temporary localhost server. No npm dependencies or external game data are required. This exercises the **actual committed HTML and JS** (including mobile navigation, scope matching, range, TTK, recoil evidence, magazine switching and Jammer backpack totals). GitHub Actions runs this on every pull request and push. Use `CHROME_BIN=/path/to/chromium` if Chrome is not on your PATH. The smoke page stays under `tests/` and is not linked from the public seven-tool app.
+
+Chrome checks test the **static site**, not the status of a production Vercel deployment.
