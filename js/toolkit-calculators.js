@@ -106,8 +106,9 @@ function sourcedRangeRows(w){
 }
 // Bullet drop, sourced from winnermeta.win telemetry-based flight-time estimates (2026 snapshots).
 // WinnerMeta computes estimated gravity displacement using 1/2*g*t^2, not measured bullet impacts,
-// aim-point deviation, sight zero, or scope holdover. Only its published checkpoints (plus 0m) appear;
-// no interpolation or flat extension is used.
+// aim-point deviation, sight zero, or scope holdover. The 200/400/600 keys are the START of
+// 200–250/400–450/600–650m aggregate buckets, not observations precisely at their start.
+// 0m is a mathematical zero; no interpolation or extension between or beyond published buckets.
 // This is beta telemetry from a rolling 14-day sample, not a fixed-patch official figure.
 const DROP_TABLES = {
   "AUG A3": [[0,0],[200,35.2],[400,177.6]],
@@ -132,6 +133,17 @@ const DROP_TABLES = {
   "VSS Vintorez":[[0,0],[200,139.7],[400,525.9],[600,1231.0]],
   "MP9":    [[0,0],[200,197.6]],
   "G36C":   [[0,0],[200,35.6]],
+  // Added 2026-10-25: WinnerMeta telemetry-derived 50m distance-bin gravity estimates.
+  // Integer keys (200,400,600) are BUCKET STARTS, not exact-distance measurements.
+  "RPD":    [[0,0],[200,45.9],[400,203.2]],
+  "ACE 32": [[0,0],[200,58.7],[400,317.1]],
+  "M16A4":  [[0,0],[200,35.2],[400,177.0]],
+  "MK14 EBR":[[0,0],[200,35.2],[400,158.6]],
+  "SVD Dragunov":[[0,0],[200,44.1],[400,183.5],[600,512.8]],
+  "MK47 Mutant":[[0,0],[200,54.7],[400,265.4]],
+  "P90":    [[0,0],[200,66.4]],
+  "MP5K":   [[0,0],[200,219.3]],
+  "FAMAS":  [[0,0],[200,34.9]],
 };
 // WinnerMeta's own independently-measured muzzle velocity, for comparison against this toolkit's supplied
 // value — shown as a secondary reference, not used to override the supplied WEAPONS velocity anywhere.
@@ -360,13 +372,18 @@ function drawLineChart(canvas, series, opts={}){
       $("rg_drop").textContent="No data";
       $("rg_holdover").textContent="No data";
       $("rg_dropNote").textContent=data?
-        "No gravity-drop estimate at "+range+"m. Available: "+data.map(p=>p[0]+"m").join(", ")+
+        "No gravity-drop estimate for "+range+"m. Available bucket starts: "+data.map(p=>p[0]+"m").join(", ")+
         ".":"No gravity-drop estimates for this weapon.";
       return;
     }
     $("rg_drop").textContent=point.toFixed(1);
-    $("rg_holdover").textContent=(range>0?(point/100)/range*1000:0).toFixed(2);
-    $("rg_dropNote").textContent="Estimated gravity displacement from telemetry at "+range+"m. Equivalent angle is not scope holdover.";
+    // WinnerMeta's observations cover 50m distance buckets; approximate angular
+    // equivalent uses the bucket midpoint, never a fabricated exact-range holdover.
+    const effectiveRange=range>0 ? range+25 : 0;
+    $("rg_holdover").textContent=(effectiveRange>0?(point/100)/effectiveRange*1000:0).toFixed(2);
+    $("rg_dropNote").textContent=range===0
+      ? "Mathematical zero at muzzle; no telemetry drop measurement at 0m."
+      : "Telemetry-derived gravity estimate for the "+range+"–"+(range+50)+"m bucket (not an exact "+range+"m impact reading). Equivalent angle uses bucket midpoint and is not scope holdover.";
   }
   function updateEvidence(w,range){
     const rows=rowsFor(w);
