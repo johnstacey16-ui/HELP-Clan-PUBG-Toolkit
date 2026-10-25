@@ -109,7 +109,7 @@ The checked foundation items include the initial Combat DB **illustrated M416 pi
 - [x] Add dynamically updated exact-name weapon illustration beside the existing abstract recoil-parameter reference (no fabricated shot pattern).
 - [ ] Preserve prominent **COMING SOON / IN DEVELOPMENT** declaration for full shot-by-shot analysis.
 - [ ] Keep existing evidence limits, charts and parameters readable; no deceptive illustrative spray pattern.
-- [ ] Verify responsive chart behavior and reduced-motion preference.
+- [ ] Verify responsive chart behavior and reduced-motion preference on real Xbox/mobile hardware (Chromium automated smoke passed; physical-device review remains).
 
 ## P8. Tactical Loadout & Backpack (tool 08)
 
@@ -153,3 +153,5 @@ When a task is done, change its literal `- [ ]` to `- [x]` **in GitHub**, alongs
 - **2026-10-25 — Batched six-panel original art pass:** optic illustrations for 1x/2x/3x/4x/6x/8x/15x with dynamic scope image; four attachment category tiles with current selection text; backpack and category art; reference graphics for Range, TTK and Recoil. All assets locally hosted and recorded in manifest. Scope/attachment/backpack visual state is presentation-only in `visual-controls.js`. These are representative SVG illustrations, **not** official equipment images or a complete visual catalogue. Full item-by-item artwork, device review and release remain unchecked. [Batch CI run 40244407117](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40244407117) passed and Vercel preview for commit `20e48831` reported READY.
 
 - **2026-10-25 — Larger weapon/equipment art batch:** added original, non-official vector illustrations for AKM, Beryl M762, Kar98k, Mini 14, M24, P90, S12K, AWM (plus existing M416: **nine exact-name weapons total**), and distinct Jammer Pack artwork. Shared static `visual-catalog.js` contains exact-match mapping; Combat DB modal, Range, TTK primary/comparison, Recoil and Attachments show selected-weapon art without changing any calculation. Nonillustrated weapons explicitly display a missing-art state. Optic tile follows magnification; pack switches standard/Jammer art. Added browser and source tests; CI and preview must be verified after this commit. Full per-weapon artwork and photorealism, physical-device QA and final user approval remain open.
+
+- **2026-10-25 — Nine-weapon batch verification:** [GitHub Actions #40246066002](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40246066002) passed source sync, Node registry checks, all eight tools in Chromium and mobile/desktop hit-zone checks. Vercel marked commit `fdda902a` READY. Added an additional browser test to decode **every** catalogue SVG (9 total) and enforce 960×320 dimensions; confirm its own CI run before marking it verified. PR #41 remains **draft**, with no changes to live `main`.

@@ -295,23 +295,26 @@
 
         // Decode the asset through real Chromium so an SVG typo/404 cannot pass
         // solely through static-manifest checks.
-        const mediaProbe = new child.defaultView.Image();
-        mediaProbe.onload=()=>{
-          try {
-            eq(mediaProbe.naturalWidth,960,'Illustration decoded at intended width');
-            eq(mediaProbe.naturalHeight,320,'Illustration decoded at intended height');
-            document.body.dataset.smokeStatus='pass';
-            output.textContent='PASS: eight tools, navigation, combat M416 art/fallback, real SVG decoding, and calculator regressions';
-          }catch(error){
-            document.body.dataset.smokeStatus='fail';
-            output.textContent='FAIL: '+(error && error.stack || error);
-          }
-        };
-        mediaProbe.onerror=()=>{
+        // Verify the complete shipped weapon illustration catalogue decodes at 960x320.
+        const catalog=child.defaultView.HELP_VISUAL_WEAPONS;
+        check(!!catalog && Object.keys(catalog).length===9,'Expected nine exact-name weapon illustrations');
+        const fileList=Object.values(catalog);
+        Promise.all(fileList.map(filename=>new Promise((resolve,reject)=>{
+          const probe=new child.defaultView.Image();
+          probe.onload=()=>{
+            if(probe.naturalWidth!==960 || probe.naturalHeight!==320){
+              reject(new Error('Wrong decoded artwork dimensions for '+filename));
+            }else resolve();
+          };
+          probe.onerror=()=>reject(new Error('Art failed HTTP/decode: '+filename));
+          probe.src=new URL('assets/'+filename,child.location.href).href;
+        }))).then(()=>{
+          document.body.dataset.smokeStatus='pass';
+          output.textContent='PASS: eight tools, nine decoded weapon images, safe fallbacks, Model 2 and all calculators';
+        }).catch(error=>{
           document.body.dataset.smokeStatus='fail';
-          output.textContent='FAIL: M416 illustration HTTP/decode failure';
-        };
-        mediaProbe.src=new URL('assets/weapon-m416-field.svg',child.location.href).href;
+          output.textContent='FAIL: '+(error&&error.stack||error);
+        });
       }catch(e){
         document.body.dataset.smokeStatus='fail';
         output.textContent='FAIL: '+(e && e.stack || e);
