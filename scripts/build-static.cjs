@@ -15,6 +15,7 @@ const bundles=[
     'src/calculators/20-ttk.part',
     'src/calculators/30-recoil-evidence.part',
     'src/calculators/40-attachments.part',
+    'src/calculators/45-hit-zone-explorer.part',
     'src/calculators/50-backpack.part'
   ]}
 ];
