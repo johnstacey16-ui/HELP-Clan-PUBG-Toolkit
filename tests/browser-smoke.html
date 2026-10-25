@@ -89,7 +89,7 @@
           for(const id of ['extended','extquick']){
             change(magazine,id);
             const raw=text('at_capNew');
-            check(raw==='No data'||/^[1-9]\\d*$/.test(raw),
+            check(raw==='No data'||/^[1-9][0-9]*$/.test(raw),
               gun+' '+id+' must show a valid integer or No data (got '+raw+')');
             if(raw!=='No data' && id==='extended') maxCap=Number(raw);
             if(raw!=='No data' && id==='extquick') quickCap=Number(raw);
