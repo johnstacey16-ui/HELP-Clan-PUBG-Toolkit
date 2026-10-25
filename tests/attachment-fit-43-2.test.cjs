@@ -36,7 +36,7 @@ test('shotgun choke and duckbill modify pellet spread, not invented pellet hit c
   assert.deepEqual(options('O12','SG','muzzle'),['none','compensator','flash','suppressor','brake']);
   assert.equal(ATTACH_MOD.muzzle.choke.v,0);
   assert.equal(ATTACH_MOD.muzzle.duckbill.h,0);
-  assert.match(html,/Shotgun muzzle effects tighten pellet spread; no hit probability is modeled/);
+  assert.match(html,/Choke tightens pellet spread by 13%; no hit probability is modeled/);
   assert.match(html,/Exact shot-by-shot recoil: No data/);
   assert.match(html,/function shotgunMinShellsAt\(/);
 });
