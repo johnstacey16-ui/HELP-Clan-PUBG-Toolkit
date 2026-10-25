@@ -15,7 +15,7 @@ assert.ok(start!==-1 && end>start,'Damage model and hit-zone adapter source boun
 const context=vm.createContext({});
 vm.runInContext(src.slice(start,end)+
   '\nthis.model={BODY_PARTS,DETAILED_PARTS,CLASS_MULT_DETAILED,WEAPON_HEAD_MULT,'+
-  'getAllZoneDamageForWeapon,armorLevelForHitZone,hitZoneEquipmentType,finalDamageAt,htkFor};',context);
+  'getAllZoneDamageForWeapon,armorLevelForHitZone,hitZoneEquipmentType,finalDamageAt,shotgunMinShellsAt,htkFor};',context);
 const m=context.model;
 const weapon=(name,cls)=>({name,cls});
 const asMap=rows=>Object.fromEntries(rows.map(row=>[row.id,row]));
@@ -125,6 +125,26 @@ test('pellet shotguns never show per-pellet numbers as actual shell damage or HT
     }
   }
   assert.equal(profile('DBS','SG',71).head.sourceStatus,'no-data');
+  assert.equal(profile('DBS','SG',71).head.idealMinShells,null);
+});
+test('shotgun ideal minimum shells are sourced only from recorded per-pellet data and do not masquerade as actual damage',()=>{
+  const w=weapon('S12K','SG');
+  const zero=profile('S12K','SG',25,0,0);
+  const vestTwo=profile('S12K','SG',25,0,2);
+  const helmetThree=profile('S12K','SG',25,3,2);
+  assert.equal(zero.chest.idealMinShells,m.shotgunMinShellsAt(w,25,'chest',0));
+  assert.equal(vestTwo.chest.idealMinShells,m.shotgunMinShellsAt(w,25,'chest',2));
+  assert.equal(helmetThree.head.idealMinShells,m.shotgunMinShellsAt(w,25,'head',3));
+  assert.equal(zero.chest.idealMinShells,2);
+  assert.equal(vestTwo.chest.idealMinShells,2);
+  assert.equal(helmetThree.thigh.idealMinShells,zero.thigh.idealMinShells);
+  assert.equal(vestTwo.head.idealMinShells,zero.head.idealMinShells);
+  assert.equal(vestTwo.chest.damage,null);
+  assert.equal(vestTwo.chest.htk,null);
+  assert.equal(profile('M416','AR').chest.idealMinShells,null);
+  for(const id of m.DETAILED_PARTS){
+    assert.equal(profile('S12K','SG',25,3,2)[id].sourceStatus,'per-pellet-only');
+  }
 });
 test('out-of-range equipment inputs cannot silently become no-armour readings',()=>{
   for(const value of [-1,4,1.5,NaN,Infinity,'2',null]){
