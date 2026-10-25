@@ -33,7 +33,7 @@ test('43.2 game-file velocities override stale telemetry without changing drop',
   const start=html.indexOf('const DROP_TABLES = {');
   const stop=html.indexOf('const MEASURED_MUZZLE_VEL',start);
   const drop=vm.runInNewContext(html.slice(start,stop)+';DROP_TABLES');
-  assert.equal(Object.keys(drop).length,21,'No fake drop tables');
+  assert.equal(Object.keys(drop).length,30,'Only sourced gravity-estimate bins; no extrapolated data');
 });
 
 test('scope matcher, shotgun and recoil maths remain unchanged and parse',()=>{
