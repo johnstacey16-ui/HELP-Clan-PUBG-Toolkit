@@ -1,6 +1,6 @@
 # Hit Zone Damage Explorer — Roadmap
 
-> **Persistent project handoff** for the HELP Clan PUBG Toolkit. Last updated: **2026-10-25**.
+> **Persistent project handoff** for the HELP Clan PUBG Toolkit. Last updated: **2026-10-25, front-view render tests passed**.
 > For a new ChatGPT conversation, send the repository URL and say:
 > **"Continue the Hit Zone Damage Explorer from HIT_ZONE_EXPLORER_ROADMAP.md. Check the repository first, do the next unchecked task, run the applicable tests, and update this roadmap."**
 
@@ -21,7 +21,9 @@ Default modes: **damage**, **hits-to-kill (100 HP)**, and **heatmap**. Never dis
 - [x] **P1 — Data adapter:** independent helmet/vest calculations added to `src/calculators/00-damage-ballistics.part` and regenerated `js/toolkit-calculators.js`; `tests/hit-zone-adapter.test.cjs` covers all 13 zones, nil armour, helmet-only, vest-only, combined gear, Dragunov override, exact checkpoints, shotguns and bad levels. GitHub Actions passed on commit `7fcb1c2` ([CI run](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40178640515)).
 - [ ] **P2 — Visual asset:** finish polished, mobile-legible, keyboard-accessible front-only SVG with 13 region keys and mirrored limb shapes, equipment overlays and fixed-position result labels.
   - [x] Scaffold structural invariants covered by `tests/hit-zone-scaffold.test.cjs`: 13 IDs/labels, mirrored arms/legs, separate helmet and vest overlays, and absence from production navigation. [CI check](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40178789623) passed.
-  - [ ] Replace rough silhouette with polished visuals; inspect rendered desktop/mobile legibility and accessibility in a real browser before P2 is considered complete.
+  - [x] Replace the rough silhouette with layered, more anatomically contoured SVG geometry, tactical background, separate gear coverage tints, and 13 persistent two-line readout cards.
+  - [x] Browser layout QA: `tests/hit-zone-preview.html` + `tests/hit-zone-preview-smoke.cjs` check 390px mobile and 1280px desktop actual Chromium rendering, callout visibility/collision, keyboard targets, independent overlays and no page overflow. [Passing workflow](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40179367950).
+  - [ ] Human visual inspection of a screenshot/real device and any resulting art/legibility refinements (also tracked under P6); do not claim full aesthetic review from DOM geometry tests alone.
 - [ ] **P3 — Live panel:** wire the explorer into `index.html`, toolkit sidebar and navigation, CSS, and the assembled static JavaScript in source/build order. Do not publish a broken or unfinished eighth tab.
 - [ ] **P4 — Modes and detail:** implement damage / HTK / heatmap, optional region drill-down, explicit no-data and shotgun best-case labels.
 - [ ] **P5 — Validation:** run `node scripts/build-static.cjs`, `node scripts/build-static.cjs --check`, `node --test tests/*.test.cjs`, and `node tests/browser-smoke.cjs`; expand smoke coverage for the new panel, mobile and source-limit behaviour.
@@ -59,9 +61,11 @@ Default modes: **damage**, **hits-to-kill (100 HP)**, and **heatmap**. Never dis
 
 ## Handoff / next task
 
-**Next milestone: P2 — polish and verify the front-only SVG asset, accessibility and mobile value labels; weapon-source reconciliation remains an independent open data-quality item.** The already-created but UNWIRED starter files are `src/explorer/hit-zone-explorer.fragment.html`, `src/explorer/hit-zone-explorer.scaffold.css`, and `src/explorer/hit-zone-explorer.scaffold.part`. They must not be loaded on the live page as-is. The P1 adapter is already built and tested; wire the next stage to `getAllZoneDamageForWeapon(w, distance, helmetLevel, vestLevel)` and `sourcedRangeRows(w)`, consulting `docs/hit-zone-explorer-architecture.md`. Do not mark implementation stages complete just because starter files exist. After each coding session, check off only verified steps, note remaining issues here, and commit changes. The project is private; use the connected GitHub repository tools.
+**Next coding milestone: P3 — connect the tested SVG/controller to the adapter in an isolated feature branch, update navigation/build/test fixtures together, then promote only after real-browser tests pass.** Keep the final visual screenshot review open in P2/P6, and the weapon-source reconciliation as an independent data-quality task. The already-created but UNWIRED starter files are `src/explorer/hit-zone-explorer.fragment.html`, `src/explorer/hit-zone-explorer.scaffold.css`, and `src/explorer/hit-zone-explorer.scaffold.part`. They must not be loaded on the live page as-is. The P1 adapter is already built and tested; wire the next stage to `getAllZoneDamageForWeapon(w, distance, helmetLevel, vestLevel)` and `sourcedRangeRows(w)`, consulting `docs/hit-zone-explorer-architecture.md`. Do not mark implementation stages complete just because starter files exist. After each coding session, check off only verified steps, note remaining issues here, and commit changes. The project is private; use the connected GitHub repository tools.
 
 ## Progress log
+
+- **2026-10-25 (P2 front-view refinement)** — Redesigned the provisional SVG with curved body zones, dual mirrored limbs, 13 permanent two-line numeric callout cards, technical reticle background, distinct helmet/vest tint groups and responsive scoped CSS. Added `tests/hit-zone-preview.html` and deterministic real Chromium 390px + 1280px layout/collision checks to CI; test run [40179367950](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40179367950) passed including 124 Node tests and original seven-tool browser smoke. No eighth panel is published yet. Screenshot-level aesthetic inspection remains to do.
 
 - **2026-10-25 (P2 testing started)** — Added an automated scaffold invariant test for 13 on-body labels, front-only SVG layout, mirrored limbs, independent gear overlays and keeping the unfinished tab out of production. GitHub Actions passed [run 40178789623](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40178789623). P2 remains **unchecked** until actual visual/artwork and mobile QA.
 
