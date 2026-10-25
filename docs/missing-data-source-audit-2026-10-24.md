@@ -1,3 +1,5 @@
+> **25 October 2026 correction:** WinnerMeta's published drop figures are estimates from flight time (½gt²), not observed impact displacement or validated sight holdover. The historical research notes below must not be used to fill missing observed trajectories.
+
 # Missing data and source-recovery audit — 24 October 2026
 
 **Research-only.** This file records possible data sources for blanks in the public toolkit; it does **not** authorize replacing existing weapon values automatically. Preserve the user's empirical Scope Sensitivity Matcher maths. Detailed research belongs in the repo, not on player-facing calculator pages.
@@ -6,7 +8,7 @@
 
 - **45 weapons** in `WEAPONS`.
 - **41 single-projectile falloff tables** in `FALLOFF_TABLES` and **4 pellet-shotgun falloff tables** in `PELLET_FALLOFF`, for 45 weapons with some damage-distance data.
-- **21 weapon bullet-drop tables** and **21 corresponding muzzle velocity entries** in `DROP_TABLES` / `MEASURED_MUZZLE_VEL`; **24 weapons have no drop readings**, and therefore no associated data from those two tables.
+- **21 telemetry-derived gravity-drop estimate tables** and **21 corresponding muzzle velocity entries** in `DROP_TABLES` / `MEASURED_MUZZLE_VEL`; **24 weapons lack gravity-drop estimate checkpoints**, and therefore no associated data from those two tables.
 - **44 recoil records** in `RECOIL_RAW`: **RPD is completely missing**. Of the 44 recorded weapons, **27 contain at least one null recoil field**; G18C has all 8 fields blank.
 - **Lynx AMR and O12 have their first single-projectile damage checkpoint at 2 m**, rather than 0 m. The point-blank TTK panel does not automatically extend their 2 m values to 0 m.
 - **Four shotguns** have recorded pellet damage cutoffs: DBS 70 m; S686 80 m; S12K 70 m; Sawn-off 50 m. The published input is damage per pellet, not actual pellets connecting with a player.
@@ -94,7 +96,7 @@ https://pubg.gs/gear/ lists Jammer Pack capacity additions of **+150 / +200 / +2
 
 - **Exact shot-by-shot recoil chart:** Source recoil and curve keys are promising, but no directly documented in-game trajectory for each bullet was established.
 - **Observed shotgun pellet hit counts at range (and true TTK):** Source spread values are not direct impact data; measured pellet damage and theoretical minimum shells stay separate.
-- **24 missing observed bullet-drop weapons:** Data-asset ballistic curves could support a new *modelled* trajectory tool, but the present observed-drop table remains 21/45.
+- **24 weapons missing published gravity-drop estimates:** Data-asset ballistic curves could support a new *modelled* trajectory tool, but the current estimated-gravity table remains 21/45.
 - **Exact 0m damage points for Lynx AMR and O12:** Existing source begins at 2m; use modeled extrapolation only if the behavior is intentionally redesigned.
 - **Attachment effect interactions on sustained recoil:** Tooltip percentages alone do not describe interactions and whether reductions stack additively or multiplicatively.
 

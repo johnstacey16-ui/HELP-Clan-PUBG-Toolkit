@@ -39,7 +39,7 @@ test('all 45 weapons have ideal flight bounds without pretending drop is measure
   assert.equal(Object.keys(data.GAME_MUZZLE_VEL_43_2).length,44);
   assert.match(html,/const data=DROP_TABLES\[w.name\],velocity=knownMuzzleVelocity\(w\)/);
   assert.match(html,/const point=dropAtRange\(w,range\)/);
-  assert.match(html,/"No drop readings for this weapon\."/);
+  assert.match(html,/"No gravity-drop estimates for this weapon\."/);
   assert.match(html,/const idealFlight=range==null \? null : minimumIdealFlightTime\(w,range\)/);
   assert.match(html,/idealFlight\.toFixed\(3\)\+" s"/);
 });

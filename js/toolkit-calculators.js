@@ -104,9 +104,10 @@ function measuredValueAt(rows, range){
 function sourcedRangeRows(w){
   return FALLOFF_TABLES[w.name] || PELLET_FALLOFF[w.name] || null;
 }
-// Bullet drop, sourced from winnermeta.win (real match telemetry, fetched 2026-09-13). WinnerMeta only
-// publishes drop at 200m/400m/600m checkpoints (plus muzzle=0), not a full per-meter curve — this
-// toolkit reports those checkpoints only; no interpolation or flat extension is used.
+// Bullet drop, sourced from winnermeta.win telemetry-based flight-time estimates (2026 snapshots).
+// WinnerMeta computes estimated gravity displacement using 1/2*g*t^2, not measured bullet impacts,
+// aim-point deviation, sight zero, or scope holdover. Only its published checkpoints (plus 0m) appear;
+// no interpolation or flat extension is used.
 // This is beta telemetry from a rolling 14-day sample, not a fixed-patch official figure.
 const DROP_TABLES = {
   "AUG A3": [[0,0],[200,35.2],[400,177.6]],
@@ -135,7 +136,7 @@ const DROP_TABLES = {
 // WinnerMeta's own independently-measured muzzle velocity, for comparison against this toolkit's supplied
 // value — shown as a secondary reference, not used to override the supplied WEAPONS velocity anywhere.
 const MEASURED_MUZZLE_VEL = {"AUG A3":927, "AKM":762, "M416":921, "AWM":1009, "Kar98k":823, "Vector":389, "M24":860, "Beryl M762":786, "SCAR-L":916, "M249":953, "UMP9":368, "Groza":764, "Mini 14":1057, "SKS":845, "K2":924, "QBZ95":962, "MG3":860, "Mk12":955, "VSS Vintorez":440, "MP9":405, "G36C":927};
-// PUBG 43.2 extracted muzzle velocity: separate from WinnerMeta measured drop.
+// PUBG 43.2 extracted muzzle velocity: separate from WinnerMeta's derived gravity estimates.
 const GAME_MUZZLE_VEL_43_2 = {
   "Lynx AMR":1200, "AWM":945, "O12":625, "Kar98k":760, "M24":790,
   "R1895":330, "Desert Eagle":450, "MK14 EBR":853, "SVD Dragunov":830,
@@ -154,7 +155,7 @@ function knownMuzzleVelocity(w){
 // Physical lower bound for a projectile fired toward a range marker:
 // the projectile cannot arrive quicker than straight-line distance at its
 // initial muzzle speed if air drag slows it. This is *not* in-game flight
-// time, not a drag simulation, and does not fill observed drop tables.
+// time, not a drag simulation, and does not fill unpublished gravity-estimate checkpoints.
 function minimumIdealFlightTime(w,range){
   const speed=knownMuzzleVelocity(w);
   return Number.isFinite(range) && range>=0 && Number.isFinite(speed) && speed>0
@@ -359,13 +360,13 @@ function drawLineChart(canvas, series, opts={}){
       $("rg_drop").textContent="No data";
       $("rg_holdover").textContent="No data";
       $("rg_dropNote").textContent=data?
-        "No drop reading at "+range+"m. Available: "+data.map(p=>p[0]+"m").join(", ")+
-        ".":"No drop readings for this weapon.";
+        "No gravity-drop estimate at "+range+"m. Available: "+data.map(p=>p[0]+"m").join(", ")+
+        ".":"No gravity-drop estimates for this weapon.";
       return;
     }
     $("rg_drop").textContent=point.toFixed(1);
     $("rg_holdover").textContent=(range>0?(point/100)/range*1000:0).toFixed(2);
-    $("rg_dropNote").textContent="Recorded at "+range+"m. Angular drop is calculated from this reading.";
+    $("rg_dropNote").textContent="Estimated gravity displacement from telemetry at "+range+"m. Equivalent angle is not scope holdover.";
   }
   function updateEvidence(w,range){
     const rows=rowsFor(w);
