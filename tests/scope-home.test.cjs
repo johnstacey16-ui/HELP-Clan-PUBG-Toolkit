@@ -54,10 +54,10 @@ test('owner-authored empirical formulas and scope values are preserved',()=>{
   assert.match(docs,/owner-supplied scope-specific A\/B constants/);
 });
 
-test('existing calculations and all seven panels compile',()=>{
+test('existing calculations and all eight panels compile',()=>{
   assert.equal(inlineScripts.length,5);
   inlineScripts.forEach((s,i)=>assert.doesNotThrow(()=>new vm.Script(s),'block '+i));
-  assert.equal((nav.match(/data-open-panel="panel-/g)||[]).length,7);
+  assert.equal((nav.match(/data-open-panel="panel-/g)||[]).length,8);
   for(const id of ['panel-range','panel-ttk','panel-recoil2','panel-attach','panel-backpack']){
     assert.match(html,new RegExp('id="'+id+'" class="hub-main'));
   }
