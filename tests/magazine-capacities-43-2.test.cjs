@@ -119,7 +119,7 @@ test('dual-compatible DMRs expose both item families but never invent Dragunov c
     assert.equal(extendedCapFor(w(name),'extended_ar'),null,name+' AR alternative must not leak');
   }
   assert.match(html,/const both = DUAL_MAG_FAMILY\.has\(w\.name\)/);
-  assert.match(html,/Published capacity variants disagree/);
+  assert.match(html,/reported 18\/20 variants are not mapped/);
 });
 
 test('ACE32 maps Extended 42 versus Extended QuickDraw 40 without making every weapon identical',()=>{
