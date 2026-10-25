@@ -4,7 +4,7 @@ const assert=require('node:assert/strict');
 const {readFileSync}=require('node:fs');
 const {resolve}=require('node:path');
 const vm=require('node:vm');
-const html=readFileSync(resolve(__dirname,'../index.html'),'utf8');
+const html=require('./toolkit-test-source.cjs')();
 const between=(a,b)=>{
   const i=html.indexOf(a),j=html.indexOf(b,i+a.length);
   assert.ok(i>=0 && j>i,'Missing source section '+a+' -> '+b);
