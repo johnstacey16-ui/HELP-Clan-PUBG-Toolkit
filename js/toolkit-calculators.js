@@ -243,6 +243,57 @@ function shotgunMinShellsAt(w,range,hitbox,armorLevel){
 function htkFor(dmg){ return dmg == null ? null : (dmg>0 ? Math.ceil(100/dmg) : null); }
 function pureTtk(htk, rpm){ return htk == null ? null : (htk>1 ? (htk-1)/(rpm/60) : 0); }
 
+// ================= HIT ZONE EXPLORER DATA ADAPTER =================
+// Pure, side-effect-free bridge between the established damage functions and
+// the forthcoming all-at-once front-view body map. No UI/DOM references.
+// Standard helmet and vest levels independently cover their documented zones.
+// Intact equipment only; no armour-durability simulation.
+function hitZoneEquipmentType(part){
+  if(!part.armored) return "None";
+  return part.bucket==="head" ? "Helmet" : "Vest";
+}
+function armorLevelForHitZone(part, helmetLevel, vestLevel){
+  const gear=hitZoneEquipmentType(part);
+  return gear==="Helmet" ? helmetLevel : (gear==="Vest" ? vestLevel : 0);
+}
+function getAllZoneDamageForWeapon(w, distance, helmetLevel, vestLevel){
+  // A malformed selection must never silently display unarmoured damage.
+  for(const [key,level] of [["helmet",helmetLevel],["vest",vestLevel]]){
+    if(!Number.isInteger(level) || level<0 || level>3)
+      throw new RangeError(key+" level must be an integer from 0 to 3");
+  }
+  if(!w || typeof w.name!=="string" || !CLASS_MULT_DETAILED[w.cls])
+    throw new TypeError("A known weapon class and name are required");
+
+  const checkpoint=measuredValueAt(sourcedRangeRows(w),distance);
+  const isPelletShotgun=Boolean(SHOTGUN_PELLETS[w.name]);
+  // A shotgun's published value is *per pellet*; actual total pellet
+  // connections, whole-shell damage, and HTK are unknown.
+  const sourceStatus=checkpoint==null ? "no-data" :
+    (isPelletShotgun ? "per-pellet-only" : "measured-checkpoint");
+  const classBuckets=CLASS_MULT_DETAILED[w.cls];
+  return DETAILED_PARTS.map(id=>{
+    const part=BODY_PARTS[id];
+    const gear=hitZoneEquipmentType(part);
+    const armorLevel=armorLevelForHitZone(part,helmetLevel,vestLevel);
+    const classMultiplier=(part.bucket==="head" && WEAPON_HEAD_MULT[w.name]) ||
+      classBuckets[part.bucket];
+    const damage=sourceStatus==="measured-checkpoint"
+      ? finalDamageAt(w,distance,id,armorLevel) : null;
+    return {
+      id, label:part.label,
+      damage, htk:damage==null ? null : htkFor(damage),
+      hitAreaMultiplier:part.hitArea,
+      classMultiplier,
+      armorMultiplier:armorMultFor(part,armorLevel),
+      armorLevel,
+      armorSource:armorLevel>0 ? gear : "None",
+      armorSlot:gear,
+      sourceStatus
+    };
+  });
+}
+
 // PUBG's 2026 Dev Letter explicitly publishes *post-42.3* base reloads:
 // RPD 5.2s, M249 5.962s. These values already reflect the LMG balance
 // changes, so NEVER apply the patch's approximate extra -25% to them.
