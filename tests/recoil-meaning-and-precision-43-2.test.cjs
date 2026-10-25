@@ -4,7 +4,7 @@ const assert=require('node:assert/strict');
 const {readFileSync}=require('node:fs');
 const {resolve}=require('node:path');
 const vm=require('node:vm');
-const html=readFileSync(resolve(__dirname,'../index.html'),'utf8');
+const html=require('./toolkit-test-source.cjs')();
 const beg=html.indexOf('const RECOIL_RAW = {');
 const end=html.indexOf('const RECOIL_DETAIL_43_2 = {',beg);
 assert.ok(beg>=0&&end>beg);

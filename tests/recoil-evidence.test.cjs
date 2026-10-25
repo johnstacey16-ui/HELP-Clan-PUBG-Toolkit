@@ -5,7 +5,7 @@ const {readFileSync} = require('node:fs');
 const {resolve} = require('node:path');
 const {Script,runInNewContext} = require('node:vm');
 
-const html = readFileSync(resolve(__dirname,'../index.html'),'utf8');
+const html = require('./toolkit-test-source.cjs')();
 const start = html.indexOf('/* ================= 3. RECOIL EVIDENCE EXPLORER ================= */');
 const end = html.indexOf('/* ================= 4. ATTACHMENTS & RECOIL ================= */', start);
 const recoil = html.slice(start,end);

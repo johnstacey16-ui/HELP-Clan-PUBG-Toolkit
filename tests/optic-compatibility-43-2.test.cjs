@@ -5,7 +5,7 @@ const assert=require('node:assert/strict');
 const {readFileSync}=require('node:fs');
 const {resolve}=require('node:path');
 const vm=require('node:vm');
-const html=readFileSync(resolve(__dirname,'../index.html'),'utf8');
+const html=require('./toolkit-test-source.cjs')();
 const i=html.indexOf('const ATTACH_MOD = {');
 const j=html.indexOf('(function(){\n  const $ = id => document.getElementById(id);',i);
 assert.ok(i>0&&j>i,'Attachment data source boundaries');
