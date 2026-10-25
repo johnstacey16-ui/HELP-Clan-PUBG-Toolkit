@@ -13,11 +13,11 @@ const legacy = fs.readFileSync(path.join(root, 'design-refresh.css'), 'utf8');
 
 const panelIds = [
   'panel-sensitivity', 'panel-combat', 'panel-range', 'panel-ttk',
-  'panel-recoil2', 'panel-attach', 'panel-backpack'
+  'panel-recoil2', 'panel-attach', 'panel-backpack', 'panel-hit-zone'
 ];
 const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m => m[1]);
 
-test('all seven toolkit panels and their navigation links exist', () => {
+test('all eight toolkit panels and their navigation links exist', () => {
   for (const id of panelIds) {
     assert.match(html, new RegExp('id="' + id + '" class="hub-main'));
     assert.match(html, new RegExp('data-open-panel="' + id + '"'));
@@ -62,7 +62,7 @@ test('desktop, mobile, back navigation and Escape all select the correct panel',
   const panels = panelIds.map(id => createElement(id));
   const labels = [
     'Scope Sensitivity Matcher', 'Combat DB', 'Effective Range', 'TTK',
-    'Recoil Analyzer', 'Attachments', 'Tactical Loadout & Gear'
+    'Recoil Analyzer', 'Attachments', 'Tactical Loadout & Gear', 'Hit Zone Damage Explorer'
   ];
   const buttons = panelIds.map((id, i) => {
     const button = createElement('button-' + id);
@@ -98,7 +98,7 @@ test('desktop, mobile, back navigation and Escape all select the correct panel',
   assert.deepEqual(panels.filter(p => p.classList.contains('active')).map(p => p.id), ['panel-sensitivity']);
   assert.equal(buttons[0].attrs['aria-current'], 'page');
   assert.equal(nodes['active-tool-heading'].textContent, 'Scope Sensitivity Matcher');
-  assert.equal(nodes['active-tool-index'].attrs['aria-label'], 'Tool 1 of 7');
+  assert.equal(nodes['active-tool-index'].attrs['aria-label'], 'Tool 1 of 8');
   assert.equal(location.hash, '', 'Default landing should not add a URL fragment');
 
   for (const [i, id] of panelIds.entries()) {
