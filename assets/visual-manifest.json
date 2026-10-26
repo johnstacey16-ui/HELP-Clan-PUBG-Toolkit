@@ -852,6 +852,71 @@
       "origin": "original-designed",
       "rightsNote": "Original stylised weapon-class silhouette authored for HELP Clan; not copied from PUBG game assets, official screenshots, or third-party imagery.",
       "usage": "Concept art for RPD in Combat DB and related tools; not an exact 3D game model or gameplay evidence. Table thumbnail has empty alt because weapon name is adjacent."
+    },
+    {
+      "id": "gear-backpack-l1",
+      "path": "assets/gear-backpack-l1.svg",
+      "panelId": "panel-backpack",
+      "role": "icon",
+      "width": 320,
+      "height": 200,
+      "decorative": false,
+      "alt": "Original illustrative Level 1 backpack",
+      "origin": "original-designed",
+      "rightsNote": "Original fictional vector illustration designed specifically for this toolkit; no official PUBG item texture or third-party art copied.",
+      "usage": "Representative backpack-level or equipment reference only. Carry capacity, vest bonus, and inventory data come from existing calculator controls."
+    },
+    {
+      "id": "gear-backpack-l2",
+      "path": "assets/gear-backpack-l2.svg",
+      "panelId": "panel-backpack",
+      "role": "icon",
+      "width": 320,
+      "height": 200,
+      "decorative": false,
+      "alt": "Original illustrative Level 2 backpack",
+      "origin": "original-designed",
+      "rightsNote": "Original fictional vector illustration designed specifically for this toolkit; no official PUBG item texture or third-party art copied.",
+      "usage": "Representative backpack-level or equipment reference only. Carry capacity, vest bonus, and inventory data come from existing calculator controls."
+    },
+    {
+      "id": "gear-booster",
+      "path": "assets/gear-booster.svg",
+      "panelId": "panel-backpack",
+      "role": "icon",
+      "width": 320,
+      "height": 200,
+      "decorative": false,
+      "alt": "Original energy booster illustration",
+      "origin": "original-designed",
+      "rightsNote": "Original fictional vector illustration designed specifically for this toolkit; no official PUBG item texture or third-party art copied.",
+      "usage": "Representative backpack-level or equipment reference only. Carry capacity, vest bonus, and inventory data come from existing calculator controls."
+    },
+    {
+      "id": "gear-helmet",
+      "path": "assets/gear-helmet.svg",
+      "panelId": "panel-backpack",
+      "role": "icon",
+      "width": 320,
+      "height": 200,
+      "decorative": false,
+      "alt": "Original representative protective helmet",
+      "origin": "original-designed",
+      "rightsNote": "Original fictional vector illustration designed specifically for this toolkit; no official PUBG item texture or third-party art copied.",
+      "usage": "Representative backpack-level or equipment reference only. Carry capacity, vest bonus, and inventory data come from existing calculator controls."
+    },
+    {
+      "id": "gear-vest",
+      "path": "assets/gear-vest.svg",
+      "panelId": "panel-backpack",
+      "role": "icon",
+      "width": 320,
+      "height": 200,
+      "decorative": false,
+      "alt": "Original representative protective vest",
+      "origin": "original-designed",
+      "rightsNote": "Original fictional vector illustration designed specifically for this toolkit; no official PUBG item texture or third-party art copied.",
+      "usage": "Representative backpack-level or equipment reference only. Carry capacity, vest bonus, and inventory data come from existing calculator controls."
     }
   ]
 }

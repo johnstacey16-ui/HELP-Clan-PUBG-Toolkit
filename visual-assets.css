@@ -66,3 +66,17 @@
  #panel-combat #wTable .visual-weapon-name{gap:6px;min-width:140px}
  #panel-combat #wTable img.visual-weapon-thumb{width:52px;height:26px;flex-basis:52px}
 }
+
+/* Illustrated body protection key + complete backpack/category silhouettes. */
+#panel-combat .visual-armour-key{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:16px 0 2px}
+#panel-combat .visual-armour-key>div{display:flex;align-items:center;gap:10px;min-width:0;padding:8px 13px;border:1px solid rgba(152,204,216,.2);background:rgba(14,35,46,.88);border-radius:11px}
+#panel-combat .visual-armour-key img{display:block;width:96px;max-width:38%;height:74px;object-fit:contain}
+#panel-combat .visual-armour-key span{display:flex;flex-direction:column;gap:4px;min-width:0}
+#panel-combat .visual-armour-key strong{color:#f1d3a5;font:700 18px/1.25 "Barlow Condensed",sans-serif}
+#panel-combat .visual-armour-key small{color:#b6cbd1;font:11px/1.45 "Manrope",sans-serif}
+#panel-backpack .visual-pack-items{grid-template-columns:repeat(3,minmax(0,1fr));row-gap:10px}
+#panel-backpack .visual-pack-items span{min-width:0;overflow-wrap:anywhere}
+#panel-backpack .visual-pack-items small{font:11px/1.3 "Manrope",sans-serif;text-align:center}
+#panel-backpack #visual-pack-image[hidden]{display:none}
+@media(max-width:650px){#panel-combat .visual-armour-key{grid-template-columns:1fr}}
+@media(max-width:350px){#panel-backpack .visual-pack-items img{height:53px}#panel-combat .visual-armour-key img{width:76px;height:60px}}

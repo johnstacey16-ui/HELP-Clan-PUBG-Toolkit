@@ -39,6 +39,7 @@
         check(!child.body.classList.contains('sidebar-open'),'Navigation closes drawer');
         // Combat weapon catalogue: exact art mapping for known guns and no-art fallback.
         open('panel-combat');
+        check(child.querySelectorAll('#panel-combat .visual-armour-key img').length===2,'Helmet and vest illustration key');
         const pilot = get('combat-pilot-image');
         check(pilot.getAttribute('src')==='assets/weapon-m416-field.svg','Combat art must be local');
         eq(pilot.getAttribute('width'),'960','M416 image reserves its width');
@@ -101,6 +102,17 @@
         change(get('bp_type'),'jammer');
         eq(get('visual-pack-image').getAttribute('src'),'assets/gear-jammer.svg','Jammer Pack uses its own illustration');
         change(get('bp_type'),'standard');
+        change(get('bp_level'),'1');
+        eq(get('visual-pack-image').getAttribute('src'),'assets/gear-backpack-l1.svg','Level 1 has distinct art');
+        change(get('bp_level'),'2');
+        eq(get('visual-pack-image').getAttribute('src'),'assets/gear-backpack-l2.svg','Level 2 has distinct art');
+        change(get('bp_level'),'3');
+        eq(get('visual-pack-image').getAttribute('src'),'assets/gear-backpack.svg','Level 3 retains original art');
+        change(get('bp_vest'),'no');
+        eq(text('visual-pack-vest-label'),'Vest: none','Vest art label follows equipment choice');
+        change(get('bp_vest'),'yes');
+        eq(text('visual-pack-vest-label'),'Vest: worn','Vest art label restores equipment choice');
+        check(child.querySelectorAll('#panel-backpack .visual-pack-items img').length===6,'All six backpack categories illustrated');
         open('panel-range');check(!!get('visual-range').querySelector('img'),'Range art exists');
         open('panel-ttk');check(!!get('visual-ttk').querySelector('img'),'TTK art exists');
         open('panel-recoil2');check(!!get('visual-recoil').querySelector('img'),'Recoil parameters art exists');

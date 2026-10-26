@@ -85,14 +85,27 @@ function syncAttachmentArt(){
 for(const id of ['weapon','muzzle','grip','mag','sight']){const select=get('at_'+id);if(select)select.addEventListener('change',syncAttachmentArt);}
 for(const id of ['presetVert','presetHoriz','presetBal','presetClear']){const button=get('at_'+id);if(button)button.addEventListener('click',()=>queueMicrotask(syncAttachmentArt));}
 syncAttachmentArt();
+const packImage=get('visual-pack-image');
+if(packImage)packImage.addEventListener('error',()=>{
+  // Missing art must never hide the calculator or trigger an image error loop.
+  packImage.hidden=true;packImage.removeAttribute('src');packImage.alt='';
+  const note=get('visual-pack-note');
+  if(note)note.textContent='Equipment illustration unavailable; capacity calculations still work.';
+});
 function syncBackpackArt(){
- const type=get('bp_type'),level=get('bp_level'),label=get('visual-pack-label'),image=get('visual-pack-image');
+ const type=get('bp_type'),level=get('bp_level'),vest=get('bp_vest');
+ const label=get('visual-pack-label'),image=get('visual-pack-image');
  if(!type||!level||!label||!image)return;
  const jammer=type.value==='jammer';
+ const file=jammer?'gear-jammer.svg':({1:'gear-backpack-l1.svg',2:'gear-backpack-l2.svg',3:'gear-backpack.svg'}[level.value]||'gear-backpack.svg');
  label.textContent=(jammer?'Jammer Pack':'Standard Backpack')+' · Level '+level.value;
- image.src='assets/'+(jammer?'gear-jammer.svg':'gear-backpack.svg');
- image.alt='Original representative '+(jammer?'Jammer Pack':'backpack')+' illustration';
+ image.hidden=false;image.src='assets/'+file;
+ image.alt='Original representative '+(jammer?'Jammer Pack':'Level '+level.value+' backpack')+' illustration';
+ const note=get('visual-pack-note');
+ if(note)note.textContent='Illustration only. The controls calculate actual capacity.';
+ const vestLabel=get('visual-pack-vest-label');
+ if(vestLabel&&vest)vestLabel.textContent=vest.value==='yes'?'Vest: worn':'Vest: none';
 }
-for(const id of ['bp_type','bp_level']){const el=get(id);if(el)el.addEventListener('change',syncBackpackArt);}
+for(const id of ['bp_type','bp_level','bp_vest']){const el=get(id);if(el)el.addEventListener('change',syncBackpackArt);}
 syncBackpackArt();
 })();
