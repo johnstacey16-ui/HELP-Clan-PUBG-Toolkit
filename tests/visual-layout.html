@@ -38,12 +38,24 @@ frame.addEventListener('load',()=>{
      assertion(!!button.getAttribute('aria-label'),'Backpack stepper missing accessible name');
    }
   }
+  if(['panel-range','panel-ttk','panel-recoil2'].includes(panelId)){
+   const details=[...panel.querySelectorAll('details.visual-opt-in-art')];
+   assertion(details.length===(panelId==='panel-ttk'?2:1),'Expected optional artwork sections '+panelId);
+   for(const item of details){
+    assertion(!item.open,'Art should be closed by default');
+    assertion(item.querySelector('summary').getBoundingClientRect().height>=44,'Art opener too small');
+    item.open=true;
+   }
+  }
   for(const selector of selectors){
    const el=panel.querySelector(selector);assertion(el,'Missing '+selector);
    const rect=el.getBoundingClientRect();
    assertion(rect.width>=24 && rect.height>=10,selector+' collapsed: '+rect.width+'x'+rect.height);
    assertion(rect.left>=-2 && rect.right<=viewport+2,
      selector+' horizontal overflow at '+viewport+'px (left '+rect.left+', right '+rect.right+')');
+  }
+  if(['panel-range','panel-ttk','panel-recoil2'].includes(panelId)){
+   for(const item of panel.querySelectorAll('details.visual-opt-in-art'))item.open=false;
   }
  }
  out.textContent='PASS: seven illustrated tool layouts fit viewport '+viewport+'px';

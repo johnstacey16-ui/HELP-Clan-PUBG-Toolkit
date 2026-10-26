@@ -680,9 +680,6 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
   <div class="eyebrow">Combat · Effective Range</div>
   <h1>Effective Range &amp; Damage</h1>
   <p class="sub">Check damage and range at recorded distances. Shotguns also show a best-case minimum shell count, assuming every pellet hits.</p>
-<figure class="visual-reference-banner" id="visual-range"><img src="assets/range-target.svg" width="320" height="200" loading="lazy" decoding="async" alt="Range target reference"><figcaption><strong>Range target reference</strong><span>Illustrative target only; charts show recorded checkpoints.</span></figcaption></figure>
-<div class="visual-selected-weapon" id="visual-range-weapon" aria-live="polite"><img id="visual-range-weapon-image" width="960" height="320" alt="" decoding="async" loading="lazy" hidden><div><span class="visual-media-kicker">OPTIONAL WEAPON ART</span><strong id="visual-range-weapon-title">Artwork not available</strong><small id="visual-range-weapon-note">Weapon stats are shown below. Reference artwork is not game data.</small></div></div>
-
   <div class="card">
     <div class="section-h">Setup</div>
     <div class="toolbar">
@@ -718,6 +715,14 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
     <p class="helptext" style="margin-top:8px">Ideal minimum: distance ÷ muzzle velocity, assuming no drag. Actual projectile travel time is longer.</p>
   </div>
 
+  <details class="visual-opt-in-art" id="visual-range-artwork">
+    <summary>View optional range illustrations <span class="visual-art-summary-note">Concept artwork · results remain above</span></summary>
+    <div class="visual-art-content">
+<figure class="visual-reference-banner" id="visual-range"><img src="assets/range-target.svg" width="320" height="200" loading="lazy" decoding="async" alt="Range target reference"><figcaption><strong>Range target reference</strong><span>Illustrative target only; charts show recorded checkpoints.</span></figcaption></figure>
+<div class="visual-selected-weapon" id="visual-range-weapon" aria-live="polite"><img id="visual-range-weapon-image" width="960" height="320" alt="" decoding="async" loading="lazy" hidden><div><span class="visual-media-kicker">OPTIONAL WEAPON ART</span><strong id="visual-range-weapon-title">Artwork not available</strong><small id="visual-range-weapon-note">Weapon stats are shown below. Reference artwork is not game data.</small></div></div>
+    </div>
+  </details>
+
   <div class="card">
     <div class="section-h">Estimated gravity drop at this range</div>
     <div class="grid3">
@@ -748,9 +753,6 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
   <div class="eyebrow">Combat · Time To Kill</div>
   <h1>TTK Calculator</h1>
   <p class="sub">Compare point-blank damage, hits to kill and time to kill. Missing values show No data.</p>
-<figure class="visual-reference-banner" id="visual-ttk"><img src="assets/ttk-timer.svg" width="320" height="200" loading="lazy" decoding="async" alt="Combat timing reference"><figcaption><strong>Combat timing reference</strong><span>Timer artwork only; calculated results remain authoritative.</span></figcaption></figure>
-<div class="visual-selected-weapon" id="visual-ttk-weapon" aria-live="polite"><img id="visual-ttk-weapon-image" width="960" height="320" alt="" decoding="async" loading="lazy" hidden><div><span class="visual-media-kicker">OPTIONAL WEAPON ART</span><strong id="visual-ttk-weapon-title">Artwork not available</strong><small id="visual-ttk-weapon-note">Weapon stats are shown below. Reference artwork is not game data.</small></div></div>
-
   <div class="card">
     <div class="section-h">Setup</div>
     <div class="toolbar">
@@ -780,6 +782,14 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
     <div class="note" id="tk_note"></div>
   </div>
 
+  <details class="visual-opt-in-art" id="visual-ttk-artwork">
+    <summary>View optional TTK illustrations <span class="visual-art-summary-note">Concept artwork · results remain above</span></summary>
+    <div class="visual-art-content">
+<figure class="visual-reference-banner" id="visual-ttk"><img src="assets/ttk-timer.svg" width="320" height="200" loading="lazy" decoding="async" alt="Combat timing reference"><figcaption><strong>Combat timing reference</strong><span>Timer artwork only; calculated results remain authoritative.</span></figcaption></figure>
+<div class="visual-selected-weapon" id="visual-ttk-weapon" aria-live="polite"><img id="visual-ttk-weapon-image" width="960" height="320" alt="" decoding="async" loading="lazy" hidden><div><span class="visual-media-kicker">OPTIONAL WEAPON ART</span><strong id="visual-ttk-weapon-title">Artwork not available</strong><small id="visual-ttk-weapon-note">Weapon stats are shown below. Reference artwork is not game data.</small></div></div>
+    </div>
+  </details>
+
   <div class="card">
     <div class="section-h">Compare weapons</div>
     <p class="helptext" style="margin-bottom:10px">Uses the same hitbox, armor, and accuracy settings above. Pick up to three.</p>
@@ -788,8 +798,14 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
       <div class="field"><label for="tk_cmpB">Weapon B</label><select id="tk_cmpB"></select></div>
       <div class="field"><label for="tk_cmpC">Weapon C</label><select id="tk_cmpC"><option value="">— none —</option></select></div>
     </div>
-    <div id="visual-ttk-comparisons" class="visual-weapon-comparisons" aria-label="Comparison weapon illustrations"><div class="visual-compare-tile" id="visual-compare-a"><img id="visual-compare-a-image" width="960" height="320" alt="" loading="lazy" decoding="async" hidden><strong id="visual-compare-a-title">Weapon A</strong><small id="visual-compare-a-note">Representative weapon artwork only</small></div><div class="visual-compare-tile" id="visual-compare-b"><img id="visual-compare-b-image" width="960" height="320" alt="" loading="lazy" decoding="async" hidden><strong id="visual-compare-b-title">Weapon B</strong><small id="visual-compare-b-note">Representative weapon artwork only</small></div><div class="visual-compare-tile" id="visual-compare-c"><img id="visual-compare-c-image" width="960" height="320" alt="" loading="lazy" decoding="async" hidden><strong id="visual-compare-c-title">Weapon C</strong><small id="visual-compare-c-note">Representative weapon artwork only</small></div></div>
+    
     <table id="tk_cmpTable"></table>
+    <details class="visual-opt-in-art visual-compare-art" id="visual-ttk-comparison-artwork">
+      <summary>View optional comparison weapon illustrations <span class="visual-art-summary-note">Comparison figures stay above</span></summary>
+      <div class="visual-art-content">
+        <div id="visual-ttk-comparisons" class="visual-weapon-comparisons" aria-label="Comparison weapon illustrations"><div class="visual-compare-tile" id="visual-compare-a"><img id="visual-compare-a-image" width="960" height="320" alt="" loading="lazy" decoding="async" hidden><strong id="visual-compare-a-title">Weapon A</strong><small id="visual-compare-a-note">Representative weapon artwork only</small></div><div class="visual-compare-tile" id="visual-compare-b"><img id="visual-compare-b-image" width="960" height="320" alt="" loading="lazy" decoding="async" hidden><strong id="visual-compare-b-title">Weapon B</strong><small id="visual-compare-b-note">Representative weapon artwork only</small></div><div class="visual-compare-tile" id="visual-compare-c"><img id="visual-compare-c-image" width="960" height="320" alt="" loading="lazy" decoding="async" hidden><strong id="visual-compare-c-title">Weapon C</strong><small id="visual-compare-c-note">Representative weapon artwork only</small></div></div>
+      </div>
+    </details>
   </div>
 </div>
 </div>
@@ -812,9 +828,6 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
   </div>
   <h1>Recoil Evidence Explorer</h1>
   <p class="sub">Explore weapon recoil parameters while full spray-pattern analysis is being built.</p>
-<figure class="visual-reference-banner" id="visual-recoil"><img src="assets/recoil-parameters.svg" width="320" height="200" loading="lazy" decoding="async" alt="Recoil parameter reference"><figcaption><strong>Recoil parameter reference</strong><span>No synthetic spray or unverified shot-by-shot curve.</span></figcaption></figure>
-<div class="visual-selected-weapon" id="visual-recoil-weapon" aria-live="polite"><img id="visual-recoil-weapon-image" width="960" height="320" alt="" decoding="async" loading="lazy" hidden><div><span class="visual-media-kicker">OPTIONAL WEAPON ART</span><strong id="visual-recoil-weapon-title">Artwork not available</strong><small id="visual-recoil-weapon-note">Weapon stats are shown below. Reference artwork is not game data.</small></div></div>
-
   <div class="card">
     <div class="section-h">Choose a weapon and question</div>
     <div class="toolbar">
@@ -847,6 +860,14 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
       <table id="rc_table"></table>
     </div>
   </div>
+
+  <details class="visual-opt-in-art" id="visual-recoil-artwork">
+    <summary>View optional recoil illustrations <span class="visual-art-summary-note">Concept artwork · results remain above</span></summary>
+    <div class="visual-art-content">
+<figure class="visual-reference-banner" id="visual-recoil"><img src="assets/recoil-parameters.svg" width="320" height="200" loading="lazy" decoding="async" alt="Recoil parameter reference"><figcaption><strong>Recoil parameter reference</strong><span>No synthetic spray or unverified shot-by-shot curve.</span></figcaption></figure>
+<div class="visual-selected-weapon" id="visual-recoil-weapon" aria-live="polite"><img id="visual-recoil-weapon-image" width="960" height="320" alt="" decoding="async" loading="lazy" hidden><div><span class="visual-media-kicker">OPTIONAL WEAPON ART</span><strong id="visual-recoil-weapon-title">Artwork not available</strong><small id="visual-recoil-weapon-note">Weapon stats are shown below. Reference artwork is not game data.</small></div></div>
+    </div>
+  </details>
 
 
 </div>
