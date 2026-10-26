@@ -1,6 +1,6 @@
 # HELP Clan Visual Upgrade — Owner Acceptance Checklist
 
-**Status:** [PR #41 merged](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/pull/41) into `main` on 2026-10-26 following owner release authorisation. Production [READY](https://help-clan-pubg-toolkit.vercel.app/). **Manual Xbox/mobile/desktop field review still pending**; report issues for a follow-up fix.
+**Status: FINISHED AND OWNER-APPROVED (current illustrated scope), 2026-10-26.** PRs #41–#44 are merged into `main`; post-merge CI passed and [production](https://help-clan-pubg-toolkit.vercel.app/) is READY. The owner approved the appearance and requested closeout. **Actual Xbox, phone, accessibility hardware and field-performance testing remains optional, unchecked future QA.**
 
 ## Goal
 
@@ -17,7 +17,7 @@ These images show the top viewport and are **not real Xbox TV screenshots**, ful
 
 ## Xbox Series S — Edge
 
-- [ ] Open the **preview built from the latest PR #41 commit**, checking the deployment's commit SHA matches the tested branch head. An older preview is not valid for this review.
+- [ ] If doing optional Xbox field QA, open the [current production site](https://help-clan-pubg-toolkit.vercel.app/) on Xbox Edge (PRs #41–#44 are merged; no outstanding preview release).
 - [ ] At launch the Scope Sensitivity Matcher shows its result and 3× optic. Use the controller/keyboard to reach Scope, Vertical Multiplier and Resolution tabs with Left/Right/Home/End; verify obvious focus outlines and values unchanged when switching tabs.
 - [ ] Open **Combat DB**: the 45 weapon rows are **text and numbers only**. Select an individual gun to see artwork inside the popup. Close with Escape or its close button; focus returns to the selected row. Search and sort without weapon photos filling the table.
 - [ ] Open **Model 2 Hit Zone Explorer**: the existing approved figure and all 13 zones remain aligned; helmet and vest choices update values without obscuring targets.
@@ -38,7 +38,7 @@ These images show the top viewport and are **not real Xbox TV screenshots**, ful
 
 Record **device/browser**, **which tool**, **what went wrong**, and ideally a screenshot. Prioritise overlap, hard-to-read statistics, unwanted artwork, inaccurate labels, focus navigation failures or significant lag. A screenshot is especially useful for an Xbox TV-specific issue.
 
-The visual upgrade is now live following the owner's explicit merge authorisation. **Keep physical Xbox/phone field-review and photography/licensing tasks unchecked** until actually performed. Record any identified issue and fix it in a new pull request rather than silently editing the already-merged feature history.
+The current illustrated visual upgrade is live and visually approved by the owner. **Keep physical Xbox/phone field-review and photography/licensing tasks unchecked** until actually performed; they are optional future work, not a claim of release incompleteness. Record any identified issue and fix it in a new pull request rather than silently editing the already-merged feature history.
 
 ### Automated baseline — already checked
 

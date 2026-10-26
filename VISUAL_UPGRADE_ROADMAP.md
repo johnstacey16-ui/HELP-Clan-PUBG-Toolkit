@@ -1,8 +1,8 @@
 # HELP Clan PUBG Toolkit — Complete Visual Upgrade Roadmap
 
-> Persistent handoff / live checklist. Started **2026-10-25**. Working branch: `feature/toolkit-visual-upgrade` from `main` at `8753b151`. **Never mark a task complete merely because it is planned.** Check off a step only when its source, tests and (where applicable) visual evidence exist. Record commits / PRs and update this file with each milestone.
+> Persistent handoff / live checklist. Started **2026-10-25**. Original development branch: `feature/toolkit-visual-upgrade` from `main` at `8753b151`; PRs #41–#44 have now merged into production. **Never mark a task complete merely because it is planned.** Check off a step only when its source, tests and (where applicable) visual evidence exist. Record commits / PRs and update this file with each milestone.
 >
-> Next conversation instruction: **"Continue the HELP Clan visual follow-up work from VISUAL_UPGRADE_ROADMAP.md on main. PR #41 merged on 2026-10-26. Do not repeat or undo the completed upgrade. Check remaining manual Xbox/phone QA, higher-fidelity artwork if desired, and any owner-reported bugs."**
+> Current handoff: **The owner-approved visual release is finished and live.** Do not reopen optional Xbox field QA or photorealistic artwork unless requested; address newly reported defects in a separate PR.
 
 ## Outcome and non-negotiables
 
@@ -24,9 +24,9 @@ Make all seven remaining tools look like one premium, readable PUBG companion ap
 - [x] **P7 — Recoil Analyzer (evidence-first illustration pass)**: Coming Soon/evidence limits and parameter table precede hidden-by-default artwork; no invented spray trace. Actual Xbox/mobile inspection remains open.
 - [x] **P8 — Tactical Loadout / Backpack (representative artwork and responsive-controls pass)**: standard/Jammer gear art, six categories, correct original carrying maths and accessible 44px stepper buttons passed Chromium; real Xbox and phone inspection still required before release.
 - [x] **P9 — Shared UI refinement (automated layout/accessibility pass)**: data-first visual cards, 79 local assets, compact Combat DB, responsive layouts and keyboard-accessible subtools pass CI. Owner visual review and hardware-specific QA remain a P10 gate.
-- [ ] **P10 — Production released; physical-device acceptance and optional higher-fidelity art remain open**.
+- [x] **P10 — Final approved illustrated release shipped**. PRs #41–#44 merged into `main`; latest post-merge CI passed and production is READY. The owner accepted the appearance on 2026-10-26. Hardware-specific field QA and optional photo-grade art remain separate, unchecked future work.
 
-The checked foundation items include the initial Combat DB **illustrated M416 pilot**; **all 7 target tools now have initial original illustrations; weapon-name illustration coverage is now 45/45 (illustrations only, not photorealistic); higher-fidelity art and physical-device QA remain unfinished**. Photo-grade cataloguing and all other tools are pending.
+The checked foundation items include the initial Combat DB **illustrated M416 pilot**; **all 7 target tools now have initial original illustrations; weapon-name illustration coverage is now 45/45 (illustrations only, not photorealistic); higher-fidelity art and physical-device QA remain unfinished**. Photo-grade art is an optional upgrade. The eight-tool illustrated release is complete.
 
 ### Batch milestone — six-panel first visual pass (verified 2026-10-25)
 
@@ -39,7 +39,7 @@ The checked foundation items include the initial Combat DB **illustrated M416 pi
 - [x] 17 new self-contained local SVGs registered with original-art provenance and size/alt metadata.
 - [x] [GitHub Actions 40244407117](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40244407117) passed Node/asset tests, bundle check, eight-tool Chromium interaction smoke and 320–1280px Hit Zone layout tests after the full batch.
 - [x] Vercel marked the batch preview READY at commit `20e48831`.
-- [ ] Physical device screenshot review, full per-weapon/item catalogue, further fidelity improvements and final owner preview approval. **Keep PR #41 in draft; no production merge yet.**
+- [x] Owner accepted the present illustrated artwork and design on 2026-10-26; all 45 weapon names have selectable concept art, PR #41 is merged (as are follow-ups #42–#44), and production is deployed. Physical-device screenshots, extended equipment photo catalogue and fidelity improvements are optional, unverified follow-up work.
 
 ### 2026-10-26 — 45/45 weapon illustration and mobile-layout milestone
 
@@ -48,8 +48,8 @@ The checked foundation items include the initial Combat DB **illustrated M416 pi
 - [x] Passed all 45 image HTTP/decode checks in Chromium, plus unit/integrity/asset budget tests; validated full-table search at run [40250316674](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40250316674).
 - [x] Added seven-tool artwork layout CI at 320, 390, 768 and 1280 px, passed run [40250452348](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40250452348). Approved Model 2's five-width test also passed.
 - [x] Vercel review deployment READY, commit `aae3f44f`. Full branch preview: https://help-clan-pubg-toolkit-8gv9jiojb-acme-a675.vercel.app
-- [ ] Upgrade original class-specific concept art to photo-grade/high-fidelity imagery where appropriate and rights-cleared. SVG silhouettes are visually illustrative, **not** exact real-world or official PUBG weapon models.
-- [ ] Manual Xbox Edge, physical mobile, screenshot aesthetics/contrast/focus and owner final preview review. No production merge without approval.
+- [ ] Optional future enhancement: rights-cleared photo-grade/high-fidelity original art if requested. Current approved vector silhouettes are representative, not exact PUBG weapon models.
+- [ ] Optional post-release field QA: inspect Xbox Series S Edge and physical mobile for contrast, focus, scrolling, screenshots and controller behavior. Overall appearance and release are already owner-approved; field tests have not been performed.
 
 ## P0. Baseline and guardrails
 
@@ -65,10 +65,10 @@ The checked foundation items include the initial Combat DB **illustrated M416 pi
 - [x] Add `tests/visual-asset-registry.test.cjs`: reject missing/unlisted imagery, malformed metadata, excessive file budgets and invalid WebP assets.
 - [x] Record source rights, image and page budgets, named layouts, Xbox Edge considerations and fallbacks in this document.
 - [x] Add reusable image-tile/card classes in scoped `visual-assets.css`, linked only where useful; preserve existing layout/brand and keep stats unobscured. Implemented on P1b Combat DB pilot.
-- [ ] Replace first **representative vector artwork pilot** with an optimized photographic or higher-fidelity original/rights-cleared image if desired; record actual image rights/dimensions. Current SVG illustration is an interim image, not a photograph. Verify the selected final image loads in the preview.
+- [ ] Optional enhancement if desired: replace illustrative M416 pilot and/or other SVGs with optimised, rights-cleared higher-fidelity art; record provenance, dimensions and browser compatibility.
 - [x] Implement accessible informative `alt`, `width`/`height`, offscreen lazy loading and error fallback in the first Combat DB pilot; enforce future asset metadata through manifest tests. Further artwork follows this pattern.
 - [x] All new visuals are explicitly original non-official SVG illustrations; provenance and intended illustrative use are registered in `assets/visual-manifest.json`.
-- [ ] Manual visual screenshot review on 320/360/390/768/1280/1440px and Xbox Series S Edge; automated four-width media geometry checks are added to CI, but manual review is still outstanding.
+- [ ] Optional device review at 320/360/390/768/1280/1440px plus Xbox Edge; automated six-width checks and screenshot previews passed but physical testing is not evidenced.
 
 **Budgets for this rollout:** total committed images at most **1.5 MiB** without explicit budget revision; normal thumbnail **≤90 KiB**, icon **≤60 KiB**, hero/illustration **≤180 KiB**. Prefer WebP/AVIF, no remote hotlinked images, no autoplay, and use lazy loading for noncritical images. Respect mobile/Xbox network and memory. If showing many weapon thumbnails, use a staged catalogue/on-demand loading rather than eagerly downloading every weapon.
 
@@ -119,7 +119,7 @@ The checked foundation items include the initial Combat DB **illustrated M416 pi
 - [x] Add dynamically updated exact-name weapon illustration beside the existing abstract recoil-parameter reference (no fabricated shot pattern).
 - [x] Preserved the prominent **COMING SOON / IN DEVELOPMENT** banner for unreleased shot-by-shot analysis; verified by existing launch-polish regression.
 - [x] Recoil evidence/COMING SOON notice and weapon parameter table remain fully visible above an optional art expander. No synthetic recoil trace; Chromium verified the controls and layout.
-- [ ] Verify responsive chart behavior and reduced-motion preference on real Xbox/mobile hardware (Chromium automated smoke passed; physical-device review remains).
+- [ ] Optional field QA: verify responsive charts and reduced-motion preferences on actual Xbox/mobile hardware, beyond successful Chromium automated tests.
 
 ## P8. Tactical Loadout & Backpack (tool 08)
 
@@ -145,7 +145,7 @@ The checked foundation items include the initial Combat DB **illustrated M416 pi
 - [x] `node tests/browser-smoke.cjs` for all eight existing tools; all 45 artwork SVGs decoded successfully in Chromium.
 - [x] `node tests/hit-zone-preview-smoke.cjs` for approved Model 2 at 320–1280 px, and **new seven-panel media geometry tests** at 320/390/768/1280 px. Screenshots/physical-device visual inspection remain pending.
 - [x] Automated asset checks: all 79 local assets registered, alt/dimensions/loading validated, broken-art fallback/recovery exercised, synthetic initial Scope ≤8 media requests and ≤64 KiB decoded images, visual preview stable within 1px on 3×→8× change, and all six viewport layout smoke tests passed [Actions #40278458470](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40278458470). **These are synthetic guardrails, not real-user LCP/CLS or hardware network evidence.**
-- [ ] Browser review on real desktop, phone and Xbox Edge; include keyboard/controller, contrast/reduced-motion, actual network/LCP/CLS performance, screenshots and a user-approved final visual review. Follow [docs/visual-acceptance-checklist.md](docs/visual-acceptance-checklist.md).
+- [ ] Optional field performance QA: measure keyboard/controller, contrast, reduced-motion, physical device screenshots and actual LCP/CLS. Owner visual approval is completed; see [device checklist](docs/visual-acceptance-checklist.md).
 - [x] Publish a Vercel **preview** for the feature branch — READY for commit `aae3f44f`; https://help-clan-pubg-toolkit-8gv9jiojb-acme-a675.vercel.app .
 - [x] Owner authorised this merge on 2026-10-26 ("Continue once complete merge everything to main please"). This is release authorisation, **not** a claim that the owner reviewed every screenshot or tested Xbox hardware.
 - [x] PR #41 merged to `main` as [`d54ac7cb`](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/commit/d54ac7cb4ba83113a54f9a6a989581c4340b7aed). Production Vercel deployment [READY](https://help-clan-pubg-toolkit-jdikrb12u-acme-a675.vercel.app/), with live alias `help-clan-pubg-toolkit.vercel.app`; post-merge Actions [#40282223490](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40282223490) passed.
@@ -164,7 +164,7 @@ When a task is done, change its literal `- [ ]` to `- [x]` **in GitHub**, alongs
 - [x] Attachment optic tile follows selected magnification where available; Jammer Pack shows distinct artwork.
 - [x] Nine-weapon registry test confirms every illustrated name occurs in the weapon database; [GitHub Actions run 40246179094](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40246179094) passed source sync, Node tests, real Chromium decode of all 9 SVGs, eight-tool smoke and responsive Hit Zone checks at commit `fed173e6`.
 - [x] Vercel branch preview of `fed173e6` reported READY: https://help-clan-pubg-toolkit-fo0a7zhqk-acme-a675.vercel.app
-- [ ] Higher-fidelity/photo-grade source-cleared art, real Xbox Edge/mobile screenshot verification and owner final approval before merge. Complete concept-art coverage alone does not finish photo-grade fidelity.
+- [ ] Optional future photo-grade licensed imagery and physical-device verification; not required to complete the approved representative-artwork release. Owner approval was received; no hardware verification is claimed.
 
 ## Progress journal
 
@@ -263,3 +263,12 @@ When a task is done, change its literal `- [ ]` to `- [x]` **in GitHub**, alongs
 - Chromium smoke and six-width geometry tests now assert full-opacity entry and side-by-side TTK controls. [GitHub Actions run #40372110643](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40372110643) passed generated source sync, Node tests, eight-tool Chromium smoke, Model 2 checks, six responsive widths and all 16 visual screenshot captures. The 390×900 phone TTK screenshot was inspected: values are now full-opacity, Hitbox/Armour share one row, damage and HTK are visible and Pure TTK begins within the first viewport. The earlier screenshot had dimmed content and stacked setup fields. **This follow-up remains unmerged pending separate owner approval and hands-on Xbox/mobile review.**
 
 - **PR #44 visual comparison verified, 2026-10-26:** original reference is screenshot set from PR #43 [Actions #40343371350](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40343371350), where phone TTK captured half-opacity entrance styling and vertical Hitbox/Armour fields. New draft PR #44 [Actions #40372110643](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40372110643) succeeded and attached 16 screenshots. The `phone-ttk.png` capture was visually checked: full bright text and stats, compact two-column controls, and HTK above the fold; no game maths or source image assets changed. **Release state: draft, production unchanged.**
+
+## Final closeout — 2026-10-26
+
+- The owner said **“It looks OK to me so can we finish everything up”**. This records acceptance of the current illustrated look and permission to finish the release; it is not evidence of hands-on hardware testing.
+- **Merged:** [#41](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/pull/41), [#42](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/pull/42), [#43](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/pull/43), and [#44](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/pull/44). Last app merge: `feeb32f2baddf8262aafc7099655eef4289fc26c`.
+- **Verification:** [GitHub Actions #40418876932](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40418876932) SUCCESS for the merged application; Vercel production for exact SHA was READY at `help-clan-pubg-toolkit-pi24glroi-acme-a675.vercel.app`. Public address: https://help-clan-pubg-toolkit.vercel.app/.
+- **Scope accepted:** all eight tools, 45 selected-weapon concept illustrations, zero pictures in unselected Combat DB rows, compact mobile Combat DB and TTK, working links, Model 2 and 13 zones, data-first art and keyboard improvements.
+- **Remaining unchecked work is optional future work**, principally real Xbox/phone field testing, real-device LCP/CLS and photo-grade art rights. These have **not** been performed and should not be marked completed.
+- Final concise reference: [VISUAL_UPGRADE_RELEASE_STATUS.md](VISUAL_UPGRADE_RELEASE_STATUS.md). Do not begin new work merely because this historical roadmap contains optional items.

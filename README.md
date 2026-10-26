@@ -2,6 +2,8 @@
 
 ## Full toolkit visual upgrade — released to main (2026-10-26)
 
+**Finished:** the owner-approved illustrated visual upgrade and follow-ups #41–#44 are merged and live. See [VISUAL_UPGRADE_RELEASE_STATUS.md](VISUAL_UPGRADE_RELEASE_STATUS.md) for verified CI/production evidence and the separate optional device/photo-art backlog.
+
 [Visual artwork credits and usage notes](VISUAL_ARTWORK_CREDITS.md) document the original conceptual graphics, limits of accuracy and why no official PUBG screenshots/textures are bundled.
 
 The visual upgrade was merged in [PR #41](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/pull/41) as commit `d54ac7cb` and is deployed to [production](https://help-clan-pubg-toolkit.vercel.app/). For remaining real Xbox Series S Edge / phone checks, follow [the visual acceptance checklist](docs/visual-acceptance-checklist.md). Automated tests do not replace physical device review.
