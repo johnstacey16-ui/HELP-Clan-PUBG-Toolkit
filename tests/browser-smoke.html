@@ -131,6 +131,22 @@
         change(get('px_scope'),'3x');
         check(get('visual-one-x-variants').hidden,'1x choices hidden for higher magnifications');
         open('panel-range');
+        // Source-backed range regression: shotguns are per-pellet estimates, not
+        // simulated complete pellet patterns or invented TTK observations.
+        change(get('rg_weapon'),'S686');
+        eq(text('rg_htkLabel'),'Minimum shells (all pellets hit)','Shotgun results are explicitly theoretical minimum shells');
+        eq(text('rg_ttk'),'No data','Shotgun TTK remains unknown');
+        check(text('rg_approxNote').includes('all 9 pellets hit'),'Shotgun warning discloses pellet-hit assumption');
+        check(text('rg_chartTitle').includes('Measured base damage per pellet'),'Shotgun chart correctly labels per-pellet damage');
+        check(text('rg_rangeEvidence').includes('measured checkpoints'),'Range source limits stay visible');
+        check(get('rg_range').max==='16','S686 exposes 17 observed checkpoints only');
+        change(get('rg_range'),'16','input');
+        eq(text('rg_rangeLabel'),'80 m','Range slider selects actual last observed distance');
+        eq(text('rg_dmg'),'6.9','Shotgun damage matches final measured per-pellet checkpoint');
+        check(text('rg_brackets').includes('No data'),'Range checkpoint table does not invent shotgun TTK');
+        change(get('rg_weapon'),'AKM');
+        check(!text('rg_chartTitle').includes('per pellet'),'Switching back to an AR updates chart classification');
+        check(!text('rg_htkLabel').includes('Minimum shells'),'AR hit-count label is restored');
         check(!get('visual-range-artwork').open,'Range art defaults closed');
         eq(get('visual-range').querySelector('img').getAttribute('src'),null,'Closed range graphic has no image request');
         eq(get('visual-range-weapon-image').getAttribute('src'),null,'Closed range weapon image has no request');
