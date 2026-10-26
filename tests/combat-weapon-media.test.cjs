@@ -23,6 +23,8 @@ test('a verified exact-name art catalogue supplies M416 and other named weapon d
   assert.match(source,/Object\.prototype\.hasOwnProperty\.call\(artMap,w\.name\)/);
   assert.match(source,/Artwork not available for this weapon yet/);
   assert.match(source,/const weaponArt/);
+  assert.match(source,/visual-weapon-thumb/);
+  assert.match(source,/alt="" aria-hidden="true"/);
   assert.match(source,/\$\{weaponArt\}/);
   assert.match(source,/combat-pilot-image"\)\.addEventListener\("error"/);
 });
@@ -41,7 +43,7 @@ test('shared weapon art catalogue only defines entries present in the static wea
  vm.runInNewContext(catalog,ctx);
  const listed=ctx.window.HELP_VISUAL_WEAPONS;
  const db=read('src/combat/00-weapon-data-armor.part');
- assert.equal(Object.keys(listed).length,9);
+ assert.equal(Object.keys(listed).length,45);
  for(const [name,file] of Object.entries(listed)){
    assert.ok(db.includes('["'+name+'",'),'catalogue name absent from data: '+name);
    assert.ok(fs.existsSync(require('node:path').join(root,'assets',file)),'missing artwork '+file);

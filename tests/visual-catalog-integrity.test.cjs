@@ -6,11 +6,11 @@ const context={window:{}};
 vm.runInNewContext(read('visual-catalog.js'),context);
 const art=context.window.HELP_VISUAL_WEAPONS;
 const registered=JSON.parse(read('assets/visual-manifest.json')).assets;
-test('9 original weapon illustrations map only to exact known weapon names',()=>{
+test('all 45 names in the weapon database have exact-name conceptual art',()=>{
  const section=read('src/combat/00-weapon-data-armor.part').split('const WEAPONS = [')[1].split('];')[0];
  const names=[...section.matchAll(/^\["([^"]+)",/gm)].map(x=>x[1]);
  assert.ok(names.length>=40,'expected full weapon dataset');
- assert.equal(Object.keys(art).length,9);
+ assert.equal(Object.keys(art).length,names.length);
  for(const [name,filename] of Object.entries(art)){
    assert.ok(names.includes(name),'image mapped to unknown weapon '+name);
    assert.match(filename,/^weapon-[a-z0-9-]+-field\.svg$/);
@@ -18,10 +18,11 @@ test('9 original weapon illustrations map only to exact known weapon names',()=>
    assert.ok(fs.existsSync(path.join(root,file)),'missing '+file);
    assert.ok(registered.some(a=>a.path===file&&a.origin==='original-designed'),'unregistered '+file);
  }
- assert.ok(names.some(n=>!Object.prototype.hasOwnProperty.call(art,n)),'must have truthful missing art fallback');
+ assert.deepEqual(Object.keys(art).sort(),names.slice().sort(),'every database entry is mapped to its own asset');
  assert.equal(art.AKM,'weapon-akm-field.svg');
  assert.equal(art.M416,'weapon-m416-field.svg');
  assert.notEqual(art.AKM,art.M416);
+ assert.equal(new Set(Object.values(art)).size,names.length,'each weapon requires distinct artwork');
 });
 test('both Core DB and visual-only controls share one exact-name map and omit unknown images',()=>{
  const source=read('src/combat/10-combat-rendering.part'),ctrl=read('visual-controls.js');

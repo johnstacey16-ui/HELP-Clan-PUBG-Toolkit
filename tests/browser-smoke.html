@@ -56,13 +56,22 @@
         check(akmImage.getAttribute('src')==='assets/weapon-akm-field.svg','AKM must not reuse M416 art');
         child.querySelector('#modalBody [data-action="close-modal"]').click();
         const sksRow=child.querySelector('#wTable tr.rowclick[data-n="SKS"]');
-        check(!!sksRow,'SKS exists to verify no-art fallback');
+        check(!!sksRow,'SKS exists in original data');
+        check(!!sksRow.querySelector('img.visual-weapon-thumb'),'Weapon table has a decorative thumbnail');
+        eq(sksRow.querySelector('img.visual-weapon-thumb').getAttribute('alt'),'','Table thumbnail is decorative');
         sksRow.click();
-        eq(text('modalTitle'),'SKS','Non-illustrated weapon still opens details');
-        check(!!child.querySelector('#modalBody .visual-modal-unavailable'),'Unknown weapon artwork explicitly unavailable');
-        check(!child.querySelector('#modalBody .visual-modal-media img'),'No wrong rifle is substituted for SKS');
+        eq(text('modalTitle'),'SKS','Non-pilot weapon details still open');
+        const sksArtwork=child.querySelector('#modalBody .visual-modal-media img');
+        check(!!sksArtwork,'SKS has a unique representative illustration');
+        eq(sksArtwork.getAttribute('src'),'assets/weapon-sks-field.svg','SKS art is exact-name');
         child.querySelector('#modalBody [data-action="close-modal"]').click();
 
+        // Search/sort still work with compact thumbnails alongside the original data.
+        change(get('wSearch'),'S686','input');
+        eq(child.querySelectorAll('#wTable tr.rowclick').length,1,'Search still returns a single weapon');
+        check(!!child.querySelector('#wTable img.visual-weapon-thumb'),'Filtered weapon retains its exact art');
+        change(get('wSearch'),'','input');
+        eq(child.querySelectorAll('#wTable tr.rowclick').length,45,'All weapons and thumbnails are available');
         // Batch visuals: optics and existing controls still change independently.
         open('panel-sensitivity');
         change(get('px_scope'),'8x');
@@ -73,7 +82,7 @@
         change(get('rg_weapon'),'AKM');
         eq(get('visual-range-weapon-image').getAttribute('src'),'assets/weapon-akm-field.svg','Range weapon art follows AKM');
         change(get('rg_weapon'),'SKS');
-        check(get('visual-range-weapon-image').hidden,'Range hides image for SKS');
+        eq(get('visual-range-weapon-image').getAttribute('src'),'assets/weapon-sks-field.svg','Range now displays SKS art');
         open('panel-ttk');
         change(get('tk_weapon'),'Kar98k');
         eq(get('visual-ttk-weapon-image').getAttribute('src'),'assets/weapon-kar98k-field.svg','TTK selected weapon art is exact');
@@ -297,7 +306,7 @@
         // solely through static-manifest checks.
         // Verify the complete shipped weapon illustration catalogue decodes at 960x320.
         const catalog=child.defaultView.HELP_VISUAL_WEAPONS;
-        check(!!catalog && Object.keys(catalog).length===9,'Expected nine exact-name weapon illustrations');
+        check(!!catalog && Object.keys(catalog).length===45,'All 45 exact-name weapon illustrations');
         const fileList=Object.values(catalog);
         Promise.all(fileList.map(filename=>new Promise((resolve,reject)=>{
           const probe=new child.defaultView.Image();
@@ -310,7 +319,7 @@
           probe.src=new URL('assets/'+filename,child.location.href).href;
         }))).then(()=>{
           document.body.dataset.smokeStatus='pass';
-          output.textContent='PASS: eight tools, nine decoded weapon images, safe fallbacks, Model 2 and all calculators';
+          output.textContent='PASS: eight tools, 45 decoded original concept images, table thumbs, Model 2 and calculations';
         }).catch(error=>{
           document.body.dataset.smokeStatus='fail';
           output.textContent='FAIL: '+(error&&error.stack||error);

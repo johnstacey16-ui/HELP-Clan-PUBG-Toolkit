@@ -26,7 +26,7 @@ Make all seven remaining tools look like one premium, readable PUBG companion ap
 - [ ] **P9 — Shared UI refinement and cross-tool cohesion**.
 - [ ] **P10 — Acceptance testing, owner preview and release**.
 
-The checked foundation items include the initial Combat DB **illustrated M416 pilot**; **all 7 target tools now have an initial original illustration pilot, 0 of 7 has a completed full artwork catalogue**. Photo-grade cataloguing and all other tools are pending.
+The checked foundation items include the initial Combat DB **illustrated M416 pilot**; **all 7 target tools now have initial original illustrations; weapon-name illustration coverage is now 45/45 (illustrations only, not photorealistic); higher-fidelity art and physical-device QA remain unfinished**. Photo-grade cataloguing and all other tools are pending.
 
 ### Batch milestone — six-panel first visual pass (verified 2026-10-25)
 
@@ -72,8 +72,8 @@ The checked foundation items include the initial Combat DB **illustrated M416 pi
 
 ## P3. Combat DB (tool 02)
 
-- [x] Build an **original, representative M416 illustration pilot** and register it in the image manifest; local SVG is 960×320 and is not presented as an official game screenshot. A full source-backed weapon thumbnail catalogue remains pending.
-- [x] Display the M416 artwork in its weapon detail and a visible Combat DB pilot card. Other weapons show a **no-artwork** fallback rather than the wrong rifle. A full per-weapon image lookup remains pending.
+- [x] Build an **original, representative 45-weapon concept-art catalogue** (initial M416 pilot plus 44 additional exact-name entries). 960×320 SVG source, not official screenshots, registered with licensing/provenance notes; higher-fidelity licensed/photo art remains a separate unfinished task.
+- [x] Display matching exact-name weapon concept art in each Combat DB detail, compact sortable/searchable table rows and the original M416 featured card. Unknown asset names still use a no-art fallback.
 - [x] Provide an explicit no-image text state and broken-file fallback; art is labelled representative and never substituted for another weapon.
 - [ ] Optionally add a small visual key for helmet/vest, but preserve precise damage/armour tables, numbers and stickied table header.
 - [x] Validate the 9-weapon original illustration catalogue with exact-name mapping against WEAPONS, browser switching tests, and fallback for remaining names; no wrong weapon image is substituted. The remaining full catalogue is still pending.
@@ -151,7 +151,7 @@ When a task is done, change its literal `- [ ]` to `- [x]` **in GitHub**, alongs
 - [x] Attachment optic tile follows selected magnification where available; Jammer Pack shows distinct artwork.
 - [x] Nine-weapon registry test confirms every illustrated name occurs in the weapon database; [GitHub Actions run 40246179094](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40246179094) passed source sync, Node tests, real Chromium decode of all 9 SVGs, eight-tool smoke and responsive Hit Zone checks at commit `fed173e6`.
 - [x] Vercel branch preview of `fed173e6` reported READY: https://help-clan-pubg-toolkit-fo0a7zhqk-acme-a675.vercel.app
-- [ ] Full ~45-weapon image catalogue, photographic quality, official-image rights if used, real Xbox Edge/mobile screenshot verification and owner final approval before merge.
+- [ ] Higher-fidelity/photo-grade source-cleared art, real Xbox Edge/mobile screenshot verification and owner final approval before merge. Complete concept-art coverage alone does not finish photo-grade fidelity.
 
 ## Progress journal
 
@@ -164,3 +164,5 @@ When a task is done, change its literal `- [ ]` to `- [x]` **in GitHub**, alongs
 - **2026-10-25 — Larger weapon/equipment art batch:** added original, non-official vector illustrations for AKM, Beryl M762, Kar98k, Mini 14, M24, P90, S12K, AWM (plus existing M416: **nine exact-name weapons total**), and distinct Jammer Pack artwork. Shared static `visual-catalog.js` contains exact-match mapping; Combat DB modal, Range, TTK primary/comparison, Recoil and Attachments show selected-weapon art without changing any calculation. Nonillustrated weapons explicitly display a missing-art state. Optic tile follows magnification; pack switches standard/Jammer art. Added browser and source tests; CI and preview must be verified after this commit. Full per-weapon artwork and photorealism, physical-device QA and final user approval remain open.
 
 - **2026-10-25 — Nine-weapon batch verification:** [GitHub Actions #40246066002](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40246066002) passed source sync, Node registry checks, all eight tools in Chromium and mobile/desktop hit-zone checks. Vercel marked commit `fdda902a` READY. Additional Chromium test decoded **all nine** catalogue SVGs at 960×320; verified in Actions #40246179094. PR #41 remains **draft**, with no changes to live `main`.
+
+- **2026-10-26 — full 45-weapon conceptual art batch:** 36 additional small original class-specific side-profile SVGs (45/45 named weapons illustrated), exact-name dictionary retained, decorative table thumbnails with lazy load and graceful error fallback, across Combat DB, TTK, Range, Recoil and Attachments. No calculator source or approved Model 2 imagery changed. Separate **photorealistic/canonical game art** still requires rights-cleared inputs. Automated test coverage expanded to every registered image and search/table interactions. **CI and Vercel verification pending for this commit; do not merge.**

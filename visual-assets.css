@@ -55,3 +55,14 @@
 .visual-compare-tile img { width:100%;max-width:215px;height:74px;object-fit:contain; }
 .visual-compare-tile strong { font-size:16px; }
 @media(max-width:640px) { .visual-weapon-comparisons { grid-template-columns:1fr; } .visual-compare-tile { flex-direction:row;min-height:58px;gap:9px;align-items:center;text-align:left;flex-wrap:wrap; } .visual-compare-tile img { max-width:28%;height:49px; } .visual-compare-tile small { flex:1 1 120px; } .visual-selected-weapon img { max-width:40%;height:61px; } }
+
+/* Compact exact-name rifle/SMG/sidearm concept thumbnails inside the weapon table.
+   Decorative because adjacent visible text identifies the weapon; not weapon telemetry. */
+#panel-combat #wTable .visual-weapon-name{display:flex;align-items:center;gap:9px;min-width:160px;white-space:nowrap}
+#panel-combat #wTable .visual-weapon-name>span{flex:0 0 auto}
+#panel-combat #wTable img.visual-weapon-thumb{display:block;width:66px;height:30px;max-width:none;object-fit:contain;flex:0 0 66px;background:#142534;border:1px solid rgba(148,196,203,.19);border-radius:4px}
+#panel-combat #wTable img.visual-weapon-thumb[hidden]{display:none}
+@media(max-width:700px){
+ #panel-combat #wTable .visual-weapon-name{gap:6px;min-width:140px}
+ #panel-combat #wTable img.visual-weapon-thumb{width:52px;height:26px;flex-basis:52px}
+}

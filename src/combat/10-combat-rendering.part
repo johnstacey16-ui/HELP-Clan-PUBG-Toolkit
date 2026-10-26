@@ -160,9 +160,13 @@ const panelsEl = document.getElementById("panels");
       const tip = TOOLTIPS[key] ? ` title="${TOOLTIPS[key]}"` : "";
       return SORTABLE.has(key) ? `<th data-key="${key}" tabindex="0"${tip}>${label}${arrow}</th>` : `<th${tip}>${label}</th>`;
     }).join("");
+    const artMap = window.HELP_VISUAL_WEAPONS || {};
+    const thumb = name => Object.prototype.hasOwnProperty.call(artMap,name)
+      ? '<img class="visual-weapon-thumb" src="assets/'+artMap[name]+'" width="960" height="320" loading="lazy" decoding="async" alt="" aria-hidden="true">'
+      : '';
     t.innerHTML = `<tr class="grouprow">${groupHtml}</tr><tr class="colheader">${headHtml}</tr>` +
       list.map(w=>`<tr class="rowclick" tabindex="0" data-n="${w.name}">
-        <td>${w.name} ${w.crate?'<span class="tag crate">CRATE</span>':''}</td>
+        <td><span class="visual-weapon-name">${thumb(w.name)}<span>${w.name} ${w.crate?'<span class="tag crate">CRATE</span>':''}</span></span></td>
         <td>${w.cls?`<span class="tag">${w.cls}</span>`:'—'}</td>
         <td>${w.dmg??'—'}</td>
         <td>${w.rpm??'—'}</td>
@@ -180,6 +184,9 @@ const panelsEl = document.getElementById("panels");
         <td>${w.vest?w.vest.dmg:'—'}</td>
         ${armorCell(w.vest,'l3')}${armorCell(w.vest,'l2')}
       </tr>`).join("");
+    t.querySelectorAll("img.visual-weapon-thumb").forEach(img=>{
+      img.addEventListener("error",()=>{img.hidden=true;img.removeAttribute("src");});
+    });
     t.querySelectorAll("tr.rowclick").forEach(tr=>{
       tr.onclick = ()=>openWeaponDetail(tr.dataset.n);
       tr.onkeydown = e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); openWeaponDetail(tr.dataset.n); } };
