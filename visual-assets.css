@@ -91,3 +91,28 @@
 .visual-gear-tile img[hidden],.visual-inline-preview img[hidden],.visual-reference-banner img[hidden],.visual-pack-items img[hidden],.visual-armour-key img[hidden] { display:none; }
 .visual-image-unavailable { display:block;min-width:0;max-width:100%;color:#f4d2a1;font:11px/1.5 "Manrope",sans-serif; }
 @media(max-width:365px) { #panel-sensitivity .visual-one-x-variants{padding:8px} #panel-sensitivity .visual-optic-variant{margin-right:2px;padding:8px 9px} }
+
+/* Final illustration polish: consistent material depth without obscuring any data. */
+#panel-sensitivity .visual-inline-preview img,
+#panel-attach .visual-gear-tile img,
+#panel-backpack .visual-pack-items img,
+#panel-backpack .visual-pack-lead img,
+#panel-combat .visual-armour-key img { filter:drop-shadow(0 5px 9px rgba(0,0,0,.38)); }
+.visual-media-frame,.visual-gear-tile,.visual-compare-tile { background-image:radial-gradient(ellipse at 50% 30%,rgba(78,134,146,.13),transparent 74%);background-color:#112634; }
+#panel-sensitivity .visual-optic-variant { touch-action:manipulation; }
+#panel-sensitivity .visual-optic-variant:hover { background:#294453; }
+#panel-sensitivity .visual-optic-variant[aria-pressed="true"]:hover { background:#374951; }
+@media(prefers-contrast:more) {
+  .visual-media-card,.visual-inline-preview,.visual-reference-banner,.visual-gear-tile,
+  .visual-selected-weapon,.visual-armour-key>div,.visual-backpack-row,.visual-compare-tile {
+    border-color:currentColor;box-shadow:none;
+  }
+  .visual-gear-tile small,.visual-selected-weapon small,.visual-art-disclaimer { color:#f1f4f5; }
+}
+@media(forced-colors:active){
+  #panel-sensitivity .visual-optic-variant[aria-pressed="true"] { outline:2px solid Highlight;outline-offset:1px; }
+  .visual-image-unavailable { color:CanvasText; }
+}
+@media(prefers-reduced-motion:reduce){
+  .visual-media-frame,.visual-gear-tile,.visual-compare-tile,.visual-optic-variant { animation:none!important;transition:none!important; }
+}

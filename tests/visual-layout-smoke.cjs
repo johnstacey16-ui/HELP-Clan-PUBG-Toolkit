@@ -27,7 +27,7 @@ const server=http.createServer((req,res)=>{
 (async()=>{
  await new Promise((resolve,reject)=>server.listen(0,'127.0.0.1',err=>err?reject(err):resolve()));
  try{
-  for(const width of [320,390,768,1280]){
+  for(const width of [320,360,390,768,1280,1440]){
    const dir=mkdtempSync(path.join(tmpdir(),'visual-layout-'));
    try{
     const url='http://127.0.0.1:'+server.address().port+'/tests/visual-layout.html';

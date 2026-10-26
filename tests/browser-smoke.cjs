@@ -41,20 +41,41 @@ const server=http.createServer((req,res)=>{
     '--no-first-run','--no-default-browser-check','--disable-background-networking',
     '--window-size=390,850','--virtual-time-budget=12000','--dump-dom',
     '--user-data-dir='+dir,url];
-  let stdout='',stderr='';
+  let stdout='',stderr='',terminalDom=false,stoppedAfterResult=false,hardTimedOut=false;
+  let grace;
   const child=spawn(binary,args,{stdio:['ignore','pipe','pipe']});
-  child.stdout.on('data',v=>stdout+=v.toString());
+  const finalResult=()=>/\bdata-smoke-status="(?:pass|fail)"/.test(stdout)&&/<\/html>\s*$/.test(stdout);
+  child.stdout.on('data',v=>{
+    stdout+=v.toString();
+    // Chromium may hang during teardown after --dump-dom has emitted the complete
+    // document and the page has finished asynchronous image decoding. Stop it
+    // only after observing a full terminal DOM, preserving the pass/fail result.
+    if(!terminalDom && finalResult()){
+      terminalDom=true;
+      grace=setTimeout(()=>{
+        if(child.exitCode===null && child.signalCode===null){
+          stoppedAfterResult=true;
+          child.kill('SIGTERM');
+        }
+      },1200);
+    }
+  });
   child.stderr.on('data',v=>stderr+=v.toString());
-  const timeout=setTimeout(()=>child.kill('SIGKILL'),30000);
+  const timeout=setTimeout(()=>{
+    hardTimedOut=true;
+    child.kill('SIGKILL');
+  },40000);
   const code=await new Promise(resolve=>child.on('close',resolve));
   clearTimeout(timeout);
+  if(grace)clearTimeout(grace);
   server.close();
   rmSync(dir,{recursive:true,force:true});
-  const ok=code===0 && /data-smoke-status="pass"/.test(stdout);
+  const completedPass=terminalDom && /<body[^>]*data-smoke-status="pass"/.test(stdout) && /<\/html>\s*$/.test(stdout);
+  const ok=completedPass && !hardTimedOut && (code===0 || stoppedAfterResult);
   if(!ok){
     const msg=stdout.match(/<pre id="result">([\s\S]*?)<\/pre>/);
     console.error('Browser smoke failed:',msg?msg[1]:'No test result found');
-    console.error('Chrome exit:',code,'Chrome stderr:',stderr.slice(-2500));
+    console.error('Chrome exit:',code,'complete DOM:',terminalDom,'hard timeout:',hardTimedOut,'Chrome stderr:',stderr.slice(-2500));
     process.exitCode=1;
-  }else console.log('PASS: real Chrome loaded and exercised all seven toolkit tools.');
+  }else console.log('PASS: real Chrome exercised eight toolkit tools and all image assets'+(stoppedAfterResult?' (Chrome shut down after completed DOM).':'.'));
 })().catch(e=>{console.error(e);server.close();process.exitCode=1});

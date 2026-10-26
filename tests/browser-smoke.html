@@ -82,6 +82,9 @@
         check(!get('visual-one-x-variants').hidden,'1x appearance choices visible');
         const scopedSpeed=text('px_speed');
         const holo=child.querySelector('[data-visual-optic="holo"]');
+        holo.focus();
+        eq(child.activeElement,holo,'1x optic style is keyboard-focusable');
+        check(holo.getBoundingClientRect().height>=44,'Sight style button provides a 44px focus target');
         holo.click();
         eq(get('visual-scope-image').getAttribute('src'),'assets/optic-holographic.svg','Holographic appearance changes without changing scope');
         eq(text('px_speed'),scopedSpeed,'Optic appearance cannot change pixel speed');
@@ -90,6 +93,14 @@
         eq(get('visual-scope-image').getAttribute('src'),'assets/optic-iron.svg','Iron sight appearance');
         child.querySelector('[data-visual-optic="reddot"]').click();
         eq(get('visual-scope-image').getAttribute('src'),'assets/optic-red-dot.svg','Red Dot appearance');
+        const scopeImage=get('visual-scope-image');
+        scopeImage.dispatchEvent(new child.defaultView.Event('error'));
+        check(scopeImage.hidden,'Broken decorative illustration is hidden');
+        check(!!get('visual-scope-preview').querySelector('.visual-image-unavailable'),'Accessible art fallback is displayed');
+        // A subsequent real image load restores the presentation without touching maths.
+        scopeImage.dispatchEvent(new child.defaultView.Event('load'));
+        check(!scopeImage.hidden,'Recovered image becomes visible again');
+        check(!get('visual-scope-preview').querySelector('.visual-image-unavailable'),'Recovered artwork clears the fallback');
         change(get('px_scope'),'3x');
         check(get('visual-one-x-variants').hidden,'1x choices hidden for higher magnifications');
         open('panel-range');
