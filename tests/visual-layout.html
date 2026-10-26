@@ -50,6 +50,13 @@ frame.addEventListener('load',()=>{
    armor.open=false;
 
    const scrollRegion=panel.querySelector('#combat-stats-scroller');
+   if(viewport>=1280){
+     const extraWidth=Math.max(0,scrollRegion.scrollWidth-scrollRegion.clientWidth);
+     assertion(extraWidth<=scrollRegion.clientWidth*0.25,
+       'Main table still requires too much desktop sideways scrolling: '+extraWidth+
+       'px extra for '+scrollRegion.clientWidth+'px visible');
+   }
+
    assertion(!!scrollRegion && scrollRegion.tabIndex===0,'Weapon table must be keyboard-scrollable');
    assertion(scrollRegion.getAttribute('aria-describedby')==='combat-table-instructions','Missing weapon scroll guidance');
    if(viewport<=390){
