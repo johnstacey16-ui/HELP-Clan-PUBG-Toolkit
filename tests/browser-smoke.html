@@ -78,7 +78,20 @@
         change(get('px_scope'),'8x');
         eq(get('visual-scope-image').getAttribute('src'),'assets/optic-8x.svg','Scope art matches selected magnification');
         eq(text('visual-scope-label'),'8x reference optic','Visible optic label is updated');
+        change(get('px_scope'),'1x');
+        check(!get('visual-one-x-variants').hidden,'1x appearance choices visible');
+        const scopedSpeed=text('px_speed');
+        const holo=child.querySelector('[data-visual-optic="holo"]');
+        holo.click();
+        eq(get('visual-scope-image').getAttribute('src'),'assets/optic-holographic.svg','Holographic appearance changes without changing scope');
+        eq(text('px_speed'),scopedSpeed,'Optic appearance cannot change pixel speed');
+        eq(holo.getAttribute('aria-pressed'),'true','Holo button exposed as selected');
+        child.querySelector('[data-visual-optic="iron"]').click();
+        eq(get('visual-scope-image').getAttribute('src'),'assets/optic-iron.svg','Iron sight appearance');
+        child.querySelector('[data-visual-optic="reddot"]').click();
+        eq(get('visual-scope-image').getAttribute('src'),'assets/optic-red-dot.svg','Red Dot appearance');
         change(get('px_scope'),'3x');
+        check(get('visual-one-x-variants').hidden,'1x choices hidden for higher magnifications');
         open('panel-range');
         change(get('rg_weapon'),'AKM');
         eq(get('visual-range-weapon-image').getAttribute('src'),'assets/weapon-akm-field.svg','Range weapon art follows AKM');
@@ -97,6 +110,13 @@
                 open('panel-attach');
         check(!!get('visual-attachment-grid').querySelector('img'),'Attachment art exists');
         check(!!text('visual-at-muzzle'),'Muzzle label reflects existing selection');
+        change(get('at_sight'),'reddot');
+        eq(get('visual-at-sight-image').getAttribute('src'),'assets/optic-red-dot.svg','Red dot shows correct art');
+        change(get('at_sight'),'holo');
+        eq(get('visual-at-sight-image').getAttribute('src'),'assets/optic-holographic.svg','Holographic shows correct art');
+        change(get('at_sight'),'none');
+        check(get('visual-at-sight-image').hidden,'No optic must not display an equipped sight');
+        eq(get('visual-at-sight-image').getAttribute('src'),null,'Unequipped sight has no image resource');
         open('panel-backpack');
         check(text('visual-pack-label').includes('Level 3'),'Backpack art describes chosen level');
         change(get('bp_type'),'jammer');
@@ -319,21 +339,27 @@
         // Verify the complete shipped weapon illustration catalogue decodes at 960x320.
         const catalog=child.defaultView.HELP_VISUAL_WEAPONS;
         check(!!catalog && Object.keys(catalog).length===45,'All 45 exact-name weapon illustrations');
-        const equipmentFiles=['gear-backpack-l1.svg','gear-backpack-l2.svg','gear-booster.svg','gear-helmet.svg','gear-vest.svg'];
-        const fileList=Object.values(catalog).map(filename=>({filename,width:960,height:320}))
-          .concat(equipmentFiles.map(filename=>({filename,width:320,height:200})));
-        Promise.all(fileList.map(({filename,width,height})=>new Promise((resolve,reject)=>{
-          const probe=new child.defaultView.Image();
-          probe.onload=()=>{
-            if(probe.naturalWidth!==width || probe.naturalHeight!==height){
-              reject(new Error('Wrong decoded artwork dimensions for '+filename));
-            }else resolve();
-          };
-          probe.onerror=()=>reject(new Error('Art failed HTTP/decode: '+filename));
-          probe.src=new URL('assets/'+filename,child.location.href).href;
-        }))).then(()=>{
+        // Probe every manifest image in real Chromium, not just new/weapon artwork.
+        // Manifest is already verified by node tests against actual shipped files.
+        const registryRequest=fetch(new URL('assets/visual-manifest.json',child.location.href))
+          .then(res=>{if(!res.ok)throw Error('Asset manifest HTTP '+res.status);return res.json();});
+        registryRequest.then(manifest=>{
+          const fileList=manifest.assets.map(({path,width,height})=>({
+            filename:path.replace(/^assets\//,''),width,height
+          }));
+          return Promise.all(fileList.map(({filename,width,height})=>new Promise((resolve,reject)=>{
+            const probe=new child.defaultView.Image();
+            probe.onload=()=>{
+              if(probe.naturalWidth!==width || probe.naturalHeight!==height){
+                reject(new Error('Wrong decoded artwork dimensions for '+filename));
+              }else resolve();
+            };
+            probe.onerror=()=>reject(new Error('Art failed HTTP/decode: '+filename));
+            probe.src=new URL('assets/'+filename,child.location.href).href;
+          }))).then(()=>fileList.length);
+        }).then(count=>{
           document.body.dataset.smokeStatus='pass';
-          output.textContent='PASS: eight tools, 45 weapon + 5 equipment images decoded, Model 2 and calculator regressions';
+          output.textContent='PASS: eight tools, '+count+' decoded local illustrations including Model 2, calculator regressions';
         }).catch(error=>{
           document.body.dataset.smokeStatus='fail';
           output.textContent='FAIL: '+(error&&error.stack||error);

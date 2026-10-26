@@ -80,3 +80,14 @@
 #panel-backpack #visual-pack-image[hidden]{display:none}
 @media(max-width:650px){#panel-combat .visual-armour-key{grid-template-columns:1fr}}
 @media(max-width:350px){#panel-backpack .visual-pack-items img{height:53px}#panel-combat .visual-armour-key img{width:76px;height:60px}}
+
+/* Sight variants never change or compete with sensitivity calculations. */
+#panel-sensitivity .visual-one-x-variants { margin:9px 0 14px;padding:12px;border:1px solid rgba(148,202,214,.26);border-radius:10px;min-width:0; }
+#panel-sensitivity .visual-one-x-variants[hidden] { display:none; }
+#panel-sensitivity .visual-one-x-variants legend { padding:0 6px;color:#bbd3da;font:12px/1.4 "Manrope",sans-serif; }
+#panel-sensitivity .visual-optic-variant { min-height:44px;margin:3px 5px 3px 0;padding:8px 12px;border-radius:7px;border:1px solid rgba(153,205,215,.36);color:#d4e7e9;background:#132e3c;cursor:pointer;font:600 12px/1.4 "Manrope",sans-serif; }
+#panel-sensitivity .visual-optic-variant[aria-pressed="true"] { color:#ffdfac;border-color:#e4bd82;background:#2c3942; }
+#panel-sensitivity .visual-optic-variant:focus-visible { outline:3px solid #9cdae8;outline-offset:2px; }
+.visual-gear-tile img[hidden],.visual-inline-preview img[hidden],.visual-reference-banner img[hidden],.visual-pack-items img[hidden],.visual-armour-key img[hidden] { display:none; }
+.visual-image-unavailable { display:block;min-width:0;max-width:100%;color:#f4d2a1;font:11px/1.5 "Manrope",sans-serif; }
+@media(max-width:365px) { #panel-sensitivity .visual-one-x-variants{padding:8px} #panel-sensitivity .visual-optic-variant{margin-right:2px;padding:8px 9px} }

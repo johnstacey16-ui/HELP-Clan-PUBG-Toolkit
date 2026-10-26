@@ -917,6 +917,45 @@
       "origin": "original-designed",
       "rightsNote": "Original fictional vector illustration designed specifically for this toolkit; no official PUBG item texture or third-party art copied.",
       "usage": "Representative backpack-level or equipment reference only. Carry capacity, vest bonus, and inventory data come from existing calculator controls."
+    },
+    {
+      "id": "optic-red-dot",
+      "path": "assets/optic-red-dot.svg",
+      "panelId": "panel-sensitivity",
+      "role": "icon",
+      "width": 320,
+      "height": 200,
+      "decorative": false,
+      "alt": "Original representative red-dot sight",
+      "origin": "original-designed",
+      "rightsNote": "Original non-official optical sight vector designed for HELP Clan Toolkit, not a copyrighted game asset.",
+      "usage": "Representative 1x sight appearance for optic visual variants and attachment selector only. Scope math and equipment compatibility remain unchanged."
+    },
+    {
+      "id": "optic-holographic",
+      "path": "assets/optic-holographic.svg",
+      "panelId": "panel-sensitivity",
+      "role": "icon",
+      "width": 320,
+      "height": 200,
+      "decorative": false,
+      "alt": "Original representative holographic sight",
+      "origin": "original-designed",
+      "rightsNote": "Original non-official optical sight vector designed for HELP Clan Toolkit, not a copyrighted game asset.",
+      "usage": "Representative 1x sight appearance for optic visual variants and attachment selector only. Scope math and equipment compatibility remain unchanged."
+    },
+    {
+      "id": "optic-iron",
+      "path": "assets/optic-iron.svg",
+      "panelId": "panel-sensitivity",
+      "role": "icon",
+      "width": 320,
+      "height": 200,
+      "decorative": false,
+      "alt": "Original representative iron sights",
+      "origin": "original-designed",
+      "rightsNote": "Original non-official optical sight vector designed for HELP Clan Toolkit, not a copyrighted game asset.",
+      "usage": "Representative 1x sight appearance for optic visual variants and attachment selector only. Scope math and equipment compatibility remain unchanged."
     }
   ]
 }
