@@ -116,3 +116,16 @@
 @media(prefers-reduced-motion:reduce){
   .visual-media-frame,.visual-gear-tile,.visual-compare-tile,.visual-optic-variant { animation:none!important;transition:none!important; }
 }
+
+/* Five compact selector-driven equipment cards; no illustrated "equipped" state for None. */
+#panel-attach .visual-gear-grid { grid-template-columns:repeat(5,minmax(0,1fr)); }
+#panel-attach .visual-gear-tile img[hidden] { display:none; }
+#panel-attach .visual-gear-tile { min-height:108px;justify-content:center; }
+#panel-attach .visual-gear-tile small { max-width:100%; }
+@media(max-width:850px) {
+ #panel-attach .visual-gear-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
+}
+@media(max-width:450px) {
+ #panel-attach .visual-gear-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+ #panel-attach .visual-gear-tile { min-height:95px; }
+}

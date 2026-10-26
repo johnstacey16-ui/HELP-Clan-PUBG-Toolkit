@@ -128,6 +128,32 @@
         change(get('at_sight'),'none');
         check(get('visual-at-sight-image').hidden,'No optic must not display an equipped sight');
         eq(get('visual-at-sight-image').getAttribute('src'),null,'Unequipped sight has no image resource');
+        // Attachment art follows equipment select values but never changes values itself.
+        change(get('at_weapon'),'M416');
+        change(get('at_muzzle'),'suppressor');
+        eq(get('visual-at-muzzle-image').getAttribute('src'),'assets/gear-suppressor.svg','Suppressor preview');
+        change(get('at_muzzle'),'compensator');
+        eq(get('visual-at-muzzle-image').getAttribute('src'),'assets/gear-compensator.svg','Compensator preview');
+        change(get('at_muzzle'),'none');
+        check(get('visual-at-muzzle-image').hidden,'No muzzle shows no equipped hardware');
+        change(get('at_grip'),'vertical');
+        eq(get('visual-at-grip-image').getAttribute('src'),'assets/gear-vertical-grip.svg','Vertical grip preview');
+        change(get('at_grip'),'half');
+        eq(get('visual-at-grip-image').getAttribute('src'),'assets/gear-grip.svg','Other grip uses representative category artwork');
+        change(get('at_grip'),'none');
+        check(get('visual-at-grip-image').hidden,'No grip shows no equipped hardware');
+        change(get('at_stock'),'tactical');
+        eq(get('visual-at-stock-image').getAttribute('src'),'assets/gear-stock.svg','Stock image follows selection');
+        change(get('at_stock'),'none');
+        check(get('visual-at-stock-image').hidden,'No stock shows no equipped hardware');
+        change(get('at_mag'),'extended');
+        eq(get('visual-at-mag-image').getAttribute('src'),'assets/gear-extended-magazine.svg','Extended magazine preview');
+        change(get('at_mag'),'none');
+        check(get('visual-at-mag-image').hidden,'No magazine shows no equipped hardware');
+        get('at_presetClear').click();
+        check(get('visual-at-muzzle-image').hidden,'Preset Clear hides muzzle image');
+        check(get('visual-at-grip-image').hidden,'Preset Clear hides grip image');
+
         open('panel-backpack');
         check(text('visual-pack-label').includes('Level 3'),'Backpack art describes chosen level');
         change(get('bp_type'),'jammer');

@@ -956,6 +956,97 @@
       "origin": "original-designed",
       "rightsNote": "Original non-official optical sight vector designed for HELP Clan Toolkit, not a copyrighted game asset.",
       "usage": "Representative 1x sight appearance for optic visual variants and attachment selector only. Scope math and equipment compatibility remain unchanged."
+    },
+    {
+      "id": "gear-suppressor",
+      "path": "assets/gear-suppressor.svg",
+      "panelId": "panel-attach",
+      "role": "icon",
+      "width": 320,
+      "height": 200,
+      "decorative": false,
+      "alt": "Original representative firearm suppressor",
+      "origin": "original-designed",
+      "rightsNote": "Original representative vector designed specifically for HELP Clan Toolkit, not derived from an official PUBG equipment texture.",
+      "usage": "Displays selected attachment category only. The real eligibility and numerical modifiers come from the unchanged attachment calculator; not an exact weapon-specific render."
+    },
+    {
+      "id": "gear-compensator",
+      "path": "assets/gear-compensator.svg",
+      "panelId": "panel-attach",
+      "role": "icon",
+      "width": 320,
+      "height": 200,
+      "decorative": false,
+      "alt": "Original representative muzzle compensator",
+      "origin": "original-designed",
+      "rightsNote": "Original representative vector designed specifically for HELP Clan Toolkit, not derived from an official PUBG equipment texture.",
+      "usage": "Displays selected attachment category only. The real eligibility and numerical modifiers come from the unchanged attachment calculator; not an exact weapon-specific render."
+    },
+    {
+      "id": "gear-flash-hider",
+      "path": "assets/gear-flash-hider.svg",
+      "panelId": "panel-attach",
+      "role": "icon",
+      "width": 320,
+      "height": 200,
+      "decorative": false,
+      "alt": "Original representative flash hider",
+      "origin": "original-designed",
+      "rightsNote": "Original representative vector designed specifically for HELP Clan Toolkit, not derived from an official PUBG equipment texture.",
+      "usage": "Displays selected attachment category only. The real eligibility and numerical modifiers come from the unchanged attachment calculator; not an exact weapon-specific render."
+    },
+    {
+      "id": "gear-vertical-grip",
+      "path": "assets/gear-vertical-grip.svg",
+      "panelId": "panel-attach",
+      "role": "icon",
+      "width": 320,
+      "height": 200,
+      "decorative": false,
+      "alt": "Original representative vertical foregrip",
+      "origin": "original-designed",
+      "rightsNote": "Original representative vector designed specifically for HELP Clan Toolkit, not derived from an official PUBG equipment texture.",
+      "usage": "Displays selected attachment category only. The real eligibility and numerical modifiers come from the unchanged attachment calculator; not an exact weapon-specific render."
+    },
+    {
+      "id": "gear-angled-grip",
+      "path": "assets/gear-angled-grip.svg",
+      "panelId": "panel-attach",
+      "role": "icon",
+      "width": 320,
+      "height": 200,
+      "decorative": false,
+      "alt": "Original representative angled foregrip",
+      "origin": "original-designed",
+      "rightsNote": "Original representative vector designed specifically for HELP Clan Toolkit, not derived from an official PUBG equipment texture.",
+      "usage": "Displays selected attachment category only. The real eligibility and numerical modifiers come from the unchanged attachment calculator; not an exact weapon-specific render."
+    },
+    {
+      "id": "gear-stock",
+      "path": "assets/gear-stock.svg",
+      "panelId": "panel-attach",
+      "role": "icon",
+      "width": 320,
+      "height": 200,
+      "decorative": false,
+      "alt": "Original representative rifle stock",
+      "origin": "original-designed",
+      "rightsNote": "Original representative vector designed specifically for HELP Clan Toolkit, not derived from an official PUBG equipment texture.",
+      "usage": "Displays selected attachment category only. The real eligibility and numerical modifiers come from the unchanged attachment calculator; not an exact weapon-specific render."
+    },
+    {
+      "id": "gear-extended-magazine",
+      "path": "assets/gear-extended-magazine.svg",
+      "panelId": "panel-attach",
+      "role": "icon",
+      "width": 320,
+      "height": 200,
+      "decorative": false,
+      "alt": "Original representative extended magazine",
+      "origin": "original-designed",
+      "rightsNote": "Original representative vector designed specifically for HELP Clan Toolkit, not derived from an official PUBG equipment texture.",
+      "usage": "Displays selected attachment category only. The real eligibility and numerical modifiers come from the unchanged attachment calculator; not an exact weapon-specific render."
     }
   ]
 }

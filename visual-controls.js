@@ -83,29 +83,60 @@ for(const key of ['a','b','c']){
  });
 }
 syncCompare();
+// Visual category maps are intentionally separate from calculator compatibility/stats.
+const attachmentVisuals=Object.freeze({
+ muzzle:Object.freeze({
+  compensator:'gear-compensator.svg',compensator_ar:'gear-compensator.svg',
+  suppressor:'gear-suppressor.svg',flash:'gear-flash-hider.svg',
+  brake:'gear-muzzle.svg',choke:'gear-muzzle.svg',duckbill:'gear-muzzle.svg'
+ }),
+ grip:Object.freeze({
+  vertical:'gear-vertical-grip.svg',angled:'gear-angled-grip.svg',
+  half:'gear-grip.svg',light:'gear-grip.svg',thumb:'gear-grip.svg',
+  laser:'gear-grip.svg',tilted:'gear-grip.svg'
+ }),
+ mag:Object.freeze({
+  extended:'gear-extended-magazine.svg',extquick:'gear-extended-magazine.svg',
+  extended_ar:'gear-extended-magazine.svg',extquick_ar:'gear-extended-magazine.svg',
+  quickdraw:'gear-magazine.svg'
+ }),
+ stock:Object.freeze({
+  tactical:'gear-stock.svg',heavy:'gear-stock.svg',folding:'gear-stock.svg',
+  cheek:'gear-stock.svg',loops:'gear-stock.svg'
+ }),
+ sight:Object.freeze({
+  reddot:'optic-red-dot.svg',dot:'optic-red-dot.svg',holo:'optic-holographic.svg',
+  hybrid:'optic-4x.svg',thermal4x:'optic-4x.svg',
+  '2x':'optic-2x.svg','3x':'optic-3x.svg','4x':'optic-4x.svg',
+  '6x':'optic-6x.svg','8x':'optic-8x.svg','15x':'optic-15x.svg'
+ })
+});
 function syncAttachmentArt(){
- for(const id of ['muzzle','grip','mag','sight']){
-  const select=get('at_'+id),label=get('visual-at-'+id);
-  if(select&&label){const option=select.selectedOptions&&select.selectedOptions[0];label.textContent=option?option.textContent.trim():'Not available';}
- }
- const optic=get('at_sight'),img=get('visual-at-sight-image');
- if(optic&&img){
-  const value=(optic.value||'').toLowerCase();
-  const categories=Object.freeze({
-    reddot:'optic-red-dot.svg',dot:'optic-red-dot.svg',holo:'optic-holographic.svg',
-    hybrid:'optic-4x.svg',thermal4x:'optic-4x.svg',
-    '2x':'optic-2x.svg','3x':'optic-3x.svg','4x':'optic-4x.svg',
-    '6x':'optic-6x.svg','8x':'optic-8x.svg','15x':'optic-15x.svg'
-  });
-  const file=owns(categories,value)?categories[value]:null;
-  // "none" must not appear to equip a scope; compatibility is unchanged.
-  img.hidden=!file;
-  if(file){img.src='assets/'+file;img.alt='Original representative '+(value==='thermal4x'?'4x':value)+' optic category illustration';}
-  else{img.removeAttribute('src');img.alt='';}
+ for(const id of ['muzzle','grip','mag','sight','stock']){
+  const select=get('at_'+id),label=get('visual-at-'+id),image=get('visual-at-'+id+'-image');
+  if(!select||!label||!image)continue;
+  const option=select.selectedOptions&&select.selectedOptions[0];
+  const value=select.disabled?'none':String(select.value||'none').toLowerCase();
+  label.textContent=option?option.textContent.trim():'Not available';
+  const file=owns(attachmentVisuals[id],value)?attachmentVisuals[id][value]:null;
+  // Empty/disabled attachment slots do not show apparently equipped hardware.
+  image.hidden=!file;
+  if(file){
+   image.src='assets/'+file;
+   image.alt='Original illustrative '+label.textContent+' attachment category';
+  }else{
+   image.removeAttribute('src');image.alt='';
+  }
  }
 }
-for(const id of ['weapon','muzzle','grip','mag','sight']){const select=get('at_'+id);if(select)select.addEventListener('change',syncAttachmentArt);}
-for(const id of ['presetVert','presetHoriz','presetBal','presetClear']){const button=get('at_'+id);if(button)button.addEventListener('click',()=>queueMicrotask(syncAttachmentArt));}
+for(const id of ['weapon','muzzle','grip','mag','sight','stock']){
+ const select=get('at_'+id);
+ if(select)select.addEventListener('change',syncAttachmentArt);
+}
+for(const id of ['presetVert','presetHoriz','presetBal','presetClear']){
+ const button=get('at_'+id);
+ if(button)button.addEventListener('click',()=>queueMicrotask(syncAttachmentArt));
+}
 syncAttachmentArt();
 const packImage=get('visual-pack-image');
 if(packImage)packImage.addEventListener('error',()=>{
