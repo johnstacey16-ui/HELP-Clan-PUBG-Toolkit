@@ -40,7 +40,7 @@
         // Combat DB remains a compact text table; illustrations load only on tap.
         open('panel-combat');
         check(child.querySelectorAll('#panel-combat .visual-armour-key img').length===2,'Armour guide remains distinct from the weapon table');
-        check(!get('combat-pilot-image'),'No automatic M416 hero image above the table');
+        check(!child.querySelector('#combat-pilot-image'),'No automatic M416 hero image above the table');
         check(child.querySelectorAll('#wTable img').length===0,'No image loads in the weapon table');
         check(child.querySelectorAll('#wTable tr.rowclick').length===45,'Every weapon has a compact row');
         const m416Row=child.querySelector('#wTable tr.rowclick[data-n="M416"]');
