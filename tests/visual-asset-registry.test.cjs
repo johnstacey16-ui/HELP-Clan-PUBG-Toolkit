@@ -65,11 +65,18 @@ test('Model 2 remains an approved baseline instead of being replaced in this upg
  assert.ok(html.includes('href="/assets/hit-zone-model-2.webp"'));
  assert.equal((html.match(/data-hit-zone="/g)||[]).length,13);
 });
-test('visual roadmap covers the seven other panels and the protected preview gate',()=>{
+test('visual roadmap retains complete tool coverage and release/approval provenance',()=>{
  const doc=fs.readFileSync(path.join(root,'VISUAL_UPGRADE_ROADMAP.md'),'utf8');
  for(const heading of ['Scope Sensitivity Matcher','Combat DB','Effective Range','TTK Calculator',
    'Recoil Analyzer','Attachments','Tactical Loadout','Vercel']){
   assert.ok(doc.includes(heading),'roadmap missing '+heading);
  }
- assert.match(doc,/No merge to main before this/);
+ const hasPreReleaseGate=doc.includes('No merge to main before this');
+ const hasAuditedRelease=doc.includes('## Release record — 2026-10-26')
+  && doc.includes('d54ac7cb4ba83113a54f9a6a989581c4340b7aed')
+  && doc.includes('Release approval:')
+  && doc.includes('Physical');
+ assert.ok(hasPreReleaseGate||hasAuditedRelease,
+  'Require a protected preview gate before launch, or a release record with owner authorisation and physical-device follow-ups');
+
 });
