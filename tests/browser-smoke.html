@@ -12,7 +12,7 @@
   const check=(yes,message)=>{if(!yes)throw new Error(message);};
   const change=(el,val,type='change')=>{check(!!el,'Missing input');el.value=val;el.dispatchEvent(new Event(type,{bubbles:true}));};
   frame.addEventListener('load',()=>{
-    setTimeout(()=>{
+    setTimeout(async ()=>{
       try {
         const child=frame.contentDocument;
         check(!!child && !!child.getElementById('panel-sensitivity'),'Loaded real index.html');
@@ -112,15 +112,25 @@
         check(!!text('rg_dmg'),'Range result remains prominent');
         const rangeSummary=get('visual-range-artwork').querySelector('summary');
         check(rangeSummary.getBoundingClientRect().height>=44,'Range art summary has tap target');
+        const rangeDetails=get('visual-range-artwork');
+        const rangeOpened=new Promise(resolve=>rangeDetails.addEventListener('toggle',resolve,{once:true}));
         rangeSummary.click();
-        check(get('visual-range-artwork').open,'Range art opens only on request');
+        await rangeOpened;
+        check(rangeDetails.open,'Range art opens only on request');
         change(get('rg_weapon'),'AKM');
         eq(get('visual-range-weapon-image').getAttribute('src'),'assets/weapon-akm-field.svg','Range weapon art follows AKM');
-        get('visual-range-artwork').querySelector('summary').click();
-        check(!get('visual-range-artwork').open,'Range art can be closed again');
+        const rangeClosed=new Promise(resolve=>rangeDetails.addEventListener('toggle',resolve,{once:true}));
+        rangeSummary.click();
+        await rangeClosed;
+        check(!rangeDetails.open,'Range art can be closed again');
         eq(get('visual-range-weapon-image').getAttribute('src'),null,'Closing range art releases weapon img source');
         change(get('rg_weapon'),'SKS');
-        eq(get('visual-range-weapon-image').getAttribute('src'),'assets/weapon-sks-field.svg','Range now displays SKS art');
+        eq(get('visual-range-weapon-image').getAttribute('src'),null,'Closed range defers the new weapon image');
+        eq(get('visual-range-weapon-image').getAttribute('data-visual-src'),'assets/weapon-sks-field.svg','Latest selection is kept without requesting art');
+        const rangeReopened=new Promise(resolve=>rangeDetails.addEventListener('toggle',resolve,{once:true}));
+        rangeSummary.click();
+        await rangeReopened;
+        eq(get('visual-range-weapon-image').getAttribute('src'),'assets/weapon-sks-field.svg','Reopening loads selected SKS art');
         open('panel-ttk');
         check(!get('visual-ttk-artwork').open,'TTK art defaults closed');
         check(!get('visual-ttk-comparison-artwork').open,'TTK compare art defaults closed');
