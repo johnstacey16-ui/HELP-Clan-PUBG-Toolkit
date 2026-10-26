@@ -236,3 +236,10 @@ When a task is done, change its literal `- [ ]` to `- [x]` **in GitHub**, alongs
 - **Visual release contents:** 45 available weapon concept illustrations; Compact Combat DB renders **no gun pictures until a weapon is selected**; accessible scope controls and optic references; selection-aware attachments/backpack artwork; numbers-first Range/TTK/Recoil with opt-in media; approved fictional Model 2 and 13 zones preserved.
 - **Limitations honestly open:** real Xbox Series S Edge and physical Android/desktop owner acceptance, device network/LCP/CLS, manual assistive-technology review, and optional licensed/photo-grade artwork. Synthetic CI and static screenshots are not substitutes. Any problems found after launch should be handled in follow-up PRs.
 - **Release approval:** the owner instructed the assistant to merge upon completion, on 2026-10-26. No additional publication/merges are authorised by that instruction.
+
+## Mobile Combat DB follow-up (new draft PR, 2026-10-26)
+
+- Automated screenshots from the released PR #41 reveal that the Combat overview and helmet/vest illustration key fill the initial 390px-wide phone screen, hiding the weapon table below the fold. The released Scope Matcher screenshot is legible after the fade fix.
+- This follow-up collapses the helmet/vest guide behind an accessible 46px touch target, defers its image requests, compresses the mobile overview and places three quick links in two rows, without removing any tools or armour rules.
+- The 45-weapon table stays image-free until a selected-weapon modal opens. Automated layout coverage checks that collapsing the guide reclaims 100px or more on narrow phones; browser checks exercise opening/closing the guide and deferred art.
+- **Unreleased draft:** PR #41 already merged to production, and this new follow-up requires its own review and publication approval. Real Xbox/Android appearance testing is still pending.

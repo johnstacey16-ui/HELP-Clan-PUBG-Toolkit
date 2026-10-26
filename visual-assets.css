@@ -197,3 +197,33 @@
   animation: none;
   opacity: 1;
 }
+
+/* Combat mobile density: table-first and optional armour images. */
+#panel-combat .combat-armour-disclosure {
+ margin-top:13px;min-width:0;border:1px solid rgba(152,204,216,.28);
+ border-radius:11px;background:rgba(10,29,40,.56);
+}
+#panel-combat .combat-armour-disclosure>summary {
+ display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center;
+ cursor:pointer;min-height:46px;padding:10px 14px;
+ color:#f1d3a5;font:700 13px/1.45 "Manrope",sans-serif;
+ list-style:none;touch-action:manipulation;
+}
+#panel-combat .combat-armour-disclosure>summary::-webkit-details-marker{display:none}
+#panel-combat .combat-armour-disclosure>summary::before{content:"+";font:700 19px/1 "Manrope",sans-serif}
+#panel-combat .combat-armour-disclosure[open]>summary::before{content:"−"}
+#panel-combat .combat-armour-disclosure>summary:focus-visible{outline:3px solid #a5e8f1;outline-offset:3px;border-radius:9px}
+#panel-combat .combat-armour-optional{color:#b7cbd5;font:11px/1.4 "Manrope",sans-serif}
+#panel-combat .combat-armour-disclosure .visual-armour-key{margin:0;padding:0 10px 10px}
+@media(max-width:700px){
+ #panel-combat header.hero{padding:17px 16px 15px;margin-bottom:12px}
+ #panel-combat header.hero h1{font-size:clamp(29px,8vw,35px);line-height:1.03;margin:8px 0 10px}
+ #panel-combat header.hero .sub{font-size:12px;line-height:1.55}
+ #panel-combat .hero-stats{margin-top:12px;gap:6px}
+ #panel-combat .hero-stats div{padding:9px 7px}
+ #panel-combat .hero-hint{margin-top:9px;font-size:10px}
+ #panel-combat .quicknav{margin-top:10px;gap:7px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+ #panel-combat .quicknav a{min-width:0;min-height:44px;padding:8px 9px;font-size:10.5px}
+ #panel-combat .quicknav a:first-child{grid-column:1/-1}
+}
+@media(prefers-reduced-motion:reduce){#panel-combat .combat-armour-disclosure *{animation:none!important;transition:none!important}}

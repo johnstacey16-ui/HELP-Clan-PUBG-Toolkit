@@ -93,6 +93,20 @@
         // Combat DB remains a compact text table; illustrations load only on tap.
         open('panel-combat');
         check(child.querySelectorAll('#panel-combat .visual-armour-key img').length===2,'Armour guide remains distinct from the weapon table');
+        const armourGuide=get('combat-armour-disclosure');
+        check(!armourGuide.open,'Helmet/vest art starts collapsed, behind a user action');
+        check(armourGuide.querySelector('summary').getBoundingClientRect().height>=44,'Armour art summary is controller-sized');
+        check(!armourGuide.querySelector('.visual-armour-key img[src]'),'Closed guide must not request art');
+        const opening=new Promise(resolve=>armourGuide.addEventListener('toggle',resolve,{once:true}));
+        armourGuide.querySelector('summary').click();
+        await opening;
+        check(armourGuide.open,'Armour guide expands on request');
+        check(!!armourGuide.querySelector('.visual-armour-key img[src]'),'Expanded guide requests images');
+        const closing=new Promise(resolve=>armourGuide.addEventListener('toggle',resolve,{once:true}));
+        armourGuide.querySelector('summary').click();
+        await closing;
+        check(!armourGuide.open,'Armour guide closes on request');
+        check(!armourGuide.querySelector('.visual-armour-key img[src]'),'Closed guide releases image sources');
         check(!child.querySelector('#combat-pilot-image'),'No automatic M416 hero image above the table');
         check(child.querySelectorAll('#wTable img').length===0,'No image loads in the weapon table');
         check(child.querySelectorAll('#wTable tr.rowclick').length===45,'Every weapon has a compact row');

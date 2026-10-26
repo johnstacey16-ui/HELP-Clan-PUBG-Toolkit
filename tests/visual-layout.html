@@ -37,6 +37,16 @@ frame.addEventListener('load',()=>{
   if(panelId==='panel-combat'){
    assertion(panel.querySelectorAll('#wTable img').length===0,'Combat DB rows must not contain gun pictures');
    assertion(!panel.querySelector('.combat-visual-pilot'),'No unsolicited weapon pilot art');
+   const guide=panel.querySelector('#combat-armour-disclosure');
+   assertion(guide && !guide.open,'Combat armour guide must be closed by default');
+   assertion(guide.querySelector('summary').getBoundingClientRect().height>=44,'Guide summary requires at least 44px height');
+   const table=panel.querySelector('#combat-database');
+   assertion(!!table,'Weapon database table must be present');
+   const closedTop=table.getBoundingClientRect().top;
+   guide.open=true;
+   const openedTop=table.getBoundingClientRect().top;
+   if(viewport<=390)assertion(openedTop-closedTop>=100,'Mobile guide must reclaim at least 100px when closed');
+   guide.open=false;
   }
   if(panelId==='panel-backpack'){
    const buttons=[...panel.querySelectorAll('.bp-stepper button')];
