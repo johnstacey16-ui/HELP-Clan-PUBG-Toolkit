@@ -1,6 +1,6 @@
 # HELP Clan Visual Upgrade — Owner Acceptance Checklist
 
-**Status:** Manual review pending · Draft [PR #41](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/pull/41) · 2026-10-26. Do not merge until the owner approves the actual preview.
+**Status:** [PR #41 merged](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/pull/41) into `main` on 2026-10-26 following owner release authorisation. Production [READY](https://help-clan-pubg-toolkit.vercel.app/). **Manual Xbox/mobile/desktop field review still pending**; report issues for a follow-up fix.
 
 ## Goal
 
@@ -8,10 +8,10 @@ Keep **statistics before pictures**, never show a gun thumbnail in the Combat DB
 
 ## Automated screenshot evidence (for comparison, not approval)
 
-**Design finding corrected (2026-10-26):** the initial review captures showed a very dim Scope results panel during a short entrance fade. Scope tab content now displays at full opacity immediately. Inspect a new screenshot artifact generated from the corrected code commit before approval.
+**Design finding corrected and verified (2026-10-26):** the initial captures showed a very dim Scope panel during an entrance fade. Fixed it to render fully legible immediately and inspected the replacement phone screenshot from [Actions #40281996396](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40281996396).
 
 
-Every successful PR #41 GitHub Actions run now captures **16 first-viewport screenshots** using headless Chromium: each of the eight tools at requested 390×900 phone and 1280×900 desktop sizes. Download the [verified **help-clan-visual-review** artifact from Actions #40280605037](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40280605037/artifacts/12631734018). It contains all 16 PNG images and a capture manifest; the run succeeded on October 26, 2026. Its `capture-manifest.json` records screenshot dimensions and actual file sizes.
+The final PR #41 GitHub Actions run captured **16 first-viewport screenshots** using headless Chromium: each of the eight tools at requested 390×900 phone and 1280×900 desktop sizes. Download the [verified **help-clan-visual-review** artifact from Actions #40280605037](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40280605037/artifacts/12631734018). It contains all 16 PNG images and a capture manifest; the run succeeded on October 26, 2026. Its `capture-manifest.json` records screenshot dimensions and actual file sizes.
 
 These images show the top viewport and are **not real Xbox TV screenshots**, full scroll captures, or an automatic human design review. Compare them against the actual feature-branch Vercel preview and the device checklist below. The owner still needs to inspect weapon detail popup, open optional reference art, actual phone and Xbox controller focus, and any scrolling/clipping.
 
@@ -38,7 +38,7 @@ These images show the top viewport and are **not real Xbox TV screenshots**, ful
 
 Record **device/browser**, **which tool**, **what went wrong**, and ideally a screenshot. Prioritise overlap, hard-to-read statistics, unwanted artwork, inaccurate labels, focus navigation failures or significant lag. A screenshot is especially useful for an Xbox TV-specific issue.
 
-Once the current branch preview is available and all critical issues are resolved, the owner can explicitly approve a merge. Keep release, final production deployment verification and any photography/licensing work **unchecked** until actually performed.
+The visual upgrade is now live following the owner's explicit merge authorisation. **Keep physical Xbox/phone field-review and photography/licensing tasks unchecked** until actually performed. Record any identified issue and fix it in a new pull request rather than silently editing the already-merged feature history.
 
 ### Automated baseline — already checked
 

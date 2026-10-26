@@ -1,14 +1,14 @@
 # HELP-Clan-PUBG-Toolkit
 
-## Full toolkit visual upgrade — new roadmap (2026-10-25)
+## Full toolkit visual upgrade — released to main (2026-10-26)
 
 [Visual artwork credits and usage notes](VISUAL_ARTWORK_CREDITS.md) document the original conceptual graphics, limits of accuracy and why no official PUBG screenshots/textures are bundled.
 
-For real Xbox Series S Edge / phone checks before release, follow [the visual acceptance checklist](docs/visual-acceptance-checklist.md). Automated tests do not replace the owner's device review.
+The visual upgrade was merged in [PR #41](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/pull/41) as commit `d54ac7cb` and is deployed to [production](https://help-clan-pubg-toolkit.vercel.app/). For remaining real Xbox Series S Edge / phone checks, follow [the visual acceptance checklist](docs/visual-acceptance-checklist.md). Automated tests do not replace physical device review.
 
 The staged design and image plan for **the seven tools other than Hit Zone** is in [VISUAL_UPGRADE_ROADMAP.md](VISUAL_UPGRADE_ROADMAP.md). It tracks checked-off milestones, asset budgets, rights/alt text, Xbox/mobile QA and owner-preview/merge approval. The existing Model 2 and its hit-zone overlay stay unchanged. Assets are catalogued in `assets/visual-manifest.json` and enforced by `tests/visual-asset-registry.test.cjs`.
 
-This work starts in draft on `feature/toolkit-visual-upgrade`. Follow the roadmap before adding more images or changing the release status.
+The original visual-upgrade branch was merged into `main`. Follow the roadmap's remaining checkboxes for post-release physical device QA and optional higher-fidelity concept art. Future substantial changes should use a new reviewed pull request.
 
 ## Hit Zone Damage Explorer — work in progress
 

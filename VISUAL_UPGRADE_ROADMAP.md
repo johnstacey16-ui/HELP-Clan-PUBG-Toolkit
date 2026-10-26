@@ -2,7 +2,7 @@
 
 > Persistent handoff / live checklist. Started **2026-10-25**. Working branch: `feature/toolkit-visual-upgrade` from `main` at `8753b151`. **Never mark a task complete merely because it is planned.** Check off a step only when its source, tests and (where applicable) visual evidence exist. Record commits / PRs and update this file with each milestone.
 >
-> Next conversation instruction: **"Continue the HELP Clan visual upgrade from VISUAL_UPGRADE_ROADMAP.md in johnstacey16-ui/HELP-Clan-PUBG-Toolkit. Inspect the latest branch/PR, complete the next unchecked task, run tests, and update the checkboxes. Do not merge without my approval."**
+> Next conversation instruction: **"Continue the HELP Clan visual follow-up work from VISUAL_UPGRADE_ROADMAP.md on main. PR #41 merged on 2026-10-26. Do not repeat or undo the completed upgrade. Check remaining manual Xbox/phone QA, higher-fidelity artwork if desired, and any owner-reported bugs."**
 
 ## Outcome and non-negotiables
 
@@ -24,7 +24,7 @@ Make all seven remaining tools look like one premium, readable PUBG companion ap
 - [x] **P7 — Recoil Analyzer (evidence-first illustration pass)**: Coming Soon/evidence limits and parameter table precede hidden-by-default artwork; no invented spray trace. Actual Xbox/mobile inspection remains open.
 - [x] **P8 — Tactical Loadout / Backpack (representative artwork and responsive-controls pass)**: standard/Jammer gear art, six categories, correct original carrying maths and accessible 44px stepper buttons passed Chromium; real Xbox and phone inspection still required before release.
 - [x] **P9 — Shared UI refinement (automated layout/accessibility pass)**: data-first visual cards, 79 local assets, compact Combat DB, responsive layouts and keyboard-accessible subtools pass CI. Owner visual review and hardware-specific QA remain a P10 gate.
-- [ ] **P10 — Acceptance testing, owner preview and release**.
+- [ ] **P10 — Production released; physical-device acceptance and optional higher-fidelity art remain open**.
 
 The checked foundation items include the initial Combat DB **illustrated M416 pilot**; **all 7 target tools now have initial original illustrations; weapon-name illustration coverage is now 45/45 (illustrations only, not photorealistic); higher-fidelity art and physical-device QA remain unfinished**. Photo-grade cataloguing and all other tools are pending.
 
@@ -147,9 +147,9 @@ The checked foundation items include the initial Combat DB **illustrated M416 pi
 - [x] Automated asset checks: all 79 local assets registered, alt/dimensions/loading validated, broken-art fallback/recovery exercised, synthetic initial Scope ≤8 media requests and ≤64 KiB decoded images, visual preview stable within 1px on 3×→8× change, and all six viewport layout smoke tests passed [Actions #40278458470](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40278458470). **These are synthetic guardrails, not real-user LCP/CLS or hardware network evidence.**
 - [ ] Browser review on real desktop, phone and Xbox Edge; include keyboard/controller, contrast/reduced-motion, actual network/LCP/CLS performance, screenshots and a user-approved final visual review. Follow [docs/visual-acceptance-checklist.md](docs/visual-acceptance-checklist.md).
 - [x] Publish a Vercel **preview** for the feature branch — READY for commit `aae3f44f`; https://help-clan-pubg-toolkit-8gv9jiojb-acme-a675.vercel.app .
-- [ ] Get explicit owner visual approval for the complete preview. **No merge to main before this.**
-- [ ] Merge reviewed PR, confirm production Vercel READY and post-merge Actions green.
-- [ ] Update this roadmap with release commit and what, if anything, needs manual follow-up.
+- [x] Owner authorised this merge on 2026-10-26 ("Continue once complete merge everything to main please"). This is release authorisation, **not** a claim that the owner reviewed every screenshot or tested Xbox hardware.
+- [x] PR #41 merged to `main` as [`d54ac7cb`](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/commit/d54ac7cb4ba83113a54f9a6a989581c4340b7aed). Production Vercel deployment [READY](https://help-clan-pubg-toolkit-jdikrb12u-acme-a675.vercel.app/), with live alias `help-clan-pubg-toolkit.vercel.app`; post-merge Actions [#40282223490](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40282223490) passed.
+- [x] Recorded release commit, production verification, current automated evidence and remaining field/optional-artwork tasks. Further updates belong on `main` or a new feature PR.
 
 ## Implementation order and update discipline
 
@@ -226,4 +226,13 @@ When a task is done, change its literal `- [ ]` to `- [x]` **in GitHub**, alongs
 
 - **2026-10-26 — automated visual-review artifact capture verified:** added `tests/visual-review-capture.cjs` to take first-screen screenshots of all 8 panels at both 390×900 phone and 1280×900 desktop requested viewports and record actual PNG dimensions. Pull-request GitHub Actions now uploads the 16 screenshots as `help-clan-visual-review`, and `docs/visual-acceptance-checklist.md` explains how to compare captures with real hardware. This supplies concrete review material but does **not** check off actual Xbox/phone screenshots, human aesthetic signoff, field performance or merge approval. [GitHub Actions #40280605037](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40280605037) succeeded and uploaded the [help-clan-visual-review artifact](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40280605037/artifacts/12631734018) (16 PNG screenshots, 4,276,255 bytes stored). Requested and actual PNG dimensions agree: 390×900 and 1280×900. Physical device screenshots and owner visual approval remain unchecked.
 
-- **2026-10-26 — screenshot-based readability correction (pending CI):** reviewed all 16 generated phone/desktop screenshots from [Actions #40280880630](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40280880630) (artifact `help-clan-visual-review`). Confirmed Combat DB first viewport has no unwanted weapon thumbnails. Found Scope tab content was dim in screenshots from an opacity-based entrance animation; removed that animation only for `#panel-sensitivity .panel.active` and added computed-style Chromium assertions for immediate opacity 1. Verify new captured screenshots and full CI before releasing. Hands-on Xbox/phone and owner design feedback remain unperformed.
+- **2026-10-26 — screenshot-based readability correction (verified):** reviewed all 16 generated phone/desktop screenshots from [Actions #40280880630](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40280880630) (artifact `help-clan-visual-review`). Confirmed Combat DB first viewport has no unwanted weapon thumbnails. Found Scope tab content was dim in screenshots from an opacity-based entrance animation; removed that animation only for `#panel-sensitivity .panel.active` and added computed-style Chromium assertions for immediate opacity 1. Corrected phone screenshot visually reviewed in Actions #40281996396; all CI checks and the 16 screenshot captures passed before release. Hands-on Xbox/phone and owner design feedback remain unperformed.
+
+## Release record — 2026-10-26
+
+- **Merged:** [PR #41](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/pull/41) into `main`, merge commit `d54ac7cb4ba83113a54f9a6a989581c4340b7aed`.
+- **Live:** [help-clan-pubg-toolkit.vercel.app](https://help-clan-pubg-toolkit.vercel.app/), Vercel production deployment `help-clan-pubg-toolkit-jdikrb12u-acme-a675.vercel.app` READY for exact merge SHA with confirmed production alias.
+- **Tests:** full post-merge [Actions #40282223490](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40282223490) passed. Final premerge screenshot/Scope legibility run [#40281996396](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40281996396) passed and uploaded 16 first-viewport screenshots.
+- **Visual release contents:** 45 available weapon concept illustrations; Compact Combat DB renders **no gun pictures until a weapon is selected**; accessible scope controls and optic references; selection-aware attachments/backpack artwork; numbers-first Range/TTK/Recoil with opt-in media; approved fictional Model 2 and 13 zones preserved.
+- **Limitations honestly open:** real Xbox Series S Edge and physical Android/desktop owner acceptance, device network/LCP/CLS, manual assistive-technology review, and optional licensed/photo-grade artwork. Synthetic CI and static screenshots are not substitutes. Any problems found after launch should be handled in follow-up PRs.
+- **Release approval:** the owner instructed the assistant to merge upon completion, on 2026-10-26. No additional publication/merges are authorised by that instruction.
