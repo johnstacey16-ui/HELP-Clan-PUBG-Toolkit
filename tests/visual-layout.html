@@ -1,0 +1,43 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Seven-tool media layout QA</title>
+<style>html,body{margin:0;padding:0;background:#111b24;color:#fff}iframe{display:block;width:100%;height:830px;border:0}#result{font:12px monospace;padding:5px}</style></head>
+<body data-visual-layout-status="pending"><div id="result">Validating...</div><iframe id="app" src="../index.html" title="App layout under test"></iframe>
+<script>
+(()=>{'use strict';
+const frame=document.getElementById('app'),out=document.getElementById('result');
+function assertion(v,t){if(!v)throw Error(t);}
+function fail(err){document.body.dataset.visualLayoutStatus='fail';out.textContent='FAIL: '+(err.stack||err);}
+frame.addEventListener('load',()=>{
+ setTimeout(()=>{
+ try{
+ const doc=frame.contentDocument;assertion(doc,'App document missing');
+ const viewport=frame.contentWindow.innerWidth;
+ const checks=[
+ ['panel-sensitivity',['#visual-scope-preview']],
+ ['panel-combat',['#combat-database .combat-visual-pilot','#wTable .visual-weapon-thumb']],
+ ['panel-range',['#visual-range','#visual-range-weapon']],
+ ['panel-ttk',['#visual-ttk','#visual-ttk-weapon','#visual-ttk-comparisons']],
+ ['panel-recoil2',['#visual-recoil','#visual-recoil-weapon']],
+ ['panel-attach',['#visual-attachment-grid','#visual-attach-weapon']],
+ ['panel-backpack',['.visual-backpack-row']]
+ ];
+ for(const [panelId,selectors] of checks){
+  const tab=doc.querySelector('[data-open-panel="'+panelId+'"]');
+  assertion(tab,'No button for '+panelId);tab.click();
+  const panel=doc.getElementById(panelId);
+  assertion(panel.classList.contains('active'),'Panel not opened: '+panelId);
+  for(const selector of selectors){
+   const el=panel.querySelector(selector);assertion(el,'Missing '+selector);
+   const rect=el.getBoundingClientRect();
+   assertion(rect.width>=24 && rect.height>=10,selector+' collapsed: '+rect.width+'x'+rect.height);
+   assertion(rect.left>=-2 && rect.right<=viewport+2,
+     selector+' horizontal overflow at '+viewport+'px (left '+rect.left+', right '+rect.right+')');
+  }
+ }
+ out.textContent='PASS: seven illustrated tool layouts fit viewport '+viewport+'px';
+ document.body.dataset.visualLayoutStatus='pass';
+ }catch(error){fail(error);}
+ },150);
+});
+setTimeout(()=>{if(document.body.dataset.visualLayoutStatus==='pending')fail(Error('Layout app iframe did not load'));},9000);
+})();
+</script></body></html>

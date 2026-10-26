@@ -20,3 +20,5 @@ jobs:
         run: node tests/browser-smoke.cjs
       - name: Render-hit-zone SVG at phone and desktop widths
         run: node tests/hit-zone-preview-smoke.cjs
+      - name: Verify media layout in seven tools at phone tablet desktop widths
+        run: node tests/visual-layout-smoke.cjs
