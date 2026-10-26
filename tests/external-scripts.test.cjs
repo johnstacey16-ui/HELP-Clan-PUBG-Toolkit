@@ -18,9 +18,11 @@ test('five external classic scripts preserve the original synchronous load order
   const reconstructed=require('./toolkit-test-source.cjs')();
   assert.equal([...reconstructed.matchAll(/<script>([\s\S]*?)<\/script>/g)].length,5);
 });
-test('invalid/empty URL on browser history always restores Scope Sensitivity Matcher',()=>{
+test('invalid/empty hash defaults to Scope, but valid Combat subsection hashes stay in Combat',()=>{
   const navigation=fs.readFileSync(path.join(root,names[0]),'utf8');
-  assert.doesNotMatch(navigation,/panelIds\.includes\(id\) \? id : 'panel-combat'/);
-  assert.match(navigation,/popstate[\s\S]*?selectPanel\(panelIds\.includes\(id\) \? id : panelIds\[0\],\{scroll:true\}\)/);
-  assert.match(navigation,/hashchange[\s\S]*?const target = panelIds\.includes\(id\) \? id : panelIds\[0\]/);
+  assert.match(navigation,/const target = panelIds\.includes\(id\) \? id : panelIds\[0\]/);
+  assert.match(navigation,/return combatAnchors\.has\(id\) \? 'panel-combat' : target/);
+  assert.match(navigation,/window\.addEventListener\('popstate',followHash\)/);
+  assert.match(navigation,/window\.addEventListener\('hashchange',followHash\)/);
+  assert.match(navigation,/selectPanel\(panelForHash\(initialHash\)\)/);
 });

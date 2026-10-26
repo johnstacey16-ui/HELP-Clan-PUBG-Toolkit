@@ -24,7 +24,8 @@ test('main site starts on Scope Sensitivity Matcher with Combat DB second',()=>{
   assert.match(html,/<div id="panel-combat" class="hub-main">/);
   assert.doesNotMatch(html,/<div id="panel-combat" class="hub-main active">/);
   assert.match(html,/id="active-tool-heading" tabindex="-1">Scope Sensitivity Matcher</);
-  assert.match(inlineScripts[0],/panelIds\.includes\(initialHash\) \? initialHash : panelIds\[0\]/);
+  assert.match(inlineScripts[0],/selectPanel\(panelForHash\(initialHash\)\)/);
+  assert.match(inlineScripts[0],/const target = panelIds\.includes\(id\) \? id : panelIds\[0\]/);
 });
 
 test('within Sensitivity, Scope Matcher is the first and default calculator',()=>{
