@@ -18,7 +18,7 @@ Make all seven remaining tools look like one premium, readable PUBG companion ap
 - [x] **P1b — Reusable visual components and first image pilot**: responsive CSS image tiles, no-art/error fallbacks, original 5 KB M416-style SVG and browser-decoding validation. **This is an illustrated pilot, not a completed photorealistic weapon catalogue.** [CI run 40243494382](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40243494382) passed.
 - [ ] **P2 — Scope Sensitivity Matcher**.
 - [ ] **P3 — Combat Database**.
-- [ ] **P4 — Attachments and Recoil**.
+- [x] **P4 — Attachments and Recoil (original artwork pass)**: five equipment tiles reflect selector choices, distinguish suppressors/compensators/grips/magazines, hide when None/disabled, and pass CI at six responsive widths. Photo-accurate game art remains separate.
 - [ ] **P5 — Effective Range**.
 - [ ] **P6 — TTK Calculator**.
 - [ ] **P7 — Recoil Analyzer**.
@@ -96,10 +96,10 @@ The checked foundation items include the initial Combat DB **illustrated M416 pi
 
 ## P4. Attachments & Recoil (tool 07)
 
-- [ ] Build compact original/licensed images for optics, muzzle devices, grips and magazines; use accurate type labels, not guessed model-specific stats.
+- [x] Built locally hosted, original representative optics, muzzle devices, grip styles, stocks and magazines with exact selected-option labels and no invented model-specific numbers.
 - [x] Present selected attachment names in compact responsive tiles and a matching selected-weapon artwork strip, leaving compatibility selectors unaffected.
 - [x] Weapon-specific attachment compatibility and recoil calculation modules were left unmodified; existing attachment and Chromium smoke regressions passed.
-- [ ] Ensure no images cover comparison values or controls at 320px.
+- [x] All five attachment image tiles fit a two-column 320px layout; Chromium six-width geometry and eight-tool interactions passed [Actions #40265140045](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40265140045). Manual Xbox Edge review remains open.
 
 ## P5. Effective Range & Damage (tool 04)
 
@@ -132,7 +132,7 @@ The checked foundation items include the initial Combat DB **illustrated M416 pi
 
 - [x] Artwork now uses bounded, aspect-contained tiles, consistent dark navy/cyan/gold borders and captions, accessible fallback text and responsive image geometry; CI validated 320/390/768/1280px.
 - [ ] Ensure the nav/sidebar and headers benefit from imagery **only if** it improves recognition without shrinking navigation targets.
-- [x] Added `VISUAL_ARTWORK_CREDITS.md`, linked from README, documenting the origin and limitations of 72 original/representative assets and explicitly disclaiming official PUBG endorsement.
+- [x] Added `VISUAL_ARTWORK_CREDITS.md`, linked from README, documenting the origin and limitations of the original/representative media library and explicitly disclaiming official PUBG endorsement.
 - [x] Visual-media CSS remains non-overlaying (no added fixed/absolute images); automated Chromium geometry verified the seven illustrated panels at 320, 360, 390, 768, 1280 and 1440px. Real Xbox visual inspection is still pending.
 
 ## P10. Verification, approval and release
@@ -191,4 +191,4 @@ When a task is done, change its literal `- [ ]` to `- [x]` **in GitHub**, alongs
 
 - **2026-10-26 — full Chromium QA recovery confirmed:** [Actions #40261145509](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40261145509) **passed**: robust browser-runner shutdown after a completely verified DOM, all-eight-tool Chrome checks including complete local image manifest, Hit Zone and six media-layout widths **320/360/390/768/1280/1440**. Also checked keyboard focus/44px 1× optic style controls, art-failure/recovery visibility, added material-depth/high-contrast/reduced-motion CSS and documented source/fictional-image credits. Vercel preview READY for commit `58068f07`. Manual Xbox Series S Edge, physical-mobile/assistive-tech review, and high-fidelity/photo art remain unchecked; PR #41 still draft.
 
-- **2026-10-26 — attachment-specific artwork batch (pending verification):** introduced original representative suppressor, compensator, flash hider, vertical/angled grip, rifle stock and extended-magazine silhouettes. The fifth Stock media tile completes five attachment categories. Category images now follow the existing selector values, hide when none/disabled, and update after weapon compatibility or presets without touching underlying attachment math. Two-column phone layout and extra Chromium behaviour checks added. Await CI before ticking tasks; all art remains non-official illustration.
+- **2026-10-26 — attachment-specific artwork batch (verified):** introduced original representative suppressor, compensator, flash hider, vertical/angled grip, rifle stock and extended-magazine silhouettes. The fifth Stock media tile completes five attachment categories. Category images now follow the existing selector values, hide when none/disabled, and update after weapon compatibility or presets without touching underlying attachment math. Two-column phone layout and extra Chromium behaviour checks added. [Actions #40265140045](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40265140045) passed 150+ Node tests, eight-tool Chromium smoke including all **79 registered images**, six viewport layouts and Hit Zone regression. All artwork remains non-official illustration.
