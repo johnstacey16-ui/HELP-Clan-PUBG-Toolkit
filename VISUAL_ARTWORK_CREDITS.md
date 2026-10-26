@@ -29,3 +29,7 @@ PR #41 is in draft. Automated browser/geometry tests are not a substitute for **
 ## Automated mobile-image guardrails
 
 The image registry enforces a total byte ceiling, while Chromium regression checks inspect image requests on the initial Scope screen and confirm that switching to the 8× reference optic does not resize its preview card. The original vector media library is lightweight and optional tools defer artwork until expanded. These are **synthetic test protections, not measured real-user Largest Contentful Paint, connection-speed performance, or physical Xbox Edge validation**. Real-world field testing remains a release gate.
+
+## Verified synthetic budget (2026-10-26)
+
+The **79 image files total 199,252 bytes** (the 50 KB asset manifest is separate); the default 3× Scope image uses 1,047 bytes. All images have registered local provenance and their media dimensions and accessibility metadata are regression-tested. Automated Chromium confirms a synthetic ≤8 image requests / ≤64 KiB decoded-media budget on the initial Scope screen after deferring hidden-panel images, and confirms artwork switching does not resize that preview card beyond 1 px. This **does not measure** actual phone/Xbox network speed, Largest Contentful Paint, Cumulative Layout Shift, or photo realism. See [visual acceptance checklist](docs/visual-acceptance-checklist.md).
