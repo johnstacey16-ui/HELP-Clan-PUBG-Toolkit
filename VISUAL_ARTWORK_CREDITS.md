@@ -25,3 +25,7 @@ Artwork remains secondary to readable text and numbers, 44px focusable optic var
 ## Release note
 
 PR #41 is in draft. Automated browser/geometry tests are not a substitute for **hands-on** Xbox Series S Edge, phone, and screen-reader verification. Only the repo owner can sign off on the completed visual preview; do not merge into `main` until they explicitly approve it.
+
+## Automated mobile-image guardrails
+
+The image registry enforces a total byte ceiling, while Chromium regression checks inspect image requests on the initial Scope screen and confirm that switching to the 8× reference optic does not resize its preview card. The original vector media library is lightweight and optional tools defer artwork until expanded. These are **synthetic test protections, not measured real-user Largest Contentful Paint, connection-speed performance, or physical Xbox Edge validation**. Real-world field testing remains a release gate.

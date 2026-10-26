@@ -27,6 +27,16 @@
         };
         check(get('panel-sensitivity').classList.contains('active'),'Scope matcher must open first');
         check(text('px_speed')!=='–' && text('px_speed')!=='','Scope result initially calculates');
+        // Synthetic initial-screen media budget, evaluated before tool navigation.
+        // This is not a real-user LCP score or device network benchmark.
+        const initialMediaEntries=child.defaultView.performance.getEntriesByType('resource')
+          .filter(entry=>/\/assets\/[^/?]+\.(?:svg|webp|avif|png)(?:\?|$)/.test(entry.name));
+        const initialMediaBytes=initialMediaEntries.reduce((sum,entry)=>sum+(entry.decodedBodySize||0),0);
+        check(initialMediaEntries.length<=8,'Initial scope screen should not fetch the full visual library');
+        check(initialMediaBytes<=65536,'Initial visual transfers exceed 64 KiB decoded budget');
+        check(child.querySelectorAll('#panel-sensitivity img[src]').length===1,'Only the 3x reference art is active on the landing panel');
+        check(child.querySelectorAll('#wTable img').length===0,'No unselected weapon-table artwork');
+
         eq(child.querySelectorAll('#px_table tbody tr').length,7,'Seven scope conversions');
         const sensitivityTabs=[...get('tabs').querySelectorAll('[role="tab"]')];
         eq(get('tabs').getAttribute('role'),'tablist','Sensitivity uses keyboard-accessible tablist');
@@ -35,6 +45,16 @@
           eq(button.tagName,'BUTTON','Sensitivity tabs use native buttons');
           check(button.getBoundingClientRect().height>=44,'Scope inner tabs are controller-sized');
         }
+        const scopePreview=get('visual-scope-preview');
+        const previewInitialHeight=scopePreview.getBoundingClientRect().height;
+        const initialSrc=get('visual-scope-image').getAttribute('src');
+        change(get('px_scope'),'8x');
+        const preview8xHeight=scopePreview.getBoundingClientRect().height;
+        check(Math.abs(previewInitialHeight-preview8xHeight)<=1,
+          'Switching 3x→8x artwork must not shift the preview card height');
+        eq(get('visual-scope-image').getAttribute('src'),'assets/optic-8x.svg','8x preview image is correct');
+        change(get('px_scope'),'3x');
+        eq(get('visual-scope-image').getAttribute('src'),initialSrc,'Scope reference art restores without a layout shift');
         const baselineSpeed=text('px_speed');
         const switchKey=(button,key)=>{
           button.focus();

@@ -13,7 +13,9 @@ function syncScope(){
  if(!s||!img||!label)return;
  const m=owns(optics,s.value)?s.value:'3x';
  const selectOne=m==='1x'&&owns(oneXArt,oneXSelection);
- img.src='assets/'+(selectOne?oneXArt[oneXSelection]:optics[m]);
+ const source='assets/'+(selectOne?oneXArt[oneXSelection]:optics[m]);
+ // Preserve decoded artwork on repeated updates; only switch when the variant changes.
+ if(img.getAttribute('src')!==source)img.src=source;
  img.alt=selectOne?'Original representative '+oneXSelection+' sight':'Representative '+m+' scope';
  label.textContent=selectOne?'1x '+({reddot:'Red Dot',holo:'Holographic',iron:'Iron sights'}[oneXSelection]):m+' reference optic';
  const variants=get('visual-one-x-variants');
