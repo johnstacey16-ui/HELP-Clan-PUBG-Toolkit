@@ -189,3 +189,11 @@
     outline-offset:-2px;
   }
 }
+
+/* Keep the Scope results fully legible immediately after tab navigation.
+   The old opacity-based .panel.active entrance could be captured mid-fade,
+   and reduced readability on slower/virtual-timed Xbox Edge renders. */
+#panel-sensitivity .panel.active {
+  animation: none;
+  opacity: 1;
+}

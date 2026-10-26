@@ -8,6 +8,9 @@ Keep **statistics before pictures**, never show a gun thumbnail in the Combat DB
 
 ## Automated screenshot evidence (for comparison, not approval)
 
+**Design finding corrected (2026-10-26):** the initial review captures showed a very dim Scope results panel during a short entrance fade. Scope tab content now displays at full opacity immediately. Inspect a new screenshot artifact generated from the corrected code commit before approval.
+
+
 Every successful PR #41 GitHub Actions run now captures **16 first-viewport screenshots** using headless Chromium: each of the eight tools at requested 390×900 phone and 1280×900 desktop sizes. Download the [verified **help-clan-visual-review** artifact from Actions #40280605037](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40280605037/artifacts/12631734018). It contains all 16 PNG images and a capture manifest; the run succeeded on October 26, 2026. Its `capture-manifest.json` records screenshot dimensions and actual file sizes.
 
 These images show the top viewport and are **not real Xbox TV screenshots**, full scroll captures, or an automatic human design review. Compare them against the actual feature-branch Vercel preview and the device checklist below. The owner still needs to inspect weapon detail popup, open optional reference art, actual phone and Xbox controller focus, and any scrolling/clipping.

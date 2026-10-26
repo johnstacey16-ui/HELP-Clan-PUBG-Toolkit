@@ -26,6 +26,12 @@
           eq(child.querySelectorAll('.hub-main.active').length,1,'Exactly one visible panel');
         };
         check(get('panel-sensitivity').classList.contains('active'),'Scope matcher must open first');
+        const scopeContent=child.querySelector('#panel-sensitivity .panel[data-panel="scope"].active');
+        check(!!scopeContent,'Scope sub-panel must be active on landing');
+        const scopeComputed=child.defaultView.getComputedStyle(scopeContent);
+        eq(scopeComputed.animationName,'none','Scope controls never fade to unreadable opacity');
+        eq(scopeComputed.opacity,'1','Scope controls have full opacity immediately');
+
         check(text('px_speed')!=='–' && text('px_speed')!=='','Scope result initially calculates');
         // Synthetic initial-screen media budget, evaluated before tool navigation.
         // This is not a real-user LCP score or device network benchmark.
