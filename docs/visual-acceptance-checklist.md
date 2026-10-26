@@ -6,6 +6,12 @@
 
 Keep **statistics before pictures**, never show a gun thumbnail in the Combat DB table, and make all eight tools usable on Xbox Series S Edge, mobile and desktop. All art is original, representative concept art, not official PUBG imagery or verified game evidence.
 
+## Automated screenshot evidence (for comparison, not approval)
+
+Every successful PR #41 GitHub Actions run now captures **16 first-viewport screenshots** using headless Chromium: each of the eight tools at requested 390×900 phone and 1280×900 desktop sizes. Download the run's **help-clan-visual-review** artifact from the Actions page. Its `capture-manifest.json` records screenshot dimensions and actual file sizes.
+
+These images show the top viewport and are **not real Xbox TV screenshots**, full scroll captures, or an automatic human design review. Compare them against the actual feature-branch Vercel preview and the device checklist below. The owner still needs to inspect weapon detail popup, open optional reference art, actual phone and Xbox controller focus, and any scrolling/clipping.
+
 ## Xbox Series S — Edge
 
 - [ ] Open the **preview built from the latest PR #41 commit**, checking the deployment's commit SHA matches the tested branch head. An older preview is not valid for this review.
