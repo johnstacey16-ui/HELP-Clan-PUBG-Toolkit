@@ -24,6 +24,10 @@
           button.click();
           check(get(id).classList.contains('active'),'Panel did not open '+id);
           eq(child.querySelectorAll('.hub-main.active').length,1,'Exactly one visible panel');
+          const visible=child.defaultView.getComputedStyle(get(id));
+          eq(visible.animationName,'none','Panel must not fade: '+id);
+          eq(visible.opacity,'1','Panel must be fully opaque: '+id);
+          eq(visible.transform,'none','Panel must not shift on entry: '+id);
         };
         check(get('panel-sensitivity').classList.contains('active'),'Scope matcher must open first');
         const scopeContent=child.querySelector('#panel-sensitivity .panel[data-panel="scope"].active');
@@ -292,6 +296,11 @@
         await rangeReopened;
         eq(get('visual-range-weapon-image').getAttribute('src'),'assets/weapon-sks-field.svg','Reopening loads selected SKS art');
         open('panel-ttk');
+        const ttkH=get('tk_hitbox').getBoundingClientRect();
+        const ttkA=get('tk_armor').getBoundingClientRect();
+        check(Math.abs(ttkH.top-ttkA.top)<=2,'TTK mobile Hitbox and Armour share a row');
+        check(ttkH.right<=child.defaultView.innerWidth+2&&ttkA.right<=child.defaultView.innerWidth+2,'TTK mobile fields fit');
+        check(!!text('tk_dmg')&&!!text('tk_htk'),'TTK damage and HTK remain available');
         check(!get('visual-ttk-artwork').open,'TTK art defaults closed');
         check(!get('visual-ttk-comparison-artwork').open,'TTK compare art defaults closed');
         eq(get('visual-ttk-weapon-image').getAttribute('src'),null,'Closed TTK art is not downloaded');

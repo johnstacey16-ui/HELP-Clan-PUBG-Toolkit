@@ -308,3 +308,22 @@
 #panel-combat #combatArmorTable thead th { font-size:10.5px;white-space:nowrap;cursor:default; }
 #panel-combat #combatArmorTable tbody td { font-size:12px; }
 #panel-combat :is(#combat-database,#compare-weapons,#how-thresholds-work) { scroll-margin-top:110px; }
+
+/* Phone TTK: place Hitbox and Armour side-by-side without hiding settings. */
+@media(max-width:700px) {
+  #panel-ttk .wrap > p.sub { margin-bottom:17px; }
+  #panel-ttk .wrap > p.sub + .card { padding:16px; margin-bottom:13px; }
+  #panel-ttk .wrap > p.sub + .card .section-h { margin-bottom:13px; }
+  #panel-ttk .wrap > p.sub + .card .toolbar {
+    display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:11px 10px;align-items:start;
+  }
+  #panel-ttk .wrap > p.sub + .card .toolbar > .field {min-width:0;max-width:100%;margin:0;}
+  #panel-ttk .wrap > p.sub + .card .toolbar > .field:nth-child(1) {grid-column:1/-1;grid-row:1;}
+  #panel-ttk .wrap > p.sub + .card .toolbar > .field:nth-child(2) {grid-column:1;grid-row:2;}
+  #panel-ttk .wrap > p.sub + .card .toolbar > .field:nth-child(4) {grid-column:2;grid-row:2;}
+  #panel-ttk .wrap > p.sub + .card .toolbar > .field:nth-child(3) {
+    grid-column:1/-1;grid-row:3;justify-content:flex-start!important;min-height:32px;
+  }
+  #panel-ttk .wrap > p.sub + .card .toolbar select {width:100%;min-width:0;}
+}
