@@ -20,3 +20,16 @@ jobs:
         run: node tests/browser-smoke.cjs
       - name: Render-hit-zone SVG at phone and desktop widths
         run: node tests/hit-zone-preview-smoke.cjs
+      - name: Verify media layout in seven tools at phone tablet desktop widths
+        run: node tests/visual-layout-smoke.cjs
+      - name: Capture first-screen visual review evidence
+        if: github.event_name == 'pull_request'
+        run: node tests/visual-review-capture.cjs
+      - name: Attach visual review screenshots to PR checks
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: help-clan-visual-review
+          path: artifacts/visual-review/
+          if-no-files-found: warn
+          retention-days: 14

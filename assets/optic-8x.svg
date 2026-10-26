@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="200" viewBox="0 0 320 200"><title>Representative 8x scope</title><defs><linearGradient id="gun" x1="0" y1="0" x2="0.6" y2="1"><stop stop-color="#819fac"/><stop offset=".4" stop-color="#354e5d"/><stop offset="1" stop-color="#132533"/></linearGradient></defs><path d="M20 176H300M20 24H300" fill="none" stroke="#4b7586" stroke-dasharray="4 10" opacity=".4"/>
+<g stroke-linejoin="round"><path d="M60 78H244L253 93V133L244 143H60L50 131V91Z" fill="url(#gun)" stroke="#b8c4c1" stroke-width="4"/>
+<ellipse cx="249" cy="111" rx="11" ry="37" fill="#194354" stroke="#dbbe91" stroke-width="4"/><ellipse cx="249" cy="111" rx="5" ry="27" fill="#438798" opacity=".75"/>
+<ellipse cx="60" cy="111" rx="8" ry="27" fill="#081722" stroke="#9ab5c0" stroke-width="3"/>
+<path d="M141 141v17h36v-17M133 159h53" stroke="#b4bfc1" stroke-width="7"/>
+<path d="M73 89H230" stroke="#a3cbd3" stroke-width="4" opacity=".6"/>
+<circle cx="160" cy="82" r="9" fill="#c8ae83" stroke="#637984" stroke-width="4"/>
+</g></svg>

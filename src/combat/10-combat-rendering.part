@@ -7,6 +7,7 @@ const panelsEl = document.getElementById("panels");
   p.innerHTML = `
     <div class="card" id="combat-database">
       <div class="panel-coord">A1 · Combat Database</div>
+      <p class="combat-choose-hint">Tap a weapon row to see its illustration, damage, armour details and statistics.</p>
       <div class="toolbar">
         <input type="text" id="wSearch" placeholder="Search weapon name…">
         <select id="wSort">
@@ -23,7 +24,7 @@ const panelsEl = document.getElementById("panels");
         </select>
       </div>
       <div class="toolbar" id="wClassFilters"></div>
-      <div class="sort-hint">Click any column header to sort by it (click again to reverse) — hover a header for what it means.</div>
+      <div class="sort-hint">Tap a column heading to sort, or tap a weapon row for its picture and details.</div>
       <div style="overflow-x:auto;overflow-y:visible"><table id="wTable"></table></div>
       <div class="missing-note">— means no available value.</div>
       
@@ -141,8 +142,8 @@ const panelsEl = document.getElementById("panels");
       return SORTABLE.has(key) ? `<th data-key="${key}" tabindex="0"${tip}>${label}${arrow}</th>` : `<th${tip}>${label}</th>`;
     }).join("");
     t.innerHTML = `<tr class="grouprow">${groupHtml}</tr><tr class="colheader">${headHtml}</tr>` +
-      list.map(w=>`<tr class="rowclick" tabindex="0" data-n="${w.name}">
-        <td>${w.name} ${w.crate?'<span class="tag crate">CRATE</span>':''}</td>
+      list.map(w=>`<tr class="rowclick" tabindex="0" data-n="${w.name}" aria-label="View ${w.name} weapon details and illustration">
+        <td class="combat-weapon-cell">${w.name} ${w.crate?'<span class="tag crate">CRATE</span>':''}</td>
         <td>${w.cls?`<span class="tag">${w.cls}</span>`:'—'}</td>
         <td>${w.dmg??'—'}</td>
         <td>${w.rpm??'—'}</td>
@@ -161,8 +162,8 @@ const panelsEl = document.getElementById("panels");
         ${armorCell(w.vest,'l3')}${armorCell(w.vest,'l2')}
       </tr>`).join("");
     t.querySelectorAll("tr.rowclick").forEach(tr=>{
-      tr.onclick = ()=>openWeaponDetail(tr.dataset.n);
-      tr.onkeydown = e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); openWeaponDetail(tr.dataset.n); } };
+      tr.onclick = ()=>openWeaponDetail(tr.dataset.n,tr);
+      tr.onkeydown = e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); openWeaponDetail(tr.dataset.n,tr); } };
     });
     t.querySelectorAll("th[data-key]").forEach(th=>{
       th.onclick = ()=> setSort(th.dataset.key);
@@ -206,16 +207,26 @@ function getStrengthsWeaknesses(w){
   if(!strengths.length) strengths.push(`mid-pack on damage, DPS, and magazine size within its ${n>1?w.cls+" class":"category"}`);
   return {strengths, weaknesses};
 }
-function openWeaponDetail(name){
+let lastWeaponTrigger=null;
+function openWeaponDetail(name,trigger){
   const w = WBYNAME[name]; if(!w) return;
+  // Clicking or pressing Enter on a table row remembers where to return focus.
+  lastWeaponTrigger=trigger && trigger.isConnected ? trigger : document.activeElement;
   const rank = (arr,key)=> [...arr].sort((a,b)=>b[key]-a[key]).findIndex(x=>x.name===w.name)+1;
   const dmgRank = rank(WEAPONS,"dmg"), dpsRank = rank(WEAPONS,"dps");
   const {strengths, weaknesses} = getStrengthsWeaknesses(w);
   const helm = HELM[norm(w.name)], vest = VEST[norm(w.name)];
+  const artMap = window.HELP_VISUAL_WEAPONS || {};
+  const image = Object.prototype.hasOwnProperty.call(artMap,w.name) ? artMap[w.name] : null;
+  // Never substitute another gun's artwork, including for unavailable assets.
+  const weaponArt = image
+    ? '<figure class="visual-modal-media"><img src="assets/'+image+'" width="960" height="320" loading="lazy" decoding="async" alt="Representative '+w.name+' weapon illustration"><figcaption>Original conceptual artwork; not an official PUBG asset</figcaption></figure>'
+    : '<p class="visual-modal-unavailable">Artwork not available for this weapon yet. Statistics are unaffected.</p>';
   document.getElementById("modalBody").innerHTML = `
     <button class="close" data-action="close-modal" aria-label="Close weapon detail">✕</button>
     <div class="eyebrow">${w.cls}${w.crate?' · CRATE':''}</div>
     <h3 id="modalTitle">${w.name}</h3>
+    ${weaponArt}
     <div class="kv">
       <div><span>Damage</span> ${w.dmg}</div>
       <div><span>RPM</span> ${w.rpm}</div>
@@ -232,12 +243,40 @@ function openWeaponDetail(name){
       ${helm?`<br><br>Headshot vs armor: ${helm.dmg} dmg. L3→L2 ${helm.l3} · L2→L1 ${helm.l2}.`:''}
       ${vest?`<br>Chest vs armor: ${vest.dmg} dmg. L3→L2 ${vest.l3} · L2→L1 ${vest.l2}.`:''}
     </div>`;
-  document.getElementById("overlay").classList.add("show");
+  const modalFigure=document.querySelector("#modalBody .visual-modal-media");
+  const modalImage=modalFigure && modalFigure.querySelector("img");
+  if(modalImage)modalImage.addEventListener("error",()=>{
+    const fallback=document.createElement("p");
+    fallback.className="visual-modal-unavailable";
+    fallback.textContent="Artwork could not load for this weapon. Statistics are unaffected.";
+    modalFigure.replaceWith(fallback);
+  });
+  const overlay=document.getElementById("overlay");
+  overlay.classList.add("show");
+  // A single, visible close button is the modal's focus target on Xbox Edge.
+  document.querySelector("#modalBody [data-action=\"close-modal\"]").focus({preventScroll:true});
 }
-function closeModal(){ document.getElementById("overlay").classList.remove("show"); }
+function closeModal(){
+  const overlay=document.getElementById("overlay");
+  if(!overlay.classList.contains("show"))return;
+  overlay.classList.remove("show");
+  if(lastWeaponTrigger && lastWeaponTrigger.isConnected)lastWeaponTrigger.focus({preventScroll:true});
+  lastWeaponTrigger=null;
+}
 document.getElementById("overlay").onclick = e=>{ if(e.target.id==="overlay") closeModal(); };
-document.getElementById("overlay").addEventListener("click", e=>{ if(e.target.closest('[data-action="close-modal"]')) closeModal(); });
-document.addEventListener("keydown", e=>{ if(e.key==="Escape") closeModal(); });
+document.getElementById("overlay").addEventListener("click",e=>{
+  if(e.target.closest('[data-action="close-modal"]'))closeModal();
+});
+document.addEventListener("keydown",e=>{
+  const overlay=document.getElementById("overlay");
+  if(!overlay.classList.contains("show"))return;
+  if(e.key==="Escape"){ e.preventDefault();closeModal();return; }
+  // Trap Tab on the one available control so focus cannot wander behind the modal.
+  if(e.key==="Tab"){
+    e.preventDefault();
+    document.querySelector("#modalBody [data-action=\"close-modal\"]").focus({preventScroll:true});
+  }
+});
  
 /* ---------------- 4. REALITY CHECK + COMPARE (folded into the Combat Database panel) ---------------- */
 (function(){

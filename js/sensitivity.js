@@ -8,17 +8,52 @@ const TABS = [
   {id:'res', label:'Resolution'},
 ];
 const tabsEl = document.getElementById('tabs');
+// Native buttons and WAI-ARIA tabs are keyboard/controller friendly; the three
+// calculators and all their sensitivity formulas are untouched.
 TABS.forEach((t,i)=>{
-  const b = document.createElement('div');
-  b.className = 'tab'+(i===0?' active':'');
-  b.textContent = t.label;
-  b.onclick = ()=>switchTab(t.id);
-  b.dataset.tab = t.id;
+  const panel=document.querySelector('#panel-sensitivity .panel[data-panel="'+t.id+'"]');
+  if(!panel)throw Error('Missing sensitivity panel: '+t.id);
+  panel.id='sensitivity-panel-'+t.id;
+  panel.setAttribute('role','tabpanel');
+  panel.setAttribute('aria-labelledby','sensitivity-tab-'+t.id);
+  panel.tabIndex=0;
+  const b = document.createElement('button');
+  b.type='button';
+  b.id='sensitivity-tab-'+t.id;
+  b.className='tab'+(i===0?' active':'');
+  b.textContent=t.label;
+  b.dataset.tab=t.id;
+  b.setAttribute('role','tab');
+  b.setAttribute('aria-controls',panel.id);
+  b.setAttribute('aria-selected',String(i===0));
+  b.tabIndex=i===0?0:-1;
+  b.onclick=()=>switchTab(t.id);
+  b.addEventListener('keydown',event=>{
+    const current=TABS.findIndex(entry=>entry.id===t.id);
+    let target=current;
+    if(event.key==='ArrowRight')target=(current+1)%TABS.length;
+    else if(event.key==='ArrowLeft')target=(current+TABS.length-1)%TABS.length;
+    else if(event.key==='Home')target=0;
+    else if(event.key==='End')target=TABS.length-1;
+    else return;
+    event.preventDefault();
+    switchTab(TABS[target].id);
+    tabsEl.querySelector('[data-tab="'+TABS[target].id+'"]').focus();
+  });
   tabsEl.appendChild(b);
 });
 function switchTab(id){
-  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active', b.dataset.tab===id));
-  document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active', p.dataset.panel===id));
+  tabsEl.querySelectorAll('[role="tab"]').forEach(button=>{
+    const active=button.dataset.tab===id;
+    button.classList.toggle('active',active);
+    button.setAttribute('aria-selected',String(active));
+    button.tabIndex=active?0:-1;
+  });
+  document.querySelectorAll('#panel-sensitivity .panel[data-panel]').forEach(panel=>{
+    const active=panel.dataset.panel===id;
+    panel.classList.toggle('active',active);
+    panel.setAttribute('aria-hidden',String(!active));
+  });
 }
 switchTab('scope');
  
