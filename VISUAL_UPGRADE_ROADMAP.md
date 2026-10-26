@@ -74,9 +74,9 @@ The checked foundation items include the initial Combat DB **illustrated M416 pi
 
 ## P2. Scope Sensitivity Matcher (tool 01)
 
-- [ ] Establish visual language: clean icon/thumbnail set for red dot/holographic/2×/3×/4×/6×/8× sights, clearly marked representative when not officially sourced.
-- [ ] Place a corresponding scope image near the selected optic; do not obstruct editable sensitivity fields, conversion results or horizontal result table.
-- [ ] Verify the scope selector maps to the correct image and graceful fallback if no image exists.
+- [x] Original red-dot/holographic/iron-sight and 1×/2×/3×/4×/6×/8×/15× representative optic illustrations added, explicitly non-official.
+- [x] Matching reference optic displays beside the selector; 1× variant buttons change artwork only, not sensitivity values or conversion table.
+- [x] Chromium tests verify scope and 1× variant art mapping, Red Dot/Holo/None attachment visuals, preserved pixel speed, all assets loading and scoped error fallback.
 - [x] Original `pixelSpeed` / `matchedSens` functions and user-supplied A/B constants were not edited; the full source-sync and scope regressions passed in Actions.
 - [ ] Phone/Xbox keyboard/focus and layout regression.
 
@@ -112,7 +112,7 @@ The checked foundation items include the initial Combat DB **illustrated M416 pi
 - [x] Add dynamic, exact-name weapon comparison thumbnails for A/B/C in TTK, with explicit missing-art fallback for nonillustrated weapons.
 - [ ] Keep hits-to-kill, reload notes, comparison charts and tabular data dominant.
 - [x] Decouple TTK single-weapon and A/B/C comparison images from calculations; exact name lookup and fallback are verified for illustrated and nonillustrated choices.
-- [ ] Do not change any HTK/TTK formula or weapon reload evidence.
+- [x] No HTK/TTK formula or weapon reload source was changed for the visual rollouts; source-sync and calculator smoke tests passed.
 
 ## P7. Recoil Analyzer (tool 06)
 
@@ -130,7 +130,7 @@ The checked foundation items include the initial Combat DB **illustrated M416 pi
 
 ## P9. Cross-tool polish
 
-- [ ] Standardise image aspect ratios, rounded corners, borders, crop handling, placeholder colors, badge placement and responsive spacing.
+- [x] Artwork now uses bounded, aspect-contained tiles, consistent dark navy/cyan/gold borders and captions, accessible fallback text and responsive image geometry; CI validated 320/390/768/1280px.
 - [ ] Ensure the nav/sidebar and headers benefit from imagery **only if** it improves recognition without shrinking navigation targets.
 - [ ] Add consistent source/fictional-art attribution in project docs where appropriate; avoid official endorsement claims.
 - [ ] No overlay/fixed image should cover controls or cause page horizontal overflow.
@@ -184,3 +184,5 @@ When a task is done, change its literal `- [ ]` to `- [x]` **in GitHub**, alongs
 - **2026-10-26 — equipment media verification:** Completed the five-image backpack/armour/booster batch and checked off P3 helmet/vest visual key and P8 equipment visual categories. Real Chromium verified Standard Backpack L1/L2/L3, Jammer selection, vest selected/unselected captions, and 50 image decodes; [Actions #40254725473](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40254725473) passed, Vercel preview READY at `e6775dc0`. No formula changes or Model 2 changes; **PR #41 stays draft until owner approves full preview**.
 
 - **2026-10-26 — Optic illustration fidelity and image-failure batch (pending CI):** added distinct original Red Dot, Holographic and Iron-sight thumbnails, with three purely visual 1× variants that do not change sensitivity; attachment optics now represent actual selected Red Dot / Holographic categories and hide art for None. Scoped accessible fallback for failed static illustrations and image restore after loading. Browser smoke expanded from a 50-image subset to **all manifest assets including Model 2**; MIME types for the test server include WebP. CI and production release statuses still require verification; PR #41 remains draft.
+
+- **2026-10-26 — optic fidelity and image-fallback verification:** Created separate original Red Dot, Holographic and Iron 1× illustrations, with 1× visual-choice controls that do not affect sensitivity maths. Attachment optic artwork now represents the chosen Red Dot/Holo and hides on None. Accessible image-load failure text is scoped to visual-only elements. [GitHub Actions run 40259617005](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40259617005) passed source sync, Node tests, all eight browser tools, **all 72 registered image decodes (including Model 2)**, Hit Zone geometry and seven-panel responsive checks. Vercel reported preview READY at `d58bf768`. **Physical Xbox/mobile appearance review, higher-fidelity licensed art and owner approval are still outstanding; PR #41 remains draft.**
