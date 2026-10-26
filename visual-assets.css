@@ -254,3 +254,28 @@
  #panel-combat .combat-armour-disclosure{margin-top:8px}
  #panel-combat header.hero{padding-bottom:13px}
 }
+
+/* Mobile Combat table: readable text and controller-accessible horizontal scroll. */
+#panel-combat .combat-stats-scroller {
+  max-width:100%;
+  overflow-x:auto;
+  overflow-y:visible;
+  overscroll-behavior-x:contain;
+  scrollbar-color:#829fa9 #162a39;
+  -webkit-overflow-scrolling:touch;
+}
+#panel-combat .combat-stats-scroller:focus-visible {
+  outline:3px solid #b5e6f0;
+  outline-offset:3px;
+  border-radius:4px;
+}
+#panel-combat .combat-stats-scroller #wTable th:first-child,
+#panel-combat .combat-stats-scroller #wTable td:first-child {
+  position:sticky;
+  left:0;
+}
+@media(max-width:700px) {
+  #panel-combat .combat-stats-scroller #wTable { font-size:13px; }
+  #panel-combat .combat-stats-scroller #wTable tr.colheader th { font-size:11px; }
+  #panel-combat #combat-table-instructions { font-size:11px;line-height:1.4; }
+}

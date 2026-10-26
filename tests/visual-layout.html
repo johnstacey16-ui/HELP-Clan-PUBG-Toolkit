@@ -36,6 +36,19 @@ frame.addEventListener('load',()=>{
   }
   if(panelId==='panel-combat'){
    assertion(panel.querySelectorAll('#wTable img').length===0,'Combat DB rows must not contain gun pictures');
+   const scrollRegion=panel.querySelector('#combat-stats-scroller');
+   assertion(!!scrollRegion && scrollRegion.tabIndex===0,'Weapon table must be keyboard-scrollable');
+   assertion(scrollRegion.getAttribute('aria-describedby')==='combat-table-instructions','Missing weapon scroll guidance');
+   if(viewport<=390){
+     assertion(scrollRegion.scrollWidth>scrollRegion.clientWidth+100,'Weapon statistics must extend horizontally');
+     const before=panel.querySelector('#wTable tr.rowclick td:first-child').getBoundingClientRect().left;
+     scrollRegion.scrollLeft=130;
+     const after=panel.querySelector('#wTable tr.rowclick td:first-child').getBoundingClientRect().left;
+     assertion(scrollRegion.scrollLeft>=80,'Weapon table refuses horizontal movement');
+     assertion(Math.abs(after-before)<=2,'Weapon name must stay sticky on horizontal scroll');
+     scrollRegion.scrollLeft=0;
+   }
+
    assertion(!panel.querySelector('.combat-visual-pilot'),'No unsolicited weapon pilot art');
    const overview=panel.querySelector('#combat-overview-disclosure');
    assertion(!!overview,'Mobile Combat overview is missing');

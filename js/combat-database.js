@@ -313,8 +313,8 @@ const panelsEl = document.getElementById("panels");
         </select>
       </div>
       <div class="toolbar" id="wClassFilters"></div>
-      <div class="sort-hint">Tap a column heading to sort, or tap a weapon row for its picture and details.</div>
-      <div style="overflow-x:auto;overflow-y:visible"><table id="wTable"></table></div>
+      <div class="sort-hint" id="combat-table-instructions">Tap heading to sort · tap a weapon for its picture · swipe sideways for more stats.</div>
+      <div class="combat-stats-scroller" id="combat-stats-scroller" role="region" tabindex="0" aria-label="Scrollable weapon statistics" aria-describedby="combat-table-instructions"><table id="wTable"></table></div>
       <div class="missing-note">— means no available value.</div>
       
       <p class="missing-note" style="color:var(--dim)">Armor thresholds apply at point blank.</p>
