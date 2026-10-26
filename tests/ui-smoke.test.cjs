@@ -115,3 +115,15 @@ test('desktop, mobile, back navigation and Escape all select the correct panel',
   window.events.popstate();
   assert.equal(panels.find(p => p.id === 'panel-ttk').classList.contains('active'), true);
 });
+
+// Explicitly regress the three Combat anchors that used to open the Scope tab.
+test('Combat sub-anchor hashes select Combat rather than Scope',()=>{
+  const nav = fs.readFileSync(path.join(root,'js/app-navigation.js'),'utf8');
+  for(const key of ['combat-database','compare-weapons','how-thresholds-work']){
+    assert.match(nav,new RegExp("'"+key+"'"));
+    assert.match(html,new RegExp('href="#'+key+'"'));
+  }
+  assert.match(nav,/return combatAnchors\.has\(id\) \? 'panel-combat' : target/);
+  assert.match(nav,/window\.addEventListener\('load'/);
+  assert.match(nav,/scrollCombatAnchor\(id\)/);
+});

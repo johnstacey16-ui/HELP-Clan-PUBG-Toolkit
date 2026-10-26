@@ -36,6 +36,19 @@ frame.addEventListener('load',()=>{
   }
   if(panelId==='panel-combat'){
    assertion(panel.querySelectorAll('#wTable img').length===0,'Combat DB rows must not contain gun pictures');
+   assertion(panel.querySelectorAll('#wTable tr.colheader th').length===15,'Main table must fit 15 columns');
+   const primaryHeaders=[...panel.querySelectorAll('#wTable tr.colheader th')].map(th=>th.textContent);
+   assertion(primaryHeaders.some(x=>x.includes('Head Dmg'))&&primaryHeaders.some(x=>x.includes('Chest Dmg')),
+     'Head and Chest damage must stay in the main table');
+   const armor=panel.querySelector('#combat-armor-crossovers');
+   assertion(!!armor&&!armor.open,'Detailed protection crossovers should start collapsed');
+   armor.open=true;
+   assertion(panel.querySelectorAll('#combatArmorTable tbody tr').length===45,'Crossover values missing');
+   assertion(panel.querySelectorAll('#combatArmorTable thead tr:last-child th').length===7,'Secondary protection table must have 7 columns');
+   const armorRect=panel.querySelector('.combat-armor-scroller').getBoundingClientRect();
+   assertion(armorRect.right<=viewport+3,'Protection table exceeds viewport horizontally');
+   armor.open=false;
+
    const scrollRegion=panel.querySelector('#combat-stats-scroller');
    assertion(!!scrollRegion && scrollRegion.tabIndex===0,'Weapon table must be keyboard-scrollable');
    assertion(scrollRegion.getAttribute('aria-describedby')==='combat-table-instructions','Missing weapon scroll guidance');

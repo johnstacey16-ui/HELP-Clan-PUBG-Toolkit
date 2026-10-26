@@ -141,6 +141,52 @@
         check(Math.abs(pinnedAfter-pinnedBefore)<=2,'Weapon names remain pinned while scrolling');
         scrollRegion.scrollLeft=0;
         check(child.querySelectorAll('#wTable tr.rowclick').length===45,'Every weapon has a compact row');
+        const mainHeadings=[...child.querySelectorAll('#wTable tr.colheader th')].map(h=>h.textContent.trim());
+        eq(mainHeadings.length,15,'Main weapon table has 15 rather than 19 columns');
+        check(mainHeadings.some(v=>v.includes('Head Dmg'))&&mainHeadings.some(v=>v.includes('Chest Dmg')),
+          'Head/Chest damage remain in the main database');
+        check(!mainHeadings.some(v=>v.includes('Helm L3')||v.includes('Vest L3')),
+          'Helmet/vest crossover columns moved below the main database');
+        const armourDetail=get('combat-armor-crossovers');
+        check(!armourDetail.open,'Crossover table is initially collapsed');
+        const armourTable=get('combatArmorTable');
+        eq(armourTable.querySelectorAll('tbody tr').length,45,'Crossover data includes all 45 weapons');
+        const m416InMain=child.querySelector('#wTable tr.rowclick[data-n="M416"]');
+        const m416InArmor=armourTable.querySelector('tr[data-n="M416"]');
+        check(!!m416InMain&&!!m416InArmor,'Same named gun appears in both databases');
+        eq(m416InMain.cells[13].textContent.trim(),m416InArmor.cells[1].textContent.trim(),'Head damage repeated exactly');
+        eq(m416InMain.cells[14].textContent.trim(),m416InArmor.cells[4].textContent.trim(),'Chest damage repeated exactly');
+        const openArmor=new Promise(resolve=>armourDetail.addEventListener('toggle',resolve,{once:true}));
+        armourDetail.querySelector('summary').click();await openArmor;
+        check(armourDetail.open,'Optional armour crossover table opens');
+        check(armourDetail.querySelector('summary').getBoundingClientRect().height>=44,
+          'Armour disclosure accessible for phone/controller');
+        change(get('wSearch'),'M416','input');
+        eq(child.querySelectorAll('#wTable tr.rowclick').length,1,'Search limits main weapon table');
+        eq(armourTable.querySelectorAll('tbody tr').length,1,'Search also limits armour table');
+        change(get('wSearch'),'','input');
+        eq(child.querySelectorAll('#wTable tr.rowclick').length,45,'Search reset restores main table');
+        eq(armourTable.querySelectorAll('tbody tr').length,45,'Search reset restores crossover table');
+        change(get('wSort'),'name-asc');
+        eq(child.querySelector('#wTable tr.rowclick').dataset.n,armourTable.querySelector('tbody tr').dataset.n,
+          'Both tables share selected sort order');
+        change(get('wSort'),'dmg-desc');
+        const closeArmor=new Promise(resolve=>armourDetail.addEventListener('toggle',resolve,{once:true}));
+        armourDetail.querySelector('summary').click();await closeArmor;
+        check(!armourDetail.open,'Armour table collapses again');
+        // These are same-page links to dynamically rendered sections.
+        const combatJumpIds=['combat-database','compare-weapons','how-thresholds-work'];
+        for(const id of combatJumpIds){
+          const link=child.querySelector('#panel-combat a[href="#'+id+'"]');
+          check(!!link,'Missing quick link '+id);
+          const hashChanged=new Promise(resolve=>child.defaultView.addEventListener('hashchange',resolve,{once:true}));
+          link.click();await hashChanged;
+          eq(child.defaultView.location.hash,'#'+id,'Quick link navigates to its actual section');
+          check(get('panel-combat').classList.contains('active'),
+            'Jump link incorrectly returned to Scope Matcher: '+id);
+          check(get(id).getBoundingClientRect().height>0,'Jump target should be visible');
+        }
+
         const m416Row=child.querySelector('#wTable tr.rowclick[data-n="M416"]');
         check(!!m416Row,'M416 row is available');
         m416Row.click();
