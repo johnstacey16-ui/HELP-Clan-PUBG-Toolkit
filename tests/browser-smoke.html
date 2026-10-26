@@ -32,7 +32,7 @@
         const initialMediaEntries=child.defaultView.performance.getEntriesByType('resource')
           .filter(entry=>/\/assets\/[^/?]+\.(?:svg|webp|avif|png)(?:\?|$)/.test(entry.name));
         const initialMediaBytes=initialMediaEntries.reduce((sum,entry)=>sum+(entry.decodedBodySize||0),0);
-        check(initialMediaEntries.length<=8,'Initial scope screen should not fetch the full visual library');
+        check(initialMediaEntries.length<=8,'Initial scope media request count: '+initialMediaEntries.length+' ('+initialMediaEntries.map(entry=>new URL(entry.name).pathname).join(', ')+')');
         check(initialMediaBytes<=65536,'Initial visual transfers exceed 64 KiB decoded budget');
         check(child.querySelectorAll('#panel-sensitivity img[src]').length===1,'Only the 3x reference art is active on the landing panel');
         check(child.querySelectorAll('#wTable img').length===0,'No unselected weapon-table artwork');
