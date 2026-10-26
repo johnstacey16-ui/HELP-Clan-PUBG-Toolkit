@@ -22,7 +22,7 @@ Make all seven remaining tools look like one premium, readable PUBG companion ap
 - [ ] **P5 — Effective Range**.
 - [ ] **P6 — TTK Calculator**.
 - [ ] **P7 — Recoil Analyzer**.
-- [ ] **P8 — Tactical Loadout / Backpack**.
+- [x] **P8 — Tactical Loadout / Backpack (representative artwork and responsive-controls pass)**: standard/Jammer gear art, six categories, correct original carrying maths and accessible 44px stepper buttons passed Chromium; real Xbox and phone inspection still required before release.
 - [ ] **P9 — Shared UI refinement and cross-tool cohesion**.
 - [ ] **P10 — Acceptance testing, owner preview and release**.
 
@@ -126,7 +126,7 @@ The checked foundation items include the initial Combat DB **illustrated M416 pi
 - [x] Illustrated Standard backpack Levels 1/2/3, Jammer Pack, helmet/vest, ammunition, healing, boosters and throwables with original local vector images. This is a representative visual reference, not official inventory art.
 - [x] Backpack selection heading follows Standard vs Jammer Pack and selected level; distinct art is labelled representative and does not replace the original capacity labels.
 - [x] Left existing carry weight, capacity, +50 vest boost, Jammer mode maths and item list controls untouched; browser regressions passed.
-- [ ] Test dense mobile cards and tap targets.
+- [x] Chromium tested every inventory stepper at all 320/360/390/768/1280/1440px widths, verified minimum 44×44px targets, item-specific accessible names, and +/- recalculation round-trip. Physical-device verification remains an open P10 gate.
 
 ## P9. Cross-tool polish
 
@@ -199,4 +199,4 @@ When a task is done, change its literal `- [ ]` to `- [x]` **in GitHub**, alongs
 
 - **2026-10-26 — selected-weapon popup controller/keyboard polish (verified):** opening a weapon row now focuses the modal close control, traps Tab there, and restores focus to the original row after Close or Escape. Expanded hit target to 44×44px; no weapon pictures appear in table rows. Real Chromium clicked M416, keyboard-opened AKM, checked Escape and focus return, verified exact selected art, and confirmed search/table rows stayed text-only. [GitHub Actions #40267136731](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40267136731) **passed** Node/source sync, eight-tool Chrome interactions, Model 2 geometry and six responsive widths for commit `c8db67d6`. Production and all calculations remain unchanged; physical Xbox/mobile review and owner release approval remain open.
 
-- **2026-10-26 — Backpack controller/mobile controls batch (awaiting CI):** increased every existing inventory +/- button from 36×38 to at least 44×44 px, made quantity fields at least 44px high and gave all row input/stepper buttons precise, item-specific screen-reader/controller labels. Added dense-list geometry checks at 320/360/390/768/1280/1440px plus actual +/-/weight-recalculation round-trip tests in Chromium; did not edit the 70 base capacity, +50 vest bonus, capacity tiers or item weights. CI and preview need verification before ticking P8 mobile controls; real Xbox hardware remains unverified.
+- **2026-10-26 — Backpack controller/mobile controls batch (verified):** increased every existing inventory +/- button from 36×38 to at least 44×44 px, made quantity fields at least 44px high and gave all row input/stepper buttons precise, item-specific screen-reader/controller labels. Added dense-list geometry checks at 320/360/390/768/1280/1440px plus actual +/-/weight-recalculation round-trip tests in Chromium; did not edit the 70 base capacity, +50 vest bonus, capacity tiers or item weights. [Actions #40271148548](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40271148548) passed all Node/source checks, eight-tool real-Chromium interactions, Model 2 geometry and six-width layouts. Vercel preview was READY for code commit `f1641a45`. Real Xbox hardware remains unverified.
