@@ -21,3 +21,13 @@ test('mobile Combat guide and table navigation remain accessible',()=>{
  assert.match(visual,/details\.addEventListener\('toggle'/);
  assert.match(read('tests/visual-layout.html'),/openedTop-closedTop>=100/);
 });
+
+test('phone Combat overview is opt-in while desktop stays expanded',()=>{
+ const html=read('index.html'),visual=read('visual-controls.js'),css=read('visual-assets.css');
+ assert.match(html,/<details class="combat-overview-disclosure" id="combat-overview-disclosure" open>/);
+ assert.match(html,/<summary>Combat overview &amp; quick links<\/summary>/);
+ assert.match(visual,/const smallScreen=window\.matchMedia\('\(max-width:700px\)'\)/);
+ assert.match(visual,/combatOverview\.open=!smallScreen\.matches/);
+ assert.match(css,/#panel-combat \.combat-overview-disclosure>summary/);
+ assert.match(read('tests/visual-layout.html'),/First weapon row should appear in 830px mobile preview/);
+});

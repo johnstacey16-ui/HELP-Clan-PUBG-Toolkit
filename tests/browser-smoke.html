@@ -92,6 +92,24 @@
         check(!child.body.classList.contains('sidebar-open'),'Navigation closes drawer');
         // Combat DB remains a compact text table; illustrations load only on tap.
         open('panel-combat');
+        const overview=get('combat-overview-disclosure');
+        check(!overview.open,'Mobile Combat overview starts collapsed');
+        check(overview.querySelector('summary').getBoundingClientRect().height>=44,'Overview is keyboard/touch sized');
+        const firstWeapon=child.querySelector('#wTable tr.rowclick');
+        check(!!firstWeapon,'Weapon table has rows');
+        const initialRowTop=firstWeapon.getBoundingClientRect().top;
+        check(initialRowTop<820,'First weapon row must reach initial phone viewport: '+initialRowTop);
+        const overviewOpens=new Promise(resolve=>overview.addEventListener('toggle',resolve,{once:true}));
+        overview.querySelector('summary').click();
+        await overviewOpens;
+        check(overview.open,'Mobile Combat overview can be expanded');
+        check(!!overview.querySelector('#statAll'),'Overview retains weapon counter');
+        check(overview.querySelectorAll('nav.quicknav a').length===3,'All Combat quick links remain accessible');
+        const overviewCloses=new Promise(resolve=>overview.addEventListener('toggle',resolve,{once:true}));
+        overview.querySelector('summary').click();
+        await overviewCloses;
+        check(!overview.open,'Overview returns to compact table-first view');
+        check(Math.abs(firstWeapon.getBoundingClientRect().top-initialRowTop)<=2,'Collapsing returns to original table position');
         check(child.querySelectorAll('#panel-combat .visual-armour-key img').length===2,'Armour guide remains distinct from the weapon table');
         const armourGuide=get('combat-armour-disclosure');
         check(!armourGuide.open,'Helmet/vest art starts collapsed, behind a user action');

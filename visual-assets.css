@@ -227,3 +227,30 @@
  #panel-combat .quicknav a:first-child{grid-column:1/-1}
 }
 @media(prefers-reduced-motion:reduce){#panel-combat .combat-armour-disclosure *{animation:none!important;transition:none!important}}
+
+/* Follow-up: full Combat overview remains expanded on desktop, compact on phones. */
+#panel-combat .combat-overview-disclosure{min-width:0}
+#panel-combat .combat-overview-disclosure>summary{
+ display:none;
+}
+@media(max-width:700px) {
+ #panel-combat .combat-overview-disclosure{margin-top:12px}
+ #panel-combat .combat-overview-disclosure>summary{
+  display:flex;align-items:center;gap:10px;min-height:46px;padding:10px 12px;
+  background:rgba(10,29,40,.56);border:1px solid rgba(152,204,216,.28);
+  border-radius:10px;cursor:pointer;color:#f1d3a5;
+  font:700 12px/1.4 "Manrope",sans-serif;list-style:none;
+  touch-action:manipulation;
+ }
+ #panel-combat .combat-overview-disclosure>summary::-webkit-details-marker{display:none}
+ #panel-combat .combat-overview-disclosure>summary::before{
+  content:"+";font:700 19px/1 "Manrope",sans-serif;min-width:13px;
+ }
+ #panel-combat .combat-overview-disclosure[open]>summary::before{content:"−"}
+ #panel-combat .combat-overview-disclosure>summary:focus-visible{
+  outline:3px solid #a5e8f1;outline-offset:3px;
+ }
+ #panel-combat .combat-overview-content{padding-top:10px}
+ #panel-combat .combat-armour-disclosure{margin-top:8px}
+ #panel-combat header.hero{padding-bottom:13px}
+}

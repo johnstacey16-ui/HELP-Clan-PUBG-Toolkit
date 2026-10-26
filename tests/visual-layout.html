@@ -37,6 +37,15 @@ frame.addEventListener('load',()=>{
   if(panelId==='panel-combat'){
    assertion(panel.querySelectorAll('#wTable img').length===0,'Combat DB rows must not contain gun pictures');
    assertion(!panel.querySelector('.combat-visual-pilot'),'No unsolicited weapon pilot art');
+   const overview=panel.querySelector('#combat-overview-disclosure');
+   assertion(!!overview,'Mobile Combat overview is missing');
+   assertion(overview.open===(viewport>700),'Overview is not responsive to mobile viewport width: '+viewport);
+   if(viewport<=390){
+     const firstRow=panel.querySelector('#wTable tr.rowclick');
+     assertion(!!firstRow,'First weapon row missing');
+     const top=firstRow.getBoundingClientRect().top;
+     assertion(top<830,'First weapon row should appear in 830px mobile preview: '+top);
+   }
    const guide=panel.querySelector('#combat-armour-disclosure');
    assertion(guide && !guide.open,'Combat armour guide must be closed by default');
    assertion(guide.querySelector('summary').getBoundingClientRect().height>=44,'Guide summary requires at least 44px height');
