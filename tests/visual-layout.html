@@ -13,7 +13,7 @@ frame.addEventListener('load',()=>{
  const viewport=frame.contentWindow.innerWidth;
  const checks=[
  ['panel-sensitivity',['#visual-scope-preview']],
- ['panel-combat',['#combat-database .combat-visual-pilot','#wTable .visual-weapon-thumb']],
+ ['panel-combat',['#combat-database .toolbar','#combat-database .combat-choose-hint','#wTable tr.rowclick .combat-weapon-cell']],
  ['panel-range',['#visual-range','#visual-range-weapon']],
  ['panel-ttk',['#visual-ttk','#visual-ttk-weapon','#visual-ttk-comparisons']],
  ['panel-recoil2',['#visual-recoil','#visual-recoil-weapon']],
@@ -25,6 +25,10 @@ frame.addEventListener('load',()=>{
   assertion(tab,'No button for '+panelId);tab.click();
   const panel=doc.getElementById(panelId);
   assertion(panel.classList.contains('active'),'Panel not opened: '+panelId);
+  if(panelId==='panel-combat'){
+   assertion(panel.querySelectorAll('#wTable img').length===0,'Combat DB rows must not contain gun pictures');
+   assertion(!panel.querySelector('.combat-visual-pilot'),'No unsolicited weapon pilot art');
+  }
   for(const selector of selectors){
    const el=panel.querySelector(selector);assertion(el,'Missing '+selector);
    const rect=el.getBoundingClientRect();

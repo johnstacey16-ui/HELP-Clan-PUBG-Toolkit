@@ -296,20 +296,7 @@ const panelsEl = document.getElementById("panels");
   p.innerHTML = `
     <div class="card" id="combat-database">
       <div class="panel-coord">A1 · Combat Database</div>
-      <section class="visual-media-card combat-visual-pilot" aria-label="Featured weapon art">
-        <div class="visual-media-frame">
-          <img id="combat-pilot-image" src="assets/weapon-m416-field.svg" width="960" height="320"
-            alt="Original illustrative side profile of an M416-style assault rifle"
-            loading="lazy" decoding="async">
-          <div class="visual-media-placeholder" id="combat-pilot-fallback" hidden>Artwork unavailable</div>
-        </div>
-        <div class="visual-media-copy">
-          <span class="visual-media-kicker">FIELD IMAGE · FIRST LOOK</span>
-          <strong class="visual-media-title">M416</strong>
-          <p>Representative weapon illustration. Statistics below come from the toolkit's existing data, not the artwork.</p>
-          <button id="combat-pilot-open" class="visual-media-cta" type="button">Inspect M416 statistics</button>
-        </div>
-      </section>
+      <p class="combat-choose-hint">Tap a weapon row to see its illustration, damage, armour details and statistics.</p>
       <div class="toolbar">
         <input type="text" id="wSearch" placeholder="Search weapon name…">
         <select id="wSort">
@@ -326,7 +313,7 @@ const panelsEl = document.getElementById("panels");
         </select>
       </div>
       <div class="toolbar" id="wClassFilters"></div>
-      <div class="sort-hint">Click any column header to sort by it (click again to reverse) — hover a header for what it means.</div>
+      <div class="sort-hint">Tap a column heading to sort, or tap a weapon row for its picture and details.</div>
       <div style="overflow-x:auto;overflow-y:visible"><table id="wTable"></table></div>
       <div class="missing-note">— means no available value.</div>
       
@@ -364,12 +351,6 @@ const panelsEl = document.getElementById("panels");
       <div class="section-h" style="margin-top:0">How the crossover thresholds work</div>
       <p class="helptext">A crossover point is the durability value at which damaged higher-tier armor stops being worth more than a fresh piece of the tier below. Higher tiers absorb more damage per hit but wear down with use; a fresh lower tier is undamaged, so at some durability the two protect equally well, and below it the fresh lower tier wins.</p>
     </div>`;
-  // The visual pilot is independent of the data table and calculations.
-  document.getElementById("combat-pilot-open").addEventListener("click",()=>openWeaponDetail("M416"));
-  document.getElementById("combat-pilot-image").addEventListener("error",()=>{
-    document.getElementById("combat-pilot-image").hidden=true;
-    document.getElementById("combat-pilot-fallback").hidden=false;
-  });
   const ROWS = WEAPONS.map(w=>({...w, helm:HELM[norm(w.name)], vest:VEST[norm(w.name)]}));
  
   const classes = ["All",...new Set(WEAPONS.map(w=>w.cls))];
@@ -449,13 +430,9 @@ const panelsEl = document.getElementById("panels");
       const tip = TOOLTIPS[key] ? ` title="${TOOLTIPS[key]}"` : "";
       return SORTABLE.has(key) ? `<th data-key="${key}" tabindex="0"${tip}>${label}${arrow}</th>` : `<th${tip}>${label}</th>`;
     }).join("");
-    const artMap = window.HELP_VISUAL_WEAPONS || {};
-    const thumb = name => Object.prototype.hasOwnProperty.call(artMap,name)
-      ? '<img class="visual-weapon-thumb" src="assets/'+artMap[name]+'" width="960" height="320" loading="lazy" decoding="async" alt="" aria-hidden="true">'
-      : '';
     t.innerHTML = `<tr class="grouprow">${groupHtml}</tr><tr class="colheader">${headHtml}</tr>` +
-      list.map(w=>`<tr class="rowclick" tabindex="0" data-n="${w.name}">
-        <td><span class="visual-weapon-name">${thumb(w.name)}<span>${w.name} ${w.crate?'<span class="tag crate">CRATE</span>':''}</span></span></td>
+      list.map(w=>`<tr class="rowclick" tabindex="0" data-n="${w.name}" aria-label="View ${w.name} weapon details and illustration">
+        <td class="combat-weapon-cell">${w.name} ${w.crate?'<span class="tag crate">CRATE</span>':''}</td>
         <td>${w.cls?`<span class="tag">${w.cls}</span>`:'—'}</td>
         <td>${w.dmg??'—'}</td>
         <td>${w.rpm??'—'}</td>
@@ -473,9 +450,6 @@ const panelsEl = document.getElementById("panels");
         <td>${w.vest?w.vest.dmg:'—'}</td>
         ${armorCell(w.vest,'l3')}${armorCell(w.vest,'l2')}
       </tr>`).join("");
-    t.querySelectorAll("img.visual-weapon-thumb").forEach(img=>{
-      img.addEventListener("error",()=>{img.hidden=true;img.removeAttribute("src");});
-    });
     t.querySelectorAll("tr.rowclick").forEach(tr=>{
       tr.onclick = ()=>openWeaponDetail(tr.dataset.n);
       tr.onkeydown = e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); openWeaponDetail(tr.dataset.n); } };

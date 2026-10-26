@@ -37,42 +37,37 @@
         check(child.body.classList.contains('sidebar-open'),'Mobile drawer opens');
         for(const id of ['panel-combat','panel-sensitivity','panel-hit-zone','panel-range','panel-ttk','panel-recoil2','panel-attach','panel-backpack'])open(id);
         check(!child.body.classList.contains('sidebar-open'),'Navigation closes drawer');
-        // Combat weapon catalogue: exact art mapping for known guns and no-art fallback.
+        // Combat DB remains a compact text table; illustrations load only on tap.
         open('panel-combat');
-        check(child.querySelectorAll('#panel-combat .visual-armour-key img').length===2,'Helmet and vest illustration key');
-        const pilot = get('combat-pilot-image');
-        check(pilot.getAttribute('src')==='assets/weapon-m416-field.svg','Combat art must be local');
-        eq(pilot.getAttribute('width'),'960','M416 image reserves its width');
-        eq(pilot.getAttribute('height'),'320','M416 image reserves its height');
-        get('combat-pilot-open').click();
-        eq(text('modalTitle'),'M416','Pilot opens M416 weapon details');
-        check(!!child.querySelector('#modalBody .visual-modal-media img'),'M416 detail shows only the M416 artwork');
+        check(child.querySelectorAll('#panel-combat .visual-armour-key img').length===2,'Armour guide remains distinct from the weapon table');
+        check(!get('combat-pilot-image'),'No automatic M416 hero image above the table');
+        check(child.querySelectorAll('#wTable img').length===0,'No image loads in the weapon table');
+        check(child.querySelectorAll('#wTable tr.rowclick').length===45,'Every weapon has a compact row');
+        const m416Row=child.querySelector('#wTable tr.rowclick[data-n="M416"]');
+        check(!!m416Row,'M416 row is available');
+        m416Row.click();
+        eq(text('modalTitle'),'M416','Tap M416 row opens details');
+        eq(child.querySelector('#modalBody .visual-modal-media img')?.getAttribute('src'),'assets/weapon-m416-field.svg','M416 image appears in popup only');
         child.querySelector('#modalBody [data-action="close-modal"]').click();
-        const akmRow = child.querySelector('#wTable tr.rowclick[data-n="AKM"]');
-        check(!!akmRow,'AKM exists for no-artwork fallback verification');
-        akmRow.click();
-        eq(text('modalTitle'),'AKM','AKM details still work');
-        const akmImage=child.querySelector('#modalBody .visual-modal-media img');
-        check(!!akmImage,'AKM now has its own representative art');
-        check(akmImage.getAttribute('src')==='assets/weapon-akm-field.svg','AKM must not reuse M416 art');
+        const akmRow=child.querySelector('#wTable tr.rowclick[data-n="AKM"]');
+        check(!!akmRow,'AKM row present');
+        akmRow.focus();
+        const enter=new child.defaultView.KeyboardEvent('keydown',{key:'Enter',bubbles:true,cancelable:true});
+        akmRow.dispatchEvent(enter);
+        eq(text('modalTitle'),'AKM','Keyboard Enter opens weapon details');
+        eq(child.querySelector('#modalBody .visual-modal-media img')?.getAttribute('src'),'assets/weapon-akm-field.svg','AKM artwork belongs only to selected weapon');
         child.querySelector('#modalBody [data-action="close-modal"]').click();
         const sksRow=child.querySelector('#wTable tr.rowclick[data-n="SKS"]');
-        check(!!sksRow,'SKS exists in original data');
-        check(!!sksRow.querySelector('img.visual-weapon-thumb'),'Weapon table has a decorative thumbnail');
-        eq(sksRow.querySelector('img.visual-weapon-thumb').getAttribute('alt'),'','Table thumbnail is decorative');
         sksRow.click();
-        eq(text('modalTitle'),'SKS','Non-pilot weapon details still open');
-        const sksArtwork=child.querySelector('#modalBody .visual-modal-media img');
-        check(!!sksArtwork,'SKS has a unique representative illustration');
-        eq(sksArtwork.getAttribute('src'),'assets/weapon-sks-field.svg','SKS art is exact-name');
+        eq(text('modalTitle'),'SKS','Other weapons open their own artwork');
+        eq(child.querySelector('#modalBody .visual-modal-media img')?.getAttribute('src'),'assets/weapon-sks-field.svg','SKS exact-name artwork');
         child.querySelector('#modalBody [data-action="close-modal"]').click();
-
-        // Search/sort still work with compact thumbnails alongside the original data.
         change(get('wSearch'),'S686','input');
-        eq(child.querySelectorAll('#wTable tr.rowclick').length,1,'Search still returns a single weapon');
-        check(!!child.querySelector('#wTable img.visual-weapon-thumb'),'Filtered weapon retains its exact art');
+        eq(child.querySelectorAll('#wTable tr.rowclick').length,1,'Search retains a single matching weapon');
+        check(child.querySelectorAll('#wTable img').length===0,'Filtering never inserts thumbnail images');
         change(get('wSearch'),'','input');
-        eq(child.querySelectorAll('#wTable tr.rowclick').length,45,'All weapons and thumbnails are available');
+        eq(child.querySelectorAll('#wTable tr.rowclick').length,45,'Clearing search restores all text-only rows');
+        check(child.querySelectorAll('#wTable img').length===0,'Sorting and filtering keep the table picture-free');
         // Batch visuals: optics and existing controls still change independently.
         open('panel-sensitivity');
         change(get('px_scope'),'8x');

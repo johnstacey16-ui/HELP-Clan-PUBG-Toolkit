@@ -6,7 +6,7 @@ Last audited: 2026-10-26 · Draft PR #41 (`feature/toolkit-visual-upgrade`).
 
 The illustration library consists of **original, non-official conceptual graphics made for the toolkit**. They are not photographs, exact 3D models, official game screenshots, or evidence of PUBG weapon appearance or attachment compatibility.
 
-- **45 stylised weapon side profiles**: local artwork mapped by exact database weapon names in `visual-catalog.js`. Different weapon classes may reuse a general silhouette style. Labels, damage values and performance data come only from the existing combat database, never from the illustrations.
+- **45 stylised weapon side profiles**: local artwork mapped by exact database weapon names in `visual-catalog.js`. **Combat DB is text-only until a specific weapon row is opened**; its detail popup then loads that weapon's art. No thumbnails or unsolicited M416 image occupy the table. Different weapon classes may reuse a general silhouette style. Labels, damage values and performance data come only from the existing combat database, never from the illustrations.
 - **Representative optics**: magnifications 1×–15×, with distinct Red Dot, Holographic and Iron-sight art. The additional 1× artwork chooser is strictly visual; sensitivity calculations do not change.
 - **Equipment categories**: backpacks (levels 1, 2 and 3), Jammer Pack, ammunition, medical supplies, booster, grenade, helmet and vest, plus grip, muzzle and magazine concept illustrations. These do not establish item availability or equipped damage reduction.
 - **Abstract reference diagrams**: range target, timer and recoil parameter board are illustrative, not sourced ballistic or measured per-shot spray patterns.

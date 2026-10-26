@@ -9,24 +9,21 @@ const read=p=>fs.readFileSync(path.join(root,p),'utf8');
 const source=read('src/combat/10-combat-rendering.part');
 const html=read('index.html');
 const style=read('visual-assets.css');
-test('original M416 artwork is shipped locally with responsive assets',()=>{
-  assert.ok(fs.existsSync(path.join(root,'assets/weapon-m416-field.svg')));
-  assert.match(html,/href="visual-assets\.css"/);
-  assert.match(style,/\.visual-media-card/);
-  assert.match(style,/@media\(max-width:700px\)/);
-  assert.doesNotMatch(style,/position:fixed|position:absolute/i);
-});
-test('a verified exact-name art catalogue supplies M416 and other named weapon details',()=>{
-  assert.match(source,/id="combat-pilot-image" src="assets\/weapon-m416-field\.svg"/);
-  assert.match(source,/loading="lazy" decoding="async"/);
-  assert.match(source,/id="combat-pilot-open"/);
-  assert.match(source,/Object\.prototype\.hasOwnProperty\.call\(artMap,w\.name\)/);
-  assert.match(source,/Artwork not available for this weapon yet/);
-  assert.match(source,/const weaponArt/);
-  assert.match(source,/visual-weapon-thumb/);
-  assert.match(source,/alt="" aria-hidden="true"/);
-  assert.match(source,/\$\{weaponArt\}/);
-  assert.match(source,/combat-pilot-image"\)\.addEventListener\("error"/);
+test('Combat DB is text-first and loads artwork only after a weapon is activated',()=>{
+ assert.ok(fs.existsSync(path.join(root,'assets/weapon-m416-field.svg')));
+ assert.match(html,/href="visual-assets\.css"/);
+ assert.match(source,/class="combat-weapon-cell"/);
+ assert.match(source,/data-n="\$\{w.name\}"/);
+ assert.match(source,/View \$\{w.name\} weapon details and illustration/);
+ assert.match(source,/tr\.onclick = \(\)=>openWeaponDetail/);
+ assert.match(source,/tr\.onkeydown = e=>/);
+ assert.doesNotMatch(source,/visual-weapon-thumb|combat-pilot-image|combat-pilot-open|combat-visual-pilot|const thumb =/);
+ assert.doesNotMatch(style,/visual-weapon-thumb|combat-visual-pilot/);
+ assert.match(source,/Object\.prototype\.hasOwnProperty\.call\(artMap,w\.name\)/);
+ assert.match(source,/const weaponArt/);
+ assert.match(source,/visual-modal-media/);
+ assert.match(source,/Artwork not available for this weapon yet/);
+ assert.match(source,/\$\{weaponArt\}/);
 });
 test('numeric weapon data and all 13 hit zones retain their existing source boundaries',()=>{
   assert.match(html,/id="panel-combat"/);
