@@ -17,7 +17,7 @@ Make all seven remaining tools look like one premium, readable PUBG companion ap
 - [x] **P1a — Media policy and catalogue**: checked-in asset manifest, explicit provenance/accessibility/size requirements and asset-regression test added in this planning commit. **CI status is tracked below; this does not mean new images are already integrated.**
 - [x] **P1b — Reusable visual components and first image pilot**: responsive CSS image tiles, no-art/error fallbacks, original 5 KB M416-style SVG and browser-decoding validation. **This is an illustrated pilot, not a completed photorealistic weapon catalogue.** [CI run 40243494382](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40243494382) passed.
 - [ ] **P2 — Scope Sensitivity Matcher**.
-- [ ] **P3 — Combat Database**.
+- [x] **P3 — Combat Database (original art / compact mobile UI pass)**: every weapon opens its exact illustration **only when selected**; searchable, sortable 45-row table stays image-free on mobile. Higher-fidelity artwork and physical device review remain separate release tasks.
 - [x] **P4 — Attachments and Recoil (original artwork pass)**: five equipment tiles reflect selector choices, distinguish suppressors/compensators/grips/magazines, hide when None/disabled, and pass CI at six responsive widths. Photo-accurate game art remains separate.
 - [ ] **P5 — Effective Range**.
 - [ ] **P6 — TTK Calculator**.
@@ -83,7 +83,7 @@ The checked foundation items include the initial Combat DB **illustrated M416 pi
 ## P3. Combat DB (tool 02)
 
 - [x] Build an **original, representative 45-weapon concept-art catalogue** (initial M416 pilot plus 44 additional exact-name entries). 960×320 SVG source, not official screenshots, registered with licensing/provenance notes; higher-fidelity licensed/photo art remains a separate unfinished task.
-- [x] Display matching exact-name weapon concept art in each Combat DB detail, compact sortable/searchable table rows and the original M416 featured card. Unknown asset names still use a no-art fallback.
+- [x] Display matching exact-name weapon concept art **inside weapon-detail popups only**. Following owner mobile screenshot feedback, removed the row thumbnails and unsolicited M416 featured card to reclaim table space; tapping/Enter on a row opens its selected artwork. Unknown asset names still use a no-art fallback.
 - [x] Provide an explicit no-image text state and broken-file fallback; art is labelled representative and never substituted for another weapon.
 - [x] Added compact helmet/vest visual reference key to Combat DB header; armour thresholds, weapon statistics and sticky table heading are unchanged.
 - [x] Validated all 45 exact-name original weapon illustrations against the WEAPONS source; each image decodes and wrong-weapon art is never substituted.
@@ -91,8 +91,8 @@ The checked foundation items include the initial Combat DB **illustrated M416 pi
 ## Hit Zone Damage Explorer (tool 03) — frozen approved reference
 
 - [x] Original fictional adult Model 2 photo, 13 body zones, persistent damage labels, helmet/vest, damage/HTK/heatmap/theoretical shells have already shipped through PR #40.
-- [ ] After any shared visual CSS changes, check figure alignment, all 13 labels, keyboard/touch interactions and tablet/mobile legibility.
-- [ ] Keep the model artwork, geometry and formulas unchanged unless the owner specifically requests a separate change.
+- [x] Automated Chromium regression after shared image CSS changes verified Model 2 alignment, all 13 zones and phone/desktop layout; real Xbox Edge and physical-device verification remain separate unchecked release tasks.
+- [x] Approved Model 2 image, the 13 hit-zone geometries and all calculation formulas remain unchanged during the full visual branch; source-sync and hit-zone checks pass.
 
 ## P4. Attachments & Recoil (tool 07)
 
@@ -131,7 +131,7 @@ The checked foundation items include the initial Combat DB **illustrated M416 pi
 ## P9. Cross-tool polish
 
 - [x] Artwork now uses bounded, aspect-contained tiles, consistent dark navy/cyan/gold borders and captions, accessible fallback text and responsive image geometry; CI validated 320/390/768/1280px.
-- [ ] Ensure the nav/sidebar and headers benefit from imagery **only if** it improves recognition without shrinking navigation targets.
+- [x] Keep the navigation and dense Combat DB table **text-first**, deliberately avoiding images that shrink mobile hit targets; artwork is reserved for selected weapon details and helpful illustrations elsewhere.
 - [x] Added `VISUAL_ARTWORK_CREDITS.md`, linked from README, documenting the origin and limitations of the original/representative media library and explicitly disclaiming official PUBG endorsement.
 - [x] Visual-media CSS remains non-overlaying (no added fixed/absolute images); automated Chromium geometry verified the seven illustrated panels at 320, 360, 390, 768, 1280 and 1440px. Real Xbox visual inspection is still pending.
 
@@ -194,3 +194,5 @@ When a task is done, change its literal `- [ ]` to `- [x]` **in GitHub**, alongs
 - **2026-10-26 — attachment-specific artwork batch (verified):** introduced original representative suppressor, compensator, flash hider, vertical/angled grip, rifle stock and extended-magazine silhouettes. The fifth Stock media tile completes five attachment categories. Category images now follow the existing selector values, hide when none/disabled, and update after weapon compatibility or presets without touching underlying attachment math. Two-column phone layout and extra Chromium behaviour checks added. [Actions #40265140045](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40265140045) passed 150+ Node tests, eight-tool Chromium smoke including all **79 registered images**, six viewport layouts and Hit Zone regression. All artwork remains non-official illustration.
 
 - **2026-10-26 — user-requested compact Combat DB mobile correction (pending CI):** user screenshot showed illustrative 45-weapon thumbnails taking too much horizontal table space. Removed **all** row thumbnails, the automatic M416 pilot card and its event hooks; table is compact name/class/stat text. Illustrations remain in selected weapon detail popups (tap or keyboard Enter), including exact 45-weapon artwork. The separate helmet/vest explanation is retained. Updated browser keyboard/tap/search checks, six-viewport geometry and removed obsolete thumbnail CSS. Source/math, Model 2 and production untouched. Confirm passing CI before marking done.
+
+- **2026-10-26 — owner screenshot feedback resolved:** removed all decorative weapon-row thumbnails and the unsolicited featured M416 image from Combat DB. Weapon name/class/damage/RPM rows remain clean, searchable, sortable and keyboard-operable; art is shown only when that weapon's details are opened. Cleaned up obsolete CSS and updated the credits; automated real Chromium clicked M416, Enter-opened AKM, tapped SKS, verified search returned one text-only row and then all 45, and passed source-sync/Node suites, Hit Zone, and 320/360/390/768/1280/1440px responsive layouts in [Actions #40266254659](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40266254659), commit `60de0746`. Vercel branch preview was READY. **No production merge, still pending owner final review and real Xbox/mobile visual signoff.**
