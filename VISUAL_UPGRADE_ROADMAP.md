@@ -104,13 +104,13 @@ The checked foundation items include the initial Combat DB **illustrated M416 pi
 ## P5. Effective Range & Damage (tool 04)
 
 - [x] Added restrained original target reference and exact-name selected-weapon art to Effective Range, separate from charts and checkpoint values.
-- [ ] Keep observed checkpoint and `No data` distinctions unambiguous.
+- [x] Keep observed checkpoints/`No data` distinct: source notes and existing readouts are unchanged and displayed before optional artwork; range and shotgun regressions passed GitHub Actions #40271693306.
 - [ ] Test charts, input selection, weapon switching, shotgun theoretical labels and source warnings.
 
 ## P6. TTK Calculator (tool 05)
 
 - [x] Add dynamic, exact-name weapon comparison thumbnails for A/B/C in TTK, with explicit missing-art fallback for nonillustrated weapons.
-- [ ] Keep hits-to-kill, reload notes, comparison charts and tabular data dominant.
+- [x] Primary TTK damage, hits-to-kill, reload notes and numerical A/B/C comparison table now appear before any optional, collapsed-by-default artwork; Chromium browser checks and responsive layout passed.
 - [x] Decouple TTK single-weapon and A/B/C comparison images from calculations; exact name lookup and fallback are verified for illustrated and nonillustrated choices.
 - [x] No HTK/TTK formula or weapon reload source was changed for the visual rollouts; source-sync and calculator smoke tests passed.
 
@@ -118,7 +118,7 @@ The checked foundation items include the initial Combat DB **illustrated M416 pi
 
 - [x] Add dynamically updated exact-name weapon illustration beside the existing abstract recoil-parameter reference (no fabricated shot pattern).
 - [x] Preserved the prominent **COMING SOON / IN DEVELOPMENT** banner for unreleased shot-by-shot analysis; verified by existing launch-polish regression.
-- [ ] Keep existing evidence limits, charts and parameters readable; no deceptive illustrative spray pattern.
+- [x] Recoil evidence/COMING SOON notice and weapon parameter table remain fully visible above an optional art expander. No synthetic recoil trace; Chromium verified the controls and layout.
 - [ ] Verify responsive chart behavior and reduced-motion preference on real Xbox/mobile hardware (Chromium automated smoke passed; physical-device review remains).
 
 ## P8. Tactical Loadout & Backpack (tool 08)
@@ -201,4 +201,4 @@ When a task is done, change its literal `- [ ]` to `- [x]` **in GitHub**, alongs
 
 - **2026-10-26 — Backpack controller/mobile controls batch (verified):** increased every existing inventory +/- button from 36×38 to at least 44×44 px, made quantity fields at least 44px high and gave all row input/stepper buttons precise, item-specific screen-reader/controller labels. Added dense-list geometry checks at 320/360/390/768/1280/1440px plus actual +/-/weight-recalculation round-trip tests in Chromium; did not edit the 70 base capacity, +50 vest bonus, capacity tiers or item weights. [Actions #40271148548](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40271148548) passed all Node/source checks, eight-tool real-Chromium interactions, Model 2 geometry and six-width layouts. Vercel preview was READY for code commit `f1641a45`. Real Xbox hardware remains unverified.
 
-- **2026-10-26 — Data-first Range/TTK/Recoil batch (verification pending):** moved illustration banners and selected-weapon artwork into optional native `<details>` sections **after** the Range damage result, TTK damage/HTK/timing result, and Recoil evidence/parameter table. Moved the TTK A/B/C artwork after its numeric comparison table. Media is collapsed until intentionally expanded; 48px summaries work with keyboard, Xbox and touch. Browser and six-width geometry tests now check collapsed defaults and expanded art. No changes to Combat DB rows, Hit Zone geometry, damage formula or weapon data. Await CI before marking these design tasks complete.
+- **2026-10-26 — Data-first Range/TTK/Recoil batch (verified):** moved illustration banners and selected-weapon artwork into optional native `<details>` sections **after** the Range damage result, TTK damage/HTK/timing result, and Recoil evidence/parameter table. Moved the TTK A/B/C artwork after its numeric comparison table. Media is collapsed until intentionally expanded; 48px summaries work with keyboard, Xbox and touch. Browser and six-width geometry tests now check collapsed defaults and expanded art. No changes to Combat DB rows, Hit Zone geometry, damage formula or weapon data. [GitHub Actions #40271693306](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40271693306) passed all Node tests, eight-tool Chromium interaction tests, Model 2 geometry and seven illustrated-tool responsive checks at 320/360/390/768/1280/1440px; manual Xbox/mobile review still outstanding.
