@@ -41,6 +41,16 @@ The checked foundation items include the initial Combat DB **illustrated M416 pi
 - [x] Vercel marked the batch preview READY at commit `20e48831`.
 - [ ] Physical device screenshot review, full per-weapon/item catalogue, further fidelity improvements and final owner preview approval. **Keep PR #41 in draft; no production merge yet.**
 
+### 2026-10-26 — 45/45 weapon illustration and mobile-layout milestone
+
+- [x] Illustrated **all 45 weapon names** in the existing Combat DB with original class-specific, exact-name SVG concept art, and added small decorative lazy-loaded thumbnails to the searchable weapon rows.
+- [x] Kept the original weapon data, maths, filtering, sorting, 13 hit zones, Model 2 image and separate companion tools intact.
+- [x] Passed all 45 image HTTP/decode checks in Chromium, plus unit/integrity/asset budget tests; validated full-table search at run [40250316674](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40250316674).
+- [x] Added seven-tool artwork layout CI at 320, 390, 768 and 1280 px, passed run [40250452348](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40250452348). Approved Model 2's five-width test also passed.
+- [x] Vercel review deployment READY, commit `aae3f44f`. Full branch preview: https://help-clan-pubg-toolkit-8gv9jiojb-acme-a675.vercel.app
+- [ ] Upgrade original class-specific concept art to photo-grade/high-fidelity imagery where appropriate and rights-cleared. SVG silhouettes are visually illustrative, **not** exact real-world or official PUBG weapon models.
+- [ ] Manual Xbox Edge, physical mobile, screenshot aesthetics/contrast/focus and owner final preview review. No production merge without approval.
+
 ## P0. Baseline and guardrails
 
 - [x] Inspect eight live panel IDs and navigation: `panel-sensitivity`, `panel-combat`, `panel-hit-zone`, `panel-range`, `panel-ttk`, `panel-recoil2`, `panel-attach`, `panel-backpack`.
@@ -127,13 +137,13 @@ The checked foundation items include the initial Combat DB **illustrated M416 pi
 
 ## P10. Verification, approval and release
 
-- [ ] `node scripts/build-static.cjs --check`.
-- [ ] `node --test tests/*.test.cjs` including the visual-asset registry test.
-- [ ] `node tests/browser-smoke.cjs` for all eight existing tools.
-- [ ] `node tests/hit-zone-preview-smoke.cjs` and any new visual screenshots for relevant seven tools.
+- [x] `node scripts/build-static.cjs --check` — passed in GitHub Actions 40250452348.
+- [x] `node --test tests/*.test.cjs` including the 45-weapon asset registry and integrity tests — passed in GitHub Actions 40250452348.
+- [x] `node tests/browser-smoke.cjs` for all eight existing tools; all 45 artwork SVGs decoded successfully in Chromium.
+- [x] `node tests/hit-zone-preview-smoke.cjs` for approved Model 2 at 320–1280 px, and **new seven-panel media geometry tests** at 320/390/768/1280 px. Screenshots/physical-device visual inspection remain pending.
 - [ ] Verify broken asset fallback, alt text, lazy/eager priority, mobile/LCP performance budget and no layout shifts.
 - [ ] Browser review on real desktop, mobile and Xbox Edge; include keyboard and contrast/reduced-motion checks.
-- [ ] Publish a Vercel **preview** for the feature branch, record exact URL and commit here.
+- [x] Publish a Vercel **preview** for the feature branch — READY for commit `aae3f44f`; https://help-clan-pubg-toolkit-8gv9jiojb-acme-a675.vercel.app .
 - [ ] Get explicit owner visual approval for the complete preview. **No merge to main before this.**
 - [ ] Merge reviewed PR, confirm production Vercel READY and post-merge Actions green.
 - [ ] Update this roadmap with release commit and what, if anything, needs manual follow-up.
@@ -165,6 +175,6 @@ When a task is done, change its literal `- [ ]` to `- [x]` **in GitHub**, alongs
 
 - **2026-10-25 — Nine-weapon batch verification:** [GitHub Actions #40246066002](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40246066002) passed source sync, Node registry checks, all eight tools in Chromium and mobile/desktop hit-zone checks. Vercel marked commit `fdda902a` READY. Additional Chromium test decoded **all nine** catalogue SVGs at 960×320; verified in Actions #40246179094. PR #41 remains **draft**, with no changes to live `main`.
 
-- **2026-10-26 — full 45-weapon conceptual art batch:** 36 additional small original class-specific side-profile SVGs (45/45 named weapons illustrated), exact-name dictionary retained, decorative table thumbnails with lazy load and graceful error fallback, across Combat DB, TTK, Range, Recoil and Attachments. No calculator source or approved Model 2 imagery changed. Separate **photorealistic/canonical game art** still requires rights-cleared inputs. Automated test coverage expanded to every registered image and search/table interactions. **CI and Vercel verification pending for this commit; do not merge.**
+- **2026-10-26 — full 45-weapon conceptual art batch:** 36 additional small original class-specific side-profile SVGs (45/45 named weapons illustrated), exact-name dictionary retained, decorative table thumbnails with lazy load and graceful error fallback, across Combat DB, TTK, Range, Recoil and Attachments. No calculator source or approved Model 2 imagery changed. Separate **photorealistic/canonical game art** still requires rights-cleared inputs. Automated test coverage expanded to every registered image and search/table interactions. [GitHub Actions #40250316674](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40250316674) passed the 45-weapon art batch; the new [7-tool, four-width geometry run #40250452348](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40250452348) also passed. Vercel READY for commit `aae3f44f`. **Do not merge without owner's explicit final preview approval.**
 
-- **2026-10-26 — layout verification batch:** added real Chromium seven-panel media geometry tests at 320/390/768/1280 px, enforced as a pull-request CI step. Default Scope Matcher optic thumbnail now uses eager loading (only visible startup artwork), with remaining offscreen image files lazy-loaded. **The new layout CI result is not yet verified; only check off after passing.**
+- **2026-10-26 — layout verification batch:** added real Chromium seven-panel media geometry tests at 320/390/768/1280 px, enforced as a pull-request CI step. Default Scope Matcher optic thumbnail now uses eager loading (only visible startup artwork), with remaining offscreen image files lazy-loaded. [GitHub Actions #40250452348](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40250452348) passed the new 320/390/768/1280px checks on all seven illustrated panels, alongside existing Node and Hit Zone regression checks.
