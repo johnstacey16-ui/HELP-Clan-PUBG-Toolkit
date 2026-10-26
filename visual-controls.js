@@ -34,28 +34,39 @@ syncScope();
 // the player opens the art section. No HTTP images/async timers are necessary.
 function assignOptionalArt(img,src) {
  const details=img.closest('details.visual-opt-in-art');
- if(details && !details.open){
+ const panel=img.closest('.hub-main');
+ // Art is optional on other tools and inside collapsed <details>.
+ // Never fetch it merely because HTML was parsed on the Scope home page.
+ const inactive=panel&&!panel.classList.contains('active');
+ if(inactive||(details&&!details.open)){
   img.dataset.visualSrc=src;
   img.removeAttribute('src');
  }else{
   img.removeAttribute('data-visual-src');
-  img.src=src;
+  if(img.getAttribute('src')!==src)img.src=src;
  }
 }
 function syncOptionalDetails(details) {
  for(const image of details.querySelectorAll('img')){
-  if(details.open){
-   const pending=image.dataset.visualSrc;
-   if(pending){image.src=pending;image.removeAttribute('data-visual-src');}
-  }else if(image.hasAttribute('src')){
-   image.dataset.visualSrc=image.getAttribute('src');
-   image.removeAttribute('src');
-  }
+  const src=image.getAttribute('src')||image.dataset.visualSrc;
+  if(src && src.startsWith('assets/'))assignOptionalArt(image,src);
+ }
+}
+// Every tool owns its artwork: do not preload hidden Combat DB, Attachments
+// or Backpack illustrations before navigating to their panel.
+function syncPanelArtwork(panel) {
+ for(const image of panel.querySelectorAll('img[data-visual-src],img[src]')){
+  const src=image.getAttribute('src')||image.dataset.visualSrc;
+  if(src && src.startsWith('assets/'))assignOptionalArt(image,src);
  }
 }
 for(const details of document.querySelectorAll('details.visual-opt-in-art')){
  details.addEventListener('toggle',()=>syncOptionalDetails(details));
  syncOptionalDetails(details);
+}
+for(const panel of document.querySelectorAll('#app-workspace > .hub-main')){
+ syncPanelArtwork(panel);
+ new MutationObserver(()=>syncPanelArtwork(panel)).observe(panel,{attributes:true,attributeFilter:['class']});
 }
 function selectedWeapon(prefix,name) {
  const image=get('visual-'+prefix+'-weapon-image'),title=get('visual-'+prefix+'-weapon-title'),note=get('visual-'+prefix+'-weapon-note');
@@ -151,10 +162,10 @@ function syncAttachmentArt(){
   // Empty/disabled attachment slots do not show apparently equipped hardware.
   image.hidden=!file;
   if(file){
-   image.src='assets/'+file;
+   assignOptionalArt(image,'assets/'+file);
    image.alt='Original illustrative '+label.textContent+' attachment category';
   }else{
-   image.removeAttribute('src');image.alt='';
+   image.removeAttribute('src');image.removeAttribute('data-visual-src');image.alt='';
   }
  }
 }
@@ -181,7 +192,7 @@ function syncBackpackArt(){
  const jammer=type.value==='jammer';
  const file=jammer?'gear-jammer.svg':({1:'gear-backpack-l1.svg',2:'gear-backpack-l2.svg',3:'gear-backpack.svg'}[level.value]||'gear-backpack.svg');
  label.textContent=(jammer?'Jammer Pack':'Standard Backpack')+' · Level '+level.value;
- image.hidden=false;image.src='assets/'+file;
+ image.hidden=false;assignOptionalArt(image,'assets/'+file);
  image.alt='Original representative '+(jammer?'Jammer Pack':'Level '+level.value+' backpack')+' illustration';
  const note=get('visual-pack-note');
  if(note)note.textContent='Illustration only. The controls calculate actual capacity.';
