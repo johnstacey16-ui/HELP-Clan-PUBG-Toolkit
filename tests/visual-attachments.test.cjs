@@ -7,7 +7,8 @@ test('five pictured attachment categories follow actual selected options without
  for(const item of ['muzzle','grip','mag','sight','stock']){
   assert.ok(html.includes('id="visual-at-'+item+'-image"'),item+' image');
   assert.ok(html.includes('id="visual-at-'+item+'"'),item+' selection label');
-  assert.match(src,new RegExp('at-\x27\+id\+\x27-image'));
+  // The same id-based renderer is deliberately reused for every slot.
+  assert.ok(src.includes("get('visual-at-'+id+'-image')"),'shared visual slot lookup');
  }
  for(const asset of ['gear-suppressor','gear-compensator','gear-flash-hider','gear-vertical-grip','gear-angled-grip','gear-stock','gear-extended-magazine']){
   assert.ok(media.assets.some(x=>x.id===asset&&x.panelId==='panel-attach'),'missing media provenance '+asset);

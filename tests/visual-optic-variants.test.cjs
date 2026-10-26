@@ -19,7 +19,7 @@ test('no attachment appearance selection changes the underlying control or formu
  const visual=read('visual-controls.js');
  assert.match(visual,/reddot:'optic-red-dot\.svg'/);
  assert.match(visual,/holo:'optic-holographic\.svg'/);
- assert.match(visual,/img\.hidden=!file/);
+ assert.match(visual,/image\.hidden=!file/);
  assert.doesNotMatch(visual,/pixelSpeed\s*=|matchedSens\s*=|pureTtk\s*=|finalDamageAt\s*=/);
  const core=read('src/calculators/40-attachments.part');
  assert.match(core,/function opticChoicesFor/);
