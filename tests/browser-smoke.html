@@ -28,6 +28,31 @@
         check(get('panel-sensitivity').classList.contains('active'),'Scope matcher must open first');
         check(text('px_speed')!=='–' && text('px_speed')!=='','Scope result initially calculates');
         eq(child.querySelectorAll('#px_table tbody tr').length,7,'Seven scope conversions');
+        const sensitivityTabs=[...get('tabs').querySelectorAll('[role="tab"]')];
+        eq(get('tabs').getAttribute('role'),'tablist','Sensitivity uses keyboard-accessible tablist');
+        eq(sensitivityTabs.length,3,'Three native sensitivity tab buttons');
+        for(const button of sensitivityTabs){
+          eq(button.tagName,'BUTTON','Sensitivity tabs use native buttons');
+          check(button.getBoundingClientRect().height>=44,'Scope inner tabs are controller-sized');
+        }
+        const baselineSpeed=text('px_speed');
+        const switchKey=(button,key)=>{
+          button.focus();
+          button.dispatchEvent(new child.defaultView.KeyboardEvent('keydown',{key,bubbles:true,cancelable:true}));
+        };
+        switchKey(sensitivityTabs[0],'ArrowRight');
+        eq(sensitivityTabs[1].getAttribute('aria-selected'),'true','Right arrow selects vertical multiplier tab');
+        eq(child.activeElement,sensitivityTabs[1],'Right arrow moves keyboard focus');
+        check(child.querySelector('#sensitivity-panel-vert').classList.contains('active'),'Vertical multiplier view opens');
+        switchKey(sensitivityTabs[1],'End');
+        eq(sensitivityTabs[2].getAttribute('aria-selected'),'true','End selects resolution tab');
+        switchKey(sensitivityTabs[2],'ArrowRight');
+        eq(sensitivityTabs[0].getAttribute('aria-selected'),'true','Right arrow wraps to Scope');
+        switchKey(sensitivityTabs[0],'Home');
+        check(child.querySelector('#sensitivity-panel-scope').classList.contains('active'),'Home returns to Scope');
+        eq(sensitivityTabs.filter(button=>button.tabIndex===0).length,1,'Exactly one tab in normal keyboard order');
+        eq(text('px_speed'),baselineSpeed,'Tab navigation cannot change sensitivity maths');
+
 
         // Sidebar and numbered navigation follow the user-requested position.
         const sidebarIds=[...child.querySelectorAll('#app-toolnav [data-open-panel]')].map(b=>b.dataset.openPanel);
