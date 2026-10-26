@@ -162,8 +162,8 @@ a { text-underline-offset: 3px; }
   box-shadow: none;
 }
 :is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data) { display: none; }
-:is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data).hub-main.active { display: block; animation: help-panel-enter .25s ease-out; }
-@keyframes help-panel-enter { from { opacity: .5; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+:is(#panel-combat, #panel-sensitivity, #panel-range, #panel-ttk, #panel-recoil2, #panel-attach, #panel-backpack, #panel-data).hub-main.active { display: block; }
+/* Navigation shows complete tool content immediately, including during screenshot capture. */
 
 /* Shared palette across all 8 tools; keep status/success/warning semantics. */
 #panel-combat, #panel-range, #panel-ttk, #panel-recoil2,
