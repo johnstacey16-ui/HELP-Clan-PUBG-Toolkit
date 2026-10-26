@@ -24,3 +24,18 @@ test('native art expander meets controller focus and mobile tap targets',()=>{
  assert.match(read('tests/visual-layout.html'),/item\.open=true/);
  assert.equal((html.match(/data-hit-zone="/g)||[]).length,13);
 });
+
+test('optional artwork uses no image network request until a player opens its detail',()=>{
+ const script=read('visual-controls.js');
+ for(const id of ['range-target.svg','ttk-timer.svg','recoil-parameters.svg']){
+  const match=html.match(new RegExp('<img data-visual-src="assets/'+id.replace(/[.]/g,'\\.')+'"'));
+  assert.ok(match,'Banner art should be deferred: '+id);
+  assert.ok(!html.includes('<img src="assets/'+id+'"'),'Banner art should have no src: '+id);
+ }
+ assert.match(script,/function assignOptionalArt\(img,src\)/);
+ assert.match(script,/function syncOptionalDetails\(details\)/);
+ assert.match(script,/details\.addEventListener\('toggle'/);
+ assert.match(script,/image\.removeAttribute\('src'\)/);
+ assert.match(script,/assignOptionalArt\(image,'assets\/'\+file\)/);
+ assert.equal((html.match(/data-hit-zone="/g)||[]).length,13);
+});

@@ -28,6 +28,33 @@ for(const button of document.querySelectorAll('[data-visual-optic]')){
  });
 }
 syncScope();
+// Details are closed by default. Do not request their optional images until
+// the player opens the art section. No HTTP images/async timers are necessary.
+function assignOptionalArt(img,src) {
+ const details=img.closest('details.visual-opt-in-art');
+ if(details && !details.open){
+  img.dataset.visualSrc=src;
+  img.removeAttribute('src');
+ }else{
+  img.removeAttribute('data-visual-src');
+  img.src=src;
+ }
+}
+function syncOptionalDetails(details) {
+ for(const image of details.querySelectorAll('img')){
+  if(details.open){
+   const pending=image.dataset.visualSrc;
+   if(pending){image.src=pending;image.removeAttribute('data-visual-src');}
+  }else if(image.hasAttribute('src')){
+   image.dataset.visualSrc=image.getAttribute('src');
+   image.removeAttribute('src');
+  }
+ }
+}
+for(const details of document.querySelectorAll('details.visual-opt-in-art')){
+ details.addEventListener('toggle',()=>syncOptionalDetails(details));
+ syncOptionalDetails(details);
+}
 function selectedWeapon(prefix,name) {
  const image=get('visual-'+prefix+'-weapon-image'),title=get('visual-'+prefix+'-weapon-title'),note=get('visual-'+prefix+'-weapon-note');
  if(!image||!title||!note)return;
@@ -35,10 +62,10 @@ function selectedWeapon(prefix,name) {
  title.textContent=name || 'No weapon selected';
  if(file){
    image.hidden=false;image.alt='Original representative '+name+' weapon illustration';
-   image.src='assets/'+file;
+   assignOptionalArt(image,'assets/'+file);
    note.textContent='Original conceptual art; not an official PUBG weapon screenshot.';
  }else{
-   image.hidden=true;image.removeAttribute('src');image.alt='';
+   image.hidden=true;image.removeAttribute('src');image.removeAttribute('data-visual-src');image.alt='';
    note.textContent=name?'No artwork for this weapon yet; numbers remain available.':'Choose a weapon for reference artwork.';
  }
 }
@@ -65,10 +92,10 @@ function syncCompare(){
    title.textContent=name||'No third weapon';
    if(file){
      image.alt='Representative '+name+' weapon illustration';
-     image.hidden=false;image.src='assets/'+file;
+     image.hidden=false;assignOptionalArt(image,'assets/'+file);
      note.textContent='Concept art · not official game imagery';
    }else{
-     image.hidden=true;image.removeAttribute('src');image.alt='';
+     image.hidden=true;image.removeAttribute('src');image.removeAttribute('data-visual-src');image.alt='';
      note.textContent=name?'No artwork yet; stats still shown.':'Optional comparison not selected';
    }
  }

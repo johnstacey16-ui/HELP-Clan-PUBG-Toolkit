@@ -107,6 +107,8 @@
         check(get('visual-one-x-variants').hidden,'1x choices hidden for higher magnifications');
         open('panel-range');
         check(!get('visual-range-artwork').open,'Range art defaults closed');
+        eq(get('visual-range').querySelector('img').getAttribute('src'),null,'Closed range graphic has no image request');
+        eq(get('visual-range-weapon-image').getAttribute('src'),null,'Closed range weapon image has no request');
         check(!!text('rg_dmg'),'Range result remains prominent');
         const rangeSummary=get('visual-range-artwork').querySelector('summary');
         check(rangeSummary.getBoundingClientRect().height>=44,'Range art summary has tap target');
@@ -114,11 +116,16 @@
         check(get('visual-range-artwork').open,'Range art opens only on request');
         change(get('rg_weapon'),'AKM');
         eq(get('visual-range-weapon-image').getAttribute('src'),'assets/weapon-akm-field.svg','Range weapon art follows AKM');
+        get('visual-range-artwork').querySelector('summary').click();
+        check(!get('visual-range-artwork').open,'Range art can be closed again');
+        eq(get('visual-range-weapon-image').getAttribute('src'),null,'Closing range art releases weapon img source');
         change(get('rg_weapon'),'SKS');
         eq(get('visual-range-weapon-image').getAttribute('src'),'assets/weapon-sks-field.svg','Range now displays SKS art');
         open('panel-ttk');
         check(!get('visual-ttk-artwork').open,'TTK art defaults closed');
         check(!get('visual-ttk-comparison-artwork').open,'TTK compare art defaults closed');
+        eq(get('visual-ttk-weapon-image').getAttribute('src'),null,'Closed TTK art is not downloaded');
+        eq(get('visual-compare-a-image').getAttribute('src'),null,'Closed comparison images are not requested');
         check(!!text('tk_pure'),'TTK results are present without graphics');
         get('visual-ttk-artwork').querySelector('summary').click();
         get('visual-ttk-comparison-artwork').querySelector('summary').click();
@@ -130,6 +137,7 @@
         check(get('visual-compare-b-image').getAttribute('src')==='assets/weapon-akm-field.svg','TTK B thumbnail is AKM');
         open('panel-recoil2');
         check(!get('visual-recoil-artwork').open,'Recoil art defaults closed');
+        eq(get('visual-recoil-weapon-image').getAttribute('src'),null,'Closed recoil weapon art is deferred');
         check(!!text('rc_chart'),'Unknown recoil evidence remains visible');
         get('visual-recoil-artwork').querySelector('summary').click();
         change(get('rc_weapon'),'P90');

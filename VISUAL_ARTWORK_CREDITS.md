@@ -16,7 +16,7 @@ Each asset's identifier, file size policy, expected dimensions, accessibility in
 
 ## Visual usage and player expectations
 
-All images are served from `assets/` and do not link to third-party hosts. In Range, TTK and Recoil, optional conceptual artwork sits in closed-by-default expandable sections after the primary numerical evidence. TTK comparison artwork is below the actual comparison table. Informational illustrations have descriptive `alt` text; decorative row thumbnails use empty alternatives when adjacent weapon text provides the same information. Missing images must not suppress statistics or controls.
+All images are served from `assets/` and do not link to third-party hosts. In Range, TTK and Recoil, optional conceptual artwork sits in closed-by-default expandable sections after the primary numerical evidence. The artwork sources are also deferred until an expander is actually opened, to avoid requesting unused files on mobile and Xbox Edge. TTK comparison artwork is below the actual comparison table. Informational illustrations have descriptive `alt` text; decorative row thumbnails use empty alternatives when adjacent weapon text provides the same information. Missing images must not suppress statistics or controls.
 
 The toolkit's artwork is **not sponsored, authorised, endorsed or supplied by KRAFTON/PUBG Studios**. Product and weapon names are used to describe the related game data in the toolkit, not to suggest an official relationship. If official/licensed media is introduced later, record rights and attribution separately and do not replace originals without explicit project review.
 
