@@ -85,8 +85,8 @@ The checked foundation items include the initial Combat DB **illustrated M416 pi
 - [x] Build an **original, representative 45-weapon concept-art catalogue** (initial M416 pilot plus 44 additional exact-name entries). 960×320 SVG source, not official screenshots, registered with licensing/provenance notes; higher-fidelity licensed/photo art remains a separate unfinished task.
 - [x] Display matching exact-name weapon concept art in each Combat DB detail, compact sortable/searchable table rows and the original M416 featured card. Unknown asset names still use a no-art fallback.
 - [x] Provide an explicit no-image text state and broken-file fallback; art is labelled representative and never substituted for another weapon.
-- [ ] Optionally add a small visual key for helmet/vest, but preserve precise damage/armour tables, numbers and stickied table header.
-- [x] Validate the 9-weapon original illustration catalogue with exact-name mapping against WEAPONS, browser switching tests, and fallback for remaining names; no wrong weapon image is substituted. The remaining full catalogue is still pending.
+- [x] Added compact helmet/vest visual reference key to Combat DB header; armour thresholds, weapon statistics and sticky table heading are unchanged.
+- [x] Validated all 45 exact-name original weapon illustrations against the WEAPONS source; each image decodes and wrong-weapon art is never substituted.
 
 ## Hit Zone Damage Explorer (tool 03) — frozen approved reference
 
@@ -123,9 +123,9 @@ The checked foundation items include the initial Combat DB **illustrated M416 pi
 
 ## P8. Tactical Loadout & Backpack (tool 08)
 
-- [ ] Add compact category images for backpack levels, helmet/vest, ammunition, healing, boosters and throwables.
+- [x] Illustrated Standard backpack Levels 1/2/3, Jammer Pack, helmet/vest, ammunition, healing, boosters and throwables with original local vector images. This is a representative visual reference, not official inventory art.
 - [x] Backpack selection heading follows Standard vs Jammer Pack and selected level; distinct art is labelled representative and does not replace the original capacity labels.
-- [ ] Preserve carry weight, capacity, vest boost and Jammer calculations and all item list controls.
+- [x] Left existing carry weight, capacity, +50 vest boost, Jammer mode maths and item list controls untouched; browser regressions passed.
 - [ ] Test dense mobile cards and tap targets.
 
 ## P9. Cross-tool polish
@@ -179,4 +179,4 @@ When a task is done, change its literal `- [ ]` to `- [x]` **in GitHub**, alongs
 
 - **2026-10-26 — layout verification batch:** added real Chromium seven-panel media geometry tests at 320/390/768/1280 px, enforced as a pull-request CI step. Default Scope Matcher optic thumbnail now uses eager loading (only visible startup artwork), with remaining offscreen image files lazy-loaded. [GitHub Actions #40250452348](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40250452348) passed the new 320/390/768/1280px checks on all seven illustrated panels, alongside existing Node and Hit Zone regression checks.
 
-- **2026-10-26 — equipment illustration batch prepared:** new original Level 1 and Level 2 backpack graphics (existing Level 3 and Jammer art retained), booster/helmet/vest concept illustrations; six-category backpack strip with vest status following the unchanged equipment control; compact Combat DB helmet/vest explanation key. Added browser and asset/logic isolation regressions. **Await CI before marking checklist complete**. This is still fictional concept art and does not represent exact official PUBG equipment.
+- **2026-10-26 — equipment illustration batch prepared:** new original Level 1 and Level 2 backpack graphics (existing Level 3 and Jammer art retained), booster/helmet/vest concept illustrations; six-category backpack strip with vest status following the unchanged equipment control; compact Combat DB helmet/vest explanation key. Added browser and asset/logic isolation regressions. [GitHub Actions #40254604267](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/actions/runs/40254604267) passed source sync, unit tests, all eight tools in Chromium, and seven-panel geometry at 320/390/768/1280px. A strengthened all-five-new-assets decode check was added in the follow-up commit; its own CI must pass before this last check is recorded. This is still fictional concept art and does not represent exact official PUBG equipment.

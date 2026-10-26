@@ -319,11 +319,13 @@
         // Verify the complete shipped weapon illustration catalogue decodes at 960x320.
         const catalog=child.defaultView.HELP_VISUAL_WEAPONS;
         check(!!catalog && Object.keys(catalog).length===45,'All 45 exact-name weapon illustrations');
-        const fileList=Object.values(catalog);
-        Promise.all(fileList.map(filename=>new Promise((resolve,reject)=>{
+        const equipmentFiles=['gear-backpack-l1.svg','gear-backpack-l2.svg','gear-booster.svg','gear-helmet.svg','gear-vest.svg'];
+        const fileList=Object.values(catalog).map(filename=>({filename,width:960,height:320}))
+          .concat(equipmentFiles.map(filename=>({filename,width:320,height:200})));
+        Promise.all(fileList.map(({filename,width,height})=>new Promise((resolve,reject)=>{
           const probe=new child.defaultView.Image();
           probe.onload=()=>{
-            if(probe.naturalWidth!==960 || probe.naturalHeight!==320){
+            if(probe.naturalWidth!==width || probe.naturalHeight!==height){
               reject(new Error('Wrong decoded artwork dimensions for '+filename));
             }else resolve();
           };
@@ -331,7 +333,7 @@
           probe.src=new URL('assets/'+filename,child.location.href).href;
         }))).then(()=>{
           document.body.dataset.smokeStatus='pass';
-          output.textContent='PASS: eight tools, 45 decoded original concept images, table thumbs, Model 2 and calculations';
+          output.textContent='PASS: eight tools, 45 weapon + 5 equipment images decoded, Model 2 and calculator regressions';
         }).catch(error=>{
           document.body.dataset.smokeStatus='fail';
           output.textContent='FAIL: '+(error&&error.stack||error);
