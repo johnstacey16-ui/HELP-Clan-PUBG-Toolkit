@@ -279,3 +279,32 @@
   #panel-combat .combat-stats-scroller #wTable tr.colheader th { font-size:11px; }
   #panel-combat #combat-table-instructions { font-size:11px;line-height:1.4; }
 }
+
+/* Shorter main table. Four armour threshold columns have their own expander. */
+@media(min-width:1000px){
+  #panel-combat #wTable th,#panel-combat #wTable td { padding-left:4px;padding-right:4px; }
+  #panel-combat #wTable th { letter-spacing:0; }
+}
+#panel-combat .combat-crossover-card { margin-top:16px;min-width:0; }
+#panel-combat #combat-armor-crossovers>summary {
+  display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;
+  min-height:48px;padding:12px 4px;cursor:pointer;list-style:none;
+  color:#f2d19c;font:700 15px/1.4 "Manrope",sans-serif;touch-action:manipulation;
+}
+#panel-combat #combat-armor-crossovers>summary::-webkit-details-marker { display:none; }
+#panel-combat #combat-armor-crossovers>summary::before { content:"+";min-width:16px;font-size:23px;line-height:1; }
+#panel-combat #combat-armor-crossovers[open]>summary::before { content:"−"; }
+#panel-combat #combat-armor-crossovers>summary:focus-visible { outline:3px solid #a5e8f1;outline-offset:2px;border-radius:6px; }
+#panel-combat .combat-crossover-hint { color:#b7cbd5;font:11px/1.4 "Manrope",sans-serif; }
+#panel-combat .combat-crossover-body { padding-top:10px; }
+#panel-combat .combat-armor-scroller { overflow-x:auto;max-width:100%;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch; }
+#panel-combat .combat-armor-scroller:focus-visible { outline:3px solid #a5e8f1;outline-offset:3px; }
+#panel-combat #combatArmorTable { min-width:625px; }
+#panel-combat #combatArmorTable caption { text-align:left;caption-side:top;padding:0 0 10px;color:#b8cdd7;font:11px/1.5 "Manrope",sans-serif; }
+#panel-combat #combatArmorTable td:first-child,#panel-combat #combatArmorTable th:first-child { position:sticky;left:0;background:#1b2b3a;z-index:1; }
+#panel-combat #combatArmorTable tr.armor-crossover-row { cursor:pointer; }
+#panel-combat #combatArmorTable tr.armor-crossover-row:hover td { background:#23394a; }
+#panel-combat #combatArmorTable tr.armor-crossover-row:focus-visible { outline:3px solid #a5e8f1;outline-offset:-3px; }
+#panel-combat #combatArmorTable thead th { font-size:10.5px;white-space:nowrap;cursor:default; }
+#panel-combat #combatArmorTable tbody td { font-size:12px; }
+#panel-combat :is(#combat-database,#compare-weapons,#how-thresholds-work) { scroll-margin-top:110px; }

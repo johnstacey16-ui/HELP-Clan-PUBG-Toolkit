@@ -317,15 +317,6 @@ const panelsEl = document.getElementById("panels");
       <div class="combat-stats-scroller" id="combat-stats-scroller" role="region" tabindex="0" aria-label="Scrollable weapon statistics" aria-describedby="combat-table-instructions"><table id="wTable"></table></div>
       <div class="missing-note">— means no available value.</div>
       
-      <p class="missing-note" style="color:var(--dim)">Armor thresholds apply at point blank.</p>
-      <div class="section-h">Column legends</div>
-      <div class="helptext" style="margin-bottom:6px">Armor threshold colors (Head/Chest → armor columns):</div>
-      <div class="color-legend">
-        <span class="clegend-item"><i class="dot" style="background:var(--keep)"></i>Always keep — the math never favors a fresh lower tier</span>
-        <span class="clegend-item"><i class="dot" style="background:var(--amber)"></i>15%+ — swap with a comfortable durability margin</span>
-        <span class="clegend-item"><i class="dot" style="background:var(--orange)"></i>8–14% — swap opportunistically, not urgently</span>
-        <span class="clegend-item"><i class="dot" style="background:var(--swap)"></i>Under 8% — crossover comes right before it breaks, little margin</span>
-      </div>
       <div class="helptext" style="margin-bottom:6px">Recoil &amp; handling columns:</div>
       <dl class="legend">
         <div><dt>Max V.Recoil</dt><dd>Maximum vertical recoil from the gun configuration; it is not a measured per-shot screen offset.</dd></div>
@@ -336,6 +327,27 @@ const panelsEl = document.getElementById("panels");
         <div><dt>Minimum Horizontal %</dt><dd>Minimum horizontal recoil scalar (for example, 0.40 = 40%); alone it cannot predict sustained spray consistency.</dd></div>
       </dl>
     </div>
+    <section class="card combat-crossover-card" id="combat-armor-crossover-section" aria-label="Helmet and vest crossover data">
+      <details id="combat-armor-crossovers">
+        <summary>Helmet &amp; vest crossover table <span class="combat-crossover-hint">Expand to compare armour thresholds · Head and Chest damage also appear here</span></summary>
+        <div class="combat-crossover-body">
+          <p class="helptext">The detailed helmet and vest crossover values are separated from the main weapon database to reduce sideways scrolling. Head and Chest damage are shown in both tables. Searching, sorting and filtering affect both tables together.</p>
+          <div class="combat-armor-scroller" role="region" tabindex="0" aria-label="Scrollable helmet and vest crossover table">
+            <table id="combatArmorTable">
+              <caption>Armour crossover durability by weapon. Head and Chest are unarmoured damage values, repeated from the main weapon table.</caption>
+            </table>
+          </div>
+          <p class="missing-note">— means unavailable. Crossover thresholds apply at point blank.</p>
+          <div class="section-h">Crossover colour guide</div>
+          <div class="color-legend">
+        <span class="clegend-item"><i class="dot" style="background:var(--keep)"></i>Always keep — the math never favors a fresh lower tier</span>
+        <span class="clegend-item"><i class="dot" style="background:var(--amber)"></i>15%+ — swap with a comfortable durability margin</span>
+        <span class="clegend-item"><i class="dot" style="background:var(--orange)"></i>8–14% — swap opportunistically, not urgently</span>
+        <span class="clegend-item"><i class="dot" style="background:var(--swap)"></i>Under 8% — crossover comes right before it breaks, little margin</span>
+      </div>
+        </div>
+      </details>
+    </section>
     <div class="card" style="margin-top:16px" id="realityCard"></div>
     <div class="card" style="margin-top:16px" id="compare-weapons">
       <div class="panel-coord">Compare weapons</div>
@@ -367,11 +379,13 @@ const panelsEl = document.getElementById("panels");
     chip.onkeydown = e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); chip.click(); } };
     cf.appendChild(chip);
   });
+  // Reduce main database from 19 columns to 15 without losing raw damage.
   const COLS = [["name","Weapon"],["cls","Class"],["dmg","Dmg"],["rpm","RPM"],["vel","Vel m/s"],["dps","DPS"],
-    ["mag","Mag"],["vRecoil","Max V.Recoil"],["crouchMod","Crouch Recoil"],["hBias","Horizontal Bias"],["vertSpeed","Vertical Speed"],
-    ["horizSpeed","Horizontal Speed"],["minH","Minimum Horizontal %"],["headDmg","Head"],["helmL3","Helm L3→L2"],["helmL2","Helm L2→L1"],
-    ["chestDmg","Chest"],["vestL3","Vest L3→L2"],["vestL2","Vest L2→L1"]];
-  const GROUPS = [["",1],["Core Stats",6],["Recoil & Handling",6],["Vs. Head / Helmet",3],["Vs. Chest / Vest",3]];
+    ["mag","Mag"],["vRecoil","V.Recoil"],["crouchMod","Crouch"],["hBias","H.Bias"],["vertSpeed","V.Speed"],
+    ["horizSpeed","H.Speed"],["minH","Min H%"],["headDmg","Head Dmg"],["chestDmg","Chest Dmg"]];
+  const GROUPS = [["",1],["Core Stats",6],["Recoil & Handling",6],["Unarmoured Damage",2]];
+  const ARMOR_COLS = [["name","Weapon"],["headDmg","Head Dmg"],["helmL3","Helm L3→L2"],["helmL2","Helm L2→L1"],
+    ["chestDmg","Chest Dmg"],["vestL3","Vest L3→L2"],["vestL2","Vest L2→L1"]];
   const SORTABLE = new Set(["name","dmg","rpm","vel","dps","mag","vRecoil","vertSpeed","horizSpeed","minH","headDmg","chestDmg"]);
   const TOOLTIPS = {
     cls:"Weapon category (AR, SMG, SR, DMR, SG, MG, Pistol)",
@@ -446,10 +460,23 @@ const panelsEl = document.getElementById("panels");
         <td>${w.horizSpeed??'—'}</td>
         <td>${w.minH!=null?w.minH+'%':'—'}</td>
         <td>${w.helm?w.helm.dmg:'—'}</td>
+        <td>${w.vest?w.vest.dmg:'—'}</td>
+      </tr>`).join("");
+    // Render the same sorted and filtered weapons in the optional armour table.
+    const armourTable=document.getElementById("combatArmorTable");
+    const armourHeaders=ARMOR_COLS.map(([key,label])=>`<th scope="col"${TOOLTIPS[key]?` title="${TOOLTIPS[key]}"`:""}>${label}</th>`).join("");
+    armourTable.innerHTML = `<thead><tr><th scope="col" rowspan="1">Weapon</th><th scope="colgroup" colspan="3">Head / Helmet</th><th scope="colgroup" colspan="3">Chest / Vest</th></tr><tr>${armourHeaders}</tr></thead><tbody>`+
+      list.map(w=>`<tr class="armor-crossover-row" tabindex="0" data-n="${w.name}" aria-label="View ${w.name} details">
+        <td class="combat-weapon-cell">${w.name}</td>
+        <td>${w.helm?w.helm.dmg:'—'}</td>
         ${armorCell(w.helm,'l3')}${armorCell(w.helm,'l2')}
         <td>${w.vest?w.vest.dmg:'—'}</td>
         ${armorCell(w.vest,'l3')}${armorCell(w.vest,'l2')}
-      </tr>`).join("");
+      </tr>`).join("")+'</tbody>';
+    armourTable.querySelectorAll("tr.armor-crossover-row").forEach(tr=>{
+      tr.onclick=()=>openWeaponDetail(tr.dataset.n,tr);
+      tr.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openWeaponDetail(tr.dataset.n,tr);}};
+    });
     t.querySelectorAll("tr.rowclick").forEach(tr=>{
       tr.onclick = ()=>openWeaponDetail(tr.dataset.n,tr);
       tr.onkeydown = e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); openWeaponDetail(tr.dataset.n,tr); } };
