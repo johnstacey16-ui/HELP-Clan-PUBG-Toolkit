@@ -162,8 +162,8 @@ const panelsEl = document.getElementById("panels");
         ${armorCell(w.vest,'l3')}${armorCell(w.vest,'l2')}
       </tr>`).join("");
     t.querySelectorAll("tr.rowclick").forEach(tr=>{
-      tr.onclick = ()=>openWeaponDetail(tr.dataset.n);
-      tr.onkeydown = e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); openWeaponDetail(tr.dataset.n); } };
+      tr.onclick = ()=>openWeaponDetail(tr.dataset.n,tr);
+      tr.onkeydown = e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); openWeaponDetail(tr.dataset.n,tr); } };
     });
     t.querySelectorAll("th[data-key]").forEach(th=>{
       th.onclick = ()=> setSort(th.dataset.key);
@@ -207,8 +207,11 @@ function getStrengthsWeaknesses(w){
   if(!strengths.length) strengths.push(`mid-pack on damage, DPS, and magazine size within its ${n>1?w.cls+" class":"category"}`);
   return {strengths, weaknesses};
 }
-function openWeaponDetail(name){
+let lastWeaponTrigger=null;
+function openWeaponDetail(name,trigger){
   const w = WBYNAME[name]; if(!w) return;
+  // Clicking or pressing Enter on a table row remembers where to return focus.
+  lastWeaponTrigger=trigger && trigger.isConnected ? trigger : document.activeElement;
   const rank = (arr,key)=> [...arr].sort((a,b)=>b[key]-a[key]).findIndex(x=>x.name===w.name)+1;
   const dmgRank = rank(WEAPONS,"dmg"), dpsRank = rank(WEAPONS,"dps");
   const {strengths, weaknesses} = getStrengthsWeaknesses(w);
@@ -248,12 +251,32 @@ function openWeaponDetail(name){
     fallback.textContent="Artwork could not load for this weapon. Statistics are unaffected.";
     modalFigure.replaceWith(fallback);
   });
-  document.getElementById("overlay").classList.add("show");
+  const overlay=document.getElementById("overlay");
+  overlay.classList.add("show");
+  // A single, visible close button is the modal's focus target on Xbox Edge.
+  document.querySelector("#modalBody [data-action=\"close-modal\"]").focus({preventScroll:true});
 }
-function closeModal(){ document.getElementById("overlay").classList.remove("show"); }
+function closeModal(){
+  const overlay=document.getElementById("overlay");
+  if(!overlay.classList.contains("show"))return;
+  overlay.classList.remove("show");
+  if(lastWeaponTrigger && lastWeaponTrigger.isConnected)lastWeaponTrigger.focus({preventScroll:true});
+  lastWeaponTrigger=null;
+}
 document.getElementById("overlay").onclick = e=>{ if(e.target.id==="overlay") closeModal(); };
-document.getElementById("overlay").addEventListener("click", e=>{ if(e.target.closest('[data-action="close-modal"]')) closeModal(); });
-document.addEventListener("keydown", e=>{ if(e.key==="Escape") closeModal(); });
+document.getElementById("overlay").addEventListener("click",e=>{
+  if(e.target.closest('[data-action="close-modal"]'))closeModal();
+});
+document.addEventListener("keydown",e=>{
+  const overlay=document.getElementById("overlay");
+  if(!overlay.classList.contains("show"))return;
+  if(e.key==="Escape"){ e.preventDefault();closeModal();return; }
+  // Trap Tab on the one available control so focus cannot wander behind the modal.
+  if(e.key==="Tab"){
+    e.preventDefault();
+    document.querySelector("#modalBody [data-action=\"close-modal\"]").focus({preventScroll:true});
+  }
+});
  
 /* ---------------- 4. REALITY CHECK + COMPARE (folded into the Combat Database panel) ---------------- */
 (function(){

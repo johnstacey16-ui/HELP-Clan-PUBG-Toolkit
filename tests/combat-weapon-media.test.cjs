@@ -47,3 +47,14 @@ test('shared weapon art catalogue only defines entries present in the static wea
  }
  assert.match(read('index.html'),/<script src="visual-catalog\.js"><\/script>/);
 });
+
+test('weapon popups support Xbox/keyboard focus without reintroducing thumbnails',()=>{
+ assert.match(source,/let lastWeaponTrigger=null/);
+ assert.match(source,/openWeaponDetail\(tr\.dataset\.n,tr\)/);
+ assert.match(source,/\.focus\(\{preventScroll:true\}\)/);
+ assert.match(source,/if\(e\.key==="Escape"\)/);
+ assert.match(source,/if\(e\.key==="Tab"\)/);
+ assert.match(source,/tr\.onclick/);
+ assert.doesNotMatch(source,/visual-weapon-thumb|combat-pilot-image/);
+ assert.match(style,/min-width:44px;min-height:44px/);
+});
