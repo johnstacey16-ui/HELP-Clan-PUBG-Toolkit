@@ -172,6 +172,34 @@
         change(get('bp_vest'),'yes');
         eq(text('visual-pack-vest-label'),'Vest: worn','Vest art label restores equipment choice');
         check(child.querySelectorAll('#panel-backpack .visual-pack-items img').length===6,'All six backpack categories illustrated');
+        // Inventory steppers must be readable by assistive technology and usable
+        // with finger/controller-sized targets; none may change the underlying math.
+        const backpackRows=[...child.querySelectorAll('#panel-backpack .bp-row')];
+        check(backpackRows.length>=12,'Backpack has a dense inventory list');
+        for(const row of backpackRows){
+          const item=row.querySelector('.bp-name')?.textContent?.trim();
+          const input=row.querySelector('input[data-bp]');
+          check(!!item&&!!input,'Inventory row has a named quantity input');
+          eq(input.getAttribute('aria-label'),'Quantity of '+item,'Inventory input accessible name');
+          check(input.getBoundingClientRect().height>=44,'Inventory quantity has 44px input target');
+          for(const button of row.querySelectorAll('.bp-stepper button')){
+            check(button.getBoundingClientRect().width>=44&&button.getBoundingClientRect().height>=44,
+              'Backpack +/- tap targets are at least 44px');
+            check(button.getAttribute('aria-label')?.includes(item),'Stepper names its own item');
+          }
+        }
+        const firstBackpackRow=backpackRows[0];
+        const addBackpack=firstBackpackRow.querySelector('.bp-stepper button[data-step="1"]');
+        const removeBackpack=firstBackpackRow.querySelector('.bp-stepper button[data-step="-1"]');
+        const firstQty=firstBackpackRow.querySelector('input[data-bp]');
+        const emptyUsed=text('bp_used');
+        addBackpack.click();
+        eq(firstQty.value,'1','Plus adds exactly one inventory item');
+        check(text('bp_used')!==emptyUsed,'Plus updates existing inventory weight math');
+        removeBackpack.click();
+        eq(firstQty.value,'0','Minus removes the selected inventory item');
+        eq(text('bp_used'),emptyUsed,'Round trip preserves original carry total');
+
         open('panel-range');check(!!get('visual-range').querySelector('img'),'Range art exists');
         open('panel-ttk');check(!!get('visual-ttk').querySelector('img'),'TTK art exists');
         open('panel-recoil2');check(!!get('visual-recoil').querySelector('img'),'Recoil parameters art exists');

@@ -162,6 +162,20 @@ function syncBackpackArt(){
 for(const id of ['bp_type','bp_level','bp_vest']){const el=get(id);if(el)el.addEventListener('change',syncBackpackArt);}
 syncBackpackArt();
 
+// Keep inventory data and calculator logic untouched. Existing +/- buttons
+// receive meaningful accessible names, and the adjacent number input remains editable.
+for(const row of document.querySelectorAll('#panel-backpack .bp-row')){
+ const item=row.querySelector('.bp-name')?.textContent?.trim();
+ const input=row.querySelector('.bp-stepper input[data-bp]');
+ if(!item||!input)continue;
+ input.setAttribute('aria-label','Quantity of '+item);
+ for(const button of row.querySelectorAll('.bp-stepper button[data-step]')){
+  const operation=Number(button.dataset.step)>0?'Add one':'Remove one';
+  button.setAttribute('aria-label',operation+' '+item);
+  button.setAttribute('title',operation+' '+item);
+ }
+}
+
 // Local illustration failure policy: keep the explanatory text readable when an SVG fails.
 // Image errors do not bubble, so use capture; all hooks are presentation-only.
 const illustrationParents='.visual-inline-preview,.visual-reference-banner,.visual-gear-tile,.visual-pack-items,.visual-armour-key';

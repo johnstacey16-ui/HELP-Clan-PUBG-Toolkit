@@ -118,3 +118,27 @@
 /* Controller/keyboard modal: reachable close control without stealing table width. */
 #panel-combat .overlay.show .modal .close { min-width:44px;min-height:44px;touch-action:manipulation; }
 #panel-combat .overlay.show .modal .close:focus-visible { outline:3px solid #ffe0a9;outline-offset:3px; }
+
+/* Mobile and Xbox Edge backpack steppers: reliable 44 px hit areas and focus. */
+#panel-backpack .bp-row .bp-stepper button {
+  min-width:44px;
+  width:44px;
+  min-height:44px;
+  height:44px;
+  flex:0 0 44px;
+  touch-action:manipulation;
+}
+#panel-backpack .bp-row .bp-stepper input[data-bp] {
+  min-height:44px;
+  height:44px;
+  min-width:54px;
+}
+#panel-backpack .bp-row .bp-stepper button:focus-visible,
+#panel-backpack .bp-row .bp-stepper input[data-bp]:focus-visible {
+  outline:3px solid #ffe0a9;
+  outline-offset:2px;
+}
+@media(max-width:390px) {
+  #panel-backpack .bp-row .bp-stepper { max-width:100%; }
+  #panel-backpack .bp-row .bp-stepper button { min-width:44px; }
+}
