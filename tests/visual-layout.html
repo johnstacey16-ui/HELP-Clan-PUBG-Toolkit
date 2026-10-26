@@ -36,7 +36,39 @@ frame.addEventListener('load',()=>{
   }
   if(panelId==='panel-combat'){
    assertion(panel.querySelectorAll('#wTable img').length===0,'Combat DB rows must not contain gun pictures');
+   const scrollRegion=panel.querySelector('#combat-stats-scroller');
+   assertion(!!scrollRegion && scrollRegion.tabIndex===0,'Weapon table must be keyboard-scrollable');
+   assertion(scrollRegion.getAttribute('aria-describedby')==='combat-table-instructions','Missing weapon scroll guidance');
+   if(viewport<=390){
+     assertion(scrollRegion.scrollWidth>scrollRegion.clientWidth+100,'Weapon statistics must extend horizontally');
+     const before=panel.querySelector('#wTable tr.rowclick td:first-child').getBoundingClientRect().left;
+     scrollRegion.scrollLeft=130;
+     const after=panel.querySelector('#wTable tr.rowclick td:first-child').getBoundingClientRect().left;
+     assertion(scrollRegion.scrollLeft>=80,'Weapon table refuses horizontal movement');
+     assertion(Math.abs(after-before)<=2,'Weapon name must stay sticky on horizontal scroll');
+     scrollRegion.scrollLeft=0;
+   }
+
    assertion(!panel.querySelector('.combat-visual-pilot'),'No unsolicited weapon pilot art');
+   const overview=panel.querySelector('#combat-overview-disclosure');
+   assertion(!!overview,'Mobile Combat overview is missing');
+   assertion(overview.open===(viewport>700),'Overview is not responsive to mobile viewport width: '+viewport);
+   if(viewport<=390){
+     const firstRow=panel.querySelector('#wTable tr.rowclick');
+     assertion(!!firstRow,'First weapon row missing');
+     const top=firstRow.getBoundingClientRect().top;
+     assertion(top<830,'First weapon row should appear in 830px mobile preview: '+top);
+   }
+   const guide=panel.querySelector('#combat-armour-disclosure');
+   assertion(guide && !guide.open,'Combat armour guide must be closed by default');
+   assertion(guide.querySelector('summary').getBoundingClientRect().height>=44,'Guide summary requires at least 44px height');
+   const table=panel.querySelector('#combat-database');
+   assertion(!!table,'Weapon database table must be present');
+   const closedTop=table.getBoundingClientRect().top;
+   guide.open=true;
+   const openedTop=table.getBoundingClientRect().top;
+   if(viewport<=390)assertion(openedTop-closedTop>=100,'Mobile guide must reclaim at least 100px when closed');
+   guide.open=false;
   }
   if(panelId==='panel-backpack'){
    const buttons=[...panel.querySelectorAll('.bp-stepper button')];

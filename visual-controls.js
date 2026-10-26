@@ -30,6 +30,21 @@ for(const button of document.querySelectorAll('[data-visual-optic]')){
  });
 }
 syncScope();
+// The Combat DB is table-first on mobile, while desktop keeps the full
+// overview visible. Native <details> lets keyboard/controller users expand it.
+const combatOverview=get('combat-overview-disclosure');
+if(combatOverview){
+ const smallScreen=window.matchMedia('(max-width:700px)');
+ const adaptCombatOverview=()=>{
+  combatOverview.open=!smallScreen.matches;
+ };
+ adaptCombatOverview();
+ if(typeof smallScreen.addEventListener==='function'){
+  smallScreen.addEventListener('change',adaptCombatOverview);
+ }else if(typeof smallScreen.addListener==='function'){
+  smallScreen.addListener(adaptCombatOverview);
+ }
+}
 // Details are closed by default. Do not request their optional images until
 // the player opens the art section. No HTTP images/async timers are necessary.
 function assignOptionalArt(img,src) {
