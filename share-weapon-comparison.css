@@ -1,0 +1,36 @@
+/* Shareable weapon setup — compact, controller/phone-accessible. */
+#panel-ttk .wc-share {
+  margin: 14px 0 16px;
+  padding: 13px 15px;
+  background: rgba(20,37,47,.8);
+  border: 1px solid rgba(34,224,255,.32);
+}
+#panel-ttk .wc-share h3 {font-size:17px; margin:0 0 5px; color:var(--ink);}
+#panel-ttk .wc-share p {font-size:13px; line-height:1.5; margin:4px 0 10px; color:var(--dim);}
+#panel-ttk .wc-share button {
+  min-height:44px;
+  border:1px solid var(--zone);
+  background:var(--bg2);
+  color:var(--ink);
+  font:600 14px var(--body);
+  border-radius:4px;
+  padding:9px 16px;
+  cursor:pointer;
+}
+#panel-ttk .wc-share button:hover {background:rgba(34,224,255,.13);}
+#panel-ttk .wc-share button:focus-visible,
+#panel-ttk .wc-share input:focus-visible {outline:3px solid var(--zone); outline-offset:2px;}
+#panel-ttk .wc-share input {
+  margin-top:10px;
+  display:block;
+  width:100%;
+  min-height:40px;
+  border:1px solid var(--line);
+  border-radius:3px;
+  background:var(--bg2);
+  color:var(--ink);
+  font:12px var(--mono);
+  padding:8px;
+}
+#panel-ttk .wc-share input[hidden] {display:none;}
+#panel-ttk .wc-share #wc_status {min-height:1.5em; margin:8px 0 0;}
