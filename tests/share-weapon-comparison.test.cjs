@@ -20,8 +20,8 @@ function setup(url='https://help-clan-pubg-toolkit.vercel.app/#panel-ttk',withCl
       this.textContent='';
       this.checked=false;
     }
-    addEventListener(name,handler){this.events[name]=handler;}
-    dispatchEvent(event){if(this.events[event.type])this.events[event.type](event);return true;}
+    addEventListener(name,handler){(this.events[name] ||= []).push(handler);}
+    dispatchEvent(event){for(const handler of this.events[event.type]||[])handler(event);return true;}
     focus(){this.focused=true;}
     select(){this.selected=true;}
     click(){this.dispatchEvent(new FakeEvent('click'));}
@@ -150,6 +150,21 @@ test('missing and conflicting query parameters are safely rejected',()=>{
   assert.match(f.wc_status.textContent,/missing required/);
   p.set('wc_v','2');
   assert.match(setup('https://help-clan-pubg-toolkit.vercel.app/?'+p).fields.wc_status.textContent,/unsupported version/);
+});
+
+test('changing a scenario hides the stale link and regenerating it uses current settings',()=>{
+  const {fields}=setup();
+  fields.wc_copy.click();
+  const original=fields.wc_link.value;
+  assert.equal(fields.wc_link.hidden,false);
+  fields.tk_cmpC.value='SKS';
+  fields.tk_cmpC.dispatchEvent({type:'change'});
+  assert.equal(fields.wc_link.hidden,true);
+  assert.match(fields.wc_status.textContent,/Settings changed/);
+  fields.wc_copy.click();
+  assert.equal(fields.wc_link.hidden,false);
+  assert.notEqual(fields.wc_link.value,original);
+  assert.equal(new URL(fields.wc_link.value).searchParams.get('wc_c'),'SKS');
 });
 
 test('a visible manual-copy link is provided when clipboard is unavailable',()=>{
