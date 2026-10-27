@@ -23,7 +23,7 @@
     if(!isAnchor(id))return;
     const anchor=document.getElementById(id);
     if(anchor && typeof anchor.scrollIntoView==='function')
-      anchor.scrollIntoView({behavior:'auto',block:'start'});
+      anchor.scrollIntoView({behavior:id==='damage-guide'||id.startsWith('dg_')?'instant':'auto',block:'start'});
   }
 
   function closeMenu(){
