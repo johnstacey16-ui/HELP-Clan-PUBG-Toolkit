@@ -87,28 +87,37 @@ function calcScope(){
   updateCurrentSpeeds();
 }
 const currentInputs=new Map();
+function summarizeSpeeds(entries){
+ if(entries.length<2)return null;
+ const slowest=entries.reduce((a,b)=>a.speed<=b.speed?a:b);
+ const fastest=entries.reduce((a,b)=>a.speed>=b.speed?a:b);
+ const gap=fastest.speed-slowest.speed;
+ return {slowest,fastest,gap,percent:gap/slowest.speed*100};
+}
 function updateCurrentSpeeds(){
- const ref=SCOPE_CONST[$('px_scope').value],C=Number.parseFloat($('px_sens').value);
- const reference=ref&&Number.isFinite(C)&&C>=0&&C<=20?pixelSpeed(C,ref.A,ref.B):null;
+ const validEntries=[];
  for(const [key,row] of currentInputs){
   const value=Number.parseFloat(row.input.value),valid=Number.isFinite(value)&&value>=0&&value<=20;
   const speed=valid?pixelSpeed(value,SCOPE_CONST[key].A,SCOPE_CONST[key].B):null;
   row.speed.textContent=speed==null?'–':fmt(speed,0);
-  row.delta.textContent=speed==null?(row.input.value===''?'–':'Enter 0–20'):reference==null?'–':((speed-reference)>=0?'+':'')+fmt(speed-reference,0)+' px/s';
-  row.use.disabled=!valid;row.input.setAttribute('aria-invalid',String(row.input.value!==''&&!valid));
+  row.delta.textContent=speed==null?(row.input.value===''?'–':'Enter 0–20'):'–';
+  row.input.setAttribute('aria-invalid',String(row.input.value!==''&&!valid));
+  if(valid)validEntries.push({key,speed});
  }
+ const spread=summarizeSpeeds(validEntries),summary=$('current_speed_spread');
+ if(!spread){summary.textContent='Enter at least two current sensitivities to compare their speeds.';return;}
+ for(const entry of validEntries)currentInputs.get(entry.key).delta.textContent='+'+fmt(entry.speed-spread.slowest.speed,0)+' px/s';
+ summary.textContent=spread.gap<1e-8?'Your entered aiming modes match: no pixel-speed difference.':
+  'Largest mismatch: '+fmt(spread.gap,0)+' px/s ('+fmt(spread.percent,1)+'% faster than your slowest setting). '+
+  scopeLabel(spread.fastest.key)+' is fastest at '+fmt(spread.fastest.speed,0)+' px/s; '+scopeLabel(spread.slowest.key)+' is slowest at '+fmt(spread.slowest.speed,0)+' px/s.';
 }
 for(const key of Object.keys(SCOPE_CONST)){
  const tr=document.createElement('tr'),name=document.createElement('th');name.scope='row';name.textContent=scopeLabel(key);tr.append(name);
  const input=document.createElement('input');input.type='number';input.min='0';input.max='20';input.step='0.1';input.placeholder='0–20';input.id='current_sens_'+key;input.setAttribute('aria-label','Current '+scopeLabel(key)+' sensitivity');
  const speed=document.createElement('output');speed.setAttribute('for',input.id);speed.setAttribute('aria-label',scopeLabel(key)+' pixel speed');
- const delta=document.createElement('span'),use=document.createElement('button');use.type='button';use.textContent='Use as reference';use.setAttribute('aria-label','Use '+scopeLabel(key)+' as reference');
- for(const item of [input,speed,delta,use]){const td=document.createElement('td');td.append(item);tr.append(td);}
- use.addEventListener('click',()=>{
-  $('px_scope').value=key;$('px_sens').value=input.value;
-  $('px_scope').dispatchEvent(new Event('change',{bubbles:true}));$('px_sens').dispatchEvent(new Event('input',{bubbles:true}));
- });
- input.addEventListener('input',updateCurrentSpeeds);currentInputs.set(key,{input,speed,delta,use});
+ const delta=document.createElement('span');
+ for(const item of [input,speed,delta]){const td=document.createElement('td');td.append(item);tr.append(td);}
+ input.addEventListener('input',updateCurrentSpeeds);currentInputs.set(key,{input,speed,delta});
  document.querySelector('#current_sensitivity_table tbody').append(tr);
 }
 ['px_scope','px_sens'].forEach(id=>$(id).addEventListener('input', calcScope));
@@ -137,6 +146,6 @@ function calcRes(){
 $('r_conv').addEventListener('change', calcRes);
  
 /* init all */
-calcVert(); calcScope(); calcRes();
+calcVert(); calcScope(); calcRes(); updateCurrentSpeeds();
  
 })();

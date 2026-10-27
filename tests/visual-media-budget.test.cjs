@@ -13,7 +13,7 @@ test('all illustration media stays inside documented byte budget',()=>{
  assert.equal(totals.count,127);
  assert.ok(totals.total<=manifest.budget.maxTotalImageBytes);
  assert.ok(totals.total<=8*1024*1024,'Publisher art increased unexpectedly: '+totals.total+' bytes');
- const scope=fs.statSync(path.join(root,'assets/optic-3x.svg')).size;
+ const scope=fs.statSync(path.join(root,'assets/optic-red-dot.svg')).size;
  assert.ok(scope<=8*1024,'Initial scope art too large: '+scope);
 });
 test('landing media has explicit dimensions and low image fetch priority',()=>{
@@ -31,5 +31,5 @@ test('Chrome checks initial artwork requests and preview stability before other 
  assert.match(smoke,/initialMediaEntries\.length<=8/);
  assert.match(smoke,/initialMediaBytes<=65536/);
  assert.match(smoke,/previewInitialHeight-preview8xHeight/);
- assert.match(smoke,/Only the 3x reference art is active/);
+ assert.match(smoke,/Only the 1x reference art is active/);
 });

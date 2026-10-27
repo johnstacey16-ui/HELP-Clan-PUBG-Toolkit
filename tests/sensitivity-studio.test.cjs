@@ -31,3 +31,21 @@ test('Combat Lab owns range and TTK engines and supports a TTK model display',()
  assert.match(controller,/pureTtk\(zone\.htk,currentWeapon\(\)\?\.rpm\)/);
  assert.doesNotMatch(html,/<details[^>]+visual-(?:opt-in-art|art-panel)/);
 });
+
+test('current speed spread uses the fastest and slowest entered modes',()=>{
+ const summarize=vm.runInNewContext('('+src.match(/function summarizeSpeeds\(entries\)\{[\s\S]*?\n\}/)[0]+')');
+ assert.equal(summarize([]),null);assert.equal(summarize([{key:'1x',speed:3600}]),null);
+ const result=summarize([{key:'1x',speed:3600},{key:'3x',speed:3912},{key:'15x',speed:model.pixelSpeed(10,53,.2)}]);
+ assert.equal(result.slowest.key,'1x');assert.equal(result.fastest.key,'15x');
+ assert.ok(Math.abs(result.gap-(model.pixelSpeed(10,53,.2)-3600))<1e-8);
+ assert.equal(Math.round(result.percent*10)/10,20.8);
+ assert.equal(summarize([{key:'aim',speed:4347},{key:'15x',speed:4347}]).gap,0);
+});
+test('requested starting settings and top tool guide are explicit',()=>{
+ const html=read('index.html'),combat=read('src/combat/10-combat-rendering.part');
+ assert.match(html,/<option value="1x" selected>/);assert.match(html,/id="px_sens" value="10"/);
+ assert.match(combat,/let tableView='all'/);assert.match(combat,/data-combat-view="all" aria-pressed="true"/);
+ assert.ok(html.indexOf('Choose a sensitivity tool')<html.indexOf('data-panel="scope"'));
+ assert.doesNotMatch(html,/Speeds use this calculator’s 3840-pixel reference width|<th>Reference<\/th>/);
+ assert.doesNotMatch(src,/Use as reference|row\.use|row\.delta.*reference/);
+});

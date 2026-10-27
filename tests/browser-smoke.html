@@ -37,7 +37,9 @@
         eq(scopeComputed.animationName,'none','Scope controls never fade to unreadable opacity');
         eq(scopeComputed.opacity,'1','Scope controls have full opacity immediately');
 
-        check(text('px_speed')!=='–' && text('px_speed')!=='','Scope result initially calculates');
+        eq(get('px_scope').value,'1x','Reference starts at 1x');
+        eq(get('px_sens').value,'10','Reference sensitivity starts at 10');
+        eq(text('px_speed'),'3600','Default 1x sensitivity 10 speed');
         // Synthetic initial-screen media budget, evaluated before tool navigation.
         // This is not a real-user LCP score or device network benchmark.
         const initialMediaEntries=child.defaultView.performance.getEntriesByType('resource')
@@ -47,7 +49,7 @@
         check(!initialMediaEntries.some(entry=>/\/assets\/weapon-/.test(entry.name)),
           'No gun artwork can be requested before a player selects a weapon');
         check(initialMediaBytes<=65536,'Initial visual transfers exceed 64 KiB decoded budget');
-        check(child.querySelectorAll('#panel-sensitivity img[src]').length===1,'Only the 3x reference art is active on the landing panel');
+        check(child.querySelectorAll('#panel-sensitivity img[src]').length===1,'Only the 1x reference art is active on the landing panel');
         eq(child.querySelectorAll('#wTable img').length,45,'All table rows have pictures');
         eq(child.querySelectorAll('#wTable img[src]').length,0,'Inactive database pictures defer requests');
 
@@ -62,24 +64,32 @@
         change(get('px_scope'),'8x');
         const preview8xHeight=scopePreview.getBoundingClientRect().height;
         check(Math.abs(previewInitialHeight-preview8xHeight)<=1,
-          'Switching 3x→8x artwork must not shift the preview card height');
+          'Switching 1x→8x artwork must not shift the preview card height');
         eq(get('visual-scope-image').getAttribute('src'),'assets/optic-8x.svg','8x preview image is correct');
-        change(get('px_scope'),'3x');
+        change(get('px_scope'),'1x');
         eq(get('visual-scope-image').getAttribute('src'),initialSrc,'Scope reference art restores without a layout shift');
         const baselineSpeed=text('px_speed');
         change(get('px_scope'),'aim');const aimSpeed=text('px_speed');
         change(get('px_scope'),'15x');eq(text('px_speed'),aimSpeed,'Aim and 15x share A/B constants');
-        change(get('px_scope'),'3x');
         const current3=get('current_sens_3x');change(current3,'12','input');
-        eq(current3.closest('tr').querySelector('output').textContent,text('px_speed'),'Current speed uses the same pixel-speed model');
-        change(get('current_sens_aim'),'10','input');change(get('current_sens_15x'),'10','input');
+        eq(current3.closest('tr').querySelector('output').textContent,'3912','Current 3x setting has its independent speed');
+        change(get('current_sens_1x'),'10','input');change(get('current_sens_15x'),'10','input');change(get('current_sens_aim'),'10','input');
         eq(get('current_sens_aim').closest('tr').querySelector('output').textContent,get('current_sens_15x').closest('tr').querySelector('output').textContent,'Current Aim speed matches 15x at equal settings');
-        get('current_sens_aim').closest('tr').querySelector('button').click();eq(get('px_scope').value,'aim','Current sensitivity can become the matcher reference');
+        check(text('current_speed_spread').includes('747 px/s'),'Largest mismatch compares fastest and slowest entered settings');
+        check(text('current_speed_spread').includes('20.8%'),'Mismatch percentage uses the slowest entered speed');
+        eq(get('current_sensitivity_table').querySelectorAll('button').length,0,'Current checker has no reference buttons');
+        eq(get('current_sensitivity_table').querySelectorAll('thead th').length,4,'Current checker omits reference column');
+        const mismatchBefore=text('current_speed_spread');change(get('px_scope'),'2x');
+        eq(text('current_speed_spread'),mismatchBefore,'Current mismatch is independent of the matcher reference');
         change(current3,'','input');eq(current3.closest('tr').querySelector('output').textContent,'–','Blank speed clears');
         change(current3,'21','input');eq(current3.closest('tr').querySelector('output').textContent,'–','Invalid sensitivity has no calculated speed');
-        check(current3.closest('tr').querySelector('button').disabled,'Invalid setting cannot become reference');
-        change(get('px_scope'),'3x');change(get('px_sens'),'12','input');
-        eq(text('px_speed'),baselineSpeed,'Speed checker does not alter the original matcher formula');
+        eq(current3.getAttribute('aria-invalid'),'true','Invalid entry is identified');
+        change(get('current_sens_1x'),'','input');
+        check(text('current_speed_spread').includes('no pixel-speed difference'),'Equal Aim and 15x settings show no mismatch');
+        change(get('current_sens_aim'),'','input');change(get('current_sens_15x'),'','input');
+        check(text('current_speed_spread').includes('at least two'),'Fewer than two valid settings clears the comparison');
+        change(get('px_scope'),'1x');change(get('px_sens'),'10','input');
+        eq(text('px_speed'),baselineSpeed,'Current checker does not change matcher settings');
 
         // Sidebar and numbered navigation follow the user-requested position.
         const sidebarIds=[...child.querySelectorAll('#app-toolnav [data-open-panel]')].map(b=>b.dataset.openPanel);
@@ -115,7 +125,8 @@
         scrollRegion.scrollLeft=0;
         check(child.querySelectorAll('#wTable tr.rowclick').length===45,'Every weapon has a compact row');
         const mainHeadings=[...child.querySelectorAll('#wTable tr.colheader th')].map(h=>h.textContent.trim());
-        eq(mainHeadings.length,7,'Core view defaults to seven useful columns');
+        eq(mainHeadings.length,15,'All stats is selected by default');
+        eq(child.querySelector('[data-combat-view=all]').getAttribute('aria-pressed'),'true','All stats button is active on arrival');
         child.querySelector('[data-combat-view=all]').click();
         const allHeadings=[...child.querySelectorAll('#wTable tr.colheader th')].map(h=>h.textContent.trim());
         eq(allHeadings.length,15,'All stats retains every weapon column');

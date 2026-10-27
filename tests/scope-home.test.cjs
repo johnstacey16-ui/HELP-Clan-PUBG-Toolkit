@@ -36,8 +36,7 @@ test('within Sensitivity, Scope Matcher is the first and default calculator',()=
   assert.match(sensitivityHtml,/<span class="n">02<\/span> Vertical Multiplier Calculator/);
   assert.match(sensScript,/panel\.classList\.add\('active'\)/);
   assert.doesNotMatch(sensScript,/aria-hidden|switchTab/);
-  assert.ok(sensitivityHtml.indexOf('Other sensitivity tools')>sensitivityHtml.indexOf('data-panel="res"'),
-    'Do not put an explanatory wall above the primary calculator');
+  assert.ok(sensitivityHtml.indexOf('Choose a sensitivity tool')<sensitivityHtml.indexOf('data-panel="scope"'),'Tool guide belongs beside the top jump links');
 });
 
 test('owner-authored empirical formulas and scope values are preserved',()=>{
