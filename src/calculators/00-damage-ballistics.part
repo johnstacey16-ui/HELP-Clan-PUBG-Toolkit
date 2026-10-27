@@ -336,7 +336,8 @@ function drawLineChart(canvas, series, opts={}){
   ctx.fillStyle = "#0f161d"; ctx.fillRect(0,0,W,H);
   const allY = series.flatMap(s=>s.data.map(p=>p.y));
   const minY = Math.min(0,...allY), maxY = Math.max(...allY,1);
-  const minX = Math.min(...series[0].data.map(p=>p.x)), maxX = Math.max(...series[0].data.map(p=>p.x));
+  const allX = series.flatMap(s=>s.data.map(p=>p.x));
+  const minX = Math.min(...allX), maxX = Math.max(...allX);
   const xAt = x => pad + (W-2*pad) * ((x-minX)/(maxX-minX||1));
   const yAt = y => H-pad - (H-2*pad) * ((y-minY)/(maxY-minY||1));
   ctx.strokeStyle = "#223140"; ctx.lineWidth = 1;

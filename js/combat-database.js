@@ -298,7 +298,8 @@ const panelsEl = document.getElementById("panels");
       <div class="panel-coord">A1 · Combat Database</div>
       <p class="combat-choose-hint">Select a weapon for its picture and full statistics.</p>
       <div class="toolbar">
-        <input type="text" id="wSearch" placeholder="Search weapon name…">
+        <input type="text" id="wSearch" placeholder="Search weapon name…" aria-label="Search weapon database">
+        <label class="tt-toggle"><input type="checkbox" id="wCrates" checked> Include crate weapons</label>
         <select id="wSort">
           <option value="dmg-desc">Sort: Damage ↓</option>
           <option value="dps-desc">Sort: DPS ↓</option>
@@ -322,7 +323,9 @@ const panelsEl = document.getElementById("panels");
       <p class="helptext" id="combat-view-status" role="status"></p>
       <div class="sort-hint" id="combat-table-instructions">Tap heading to sort · tap a weapon for its picture · swipe sideways for more stats.</div>
       <div class="combat-stats-scroller" id="combat-stats-scroller" role="region" tabindex="0" aria-label="Scrollable weapon statistics" aria-describedby="combat-table-instructions"><table id="wTable"></table></div>
-      <div class="missing-note">— means no available value.</div>
+      <div class="missing-note">— means no available value. Mini bars compare the recorded numeric stats; they are not overall weapon ratings.</div>
+      <details class="tt-disclosure" id="combat-insights"><summary>Leaders in this selection</summary><div id="combat-leaders" class="tt-leaders"></div></details>
+      <details class="tt-disclosure" id="combat-browser"><summary>Browse weapon cards</summary><label class="tt-toggle"><input type="checkbox" id="combat-card-art"> Show optional weapon pictures</label><div id="combat-cards" class="tt-weapon-cards"></div></details>
       
       <div class="helptext" style="margin-bottom:6px">Recoil &amp; handling columns:</div>
       <dl class="legend">
@@ -334,6 +337,17 @@ const panelsEl = document.getElementById("panels");
         <div><dt>Minimum Horizontal %</dt><dd>Minimum horizontal recoil scalar (for example, 0.40 = 40%); alone it cannot predict sustained spray consistency.</dd></div>
       </dl>
     </div>
+    <section class="card" id="armor-quick-check">
+      <details class="tt-disclosure"><summary>Check a damaged helmet or vest</summary>
+        <p class="helptext">Compare your remaining durability with the existing point-blank crossover record for a fresh lower tier. Head and chest only; this is a threshold lookup, not a simulated fight.</p>
+        <div class="toolbar">
+          <div class="field"><label for="aq_weapon">Weapon</label><select id="aq_weapon">${WEAPONS.map(w=>'<option>'+w.name+'</option>').join('')}</select></div>
+          <div class="field"><label for="aq_gear">Equipment</label><select id="aq_gear"><option value="vest">Vest · chest hit</option><option value="helmet">Helmet · head hit</option></select></div>
+          <div class="field"><label for="aq_tier">Current → fresh lower tier</label><select id="aq_tier"><option value="3">Level 3 → Level 2</option><option value="2">Level 2 → Level 1</option></select></div>
+          <div class="field"><label for="aq_durability">Remaining durability</label><input type="number" id="aq_durability" min="0" step="1" value="100"></div>
+        </div><div id="aq_verdict" class="tt-verdict" role="status" aria-live="polite"></div>
+      </details>
+    </section>
     <section class="card combat-crossover-card" id="combat-armor-crossover-section" aria-label="Helmet and vest crossover data">
       <details id="combat-armor-crossovers">
         <summary>Helmet &amp; vest crossover table <span class="combat-crossover-hint">Expand to compare armour thresholds · Head and Chest damage also appear here</span></summary>
@@ -439,6 +453,7 @@ const panelsEl = document.getElementById("panels");
   function render(){
     const q = document.getElementById("wSearch").value.toLowerCase();
     let list = ROWS.filter(w=> w.name.toLowerCase().includes(q) && (activeClass==="All"||w.cls===activeClass)
+      && (document.getElementById("wCrates").checked || !w.crate)
       && (armorFilter==="all" || (armorFilter==="vest"&&w.vest) || (armorFilter==="helm"&&w.helm)));
     list.sort((a,b)=>{
       if(sortKey==="name") return a.name.localeCompare(b.name)*(sortDir==="asc"?1:-1);
@@ -483,6 +498,24 @@ const panelsEl = document.getElementById("panels");
       return count ? '<th colspan="'+count+'">'+label+'</th>' : '';
     }).join('');
     document.getElementById('combat-view-status').textContent=list.length+' weapons · '+({core:'Core weapon statistics',damage:'Unarmoured damage at point blank',handling:'Configuration parameters, not a predicted spray',all:'All available statistics'}[tableView]);
+    // Numeric bars preserve text and only encode scale within the full registry.
+    const scales={dmg:Math.max(...WEAPONS.map(w=>w.dmg)),rpm:Math.max(...WEAPONS.map(w=>w.rpm)),vel:Math.max(...WEAPONS.map(w=>w.vel)),dps:Math.max(...WEAPONS.map(w=>w.dps)),mag:Math.max(...WEAPONS.map(w=>w.mag))};
+    const shown=VIEW_COLUMNS[tableView];
+    for(const row of t.querySelectorAll('tr.rowclick')){
+      const w=WBYNAME[row.dataset.n];
+      [...row.children].forEach((cell,i)=>{
+        const key=COLS[shown[i]][0];
+        if(!scales[key]||!Number.isFinite(w[key]))return;
+        const bar=document.createElement('i');bar.className='tt-mini-bar tt-'+key;bar.setAttribute('aria-hidden','true');
+        bar.style.setProperty('--stat-fill',Math.max(0,Math.min(100,w[key]/scales[key]*100))+'%');cell.append(bar);
+      });
+    }
+    document.getElementById('combat-leaders').innerHTML=['dmg','rpm','vel','mag'].map((key,i)=>{
+      const eligible=list.filter(w=>Number.isFinite(w[key]));
+      const best=eligible.length?eligible.reduce((a,b)=>a[key]>=b[key]?a:b):null;
+      return '<div><span>'+['Highest base damage','Highest RPM','Fastest bullet speed','Largest base magazine'][i]+'</span><strong>'+(best?best[key]:'No data')+'</strong><small>'+(best?best.name:'No matching weapons')+'</small></div>';
+    }).join('');
+    renderCards(list);
     // Render the same sorted and filtered weapons in the optional armour table.
     const armourTable=document.getElementById("combatArmorTable");
     const armourHeaders=ARMOR_COLS.map(([key,label])=>`<th scope="col"${TOOLTIPS[key]?` title="${TOOLTIPS[key]}"`:""}>${label}</th>`).join("");
@@ -519,6 +552,25 @@ const panelsEl = document.getElementById("panels");
     document.querySelectorAll('[data-combat-view]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));
     render();
   });
+  function renderCards(list){
+    const cards=document.getElementById('combat-cards');cards.replaceChildren();
+    if(!document.getElementById('combat-browser').open)return;
+    for(const w of list){
+      const card=document.createElement('article');card.className='tt-weapon-card';
+      const art=window.HELP_VISUAL_WEAPONS&&window.HELP_VISUAL_WEAPONS[w.name];
+      if(document.getElementById('combat-card-art').checked&&art){const img=document.createElement('img');img.src='assets/'+art;img.width=180;img.height=60;img.alt='Representative '+w.name;img.loading='lazy';card.append(img);}
+      const name=document.createElement('h3');name.textContent=w.name;card.append(name);
+      const stats=document.createElement('p');stats.textContent=w.cls+' · '+w.ammo+' · '+w.dmg+' base damage · '+w.rpm+' RPM';card.append(stats);
+      for(const [label,action] of [['Details',button=>openWeaponDetail(w.name,button)],['Compare',()=>{document.getElementById('cmpA').value=w.name;document.getElementById('cmpA').dispatchEvent(new Event('change',{bubbles:true}));location.hash='compare-weapons';}],['Hit zones',()=>{const select=document.getElementById('hz_weapon');select.value=w.name;select.dispatchEvent(new Event('change',{bubbles:true}));location.hash='panel-hit-zone';}]]){
+        const button=document.createElement('button');button.type='button';button.textContent=label;button.setAttribute('aria-label',label+' for '+w.name);button.addEventListener('click',()=>action(button));card.append(button);
+      }
+      cards.append(card);
+    }
+    if(!list.length)cards.textContent='No matching weapons. Clear the search or change the class filter.';
+  }
+  document.getElementById('combat-browser').addEventListener('toggle',render);
+  document.getElementById('combat-card-art').addEventListener('change',render);
+  document.getElementById('wCrates').addEventListener('change',render);
   document.getElementById("wSearch").oninput = render;
   document.getElementById("wSort").onchange = ()=>{
     [sortKey,sortDir] = document.getElementById("wSort").value.split("-");
@@ -627,6 +679,29 @@ document.addEventListener("keydown",e=>{
   }
 });
  
+
+(function(){
+  const get=id=>document.getElementById(id);
+  get('aq_weapon').value='AKM';
+  function update(){
+    const input=get('aq_durability'),raw=input.value.trim(),remaining=Number(raw),tier=get('aq_tier').value;
+    const source=(get('aq_gear').value==='vest'?VEST:HELM)[norm(get('aq_weapon').value)];
+    const out=get('aq_verdict');
+    out.classList.remove('tt-keep','tt-swap');
+    if(raw===''||!Number.isFinite(remaining)||remaining<0){out.textContent='Enter a non-negative remaining durability.';return;}
+    if(!source){out.textContent='No crossover record for this weapon and equipment.';return;}
+    const threshold=parseThreshold(source[tier==='3'?'l3':'l2']);
+    if(!threshold.always&&!Number.isFinite(threshold.raw)){out.textContent='No usable crossover threshold for this selection.';return;}
+    const swap=remaining===0||(!threshold.always&&remaining<=threshold.raw);
+    out.classList.add(swap?'tt-swap':'tt-keep');
+    out.textContent=(swap?'Replace with the fresh Level '+(Number(tier)-1):'Keep the current Level '+tier)+' · '+remaining+' durability. '+
+      (threshold.always?'Record: keep the higher tier at any durability above zero.':'Recorded swap threshold: '+threshold.label+'.')+
+      ' Assumes the documented point-blank '+(get('aq_gear').value==='vest'?'chest':'head')+' hit and a fresh lower-tier replacement.';
+  }
+  for(const id of ['aq_weapon','aq_gear','aq_tier','aq_durability']){get(id).addEventListener('input',update);get(id).addEventListener('change',update);}
+  update();
+})();
+
 /* ---------------- 4. REALITY CHECK + COMPARE (folded into the Combat Database panel) ---------------- */
 (function(){
   function counts(raw){

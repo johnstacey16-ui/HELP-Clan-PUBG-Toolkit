@@ -405,6 +405,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
 <link rel="stylesheet" href="visual-assets.css">
 <link rel="stylesheet" href="src/explorer/hit-zone-explorer.scaffold.css">
 <link rel="stylesheet" href="combat-workspace.css">
+<link rel="stylesheet" href="toolkit-layout.css">
 </head>
 <body>
 <div id="app-shell">
@@ -746,6 +747,13 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
     <div class="section-h" id="rg_chartTitle">Damage at measured checkpoints</div>
     <canvas id="rg_chartDmg" width="1100" height="200"></canvas>
   </div>
+  <details class="card tt-disclosure" id="rg_comparison">
+    <summary>Compare another weapon at recorded checkpoints</summary>
+    <div class="field"><label for="rg_compare">Reference weapon</label><select id="rg_compare"><option value="">Choose a reference weapon</option></select></div>
+    <p class="helptext" id="rg_compareNote" role="status">Select a reference weapon. Comparisons use the same hitbox and equipment.</p>
+    <canvas id="rg_compareChart" width="1100" height="220" role="img" aria-label="Damage comparison at recorded checkpoints; exact values are listed in the following table"></canvas>
+    <div class="tt-table-scroll"><table id="rg_compareTable"></table></div>
+  </details>
   <div class="card">
     <div class="section-h">Hits-to-kill and TTK at recorded checkpoints</div>
     <p class="helptext" style="margin-bottom:10px">Shotgun minimum shells assume every pellet hits the selected body area. Actual fights may require more.</p>
@@ -1182,6 +1190,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
 <script src="js/toolkit-calculators.js"></script>
 <script src="visual-controls.js"></script>
 <script src="combat-workspace.js"></script>
+<script src="toolkit-layout.js"></script>
  
 <script src="sticky-weapon-header.js" defer></script>
 </body>
