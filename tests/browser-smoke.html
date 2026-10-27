@@ -576,6 +576,7 @@
         change(get('rg_weapon'),'S686');
         check(text('rg_compareNote').includes('Mixed units'),'Pellet and player damage are distinguished');
         check(get('rg_compareChart').hidden,'Mixed-unit data cannot produce an overlay');
+        eq(child.defaultView.getComputedStyle(get('rg_compareChart')).display,'none','Mixed-unit chart is actually hidden');
         change(get('rg_weapon'),'AKM');change(get('rg_compare'),'M416');
         get('rg_comparison').open=true;get('rg_comparison').dispatchEvent(new Event('toggle'));
         check(!get('rg_compareChart').hidden,'Same-unit comparison exposes recorded checkpoint overlay');
@@ -587,6 +588,14 @@
         slot.querySelectorAll('button')[1].click();
         eq(get('at_grip').selectedIndex,1,'Slot button updates existing calculator');
         check(!slot.open,'Choosing a slot closes its menu');
+        const attachPicker=get('at_weapon').parentElement.querySelector('.workspace-picker');
+        attachPicker.open=true;attachPicker.dispatchEvent(new Event('toggle'));
+        await new Promise(resolve=>setTimeout(resolve,0));
+        [...attachPicker.querySelectorAll('.tt-class-pills button')].find(b=>b.textContent==='SMG').click();
+        const shownNames=[...attachPicker.querySelectorAll('.workspace-weapon-list button')].filter(b=>!b.hidden).map(b=>b.textContent.trim());
+        check(shownNames.includes('Vector')&&!shownNames.includes('M416'),'Class filter uses weapon registry');
+        attachPicker.open=false;
+
 
         open('panel-backpack');get('bp_clear').click();
         const bagAmmo=child.querySelector('input[data-bp="556"]');bagAmmo.value='20';bagAmmo.dispatchEvent(new Event('input',{bubbles:true}));

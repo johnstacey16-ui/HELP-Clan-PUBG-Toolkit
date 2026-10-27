@@ -11,6 +11,11 @@ for(const id of ['panel-range','panel-ttk','panel-attach']){
  const cards=[...wrap.children].filter(el=>el.classList.contains('card')&&el.tagName!=='DETAILS');
  if(cards[0])cards[0].classList.add('tt-setup');
  if(cards[1])cards[1].classList.add('tt-primary-results');
+ if(id==='panel-ttk'&&cards[1]){
+  const grids=cards[1].querySelectorAll('.grid3');
+  if(grids.length===2){while(grids[1].firstElementChild)grids[0].append(grids[1].firstElementChild);grids[1].remove();}
+ }
+
 }
 // In-table and in-picker class navigation use the actual weapon registry.
 for(const select of document.querySelectorAll('#hz_weapon,#rg_weapon,#tk_weapon,#at_weapon,#rc_weapon')){

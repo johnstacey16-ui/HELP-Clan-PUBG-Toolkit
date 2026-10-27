@@ -76,3 +76,19 @@
  #panel-combat #combat-database .tt-toggle {font-size:11px;min-height:32px}
  .workspace-picker .tt-class-pills button {min-height:38px;padding:6px 9px}
 }
+#rg_comparison canvas[hidden] {display:none!important}
+#panel-attach .wrap>h1 {font-size:30px;line-height:1.15}
+:is(#panel-range,#panel-ttk,#panel-attach) .tt-primary-results>.grid4,
+:is(#panel-range,#panel-ttk,#panel-attach) .tt-primary-results>.grid3 {grid-template-columns:repeat(2,minmax(0,1fr))}
+#panel-range #rg_flight {font-size:clamp(20px,2.1vw,28px);white-space:nowrap}
+#panel-attach .tt-setup #visual-attachment-grid {margin-top:16px}
+@media(min-width:901px){
+ #panel-combat .combat-overview-content {display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 16px;align-items:center}
+ #panel-combat .combat-overview-content>.sub {grid-column:1;margin:0;font-size:13px;line-height:1.5}
+ #panel-combat .combat-overview-content>.hero-stats {grid-column:2;margin:0}
+ #panel-combat .combat-overview-content>.hero-hint {display:none}
+ #panel-combat .combat-overview-content>.quicknav {grid-column:1/-1;margin:0;gap:6px}
+ #panel-combat header.hero h1 {margin-bottom:10px}
+ #panel-combat .hero-stats div {padding:6px 9px;min-width:75px}
+ #panel-combat #combat-armour-disclosure {margin-top:8px}
+}
