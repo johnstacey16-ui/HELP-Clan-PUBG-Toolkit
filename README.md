@@ -4,6 +4,8 @@
 
 The Recoil Analyzer now includes the owner-approved PUBGIntel curve reference for 27 weapons, stance and attachment comparisons, 10-shot stages, all-shot numeric tables and CSV, MG3 rate selection, and five-colour randomized sprays with firing-rate animation. Existing HELP values win conflicts. [PR #51](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/pull/51) passed all 195 unit checks and browser/responsive checks; production curves and spray controls are verified. See [the implementation checklist](RECOIL_ANALYZER_ROADMAP.md) and [reference audit](docs/recoil-reference-audit.md).
 
+[PR #52](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/pull/52) adopts MP5K 901 / Vector 1101 extracted RPM and consistent rounded DPS. Supported attachment values and SLR tendency are retained; MG3 active slow-mode timing and attachment stacking are visibly unresolved. All 195 unit checks and browser/responsive checks pass; production rates and notices are verified. See [the evidence decisions](docs/recoil-conflict-verification-2026-10-27.md).
+
 ## Visible artwork, Sensitivity Studio and Combat Lab — released (27 October 2026)
 
 [PR #49](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/pull/49) displays pictures without artwork toggles, stacks the three sensitivity tools with jump links, adds Aim and the current-sensitivity px/s checker, groups armour guidance, and brings the model, range and TTK into one Combat Lab. All 185 unit checks and browser/responsive checks pass; the production flows are verified. See [the completed checklist](UNIFIED_TOOLKIT_ROADMAP.md).

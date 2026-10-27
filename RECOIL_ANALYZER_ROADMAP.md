@@ -27,4 +27,6 @@ Owner request: include all functionality from the PUBGIntel Per-Shot Analyzer; a
 - [x] Mark MG3 timing and attachment stacking unresolved where calculations are presented.
 - [x] Regenerate conflict audit: two remaining weapon conflicts and 28 attachment differences.
 - [x] Pass all 195 unit checks.
-- [ ] Pass browser/responsive CI and verify production.
+- [x] Pass browser/responsive CI and verify production.
+  - Green run `40489147712`, PR #52 merged as `b983a2605de95415cfae7c4c44d5847fbfce6dee`.
+  - Production shows MP5K 901 RPM, Vector 1101 RPM and extracted-rate provenance. MG3 shows 700 disputed / 990 and the unresolved slow-mode notice. Additive stacking disclosure is visible.
