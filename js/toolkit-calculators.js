@@ -371,6 +371,7 @@ function drawLineChart(canvas, series, opts={}){
   });
 }
 
+
 /* ================= 1. EFFECTIVE RANGE & DAMAGE ================= */
 // Strict source-only policy: show published checkpoints, never inferred distances
 // or assumed shotgun pellet connections.
@@ -551,6 +552,7 @@ function drawLineChart(canvas, series, opts={}){
   update();
 })();
 
+
 /* ================= 2. TTK CALCULATOR ================= */
 (function(){
   const $ = id => document.getElementById(id);
@@ -558,6 +560,18 @@ function drawLineChart(canvas, series, opts={}){
   fillWeaponSelect($("tk_cmpA"), "AKM");
   fillWeaponSelect($("tk_cmpB"), "UMP9");
   $("tk_cmpC").innerHTML += PT.WEAPONS.map(w=>"<option>"+w.name+"</option>").join("");
+  function reloadDistances(){
+    const select=$("tk_distance"), previous=select.value;
+    const rows=sourcedRangeRows(PT.WBYNAME[$("tk_weapon").value]) || [];
+    select.replaceChildren();
+    rows.forEach(([m])=>select.add(new Option(m+" m",String(m))));
+    select.disabled=!rows.length;
+    if(!rows.length) select.add(new Option("No recorded checkpoints",""));
+    if(rows.some(([m])=>String(m)===previous)) select.value=previous;
+  }
+  reloadDistances();
+  $("tk_weapon").addEventListener("change",reloadDistances);
+  $("tk_weapon").addEventListener("input",reloadDistances);
   const display = (value, digits) => value == null ? "No data" : Number(value).toFixed(digits);
   const displayReload = r => r.withReload == null ? "No data" :
     (r.reloadConfidence==="estimate" ? "≈" : "")+display(r.withReload,2);
@@ -577,10 +591,10 @@ function drawLineChart(canvas, series, opts={}){
       // 0m exists in the published pellet tables: only the theoretical
       // minimum shells is calculable; damage-to-player and time-to-kill
       // still require knowing how many pellets connected.
-      return {dmg:null,htk:shotgunMinShellsAt(w,0,hitbox,armor),
+      return {dmg:null,htk:shotgunMinShellsAt(w,Number($("tk_distance").value),hitbox,armor),
         pure:null,withReload:null,reloads:null,bestCase:true};
     }
-    const dmg = finalDamageAt(w, 0, hitbox, armor);
+    const dmg = finalDamageAt(w, Number($("tk_distance").value), hitbox, armor);
     if(dmg==null){
       return {dmg:null,htk:null,pure:null,withReload:null,reloads:null};
     }
@@ -609,7 +623,7 @@ function drawLineChart(canvas, series, opts={}){
     if(SHOTGUN_PELLETS[w.name]){
       tkNote="Minimum shells assumes all "+SHOTGUN_PELLETS[w.name].count+" pellets hit the selected area. Actual shots may need more; TTK unavailable.";
     } else if(r.dmg==null){
-      tkNote="No 0m damage reading for "+w.name+"; TTK unavailable.";
+      tkNote="No damage reading at "+$("tk_distance").value+"m for "+w.name+"; TTK unavailable.";
     } else if(r.withReload==null){
       tkNote="Reload time is unavailable for "+w.name+"; total TTK cannot be calculated.";
     } else if(r.reloads>0){
@@ -631,7 +645,7 @@ function drawLineChart(canvas, series, opts={}){
         '</td><td>'+display(r.pure,2)+
         '</td><td>'+displayReload(r)+'</td></tr>').join("");
   }
-  ["tk_weapon","tk_hitbox","tk_armor"].forEach(id=>{
+  ["tk_weapon","tk_hitbox","tk_armor","tk_distance"].forEach(id=>{
     $(id).addEventListener("input",update);
     $(id).addEventListener("change",update);
   });
@@ -642,6 +656,7 @@ function drawLineChart(canvas, series, opts={}){
   ["tk_cmpA","tk_cmpB","tk_cmpC"].forEach(id=>$(id).addEventListener("change",renderCompare));
   update();
 })();
+
 
 /* ================= 3. RECOIL EVIDENCE EXPLORER ================= */
 (function(){
@@ -705,6 +720,7 @@ function drawLineChart(canvas, series, opts={}){
   });
   update();
 })();
+
 
 /* ================= 4. ATTACHMENTS & RECOIL ================= */
 const ATTACH_MOD = {
@@ -1126,6 +1142,7 @@ function extendedCapFor(w,kind="extended"){
   update();
 })();
 
+
 /* ================= HIT ZONE EXPLORER =================
  * The controller runs within the established calculator IIFE.
  * All damage values come from the sourced all-zone adapter.
@@ -1334,6 +1351,7 @@ if(hitZonePanel){
     isPelletShotgun:w=>Boolean(SHOTGUN_PELLETS[w.name])
   });
 }
+
 /* ================= 5. BACKPACK CALCULATOR ================= */
 // Update 41.1 verifies Jammer and normal backpack carry bonuses match;
 // do not confuse the +150/+200/+250 pack additions with total character capacity.
@@ -1441,3 +1459,4 @@ const BP_THROW = [
 
 
 })();
+

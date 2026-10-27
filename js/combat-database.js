@@ -287,6 +287,7 @@ function parseThreshold(str){
   return {always:false, label:str};
 }
  
+
 /* ---------------- SINGLE-PAGE CONTAINER ---------------- */
 const panelsEl = document.getElementById("panels");
  
@@ -313,6 +314,13 @@ const panelsEl = document.getElementById("panels");
         </select>
       </div>
       <div class="toolbar" id="wClassFilters"></div>
+      <div class="workspace-segments" role="group" aria-label="Weapon table view" id="combat-views">
+        <button type="button" data-combat-view="core" aria-pressed="true">Core</button>
+        <button type="button" data-combat-view="damage" aria-pressed="false">Damage</button>
+        <button type="button" data-combat-view="handling" aria-pressed="false">Handling</button>
+        <button type="button" data-combat-view="all" aria-pressed="false">All stats</button>
+      </div>
+      <p class="helptext" id="combat-view-status" role="status"></p>
       <div class="sort-hint" id="combat-table-instructions">Tap heading to sort · tap a weapon for its picture · swipe sideways for more stats.</div>
       <div class="combat-stats-scroller" id="combat-stats-scroller" role="region" tabindex="0" aria-label="Scrollable weapon statistics" aria-describedby="combat-table-instructions"><table id="wTable"></table></div>
       <div class="missing-note">— means no available value.</div>
@@ -383,6 +391,8 @@ const panelsEl = document.getElementById("panels");
   const COLS = [["name","Weapon"],["cls","Class"],["dmg","Dmg"],["rpm","RPM"],["vel","Vel m/s"],["dps","DPS"],
     ["mag","Mag"],["vRecoil","V.Recoil"],["crouchMod","Crouch"],["hBias","H.Bias"],["vertSpeed","V.Speed"],
     ["horizSpeed","H.Speed"],["minH","Min H%"],["headDmg","Head Dmg"],["chestDmg","Chest Dmg"]];
+  let tableView='core';
+  const VIEW_COLUMNS={core:[0,1,2,3,4,5,6],damage:[0,1,2,13,14],handling:[0,1,7,8,9,10,11,12],all:COLS.map((_,i)=>i)};
   const GROUPS = [["",1],["Core Stats",6],["Recoil & Handling",6],["Unarmoured Damage",2]];
   const ARMOR_COLS = [["name","Weapon"],["headDmg","Head Dmg"],["helmL3","Helm L3→L2"],["helmL2","Helm L2→L1"],
     ["chestDmg","Chest Dmg"],["vestL3","Vest L3→L2"],["vestL2","Vest L2→L1"]];
@@ -462,6 +472,18 @@ const panelsEl = document.getElementById("panels");
         <td>${w.helm?w.helm.dmg:'—'}</td>
         <td>${w.vest?w.vest.dmg:'—'}</td>
       </tr>`).join("");
+    // Remove unwanted columns from this rendered view, including its group spans.
+    const visible=new Set(VIEW_COLUMNS[tableView]);
+    for(const row of t.querySelectorAll('tr:not(.grouprow)')){
+      [...row.children].forEach((cell,i)=>{if(!visible.has(i))cell.remove();});
+    }
+    let offset=0;
+    t.querySelector('.grouprow').innerHTML=GROUPS.map(([label,span])=>{
+      const count=Array.from({length:span},(_,i)=>offset+i).filter(i=>visible.has(i)).length;
+      offset+=span;
+      return count ? '<th colspan="'+count+'">'+label+'</th>' : '';
+    }).join('');
+    document.getElementById('combat-view-status').textContent=list.length+' weapons · '+({core:'Core weapon statistics',damage:'Unarmoured damage at point blank',handling:'Configuration parameters, not a predicted spray',all:'All available statistics'}[tableView]);
     // Render the same sorted and filtered weapons in the optional armour table.
     const armourTable=document.getElementById("combatArmorTable");
     const armourHeaders=ARMOR_COLS.map(([key,label])=>`<th scope="col"${TOOLTIPS[key]?` title="${TOOLTIPS[key]}"`:""}>${label}</th>`).join("");
@@ -486,6 +508,18 @@ const panelsEl = document.getElementById("panels");
       th.onkeydown = e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); setSort(th.dataset.key); } };
     });
   }
+  document.getElementById('combat-views').addEventListener('click',event=>{
+    const button=event.target.closest('[data-combat-view]');
+    if(!button)return;
+    tableView=button.dataset.combatView;
+    const allowed=VIEW_COLUMNS[tableView].map(i=>COLS[i][0]);
+    if(!allowed.includes(sortKey)){
+      sortKey=tableView==='handling'?'vRecoil':'dmg';sortDir='desc';
+      document.getElementById('wSort').value=sortKey+'-'+sortDir;
+    }
+    document.querySelectorAll('[data-combat-view]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));
+    render();
+  });
   document.getElementById("wSearch").oninput = render;
   document.getElementById("wSort").onchange = ()=>{
     [sortKey,sortDir] = document.getElementById("wSort").value.split("-");
@@ -686,3 +720,4 @@ PT.WEAPONS = WEAPONS;
 PT.WBYNAME = WBYNAME;
 })();
  
+
