@@ -687,6 +687,24 @@
         check(get('rc_analyzer').hidden,'Unsupported weapon hides model tools');
         change(get('rc_weapon'),'AKM');
 
+        await open('panel-hit-zone');
+        eq(get('dg_class_models').children.length,7,'Seven class models are visible');
+        eq(get('dg_combined_models').children.length,7,'Seven combined models are visible');
+        eq(get('damage-guide').querySelectorAll('svg image').length,15,'Every guide has its own portrait');
+        eq(get('dg_combined_models').querySelectorAll('[data-guide-value]').length,91,'All thirteen values on each combined model');
+        change(get('dg_helmet'),'0');
+        eq(get('dg_combined_models').querySelector('[data-guide-class="AR"] [data-guide-value="head"]').textContent,'235%','Helmet affects combined head factor');
+        eq(get('dg_combined_models').querySelector('[data-guide-class="AR"] [data-guide-value="chest"]').textContent,'66%','Helmet does not affect chest factor');
+        change(get('dg_vest'),'0');
+        eq(get('dg_combined_models').querySelector('[data-guide-class="AR"] [data-guide-value="chest"]').textContent,'110%','Vest affects combined chest factor');
+        change(get('hz_weapon'),'M416');change(get('hz_distance'),'100');change(get('hz_helmet'),'2');change(get('hz_vest'),'2');
+        get('hz_body').querySelector('[data-hit-zone="chest"]').dispatchEvent(new child.defaultView.MouseEvent('click',{bubbles:true}));
+        await Promise.resolve();eq(text('dg_actual_damage'),'25.74','Worked formula follows actual selected checkpoint and region');
+        get('dg_copy_gear').click();eq(get('dg_helmet').value,'2','Copy gear takes helmet from Combat Lab');eq(get('dg_vest').value,'2','Copy gear takes vest from Combat Lab');
+        await Promise.all([...get('damage-guide').querySelectorAll('svg image')].map(el=>new Promise((resolve,reject)=>{
+          const probe=new child.defaultView.Image();probe.onload=()=>probe.naturalWidth===512&&probe.naturalHeight===768?resolve():reject(Error('Guide portrait dimensions'));probe.onerror=()=>reject(Error('Guide portrait decode'));probe.src=new URL(el.getAttribute('href'),child.location.href).href;
+        })));
+
         await open('panel-backpack');
         change(get('bp_type'),'jammer');
         change(get('bp_level'),'1');

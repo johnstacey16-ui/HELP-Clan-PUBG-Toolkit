@@ -13,6 +13,7 @@ frame.addEventListener('load',()=>{
  const viewport=frame.contentWindow.innerWidth;
  const checks=[
  ['panel-sensitivity',['#visual-scope-preview']],
+ ['panel-hit-zone',['#damage-guide','.dg-formula','.dg-area-layout','#dg_class_models','#dg_combined_models','.dg-gear-controls']],
  ['panel-combat',['#combat-database .toolbar','#combat-database .combat-choose-hint','#wTable tr.rowclick .combat-weapon-cell']],
  ['panel-range',['#visual-range','#visual-range-weapon']],
  ['panel-ttk',['#visual-ttk','#visual-ttk-weapon','#visual-ttk-comparisons']],
@@ -38,6 +39,11 @@ frame.addEventListener('load',()=>{
      assertion(rect.height>=44,'Scope sub-tab requires at least 44px touch height');
      assertion(tabButton.tagName==='A','Scope sub-tabs must be focusable buttons');
    }
+  }
+  if(panelId==='panel-hit-zone'){
+   const cards=[...panel.querySelectorAll('.dg-model-card')];
+   assertion(cards.length===14,'All class and combined cards visible');
+   for(const card of cards){const r=card.getBoundingClientRect();assertion(r.width>240&&r.left>=-2&&r.right<=viewport+2,'Guide card overflow');}
   }
   if(panelId==='panel-combat'){
    assertion(panel.querySelectorAll('#wTable img').length===45,'All database weapons show their pictures');

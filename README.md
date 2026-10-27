@@ -1,5 +1,9 @@
 # HELP-Clan-PUBG-Toolkit
 
+## Visual damage guide
+
+Combat Lab now explains the live damage formula, thirteen hit-area factors, seven weapon-class profiles and seven gear-adjusted combined profiles. Fifteen distinct fictional adult photographic models carry live percentage labels. Combined gear starts at Level 2 / Level 2; class defaults and weapon exceptions stay separate. See [implementation checklist](DAMAGE_GUIDE_ROADMAP.md) and [data/design decisions](docs/damage-guide-design-and-data.md).
+
 ## Per-shot recoil analyzer — released (27 October 2026)
 
 The Recoil Analyzer now includes the owner-approved PUBGIntel curve reference for 27 weapons, stance and attachment comparisons, 10-shot stages, all-shot numeric tables and CSV, MG3 rate selection, and five-colour randomized sprays with firing-rate animation. Existing HELP values win conflicts. [PR #51](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/pull/51) passed all 195 unit checks and browser/responsive checks; production curves and spray controls are verified. See [the implementation checklist](RECOIL_ANALYZER_ROADMAP.md) and [reference audit](docs/recoil-reference-audit.md).
