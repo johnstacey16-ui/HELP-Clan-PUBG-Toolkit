@@ -417,7 +417,7 @@
         eq(get('hz_body').querySelector('[data-hit-zone="calf"]').getAttribute('aria-pressed'),'false','Keyboard selection clears old zone');
         eq(child.querySelectorAll('#hz_rows tr').length,13,'Accessible table includes all body regions');
         check(!!child.querySelector('#panel-hit-zone table caption'),'Table has a descriptive accessibility caption');
-        eq(child.querySelectorAll('#panel-hit-zone thead th[scope="col"]').length,3,'Result headings declare column scope');
+        eq(child.querySelectorAll('#panel-hit-zone .hz-results thead th[scope="col"]').length,3,'Result headings declare column scope');
         // All 45 combat weapons must render 13 consistent readouts and safe
         // no-data states without leaking NaN, Infinity, or per-pellet damage.
         const hitZoneWeaponNames=[...get('hz_weapon').options].map(o=>o.value).filter(Boolean);
