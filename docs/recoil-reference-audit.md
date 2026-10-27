@@ -66,4 +66,4 @@ Random sprays use the resolved tendency, horizontal minimum, switch cadence and 
 
 ## Reproducing the audit
 
-Download the public source page and run `node scripts/import-recoil-reference.cjs downloaded-page.html`, then `node scripts/recoil-audit.cjs`. Imports evaluate only isolated data literals, validate numeric keyframes and pin a source hash. Tests compare the generated reference file with its JSON, preserve the existing weapon registry and compare the sampler with the reference equations.
+Download the public source page and run `node scripts/import-recoil-reference.cjs downloaded-page.html`, then `node scripts/recoil-audit.cjs`. Imports parse isolated data literals without executing website scripts, validate numeric keyframes and pin a source hash. Tests compare the generated reference file with its JSON, preserve the existing weapon registry and compare the sampler with the reference equations.

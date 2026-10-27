@@ -1,8 +1,8 @@
 # HELP-Clan-PUBG-Toolkit
 
-## Per-shot recoil analyzer
+## Per-shot recoil analyzer — released (27 October 2026)
 
-The Recoil Analyzer now includes the owner-approved PUBGIntel curve reference for 27 weapons, stance and attachment comparisons, 10-shot stages, all-shot numeric tables and CSV, MG3 rate selection, and five-colour randomized sprays with firing-rate animation. Existing HELP values win conflicts. See [the implementation checklist](RECOIL_ANALYZER_ROADMAP.md) and [reference audit](docs/recoil-reference-audit.md).
+The Recoil Analyzer now includes the owner-approved PUBGIntel curve reference for 27 weapons, stance and attachment comparisons, 10-shot stages, all-shot numeric tables and CSV, MG3 rate selection, and five-colour randomized sprays with firing-rate animation. Existing HELP values win conflicts. [PR #51](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/pull/51) passed all 195 unit checks and browser/responsive checks; production curves and spray controls are verified. See [the implementation checklist](RECOIL_ANALYZER_ROADMAP.md) and [reference audit](docs/recoil-reference-audit.md).
 
 ## Visible artwork, Sensitivity Studio and Combat Lab — released (27 October 2026)
 
