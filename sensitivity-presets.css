@@ -1,0 +1,45 @@
+/* Lightweight, accessible controls for optional device-local sensitivity presets. */
+#panel-sensitivity #sensitivity-presets {
+  margin: 14px 0 20px;
+  padding: 14px 18px;
+}
+#panel-sensitivity .sensitivity-presets .card-title {
+  margin: 0 0 5px;
+  font-size: 17px;
+}
+#panel-sensitivity .sensitivity-preset-note,
+#panel-sensitivity .sensitivity-preset-status {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--dim, #aab8c7);
+  margin: 4px 0 10px;
+}
+#panel-sensitivity .sensitivity-preset-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+#panel-sensitivity .sensitivity-preset-actions button {
+  flex: 0 1 auto;
+  min-height: 44px;
+  padding: 9px 14px;
+  border: 1px solid var(--olive, #26c6da);
+  border-radius: 4px;
+  background: rgba(16, 30, 40, .9);
+  color: var(--ink, #f2f5f8);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+#panel-sensitivity .sensitivity-preset-actions button:hover {
+  background: rgba(38, 198, 218, .14);
+}
+#panel-sensitivity .sensitivity-preset-actions button:focus-visible {
+  outline: 3px solid var(--olive, #26c6da);
+  outline-offset: 2px;
+}
+#panel-sensitivity .sensitivity-preset-status { min-height: 1.5em; margin: 8px 0 0; }
+@media (max-width: 560px) {
+  #panel-sensitivity .sensitivity-preset-actions button { flex: 1 1 135px; }
+}
