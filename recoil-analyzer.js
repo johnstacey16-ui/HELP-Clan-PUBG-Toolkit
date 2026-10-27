@@ -16,8 +16,15 @@ function cards(target,items){
 function cell(row,value,header=false){const el=document.createElement(header?'th':'td');if(header)el.scope='row';el.textContent=value;row.append(el);return el;}
 function header(table,labels){table.replaceChildren();const row=table.createTHead().insertRow();for(const label of labels){const th=document.createElement('th');th.scope='col';th.textContent=label;row.append(th);}return table.createTBody();}
 function barCell(row,pct){const td=cell(row,f(pct,1)+'%'),bar=document.createElement('span');bar.className='recoil-value-bar';bar.style.setProperty('--value',Math.max(0,Math.min(100,pct))+'%');bar.setAttribute('aria-hidden','true');td.append(bar);}
+function surface(id,fallbackHeight){
+ const canvas=get(id),rect=canvas.getBoundingClientRect(),ratio=Math.min(window.devicePixelRatio||1,2);
+ const W=rect.width||960,H=rect.height||fallbackHeight;
+ const width=Math.round(W*ratio),height=Math.round(H*ratio);
+ if(canvas.width!==width||canvas.height!==height){canvas.width=width;canvas.height=height;}
+ const ctx=canvas.getContext('2d');ctx.setTransform(ratio,0,0,ratio,0,0);return {ctx,W,H};
+}
 function drawCurve(){
- const canvas=get('rc_curve_canvas'),ctx=canvas.getContext('2d'),W=canvas.width,H=canvas.height;
+ const {ctx,W,H}=surface('rc_curve_canvas',280);
  ctx.clearRect(0,0,W,H);ctx.fillStyle='#0b1823';ctx.fillRect(0,0,W,H);if(!result)return;
  const left=52,right=W-20,top=20,bottom=H-42;
  const peak=Math.max(100,...result.shots.map(s=>Math.max(s.buildV/result.peakV*100,s.buildH/result.peakH*100)));
@@ -31,7 +38,7 @@ function drawCurve(){
  ctx.setLineDash([]);
 }
 function drawSimulation(){
- const canvas=get('rc_sim_canvas'),ctx=canvas.getContext('2d'),W=canvas.width,H=canvas.height;
+ const {ctx,W,H}=surface('rc_sim_canvas',420);
  ctx.fillStyle='#0b1823';ctx.fillRect(0,0,W,H);
  ctx.strokeStyle='#223947';ctx.lineWidth=1;
  for(let x=0;x<W;x+=48){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
@@ -65,7 +72,7 @@ function renderAttachments(){
    const file=window.HELP_OFFICIAL_ATTACHMENTS?.[profile.name]?.[slot]?.[item.value];
    if(file){const image=document.createElement('img');image.width=64;image.height=44;image.alt='';image.loading='lazy';image.decoding='async';if(panel.classList.contains('active'))image.src='assets/'+file;else image.dataset.visualSrc='assets/'+file;button.append(image);}
    const text=document.createElement('span');text.textContent=item.label+' · V '+f(item.v*100,0)+'% / H '+f(item.h*100,0)+'%';button.append(text);
-   button.addEventListener('click',()=>{selection[slot]=item.value;update();});section.append(button);
+   button.addEventListener('click',()=>{selection[slot]=item.value;update();panel.querySelector('[data-rc-slot="'+slot+'"][data-value="'+item.value+'"]')?.focus({preventScroll:true});});section.append(button);
   }
   holder.append(section);
  }
@@ -85,7 +92,7 @@ function update(){
  if(profile.stance[get('rc_stance').value]==null)get('rc_stance').value='standing';
  const stance=get('rc_stance').value,factor=profile.stance[stance],stanceButtons=get('rc_stance_buttons');stanceButtons.replaceChildren();
  for(const [value,label] of [['standing','Standing'],['crouched','Crouched'],['prone','Prone']]){
-  const mult=profile.stance[value],button=document.createElement('button');button.type='button';button.disabled=mult==null;button.textContent=label+' · '+(mult==null?'No data':'×'+f(mult));button.setAttribute('aria-pressed',String(value===stance));button.addEventListener('click',()=>{get('rc_stance').value=value;event(get('rc_stance'));});stanceButtons.append(button);
+  const mult=profile.stance[value],button=document.createElement('button');button.type='button';button.dataset.rcStance=value;button.disabled=mult==null;button.textContent=label+' · '+(mult==null?'No data':'×'+f(mult));button.setAttribute('aria-pressed',String(value===stance));button.addEventListener('click',()=>{get('rc_stance').value=value;event(get('rc_stance'));panel.querySelector('[data-rc-stance="'+value+'"]')?.focus({preventScroll:true});});stanceButtons.append(button);
  }
  renderAttachments();const attachments=adapter.combine(profile.name,selection);modifiers={v:attachments.v*factor,h:attachments.h*factor};result=model.analyze(profile,modifiers);
  get('rc_chart').dataset.evidence='reference-model';
@@ -120,7 +127,8 @@ get('rc_class').addEventListener('change',()=>{
 for(const id of ['rc_weapon','rc_stance','rc_shots','rc_rate']){get(id).addEventListener('change',update);get(id).addEventListener('input',update);}
 get('rc_fire').addEventListener('click',fire);get('rc_reset').addEventListener('click',reset);
 get('rc_animate').addEventListener('change',()=>{if(active)reset();});
-new MutationObserver(()=>{if(!panel.classList.contains('active'))reset();}).observe(panel,{attributes:true,attributeFilter:['class']});
+window.addEventListener('resize',()=>{if(panel.classList.contains('active')){drawCurve();drawSimulation();}},{passive:true});
+new MutationObserver(()=>{if(!panel.classList.contains('active'))reset();else{drawCurve();drawSimulation();}}).observe(panel,{attributes:true,attributeFilter:['class']});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)reset();});
 get('rc_export').addEventListener('click',()=>{
  if(!result)return;

@@ -36,3 +36,7 @@
  #panel-recoil2 .recoil-metadata strong {font-size:17px}
  #panel-recoil2 #rc_chart {padding:12px}
 }
+/* Keep chart labels at CSS-pixel size on phones and high-density displays. */
+#panel-recoil2 #rc_curve_canvas {height:280px;aspect-ratio:auto}
+#panel-recoil2 #rc_sim_canvas {height:420px;aspect-ratio:auto}
+@media(max-width:480px){#panel-recoil2 #rc_curve_canvas {height:240px}#panel-recoil2 #rc_sim_canvas {height:350px}}
