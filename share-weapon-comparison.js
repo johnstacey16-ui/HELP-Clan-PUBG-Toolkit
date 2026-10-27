@@ -103,6 +103,19 @@
     status.textContent='Shared comparison loaded. Values are recalculated from this toolkit’s current data.';
     return true;
   }
+  // Prevent accidentally sharing an old snapshot after changing a weapon or
+  // combat condition. A new click always regenerates the current URL.
+  const markOutdated=()=>{
+    if (output.hidden) return;
+    output.hidden=true;
+    status.textContent='Settings changed. Copy a new link to share the updated comparison.';
+  };
+  for (const id of ['hz_weapon','hz_distance','hz_helmet','hz_vest',
+    'tk_weapon','tk_distance','tk_hitbox','tk_cmpA','tk_cmpB','tk_cmpC']) {
+    const control=get(id);
+    if (control) control.addEventListener('change',markOutdated);
+  }
+
   const incoming=readLink(window.location.search);
   if (incoming) {
     if (incoming.error) status.textContent=incoming.error;
