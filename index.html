@@ -539,33 +539,44 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
 
   </div>
 
-  <nav class="tabs quicknav" id="tabs" aria-label="Sensitivity sections"></nav>
+  <div class="sensitivity-top-tools"><nav class="tabs quicknav" id="tabs" aria-label="Sensitivity sections"></nav>
+  <aside class="card sensitivity-tool-guide" aria-label="Choose a sensitivity tool">
+    <div class="card-title" style="color:var(--olive);"><span class="n">i</span> Choose a sensitivity tool</div>
+    <table class="ref">
+      <thead><tr><th>You want to&hellip;</th><th>Use</th></tr></thead>
+      <tbody>
+        <tr><td>Make every scope (1x&ndash;15x) turn at the same actual speed</td><td>Scope Sensitivity Matcher</td></tr>
+        <tr><td>Nudge ADS/scope sensitivity up or down without losing your recoil-control feel</td><td>Vertical Mult.</td></tr>
+        <tr><td>Change monitor aspect ratio and correct sensitivity accordingly</td><td>Resolution</td></tr>
+      </tbody>
+    </table>
+  </aside>
+</div>
 
   <!-- ================= SCOPE ================= -->
   <div class="panel" data-panel="scope">
     <div class="card">
       <div class="card-title"><span class="n">01</span> Scope Sensitivity Matcher</div>
       <p class="card-sub">Matches actual screen turn-rate (pixel speed) across scopes, since equal menu sensitivity values do <b>not</b> produce equal turn speed &mdash; each scope has its own A/B constants. Set the scope you like, and get matched values for every other scope.</p>
-      <div class="visual-inline-preview" id="visual-scope-preview" aria-label="Reference optic appearance"><img id="visual-scope-image" src="assets/optic-3x.svg" width="320" height="200" loading="eager" fetchpriority="low" decoding="async" alt="PUBG 3x scope"><div><span class="visual-media-kicker">OPTIC · PUBG ARTWORK</span><strong id="visual-scope-label" aria-live="polite">3x reference optic</strong><small>PUBG / KRAFTON artwork. Scope conversion uses the existing sensitivity maths.</small></div></div><fieldset class="visual-one-x-variants" id="visual-one-x-variants" hidden aria-label="Illustrative 1x sight style; sensitivity values are unchanged"><legend>1x sight appearance only — same sensitivity calculation</legend><button type="button" class="visual-optic-variant" data-visual-optic="reddot" aria-pressed="true">Red Dot</button><button type="button" class="visual-optic-variant" data-visual-optic="holo" aria-pressed="false">Holographic</button><button type="button" class="visual-optic-variant" data-visual-optic="iron" aria-pressed="false">Iron sights</button></fieldset>
+      <div class="visual-inline-preview" id="visual-scope-preview" aria-label="Reference optic appearance"><img id="visual-scope-image" src="assets/optic-red-dot.svg" width="320" height="200" loading="eager" fetchpriority="low" decoding="async" alt="PUBG Red Dot sight"><div><span class="visual-media-kicker">OPTIC · PUBG ARTWORK</span><strong id="visual-scope-label" aria-live="polite">1x Red Dot</strong><small>PUBG / KRAFTON artwork. Scope conversion uses the existing sensitivity maths.</small></div></div><fieldset class="visual-one-x-variants" id="visual-one-x-variants" hidden aria-label="Illustrative 1x sight style; sensitivity values are unchanged"><legend>1x sight appearance only — same sensitivity calculation</legend><button type="button" class="visual-optic-variant" data-visual-optic="reddot" aria-pressed="true">Red Dot</button><button type="button" class="visual-optic-variant" data-visual-optic="holo" aria-pressed="false">Holographic</button><button type="button" class="visual-optic-variant" data-visual-optic="iron" aria-pressed="false">Iron sights</button></fieldset>
       <section class="sensitivity-howto" aria-label="How to use the sensitivity matcher">
         <h2>Find a setting you like, then match the others</h2>
-        <ol><li>In PUBG, choose an aiming mode or scope that feels comfortable. Enter that mode and its current sensitivity below.</li><li>The reference speed is calculated in px/s. Copy the matched sensitivities into your game settings to give the other scopes the same calculated speed.</li><li>Or enter all your current settings in the speed checker below. Compare them and use any entered setting as your reference.</li><li>Test your changes in Training Mode. Use the vertical multiplier section below if you also change your preferred ADS sensitivity; use the resolution section when changing aspect ratio.</li></ol>
-        <p>Speeds use this calculator’s 3840-pixel reference width and existing A/B constants. They are calculated reference speeds, not a live measurement of your screen. Aim means over-the-shoulder aiming; it shares the 15× constants.</p>
+        <ol><li>In PUBG, choose an aiming mode or scope that feels comfortable. Enter that mode and its current sensitivity below.</li><li>The reference speed is calculated in px/s. Copy the matched sensitivities into your game settings to give the other scopes the same calculated speed.</li><li>Or enter all your current settings in the speed checker below. See which aiming modes are fastest and slowest, and how large the mismatch is.</li><li>Test your changes in Training Mode. Use the vertical multiplier section below if you also change your preferred ADS sensitivity; use the resolution section when changing aspect ratio.</li></ol>
       </section>
       <div class="grid">
         <div class="field"><label for="px_scope">Reference scope</label>
           <select id="px_scope">
             <option value="aim">Aim (over the shoulder)</option>
-            <option value="1x">1x (Red Dot / Holo / Iron)</option>
+            <option value="1x" selected>1x (Red Dot / Holo / Iron)</option>
             <option value="2x">2x</option>
-            <option value="3x" selected>3x</option>
+            <option value="3x">3x</option>
             <option value="4x">4x</option>
             <option value="6x">6x</option>
             <option value="8x">8x</option>
             <option value="15x">15x</option>
           </select>
         </div>
-        <div class="field"><label for="px_sens">Sensitivity on that scope</label><input type="number" id="px_sens" value="12" step="0.1"></div>
+        <div class="field"><label for="px_sens">Sensitivity on that scope</label><input type="number" id="px_sens" value="10" step="0.1"></div>
       </div>
       <div class="outbar">
         <div class="out hi"><div class="k">Pixel speed</div><div class="v" id="px_speed">–</div><div class="u" style="margin-left:0;">px/s</div></div>
@@ -581,8 +592,9 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
       <div class="note">Confirm calculated sensitivity values in-game. Out of range means the scope cannot reach the exact match within the supplied calibration range.</div>
       <section id="current-sensitivities" class="current-sensitivity-checker" aria-labelledby="current-sensitivity-title">
         <h2 id="current-sensitivity-title">Check all your current sensitivities</h2>
-        <p>Enter your current in-game values (0–20). Each row shows its own calculated pixel speed; the difference compares it with the reference speed above. Blank rows stay blank.</p>
-        <div class="scope-results-scroll" role="region" aria-label="Current sensitivity pixel speeds" tabindex="0"><table class="ref" id="current_sensitivity_table"><thead><tr><th>Aiming mode</th><th>Your sensitivity</th><th>Current px/s</th><th>Difference from reference</th><th>Reference</th></tr></thead><tbody></tbody></table></div>
+        <p>Enter your current in-game sensitivities (0–20). Compare the speeds below to see how mismatched your settings are. The largest difference is the gap between your fastest and slowest entered aiming modes. Blank or invalid entries are excluded.</p>
+        <div class="scope-results-scroll" role="region" aria-label="Current sensitivity pixel speeds" tabindex="0"><table class="ref" id="current_sensitivity_table"><thead><tr><th>Aiming mode</th><th>Your sensitivity</th><th>Current px/s</th><th>Above your slowest setting</th></tr></thead><tbody></tbody></table></div>
+        <p id="current_speed_spread" class="current-speed-spread" role="status" aria-live="polite">Enter at least two current sensitivities to compare their speeds.</p>
       </section>
     </div>
   </div>
@@ -665,17 +677,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
     </div>
   </div>
 
-  <div class="card" style="border-color:var(--amber-dim);">
-    <div class="card-title" style="color:var(--olive);"><span class="n">i</span> Other sensitivity tools</div>
-    <table class="ref">
-      <thead><tr><th>You want to&hellip;</th><th>Use</th></tr></thead>
-      <tbody>
-        <tr><td>Make every scope (1x&ndash;15x) turn at the same actual speed</td><td>Scope Sensitivity Matcher</td></tr>
-        <tr><td>Nudge ADS/scope sensitivity up or down without losing your recoil-control feel</td><td>Vertical Mult.</td></tr>
-        <tr><td>Change monitor aspect ratio and correct sensitivity accordingly</td><td>Resolution</td></tr>
-      </tbody>
-    </table>
-  </div>
+
 
 
   <footer>HELP Clan Scope Sensitivity Matcher <span class="v">v1.0</span> &middot; logic by HELP clan manual v1.0 &middot; unofficial, not affiliated with PUBG or KRAFTON</footer>

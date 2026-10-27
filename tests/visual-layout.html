@@ -41,7 +41,7 @@ frame.addEventListener('load',()=>{
   }
   if(panelId==='panel-combat'){
    assertion(panel.querySelectorAll('#wTable img').length===45,'All database weapons show their pictures');
-   assertion(panel.querySelectorAll('#wTable tr.colheader th').length===7,'Core table shows seven columns');
+   assertion(panel.querySelectorAll('#wTable tr.colheader th').length===15,'All stats table is shown by default');
    panel.querySelector('[data-combat-view=all]').click();
    assertion(panel.querySelectorAll('#wTable tr.colheader th').length===15,'All stats retains 15 columns');
    const primaryHeaders=[...panel.querySelectorAll('#wTable tr.colheader th')].map(th=>th.textContent);

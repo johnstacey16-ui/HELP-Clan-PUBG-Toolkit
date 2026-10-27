@@ -26,10 +26,10 @@ const panelsEl = document.getElementById("panels");
       </div>
       <div class="toolbar" id="wClassFilters"></div>
       <div class="workspace-segments" role="group" aria-label="Weapon table view" id="combat-views">
-        <button type="button" data-combat-view="core" aria-pressed="true">Core</button>
+        <button type="button" data-combat-view="core" aria-pressed="false">Core</button>
         <button type="button" data-combat-view="damage" aria-pressed="false">Damage</button>
         <button type="button" data-combat-view="handling" aria-pressed="false">Handling</button>
-        <button type="button" data-combat-view="all" aria-pressed="false">All stats</button>
+        <button type="button" data-combat-view="all" aria-pressed="true">All stats</button>
       </div>
       <div class="tt-view-tools"><p class="helptext" id="combat-view-status" role="status"></p><button type="button" id="combat-leader-switch" aria-expanded="false" aria-controls="combat-insights">Leaders</button></div>
       <div class="sort-hint" id="combat-table-instructions">Sort columns · swipe sideways for more stats.</div>
@@ -115,7 +115,7 @@ const panelsEl = document.getElementById("panels");
   const COLS = [["name","Weapon"],["cls","Class"],["dmg","Dmg"],["rpm","RPM"],["vel","Vel m/s"],["dps","DPS"],
     ["mag","Mag"],["vRecoil","V.Recoil"],["crouchMod","Crouch"],["hBias","H.Bias"],["vertSpeed","V.Speed"],
     ["horizSpeed","H.Speed"],["minH","Min H%"],["headDmg","Head Dmg"],["chestDmg","Chest Dmg"]];
-  let tableView='core';
+  let tableView='all';
   const VIEW_COLUMNS={core:[0,1,2,3,4,5,6],damage:[0,1,2,13,14],handling:[0,1,7,8,9,10,11,12],all:COLS.map((_,i)=>i)};
   const GROUPS = [["",1],["Core Stats",6],["Recoil & Handling",6],["Unarmoured Damage",2]];
   const ARMOR_COLS = [["name","Weapon"],["headDmg","Head Dmg"],["helmL3","Helm L3→L2"],["helmL2","Helm L2→L1"],
