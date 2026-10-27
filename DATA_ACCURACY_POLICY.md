@@ -20,6 +20,10 @@ The over-the-shoulder **Aim** option uses the owner-supplied 15× constants (A=5
 
 These are **deliberately used empirical conversion formulas**, not a claim to reproduce an official game-engine implementation. They remain in the app and can be the default opening calculator.
 
+## Weapon display category vs damage class
+
+**Skorpion:** KRAFTON displays this weapon among handguns and it occupies the sidearm slot, but the PC 43.2 extracted game data exposes `Display type Handgun` and separately `Weapon class Class_SMG`. Its current extracted damage multipliers therefore follow **SMG**, not pistol, for the calculator's class field. Do **not** change `WEAPONS[].cls` from `SMG` to `Pistol` simply to match a retail-facing weapon category. If adding a weapon-type filter later, store sidearm/display type separately from combat damage class. Sources: https://www.pubg.com/en/game-info/weapons/pistol and https://pubg.gs/weapons/skorpion/ (extracted PC Update 43.2).
+
 ## Hit Zone Explorer: gun-config damage vs projectile hit damage
 
 A **2026-10-25** source audit distinguishes two separate PUBG PC Update 43.2 extracted fields: `WeaponGunConfig.BaseDamage` and `TrajectoryConfig.HitDamage`. They can be **very different** for one weapon. Five cross-checked examples (M416, AKM, AUG, Dragunov, RPD) show that the toolkit's existing recorded **0m projectile hit values** match the trajectory **HitDamage** field, not the gun configuration's separately labelled base value. See [the field audit](docs/hit-zone-damage-field-audit.md), with patch-specific links and regression tests. Do **not** bulk replace the toolkit's per-distance damage tables with the other field just because its display name says “Base damage”.
