@@ -1,5 +1,5 @@
-// Exact-name map of all 45 *original representative* field illustrations.
-// No official PUBG art, precise weapon geometry or combat data lives here.
+// Exact-name map of 45 publisher-sourced PUBG weapon images.
+// Stable local SVG viewports embed the original publisher raster bytes. No combat data lives here.
 // This file is static and loads before the unchanged gameplay calculators.
 (function(global){
   'use strict';

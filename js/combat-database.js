@@ -632,7 +632,7 @@ function openWeaponDetail(name,trigger){
   const image = Object.prototype.hasOwnProperty.call(artMap,w.name) ? artMap[w.name] : null;
   // Never substitute another gun's artwork, including for unavailable assets.
   const weaponArt = image
-    ? '<figure class="visual-modal-media"><img src="assets/'+image+'" width="960" height="320" loading="lazy" decoding="async" alt="Representative '+w.name+' weapon illustration"><figcaption>Original conceptual artwork; not an official PUBG asset</figcaption></figure>'
+    ? '<figure class="visual-modal-media"><img src="assets/'+image+'" width="960" height="320" loading="lazy" decoding="async" alt="PUBG '+w.name+' weapon artwork"><figcaption>PUBG weapon artwork © KRAFTON</figcaption></figure>'
     : '<p class="visual-modal-unavailable">Artwork not available for this weapon yet. Statistics are unaffected.</p>';
   document.getElementById("modalBody").innerHTML = `
     <button class="close" data-action="close-modal" aria-label="Close weapon detail">✕</button>

@@ -16,7 +16,7 @@ function syncScope(){
  const source='assets/'+(selectOne?oneXArt[oneXSelection]:optics[m]);
  // Preserve decoded artwork on repeated updates; only switch when the variant changes.
  if(img.getAttribute('src')!==source)img.src=source;
- img.alt=selectOne?'Original representative '+oneXSelection+' sight':'Representative '+m+' scope';
+ img.alt=selectOne?(oneXSelection==='iron'?'Iron sights interface symbol':'PUBG '+oneXSelection+' sight'):'PUBG '+m+' scope artwork';
  label.textContent=selectOne?'1x '+({reddot:'Red Dot',holo:'Holographic',iron:'Iron sights'}[oneXSelection]):m+' reference optic';
  const variants=get('visual-one-x-variants');
  if(variants)variants.hidden=m!=='1x';
@@ -89,9 +89,9 @@ function selectedWeapon(prefix,name) {
  const file=artFor(name);
  title.textContent=name || 'No weapon selected';
  if(file){
-   image.hidden=false;image.alt='Original representative '+name+' weapon illustration';
+   image.hidden=false;image.alt='PUBG '+name+' weapon artwork';
    assignOptionalArt(image,'assets/'+file);
-   note.textContent='Original conceptual art; not an official PUBG weapon screenshot.';
+   note.textContent='PUBG / KRAFTON artwork. Unofficial fan reference.';
  }else{
    image.hidden=true;image.removeAttribute('src');image.removeAttribute('data-visual-src');image.alt='';
    note.textContent=name?'No artwork for this weapon yet; numbers remain available.':'Choose a weapon for reference artwork.';
@@ -119,9 +119,9 @@ function syncCompare(){
    const name=select.value,file=artFor(name);
    title.textContent=name||'No third weapon';
    if(file){
-     image.alt='Representative '+name+' weapon illustration';
+     image.alt='PUBG '+name+' weapon artwork';
      image.hidden=false;assignOptionalArt(image,'assets/'+file);
-     note.textContent='Concept art · not official game imagery';
+     note.textContent='PUBG / KRAFTON artwork';
    }else{
      image.hidden=true;image.removeAttribute('src');image.removeAttribute('data-visual-src');image.alt='';
      note.textContent=name?'No artwork yet; stats still shown.':'Optional comparison not selected';
@@ -138,34 +138,7 @@ for(const key of ['a','b','c']){
  });
 }
 syncCompare();
-// Visual category maps are intentionally separate from calculator compatibility/stats.
-const attachmentVisuals=Object.freeze({
- muzzle:Object.freeze({
-  compensator:'gear-compensator.svg',compensator_ar:'gear-compensator.svg',
-  suppressor:'gear-suppressor.svg',flash:'gear-flash-hider.svg',
-  brake:'gear-muzzle.svg',choke:'gear-muzzle.svg',duckbill:'gear-muzzle.svg'
- }),
- grip:Object.freeze({
-  vertical:'gear-vertical-grip.svg',angled:'gear-angled-grip.svg',
-  half:'gear-grip.svg',light:'gear-grip.svg',thumb:'gear-grip.svg',
-  laser:'gear-grip.svg',tilted:'gear-grip.svg'
- }),
- mag:Object.freeze({
-  extended:'gear-extended-magazine.svg',extquick:'gear-extended-magazine.svg',
-  extended_ar:'gear-extended-magazine.svg',extquick_ar:'gear-extended-magazine.svg',
-  quickdraw:'gear-magazine.svg'
- }),
- stock:Object.freeze({
-  tactical:'gear-stock.svg',heavy:'gear-stock.svg',folding:'gear-stock.svg',
-  cheek:'gear-stock.svg',loops:'gear-stock.svg'
- }),
- sight:Object.freeze({
-  reddot:'optic-red-dot.svg',dot:'optic-red-dot.svg',holo:'optic-holographic.svg',
-  hybrid:'optic-4x.svg',thermal4x:'optic-4x.svg',
-  '2x':'optic-2x.svg','3x':'optic-3x.svg','4x':'optic-4x.svg',
-  '6x':'optic-6x.svg','8x':'optic-8x.svg','15x':'optic-15x.svg'
- })
-});
+// Publisher image maps are separate from calculator compatibility and statistics.
 function syncAttachmentArt(){
  for(const id of ['muzzle','grip','mag','sight','stock']){
   const select=get('at_'+id),label=get('visual-at-'+id),image=get('visual-at-'+id+'-image');
@@ -173,12 +146,13 @@ function syncAttachmentArt(){
   const option=select.selectedOptions&&select.selectedOptions[0];
   const value=select.disabled?'none':String(select.value||'none').toLowerCase();
   label.textContent=option?option.textContent.trim():'Not available';
-  const file=owns(attachmentVisuals[id],value)?attachmentVisuals[id][value]:null;
+  const official=window.HELP_OFFICIAL_ATTACHMENTS?.[get('at_weapon')?.value]?.[id];
+  const file=official&&owns(official,value)?official[value]:null;
   // Empty/disabled attachment slots do not show apparently equipped hardware.
   image.hidden=!file;
   if(file){
    assignOptionalArt(image,'assets/'+file);
-   image.alt='Original illustrative '+label.textContent+' attachment category';
+   image.alt='PUBG '+label.textContent+' artwork';
   }else{
    image.removeAttribute('src');image.removeAttribute('data-visual-src');image.alt='';
   }
@@ -208,9 +182,9 @@ function syncBackpackArt(){
  const file=jammer?'gear-jammer.svg':({1:'gear-backpack-l1.svg',2:'gear-backpack-l2.svg',3:'gear-backpack.svg'}[level.value]||'gear-backpack.svg');
  label.textContent=(jammer?'Jammer Pack':'Standard Backpack')+' · Level '+level.value;
  image.hidden=false;assignOptionalArt(image,'assets/'+file);
- image.alt='Original representative '+(jammer?'Jammer Pack':'Level '+level.value+' backpack')+' illustration';
+ image.alt='PUBG '+(jammer?'Jammer Pack':'Level '+level.value+' backpack')+' artwork';
  const note=get('visual-pack-note');
- if(note)note.textContent='Illustration only. The controls calculate actual capacity.';
+ if(note)note.textContent='PUBG / KRAFTON item artwork. Capacity is calculated separately.';
  const vestLabel=get('visual-pack-vest-label');
  if(vestLabel&&vest)vestLabel.textContent=vest.value==='yes'?'Vest: worn':'Vest: none';
 }

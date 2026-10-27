@@ -4,6 +4,13 @@
 const get=id=>document.getElementById(id);
 const change=el=>el.dispatchEvent(new Event('change',{bubbles:true}));
 const weapons=PT.WBYNAME||{};
+for(const row of document.querySelectorAll('#panel-backpack .bp-row')){
+ const input=row.querySelector('input[data-bp]'),name=row.querySelector('.bp-name');
+ const file=window.HELP_OFFICIAL_INVENTORY?.[input?.dataset.bp];
+ if(!file||!name)continue;
+ const image=document.createElement('img');if(row.closest('.hub-main').classList.contains('active'))image.src='assets/'+file;else image.dataset.visualSrc='assets/'+file;image.alt='';image.width=28;image.height=28;image.loading='lazy';image.decoding='async';image.className='pubg-inventory-icon';name.prepend(image);
+}
+
 // Keep setup and primary results together on wide screens without changing tab order.
 for(const id of ['panel-range','panel-ttk','panel-attach']){
  const wrap=get(id)?.querySelector('.wrap');if(!wrap)continue;

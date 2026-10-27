@@ -13,18 +13,27 @@ for(const [id,art] of [['hz_helmet','gear-helmet.svg'],['hz_vest','gear-vest.svg
  const select=get(id);if(!select)continue;
  const group=document.createElement('div');group.className='workspace-segments workspace-equipment';
  group.setAttribute('role','group');group.setAttribute('aria-label',id==='hz_mode'?'Damage display':id==='hz_helmet'?'Helmet level':'Vest level');
- if(art){const img=document.createElement('img');img.src='assets/'+art;img.alt='';img.width=38;img.height=38;group.append(img);}
+ if(art){const img=document.createElement('img');img.dataset.visualSrc='assets/'+art;img.alt='';img.width=38;img.height=38;group.append(img);}
  for(const option of select.options){
   const button=document.createElement('button');button.type='button';button.dataset.value=option.value;
   button.textContent=art?(option.value==='0'?'None':'L'+option.value):option.textContent;
   button.setAttribute('aria-label',option.textContent+(art?(id==='hz_helmet'?' helmet':' vest'):''));
   button.title=option.textContent;button.addEventListener('click',()=>set(id,option.value));group.append(button);
  }
- const sync=()=>group.querySelectorAll('button').forEach(button=>{
+ const sync=()=>{
+  const icon=group.querySelector('img'),gear=id==='hz_helmet'?'helmet':'vest';
+  if(icon){
+   icon.hidden=select.value==='0';const file=window.HELP_OFFICIAL_GEAR?.[gear]?.[select.value];
+   if(!file||icon.hidden){icon.removeAttribute('src');delete icon.dataset.visualSrc;}
+   else if(select.closest('.hub-main').classList.contains('active')){icon.src='assets/'+file;delete icon.dataset.visualSrc;}
+   else{icon.removeAttribute('src');icon.dataset.visualSrc='assets/'+file;}
+  }
+  group.querySelectorAll('button').forEach(button=>{
   button.setAttribute('aria-pressed',String(button.dataset.value===select.value));
   button.disabled=[...select.options].find(o=>o.value===button.dataset.value).disabled;
   button.hidden=button.disabled;
  });
+ };
  select.after(group);select.hidden=true;
  // The label remains visible, with the group supplying its own accessible name.
  select.addEventListener('change',sync);
