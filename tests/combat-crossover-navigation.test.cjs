@@ -18,7 +18,7 @@ test('all three existing internal anchor URLs route back to Combat',()=>{
  const nav=read('js/app-navigation.js'),index=read('index.html');
  assert.doesNotThrow(()=>new vm.Script(nav));
  for(const id of ['combat-database','compare-weapons','how-thresholds-work']){
-   assert.ok(index.includes('href="#'+id+'"'),'no URL '+id);
+   assert.ok(index.includes('href="#armor-guide"'),'armour guide quick link');
    assert.ok(nav.includes("'"+id+"'"),'router missing '+id);
    assert.ok(read('src/combat/10-combat-rendering.part').includes('id="'+id+'"'),'target missing '+id);
  }

@@ -13,11 +13,13 @@ function syncScope(){
  if(!s||!img||!label)return;
  const m=owns(optics,s.value)?s.value:'3x';
  const selectOne=m==='1x'&&owns(oneXArt,oneXSelection);
+ const aim=s.value==='aim';
  const source='assets/'+(selectOne?oneXArt[oneXSelection]:optics[m]);
+ img.hidden=aim;
  // Preserve decoded artwork on repeated updates; only switch when the variant changes.
  if(img.getAttribute('src')!==source)img.src=source;
  img.alt=selectOne?(oneXSelection==='iron'?'Iron sights interface symbol':'PUBG '+oneXSelection+' sight'):'PUBG '+m+' scope artwork';
- label.textContent=selectOne?'1x '+({reddot:'Red Dot',holo:'Holographic',iron:'Iron sights'}[oneXSelection]):m+' reference optic';
+ label.textContent=aim?'Aim · over the shoulder · same constants as 15×':selectOne?'1x '+({reddot:'Red Dot',holo:'Holographic',iron:'Iron sights'}[oneXSelection]):m+' reference optic';
  const variants=get('visual-one-x-variants');
  if(variants)variants.hidden=m!=='1x';
  for(const button of document.querySelectorAll('[data-visual-optic]'))button.setAttribute('aria-pressed',String(button.dataset.visualOptic===oneXSelection));
@@ -30,41 +32,18 @@ for(const button of document.querySelectorAll('[data-visual-optic]')){
  });
 }
 syncScope();
-// The Combat DB is table-first on mobile, while desktop keeps the full
-// overview visible. Native <details> lets keyboard/controller users expand it.
-const combatOverview=get('combat-overview-disclosure');
-if(combatOverview){
- const smallScreen=window.matchMedia('(max-width:700px)');
- const adaptCombatOverview=()=>{
-  combatOverview.open=!smallScreen.matches;
- };
- adaptCombatOverview();
- if(typeof smallScreen.addEventListener==='function'){
-  smallScreen.addEventListener('change',adaptCombatOverview);
- }else if(typeof smallScreen.addListener==='function'){
-  smallScreen.addListener(adaptCombatOverview);
- }
-}
-// Details are closed by default. Do not request their optional images until
-// the player opens the art section. No HTTP images/async timers are necessary.
+// All artwork is visible in its tool; inactive tools still defer downloads.
 function assignOptionalArt(img,src) {
- const details=img.closest('details.visual-opt-in-art');
  const panel=img.closest('.hub-main');
- // Art is optional on other tools and inside collapsed <details>.
+ // Visible artwork is activated with its tool.
  // Never fetch it merely because HTML was parsed on the Scope home page.
  const inactive=panel&&!panel.classList.contains('active');
- if(inactive||(details&&!details.open)){
+ if(inactive){
   img.dataset.visualSrc=src;
   img.removeAttribute('src');
  }else{
   img.removeAttribute('data-visual-src');
   if(img.getAttribute('src')!==src)img.src=src;
- }
-}
-function syncOptionalDetails(details) {
- for(const image of details.querySelectorAll('img')){
-  const src=image.getAttribute('src')||image.dataset.visualSrc;
-  if(src && src.startsWith('assets/'))assignOptionalArt(image,src);
  }
 }
 // Every tool owns its artwork: do not preload hidden Combat DB, Attachments
@@ -74,10 +53,6 @@ function syncPanelArtwork(panel) {
   const src=image.getAttribute('src')||image.dataset.visualSrc;
   if(src && src.startsWith('assets/'))assignOptionalArt(image,src);
  }
-}
-for(const details of document.querySelectorAll('details.visual-opt-in-art')){
- details.addEventListener('toggle',()=>syncOptionalDetails(details));
- syncOptionalDetails(details);
 }
 for(const panel of document.querySelectorAll('#app-workspace > .hub-main')){
  syncPanelArtwork(panel);

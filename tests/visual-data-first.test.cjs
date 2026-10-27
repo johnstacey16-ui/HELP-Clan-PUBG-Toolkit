@@ -7,7 +7,7 @@ test('Range, TTK and Recoil display primary values before optional illustrations
  for(const [id,result,disclosure] of [['range','id="rg_dmg"','visual-range-artwork'],['ttk','id="tk_pure"','visual-ttk-artwork'],['recoil2','id="rc_table"','visual-recoil-artwork']]){
   const p=panel(id);
   assert.ok(p.indexOf(result)>0 && p.indexOf(result)<p.indexOf('id="'+disclosure+'"'),id);
-  assert.match(p,new RegExp('<details class="visual-opt-in-art" id="'+disclosure+'">'));
+  assert.match(p,new RegExp('<section class="visual-art-panel" id="'+disclosure+'">'));
  }
 });
 test('TTK comparison numbers precede their opt-in image gallery',()=>{
@@ -21,7 +21,7 @@ test('native art expander meets controller focus and mobile tap targets',()=>{
  assert.match(css,/\.visual-opt-in-art>summary/);
  assert.match(css,/min-height:48px/);
  assert.match(css,/focus-visible/);
- assert.match(read('tests/visual-layout.html'),/item\.open=true/);
+ assert.match(read('tests/visual-layout.html'),/Artwork must be visible/);
  assert.equal((html.match(/data-hit-zone="/g)||[]).length,13);
 });
 
@@ -33,8 +33,8 @@ test('optional artwork uses no image network request until a player opens its de
   assert.ok(!html.includes('<img src="assets/'+id+'"'),'Banner art should have no src: '+id);
  }
  assert.match(script,/function assignOptionalArt\(img,src\)/);
- assert.match(script,/function syncOptionalDetails\(details\)/);
- assert.match(script,/details\.addEventListener\('toggle'/);
+ assert.doesNotMatch(script,/details\.addEventListener\('toggle'/);
+ assert.match(script,/if\(inactive\)/);
  assert.match(script,/image\.removeAttribute\('src'\)/);
  assert.match(script,/assignOptionalArt\(image,'assets\/'\+file\)/);
  assert.equal((html.match(/data-hit-zone="/g)||[]).length,13);

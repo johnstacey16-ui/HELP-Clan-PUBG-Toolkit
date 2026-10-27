@@ -16,7 +16,8 @@ test('panel navigation and native expanders activate and defer image requests',(
  assert.match(js,/function syncPanelArtwork\(panel\)/);
  assert.match(js,/new MutationObserver\(\(\)=>syncPanelArtwork\(panel\)\)/);
  assert.match(js,/panel&&!panel\.classList\.contains\('active'\)/);
- assert.match(js,/details&&!details\.open/);
+ assert.doesNotMatch(js,/details&&!details\.open/);
+ assert.match(js,/if\(inactive\)/);
  assert.match(js,/assignOptionalArt\(image,'assets\/'\+file\)/);
  assert.match(js,/image\.removeAttribute\('data-visual-src'\)/);
 });

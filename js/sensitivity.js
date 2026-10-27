@@ -2,61 +2,16 @@
 // ---- Sensitivity Calculator logic ----
 (function(){
  
-const TABS = [
-  {id:'scope', label:'Scope Sensitivity Matcher'},
-  {id:'vert', label:'Vertical Multiplier'},
-  {id:'res', label:'Resolution'},
-];
-const tabsEl = document.getElementById('tabs');
-// Native buttons and WAI-ARIA tabs are keyboard/controller friendly; the three
-// calculators and all their sensitivity formulas are untouched.
-TABS.forEach((t,i)=>{
-  const panel=document.querySelector('#panel-sensitivity .panel[data-panel="'+t.id+'"]');
-  if(!panel)throw Error('Missing sensitivity panel: '+t.id);
-  panel.id='sensitivity-panel-'+t.id;
-  panel.setAttribute('role','tabpanel');
-  panel.setAttribute('aria-labelledby','sensitivity-tab-'+t.id);
-  panel.tabIndex=0;
-  const b = document.createElement('button');
-  b.type='button';
-  b.id='sensitivity-tab-'+t.id;
-  b.className='tab'+(i===0?' active':'');
-  b.textContent=t.label;
-  b.dataset.tab=t.id;
-  b.setAttribute('role','tab');
-  b.setAttribute('aria-controls',panel.id);
-  b.setAttribute('aria-selected',String(i===0));
-  b.tabIndex=i===0?0:-1;
-  b.onclick=()=>switchTab(t.id);
-  b.addEventListener('keydown',event=>{
-    const current=TABS.findIndex(entry=>entry.id===t.id);
-    let target=current;
-    if(event.key==='ArrowRight')target=(current+1)%TABS.length;
-    else if(event.key==='ArrowLeft')target=(current+TABS.length-1)%TABS.length;
-    else if(event.key==='Home')target=0;
-    else if(event.key==='End')target=TABS.length-1;
-    else return;
-    event.preventDefault();
-    switchTab(TABS[target].id);
-    tabsEl.querySelector('[data-tab="'+TABS[target].id+'"]').focus();
-  });
-  tabsEl.appendChild(b);
-});
-function switchTab(id){
-  tabsEl.querySelectorAll('[role="tab"]').forEach(button=>{
-    const active=button.dataset.tab===id;
-    button.classList.toggle('active',active);
-    button.setAttribute('aria-selected',String(active));
-    button.tabIndex=active?0:-1;
-  });
-  document.querySelectorAll('#panel-sensitivity .panel[data-panel]').forEach(panel=>{
-    const active=panel.dataset.panel===id;
-    panel.classList.toggle('active',active);
-    panel.setAttribute('aria-hidden',String(!active));
-  });
+const sections=[['scope','Scope matcher'],['vert','Vertical multiplier'],['res','Resolution']];
+const tabsEl=document.getElementById('tabs');
+for(const [id,label] of sections){
+ const panel=document.querySelector('#panel-sensitivity .panel[data-panel="'+id+'"]');
+ panel.id='sensitivity-panel-'+id;panel.classList.add('active');
+ panel.setAttribute('role','region');panel.setAttribute('aria-label',label);panel.tabIndex=-1;
+ const link=document.createElement('a');link.href='#'+panel.id;link.textContent='↓ '+label;
+ link.addEventListener('click',()=>panel.focus({preventScroll:true}));tabsEl.append(link);
 }
-switchTab('scope');
- 
+
 const $ = id => document.getElementById(id);
 const fmt = (n, d=3) => isFinite(n) ? (Math.round(n*Math.pow(10,d))/Math.pow(10,d)).toString() : '–';
  
@@ -90,6 +45,7 @@ function calcVert(){
  
 /* ---------- 05 pixel-speed scope matcher ---------- */
 const SCOPE_CONST = {
+  'aim': {A:53, B:0.2, range:[1.3,14.7]},
   '1x':  {A:64, B:2,   range:[0.1,19.1]},
   '2x':  {A:54, B:0.6, range:[0.9,15.1]},
   '3x':  {A:70, B:0.6, range:[1.4,19.8]},
@@ -104,11 +60,14 @@ function pixelSpeed(C, A, B){
 function matchedSens(speed, A, B){
   return ((A/60)*(10+B)*speed)/3840 - B;
 }
+const scopeLabel=key=>key==='aim'?'Aim (over the shoulder)':key==='1x'?'1x · Red Dot / Holo / Iron':key;
 function calcScope(){
   const refKey = $('px_scope').value;
   const C = parseFloat($('px_sens').value);
   const ref = SCOPE_CONST[refKey];
-  if(!isFinite(C)||!ref) return;
+  if(!Number.isFinite(C)||C<0||C>20||!ref){
+    $('px_speed').textContent='–';document.querySelector('#px_table tbody').replaceChildren();updateCurrentSpeeds();return;
+  }
   const speed = pixelSpeed(C, ref.A, ref.B);
   $('px_speed').textContent = fmt(speed,0);
  
@@ -119,12 +78,38 @@ function calcScope(){
     const sens = matchedSens(speed, sc.A, sc.B);
     const inRange = sens >= sc.range[0] && sens <= sc.range[1];
     const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${key}${key===refKey?' <span class="badge">ref</span>':''}</td>
+    tr.innerHTML = `<td>${scopeLabel(key)}${key===refKey?' <span class="badge">ref</span>':''}</td>
       <td>${sc.A}</td><td>${sc.B}</td>
       <td style="color:${key===refKey?'#e8a33d':'#e9e7dc'};font-weight:${key===refKey?'700':'400'};">${fmt(sens,2)}</td>
       <td style="color:${inRange?'#8fae5c':'#c8593d'};">${inRange?'Yes':'Out of range'}</td>`;
     tbody.appendChild(tr);
   });
+  updateCurrentSpeeds();
+}
+const currentInputs=new Map();
+function updateCurrentSpeeds(){
+ const ref=SCOPE_CONST[$('px_scope').value],C=Number.parseFloat($('px_sens').value);
+ const reference=ref&&Number.isFinite(C)&&C>=0&&C<=20?pixelSpeed(C,ref.A,ref.B):null;
+ for(const [key,row] of currentInputs){
+  const value=Number.parseFloat(row.input.value),valid=Number.isFinite(value)&&value>=0&&value<=20;
+  const speed=valid?pixelSpeed(value,SCOPE_CONST[key].A,SCOPE_CONST[key].B):null;
+  row.speed.textContent=speed==null?'–':fmt(speed,0);
+  row.delta.textContent=speed==null?(row.input.value===''?'–':'Enter 0–20'):reference==null?'–':((speed-reference)>=0?'+':'')+fmt(speed-reference,0)+' px/s';
+  row.use.disabled=!valid;row.input.setAttribute('aria-invalid',String(row.input.value!==''&&!valid));
+ }
+}
+for(const key of Object.keys(SCOPE_CONST)){
+ const tr=document.createElement('tr'),name=document.createElement('th');name.scope='row';name.textContent=scopeLabel(key);tr.append(name);
+ const input=document.createElement('input');input.type='number';input.min='0';input.max='20';input.step='0.1';input.placeholder='0–20';input.id='current_sens_'+key;input.setAttribute('aria-label','Current '+scopeLabel(key)+' sensitivity');
+ const speed=document.createElement('output');speed.setAttribute('for',input.id);speed.setAttribute('aria-label',scopeLabel(key)+' pixel speed');
+ const delta=document.createElement('span'),use=document.createElement('button');use.type='button';use.textContent='Use as reference';use.setAttribute('aria-label','Use '+scopeLabel(key)+' as reference');
+ for(const item of [input,speed,delta,use]){const td=document.createElement('td');td.append(item);tr.append(td);}
+ use.addEventListener('click',()=>{
+  $('px_scope').value=key;$('px_sens').value=input.value;
+  $('px_scope').dispatchEvent(new Event('change',{bubbles:true}));$('px_sens').dispatchEvent(new Event('input',{bubbles:true}));
+ });
+ input.addEventListener('input',updateCurrentSpeeds);currentInputs.set(key,{input,speed,delta,use});
+ document.querySelector('#current_sensitivity_table tbody').append(tr);
 }
 ['px_scope','px_sens'].forEach(id=>$(id).addEventListener('input', calcScope));
 $('px_scope').addEventListener('change', calcScope);

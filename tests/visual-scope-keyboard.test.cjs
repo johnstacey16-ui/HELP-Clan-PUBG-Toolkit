@@ -2,27 +2,20 @@
 const {test}=require('node:test'),assert=require('node:assert/strict');
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 const read=p=>fs.readFileSync(path.resolve(__dirname,'..',p),'utf8');
-test('all three sensitivity views use accessible tab buttons with standard keyboard navigation',()=>{
+test('all sensitivity sections are visible and reachable with native jump links',()=>{
  const html=read('index.html'),src=read('js/sensitivity.js');
- assert.match(html,/<div class="tabs" id="tabs" role="tablist" aria-label="Sensitivity calculator views"><\/div>/);
- assert.match(src,/document\.createElement\('button'\)/);
- assert.match(src,/b\.setAttribute\('role','tab'\)/);
- assert.match(src,/b\.setAttribute\('aria-controls',panel\.id\)/);
- assert.match(src,/b\.setAttribute\('aria-selected',String\(i===0\)\)/);
- assert.match(src,/ArrowRight/);
- assert.match(src,/ArrowLeft/);
- assert.match(src,/Home/);
- assert.match(src,/End/);
- assert.match(src,/button\.tabIndex=active\?0:-1/);
- assert.match(src,/panel\.setAttribute\('aria-hidden',String\(!active\)\)/);
+ assert.match(html,/<nav class="tabs quicknav" id="tabs" aria-label="Sensitivity sections"><\/nav>/);
+ assert.match(src,/document\.createElement\('a'\)/);
+ assert.match(src,/panel\.classList\.add\('active'\)/);
+ assert.doesNotMatch(src,/setAttribute\('role','tab'\)|aria-hidden|switchTab/);
+ assert.match(src,/link\.href='#'\+panel\.id/);
  assert.doesNotThrow(()=>new vm.Script(src));
 });
-test('visual upgrade cannot change the empirical sensitivity maths',()=>{
+test('sensitivity formulas retain their original forward and inverse functions',()=>{
  const src=read('js/sensitivity.js');
  assert.match(src,/function pixelSpeed\(C, A, B\)/);
  assert.match(src,/function matchedSens\(speed, A, B\)/);
- assert.match(src,/switchTab\('scope'\)/);
- assert.match(read('visual-assets.css'),/#panel-sensitivity #tabs \[role="tab"\]:focus-visible/);
+ assert.match(read('unified-workspace.css'),/#tabs a:focus-visible/);
 });
 test('all static inline images reserve dimensions, supply alt and explicit loading intent',()=>{
  const html=read('index.html'),images=[...html.matchAll(/<img\b[^>]*>/g)].map(x=>x[0]);

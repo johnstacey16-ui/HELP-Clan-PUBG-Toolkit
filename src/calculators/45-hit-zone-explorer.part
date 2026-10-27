@@ -31,6 +31,7 @@ function initHitZoneExplorer({ panel, weapons, getCheckpoints, getZoneResults, i
         : 'No data';
     }
     if (!zone || zone.damage == null || !Number.isFinite(zone.damage)) return 'No data';
+    if(mode === 'ttk'){const time=pureTtk(zone.htk,currentWeapon()?.rpm);return time==null?'No data':time.toFixed(2)+' s';}
     if (mode === 'htk') return zone.htk == null ? 'No data' : String(zone.htk) + ' hits';
     return decimal(zone.damage);
   };
@@ -120,6 +121,7 @@ function initHitZoneExplorer({ panel, weapons, getCheckpoints, getZoneResults, i
           : 'No data for actual total shell damage or actual hits-to-kill: published values are per pellet. Select the separate theoretical minimum-shell mode for an all-pellets-hit lower bound.')
         : 'Calculated from a recorded source checkpoint at ' + distance + ' m. Assumes intact selected equipment; no interpolation or simulated armour durability.' +
           (mode === 'htk' ? ' Hits to kill assumes 100 HP and repeated shots striking the same hit zone.' :
+           mode === 'ttk' ? ' TTK assumes 100 HP, all hits in the same zone and maximum fire rate; excludes reloads and projectile travel.' :
            mode === 'heatmap' ? ' Heatmap colour is relative to damage across this weapon\'s zones.' : '');
     }
     body.classList.toggle('has-helmet', helmet > 0);

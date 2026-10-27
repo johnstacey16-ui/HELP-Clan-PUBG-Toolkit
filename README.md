@@ -1,5 +1,9 @@
 # HELP-Clan-PUBG-Toolkit
 
+## Visible artwork, Sensitivity Studio and Combat Lab
+
+[PR #49](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/pull/49) displays pictures without artwork toggles, stacks the three sensitivity tools with jump links, adds Aim and the current-sensitivity px/s checker, groups armour guidance, and brings the model, range and TTK into one Combat Lab. See [the implementation checklist](UNIFIED_TOOLKIT_ROADMAP.md).
+
 ## PUBG item artwork — released (27 October 2026)
 
 [PR #48](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/pull/48) replaces representative item drawings with sourced PUBG / KRAFTON images for all 45 weapons, optics, attachments, armour, backpacks and supplies. Pictures retain their existing optional/deferred loading. Calculator data and Model 2 stay unchanged. See the [artwork checklist](OFFICIAL_ARTWORK_ROADMAP.md) for passing checks and production verification.

@@ -23,7 +23,7 @@ test('photographic model is shipped as a small valid WebP with alpha',()=>{
   assert.deepEqual([imageWidth,imageHeight],[500,750],'photo dimensions must match SVG coordinate mapping');
 });
 test('photo is beneath all 13 transparent focusable hit zone paths in both sources',()=>{
-  assert.ok(live.includes(markup.trim()),'live markup must match canonical fragment');
+  assert.equal(live.match(/<svg id="hz_body"[\s\S]*?<\/svg>/)[0],markup.match(/<svg id="hz_body"[\s\S]*?<\/svg>/)[0],'Model 2 geometry must match the canonical fragment');
   const photo=markup.indexOf('class="hz-photo"');
   const region=markup.indexOf('data-hit-zone="head"');
   assert.ok(photo>0&&region>photo);

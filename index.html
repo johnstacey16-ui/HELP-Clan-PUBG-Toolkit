@@ -9,7 +9,7 @@
 <title>HELP — PUBG Field Toolkit</title>
 <style>
 @import url("https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap");
- 
+
 :root{ --hub-bg:#07080a; --hub-panel:#0e1013; --hub-line:#2a2e33; --hub-ink:#e9ecef; --hub-dim:#8b929b; --hub-accent:#ffb545; --hub-nav-h:48px; --grouprow-h:26px; --mono: ui-monospace, "SFMono-Regular", Consolas, monospace; --disp: "Arial Narrow", "Helvetica Neue Condensed", Impact, sans-serif; }
 *{box-sizing:border-box}
 html,body{margin:0;padding:0;background:var(--hub-bg);}
@@ -30,7 +30,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
 #engine-subnav button:hover{color:var(--hub-ink);background:rgba(34,224,255,.06);}
 #engine-subnav button.active{color:#22e0ff;background:rgba(34,224,255,.1);box-shadow:inset 0 -2px 0 #22e0ff;font-weight:700;}
 #engine-subnav.hidden{display:none;}
- 
+
 #panel-combat {
   --bg:#07090e; --bg2:#0f161d; --panel:#121a22; --line:#223140; --line-soft:#161f27;
   --ink:#eef4f8; --dim:#71899b; --zone:#22e0ff; --zone-soft:rgba(34,224,255,.10);
@@ -406,6 +406,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
 <link rel="stylesheet" href="src/explorer/hit-zone-explorer.scaffold.css">
 <link rel="stylesheet" href="combat-workspace.css">
 <link rel="stylesheet" href="toolkit-layout.css">
+<link rel="stylesheet" href="unified-workspace.css">
 </head>
 <body>
 <div id="app-shell">
@@ -426,7 +427,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
   <div class="nav-group-label"><span>01</span>ALL TOOLS</div>
   <button class="nav-tool active" type="button" data-open-panel="panel-sensitivity" aria-controls="panel-sensitivity" aria-current="page">
     <span class="nav-tool-icon"><svg class="nav-tool-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="2.5" fill="#111f2c"/><circle cx="16" cy="17" r="2.5" fill="#111f2c"/></svg></span>
-    <span class="nav-tool-name">Scope Sensitivity Matcher</span>
+    <span class="nav-tool-name">Sensitivity Studio</span>
     <svg class="nav-tool-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
   </button>
   <button class="nav-tool" type="button" data-open-panel="panel-combat" aria-controls="panel-combat">
@@ -436,17 +437,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
   </button>
 <button class="nav-tool" type="button" data-open-panel="panel-hit-zone" aria-controls="panel-hit-zone">
     <span class="nav-tool-icon"><svg class="nav-tool-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="4" r="2.3"/><path d="M10 7h4l2 6-2 7M10 7l-2 6 2 7M12 9v9M6 11l3-2m9 2-3-2"/></svg></span>
-    <span class="nav-tool-name">Hit Zone Damage Explorer</span>
-    <svg class="nav-tool-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
-  </button>
-  <button class="nav-tool" type="button" data-open-panel="panel-range" aria-controls="panel-range">
-    <span class="nav-tool-icon"><svg class="nav-tool-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19h16M5 15l5-5 4 3 5-7"/><path d="M15 6h4v4"/></svg></span>
-    <span class="nav-tool-name">Effective Range</span>
-    <svg class="nav-tool-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
-  </button>
-  <button class="nav-tool" type="button" data-open-panel="panel-ttk" aria-controls="panel-ttk">
-    <span class="nav-tool-icon"><svg class="nav-tool-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 13l3-3M9 2h6M12 5v2"/></svg></span>
-    <span class="nav-tool-name">TTK</span>
+    <span class="nav-tool-name">Combat Lab</span>
     <svg class="nav-tool-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
   </button>
   <button class="nav-tool" type="button" data-open-panel="panel-recoil2" aria-controls="panel-recoil2">
@@ -465,7 +456,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
     <svg class="nav-tool-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
   </button>
 </div>
-        
+
       </nav>
     </div>
     <div class="sidebar-footer">
@@ -482,7 +473,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
         </button>
         <div class="topbar-heading">
           <div class="topbar-breadcrumb">HELP CLAN <span>/</span> FIELD TOOLKIT</div>
-          <div class="topbar-title" id="active-tool-heading" tabindex="-1">Scope Sensitivity Matcher</div>
+          <div class="topbar-title" id="active-tool-heading" tabindex="-1">Sensitivity Studio</div>
         </div>
       </div>
       <div class="topbar-brand" aria-label="HELP CLAN">
@@ -491,14 +482,14 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
       </div>
       <div class="topbar-actions">
         <span class="topbar-online"><span></span> TOOLS ONLINE</span>
-        <span class="topbar-index" id="active-tool-index" aria-label="Tool 1 of 8">01 <i>/</i> 08</span>
+        <span class="topbar-index" id="active-tool-index" aria-label="Tool 1 of 6">01 <i>/</i> 06</span>
       </div>
     </header>
     <main id="app-workspace" aria-label="Toolkit workspace">
 <div id="panel-combat" class="hub-main">
- 
+
 <div class="wrap">
- 
+
 <header class="hero">
   <div class="eyebrow">Combat · Weapon Database</div>
   <h1>Weapon Database</h1>
@@ -513,53 +504,58 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
   </div>
   <div class="hero-hint">Every weapon is shown below — search or filter by class to narrow it down</div>
   <nav class="quicknav">
-    <a href="#combat-database">↓ Weapon &amp; armor database</a>
     <a href="#compare-weapons">↓ Compare weapons</a>
-    <a href="#how-thresholds-work">↓ How thresholds work</a>
+    <a href="#armor-guide">↓ Armour &amp; durability guide</a>
   </nav>
     </div>
   </details>
-<details class="visual-opt-in-art combat-armour-disclosure" id="combat-armour-disclosure">
-  <summary>Helmet &amp; vest visual guide <span class="combat-armour-optional">Optional illustrations</span></summary>
+<section class="visual-art-panel combat-armour-disclosure" id="combat-armour-disclosure">
+  <h2 class="section-h">Helmet &amp; vest visual guide </h2>
   <div class="visual-armour-key" aria-label="Illustrated protective equipment reference">
   <div><img data-visual-src="assets/gear-helmet.svg" width="320" height="200" alt="PUBG protective helmet illustration" loading="lazy" decoding="async"><span><strong>Helmet</strong><small>Head protection. See thresholds and damage numbers below.</small></span></div>
   <div><img data-visual-src="assets/gear-vest.svg" width="320" height="200" alt="PUBG protective vest illustration" loading="lazy" decoding="async"><span><strong>Vest</strong><small>PUBG body armour reference. Select armour levels in the calculator.</small></span></div>
 </div>
-</details>
+</section>
 </header>
- 
+
 <div id="panels"></div>
- 
+
 
 </div>
- 
+
 <div class="overlay" id="overlay"><div class="modal" id="modalBody" role="dialog" aria-modal="true" aria-labelledby="modalTitle"></div></div>
- 
- 
- 
+
+
+
 </div>
- 
+
 <div id="panel-sensitivity" class="hub-main active">
- 
+
 <div class="wrap">
- 
+
   <div class="hdr"><b class="br1"></b><b class="br2"></b>
     <div class="eyebrow">// UNOFFICIAL FIELD REFERENCE TOOL</div>
     <div class="title">PUBG <span>SCOPE SENSITIVITY</span> MATCHER</div>
-    
+
   </div>
- 
-  <div class="tabs" id="tabs" role="tablist" aria-label="Sensitivity calculator views"></div>
- 
+
+  <nav class="tabs quicknav" id="tabs" aria-label="Sensitivity sections"></nav>
+
   <!-- ================= SCOPE ================= -->
   <div class="panel" data-panel="scope">
     <div class="card">
       <div class="card-title"><span class="n">01</span> Scope Sensitivity Matcher</div>
       <p class="card-sub">Matches actual screen turn-rate (pixel speed) across scopes, since equal menu sensitivity values do <b>not</b> produce equal turn speed &mdash; each scope has its own A/B constants. Set the scope you like, and get matched values for every other scope.</p>
       <div class="visual-inline-preview" id="visual-scope-preview" aria-label="Reference optic appearance"><img id="visual-scope-image" src="assets/optic-3x.svg" width="320" height="200" loading="eager" fetchpriority="low" decoding="async" alt="PUBG 3x scope"><div><span class="visual-media-kicker">OPTIC · PUBG ARTWORK</span><strong id="visual-scope-label" aria-live="polite">3x reference optic</strong><small>PUBG / KRAFTON artwork. Scope conversion uses the existing sensitivity maths.</small></div></div><fieldset class="visual-one-x-variants" id="visual-one-x-variants" hidden aria-label="Illustrative 1x sight style; sensitivity values are unchanged"><legend>1x sight appearance only — same sensitivity calculation</legend><button type="button" class="visual-optic-variant" data-visual-optic="reddot" aria-pressed="true">Red Dot</button><button type="button" class="visual-optic-variant" data-visual-optic="holo" aria-pressed="false">Holographic</button><button type="button" class="visual-optic-variant" data-visual-optic="iron" aria-pressed="false">Iron sights</button></fieldset>
+      <section class="sensitivity-howto" aria-label="How to use the sensitivity matcher">
+        <h2>Find a setting you like, then match the others</h2>
+        <ol><li>In PUBG, choose an aiming mode or scope that feels comfortable. Enter that mode and its current sensitivity below.</li><li>The reference speed is calculated in px/s. Copy the matched sensitivities into your game settings to give the other scopes the same calculated speed.</li><li>Or enter all your current settings in the speed checker below. Compare them and use any entered setting as your reference.</li><li>Test your changes in Training Mode. Use the vertical multiplier section below if you also change your preferred ADS sensitivity; use the resolution section when changing aspect ratio.</li></ol>
+        <p>Speeds use this calculator’s 3840-pixel reference width and existing A/B constants. They are calculated reference speeds, not a live measurement of your screen. Aim means over-the-shoulder aiming; it shares the 15× constants.</p>
+      </section>
       <div class="grid">
         <div class="field"><label for="px_scope">Reference scope</label>
           <select id="px_scope">
+            <option value="aim">Aim (over the shoulder)</option>
             <option value="1x">1x (Red Dot / Holo / Iron)</option>
             <option value="2x">2x</option>
             <option value="3x" selected>3x</option>
@@ -574,7 +570,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
       <div class="outbar">
         <div class="out hi"><div class="k">Pixel speed</div><div class="v" id="px_speed">–</div><div class="u" style="margin-left:0;">px/s</div></div>
       </div>
- 
+
       <div class="divider"><span>Matched sensitivity per scope</span><i></i></div>
       <div class="scope-results-scroll" role="region" aria-label="Matched scope sensitivities" tabindex="0">
       <table class="ref" id="px_table">
@@ -582,10 +578,15 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
         <tbody></tbody>
       </table>
       </div>
-      <div class="note">Confirm calculated sensitivity values in-game. Out of range means the scope cannot reach the exact match.</div>
+      <div class="note">Confirm calculated sensitivity values in-game. Out of range means the scope cannot reach the exact match within the supplied calibration range.</div>
+      <section id="current-sensitivities" class="current-sensitivity-checker" aria-labelledby="current-sensitivity-title">
+        <h2 id="current-sensitivity-title">Check all your current sensitivities</h2>
+        <p>Enter your current in-game values (0–20). Each row shows its own calculated pixel speed; the difference compares it with the reference speed above. Blank rows stay blank.</p>
+        <div class="scope-results-scroll" role="region" aria-label="Current sensitivity pixel speeds" tabindex="0"><table class="ref" id="current_sensitivity_table"><thead><tr><th>Aiming mode</th><th>Your sensitivity</th><th>Current px/s</th><th>Difference from reference</th><th>Reference</th></tr></thead><tbody></tbody></table></div>
+      </section>
     </div>
   </div>
- 
+
   <!-- ================= VERTICAL MULTIPLIER ================= -->
   <div class="panel" data-panel="vert">
     <div class="card">
@@ -607,7 +608,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
       <div class="note" id="v_advice"></div>
     </div>
   </div>
- 
+
   <!-- ================= RESOLUTION ================= -->
   <div class="panel" data-panel="res">
     <div class="card">
@@ -631,7 +632,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
         <div class="out"><div class="k">Sensitivity change</div><div class="v" id="r_sensout">–</div></div>
         <div class="out hi"><div class="k">New vertical multiplier</div><div class="v" id="r_vmout">–</div></div>
       </div>
- 
+
       <div class="divider"><span>Reference table</span><i></i></div>
       <table class="ref">
         <thead><tr><th>Conversion</th><th>Sensitivity</th><th>Vertical multiplier</th></tr></thead>
@@ -644,7 +645,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
           <tr><td>4:3 &rarr; 16:9</td><td>&minus;3</td><td>&divide; 1.166</td></tr>
         </tbody>
       </table>
- 
+
       <div class="divider"><span>Common resolutions</span><i></i></div>
       <table class="ref">
         <thead><tr><th>Resolution</th><th>Aspect</th></tr></thead>
@@ -663,7 +664,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
       </table>
     </div>
   </div>
- 
+
   <div class="card" style="border-color:var(--amber-dim);">
     <div class="card-title" style="color:var(--olive);"><span class="n">i</span> Other sensitivity tools</div>
     <table class="ref">
@@ -675,158 +676,20 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
       </tbody>
     </table>
   </div>
- 
+
 
   <footer>HELP Clan Scope Sensitivity Matcher <span class="v">v1.0</span> &middot; logic by HELP clan manual v1.0 &middot; unofficial, not affiliated with PUBG or KRAFTON</footer>
 </div>
- 
- 
- 
+
+
+
 </div>
 
 <!-- ================= EFFECTIVE RANGE & DAMAGE ================= -->
-<div id="panel-range" class="hub-main">
-<div class="wrap">
-  <div class="eyebrow">Combat · Effective Range</div>
-  <h1>Effective Range &amp; Damage</h1>
-  <p class="sub">Check damage and range at recorded distances. Shotguns also show a best-case minimum shell count, assuming every pellet hits.</p>
-  <div class="card">
-    <div class="section-h">Setup</div>
-    <div class="toolbar">
-      <div class="field"><label for="rg_weapon">Weapon</label><select id="rg_weapon"></select></div>
-      <div class="field"><label for="rg_hitbox">Hitbox</label>
-        <select id="rg_hitbox"><option value="head">Head</option><option value="chest" selected>Chest</option><option value="limb">Limbs</option></select>
-      </div>
-      <div class="field" style="flex:0 0 auto;justify-content:flex-end;flex-direction:row;align-items:center;gap:6px">
-        <label style="margin:0"><input type="checkbox" id="rg_detailed" style="width:auto;margin-right:4px;vertical-align:middle"> Detailed hitboxes</label>
-      </div>
-      <div class="field"><label for="rg_armor">Armor level (on that hitbox)</label>
-        <select id="rg_armor"><option value="0">None</option><option value="1">Level 1</option><option value="2">Level 2</option><option value="3" selected>Level 3</option></select>
-      </div>
-      <div class="field" id="rg_stanceField" style="display:none"><label for="rg_stance">Firing stance (shotguns only)</label>
-        <select id="rg_stance"><option value="hip" selected>Hip-fire</option><option value="ads">Aimed (ADS)</option></select>
-      </div>
-    </div>
-    <div class="field" style="margin-bottom:6px"><label>Measured checkpoint: <span id="rg_rangeLabel">100 m</span></label>
-      <input type="range" id="rg_range" min="0" max="1" step="1" value="0" aria-label="Select a recorded distance">
-      <p class="helptext" id="rg_rangeEvidence">Only recorded distances are available.</p>
-    </div>
-    <div id="rg_approxNote"></div>
-  </div>
 
-  <div class="card">
-    <div class="section-h">Result at this range</div>
-    <div class="grid4">
-      <div class="stat"><div class="n" id="rg_dmg">–</div><div class="l" id="rg_dmgLabel">Damage at range</div><div class="bar"><div class="bar-fill" id="rg_dmg_bar"></div></div></div>
-      <div class="stat"><div class="n" id="rg_htk">–</div><div class="l" id="rg_htkLabel">Hits to kill</div><div class="bar"><div class="bar-fill" id="rg_htk_bar"></div></div></div>
-      <div class="stat"><div class="n" id="rg_ttk">–</div><div class="l">TTK (seconds)</div><div class="bar"><div class="bar-fill" id="rg_ttk_bar"></div></div></div>
-      <div class="stat"><div class="n" id="rg_flight">–</div><div class="l">Minimum flight time (ideal)</div></div>
-    </div>
-    <p class="helptext" style="margin-top:8px">Ideal minimum: distance ÷ muzzle velocity, assuming no drag. Actual projectile travel time is longer.</p>
-  </div>
-
-  <details class="visual-opt-in-art" id="visual-range-artwork">
-    <summary>View optional range illustrations <span class="visual-art-summary-note">Item artwork · results remain above</span></summary>
-    <div class="visual-art-content">
-<figure class="visual-reference-banner" id="visual-range"><img data-visual-src="assets/range-target.svg" width="320" height="200" loading="lazy" decoding="async" alt="Range target reference"><figcaption><strong>Range target reference</strong><span>Illustrative target only; charts show recorded checkpoints.</span></figcaption></figure>
-<div class="visual-selected-weapon" id="visual-range-weapon" aria-live="polite"><img id="visual-range-weapon-image" width="960" height="320" alt="" decoding="async" loading="lazy" hidden><div><span class="visual-media-kicker">OPTIONAL PUBG WEAPON ART</span><strong id="visual-range-weapon-title">Artwork not available</strong><small id="visual-range-weapon-note">Weapon stats are shown below. Reference artwork is not game data.</small></div></div>
-    </div>
-  </details>
-
-  <div class="card">
-    <div class="section-h">Estimated gravity drop at this range</div>
-    <div class="grid3">
-      <div class="stat"><div class="n" id="rg_drop">–</div><div class="l">Estimated gravity displacement (cm)</div></div>
-      <div class="stat"><div class="n" id="rg_holdover">–</div><div class="l">Equivalent angle (mrad)</div></div>
-      <div class="stat"><div class="n" id="rg_muzzlecmp">–</div><div class="l" id="rg_velocityLabel">Muzzle velocity (game files)</div></div>
-    </div>
-    <div class="note" id="rg_dropNote"></div>
-  </div>
-
-  <div class="card">
-    <div class="section-h" id="rg_chartTitle">Damage at measured checkpoints</div>
-    <canvas id="rg_chartDmg" width="1100" height="200"></canvas>
-  </div>
-  <details class="card tt-disclosure" id="rg_comparison">
-    <summary>Compare another weapon at recorded checkpoints</summary>
-    <div class="field"><label for="rg_compare">Reference weapon</label><select id="rg_compare"><option value="">Choose a reference weapon</option></select></div>
-    <p class="helptext" id="rg_compareNote" role="status">Select a reference weapon. Comparisons use the same hitbox and equipment.</p>
-    <canvas id="rg_compareChart" width="1100" height="220" role="img" aria-label="Damage comparison at recorded checkpoints; exact values are listed in the following table"></canvas>
-    <div class="tt-table-scroll"><table id="rg_compareTable"></table></div>
-  </details>
-  <div class="card">
-    <div class="section-h">Hits-to-kill and TTK at recorded checkpoints</div>
-    <p class="helptext" style="margin-bottom:10px">Shotgun minimum shells assume every pellet hits the selected body area. Actual fights may require more.</p>
-    <table id="rg_brackets"></table>
-  </div>
-
-
-</div>
-</div>
 
 <!-- ================= TTK CALCULATOR ================= -->
-<div id="panel-ttk" class="hub-main">
-<div class="wrap">
-  <div class="eyebrow">Combat · Time To Kill</div>
-  <h1>TTK Calculator</h1>
-  <p class="sub">Compare damage, hits to kill and time to kill at recorded distances. Missing values show No data.</p>
-  <div class="card">
-    <div class="section-h">Setup</div>
-    <div class="toolbar">
-      <div class="field"><label for="tk_weapon">Weapon</label><select id="tk_weapon"></select></div>
-      <div class="field"><label for="tk_distance">Recorded distance</label><select id="tk_distance"></select></div>
-      <div class="field"><label for="tk_hitbox">Hitbox</label>
-        <select id="tk_hitbox"><option value="head">Head</option><option value="chest" selected>Chest</option><option value="limb">Limbs</option></select>
-      </div>
-      <div class="field" style="flex:0 0 auto;justify-content:flex-end;flex-direction:row;align-items:center;gap:6px">
-        <label style="margin:0"><input type="checkbox" id="tk_detailed" style="width:auto;margin-right:4px;vertical-align:middle"> Detailed hitboxes</label>
-      </div>
-      <div class="field"><label for="tk_armor">Armor level</label>
-        <select id="tk_armor"><option value="0">None</option><option value="1">Level 1</option><option value="2">Level 2</option><option value="3" selected>Level 3</option></select>
-      </div>
-    </div>
-  </div>
 
-  <div class="card">
-    <div class="section-h">Result</div>
-    <div class="grid3">
-      <div class="stat"><div class="n" id="tk_dmg">–</div><div class="l">Damage per shot</div><div class="bar"><div class="bar-fill" id="tk_dmg_bar"></div></div></div>
-      <div class="stat"><div class="n" id="tk_htk">–</div><div class="l" id="tk_htkLabel">Hits to kill</div><div class="bar"><div class="bar-fill" id="tk_htk_bar"></div></div></div>
-      <div class="stat"><div class="n" id="tk_pure">–</div><div class="l">Pure TTK (s)</div><div class="bar"><div class="bar-fill" id="tk_pure_bar"></div></div></div>
-    </div>
-    <div class="grid3" style="margin-top:10px">
-      <div class="stat"><div class="n" id="tk_reload">–</div><div class="l">TTK incl. reload (s)</div><div class="bar"><div class="bar-fill" id="tk_reload_bar"></div></div></div>
-    </div>
-    <div class="note" id="tk_note"></div>
-  </div>
-
-  <details class="visual-opt-in-art" id="visual-ttk-artwork">
-    <summary>View optional TTK illustrations <span class="visual-art-summary-note">Item artwork · results remain above</span></summary>
-    <div class="visual-art-content">
-<figure class="visual-reference-banner" id="visual-ttk"><img data-visual-src="assets/ttk-timer.svg" width="320" height="200" loading="lazy" decoding="async" alt="Combat timing reference"><figcaption><strong>Combat timing reference</strong><span>Timer artwork only; calculated results remain authoritative.</span></figcaption></figure>
-<div class="visual-selected-weapon" id="visual-ttk-weapon" aria-live="polite"><img id="visual-ttk-weapon-image" width="960" height="320" alt="" decoding="async" loading="lazy" hidden><div><span class="visual-media-kicker">OPTIONAL PUBG WEAPON ART</span><strong id="visual-ttk-weapon-title">Artwork not available</strong><small id="visual-ttk-weapon-note">Weapon stats are shown below. Reference artwork is not game data.</small></div></div>
-    </div>
-  </details>
-
-  <div class="card">
-    <div class="section-h">Compare weapons</div>
-    <p class="helptext" style="margin-bottom:10px">Uses the same hitbox, armor, and accuracy settings above. Pick up to three.</p>
-    <div class="toolbar">
-      <div class="field"><label for="tk_cmpA">Weapon A</label><select id="tk_cmpA"></select></div>
-      <div class="field"><label for="tk_cmpB">Weapon B</label><select id="tk_cmpB"></select></div>
-      <div class="field"><label for="tk_cmpC">Weapon C</label><select id="tk_cmpC"><option value="">— none —</option></select></div>
-    </div>
-    
-    <table id="tk_cmpTable"></table>
-    <details class="visual-opt-in-art visual-compare-art" id="visual-ttk-comparison-artwork">
-      <summary>View optional comparison weapon illustrations <span class="visual-art-summary-note">Comparison figures stay above</span></summary>
-      <div class="visual-art-content">
-        <div id="visual-ttk-comparisons" class="visual-weapon-comparisons" aria-label="Comparison weapon illustrations"><div class="visual-compare-tile" id="visual-compare-a"><img id="visual-compare-a-image" width="960" height="320" alt="" loading="lazy" decoding="async" hidden><strong id="visual-compare-a-title">Weapon A</strong><small id="visual-compare-a-note">Representative weapon artwork only</small></div><div class="visual-compare-tile" id="visual-compare-b"><img id="visual-compare-b-image" width="960" height="320" alt="" loading="lazy" decoding="async" hidden><strong id="visual-compare-b-title">Weapon B</strong><small id="visual-compare-b-note">Representative weapon artwork only</small></div><div class="visual-compare-tile" id="visual-compare-c"><img id="visual-compare-c-image" width="960" height="320" alt="" loading="lazy" decoding="async" hidden><strong id="visual-compare-c-title">Weapon C</strong><small id="visual-compare-c-note">Representative weapon artwork only</small></div></div>
-      </div>
-    </details>
-  </div>
-</div>
-</div>
 
 <!-- ================= PER-SHOT RECOIL ANALYZER ================= -->
 <div id="panel-recoil2" class="hub-main">
@@ -873,19 +736,19 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
 
   <div class="card">
     <div class="section-h">Weapon recoil parameters</div>
-    
+
     <div style="overflow-x:auto;max-width:100%">
       <table id="rc_table"></table>
     </div>
   </div>
 
-  <details class="visual-opt-in-art" id="visual-recoil-artwork">
-    <summary>View optional recoil illustrations <span class="visual-art-summary-note">Item artwork · results remain above</span></summary>
+  <section class="visual-art-panel" id="visual-recoil-artwork">
+    <h2 class="section-h">Weapon & recoil reference </h2>
     <div class="visual-art-content">
 <figure class="visual-reference-banner" id="visual-recoil"><img data-visual-src="assets/recoil-parameters.svg" width="320" height="200" loading="lazy" decoding="async" alt="Recoil parameter reference"><figcaption><strong>Recoil parameter reference</strong><span>No synthetic spray or unverified shot-by-shot curve.</span></figcaption></figure>
-<div class="visual-selected-weapon" id="visual-recoil-weapon" aria-live="polite"><img id="visual-recoil-weapon-image" width="960" height="320" alt="" decoding="async" loading="lazy" hidden><div><span class="visual-media-kicker">OPTIONAL PUBG WEAPON ART</span><strong id="visual-recoil-weapon-title">Artwork not available</strong><small id="visual-recoil-weapon-note">Weapon stats are shown below. Reference artwork is not game data.</small></div></div>
+<div class="visual-selected-weapon" id="visual-recoil-weapon" aria-live="polite"><img id="visual-recoil-weapon-image" width="960" height="320" alt="" decoding="async" loading="lazy" hidden><div><span class="visual-media-kicker">PUBG WEAPON ART</span><strong id="visual-recoil-weapon-title">Artwork not available</strong><small id="visual-recoil-weapon-note">Weapon stats are shown below. Reference artwork is not game data.</small></div></div>
     </div>
-  </details>
+  </section>
 
 
 </div>
@@ -918,7 +781,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
     </div>
     <div class="note" id="at_opticNote"></div>
     <div class="visual-gear-grid" id="visual-attachment-grid" aria-label="Attachment category illustrations"><div class="visual-gear-tile"><img id="visual-at-muzzle-image" data-visual-src="assets/gear-muzzle.svg" width="320" height="200" loading="lazy" decoding="async" alt="PUBG muzzle attachment"><strong>Muzzle</strong><small id="visual-at-muzzle">Not selected</small></div><div class="visual-gear-tile"><img id="visual-at-grip-image" data-visual-src="assets/gear-grip.svg" width="320" height="200" loading="lazy" decoding="async" alt="PUBG grip attachment"><strong>Grip</strong><small id="visual-at-grip">Not selected</small></div><div class="visual-gear-tile"><img id="visual-at-mag-image" data-visual-src="assets/gear-magazine.svg" width="320" height="200" loading="lazy" decoding="async" alt="PUBG magazine attachment"><strong>Magazine</strong><small id="visual-at-mag">Not selected</small></div><div class="visual-gear-tile"><img id="visual-at-sight-image" data-visual-src="assets/optic-3x.svg" width="320" height="200" loading="lazy" decoding="async" alt="PUBG optic"><strong>Optic</strong><small id="visual-at-sight">Not selected</small></div><div class="visual-gear-tile"><img id="visual-at-stock-image" data-visual-src="assets/gear-stock.svg" width="320" height="200" loading="lazy" decoding="async" alt="PUBG stock illustration"><strong>Stock</strong><small id="visual-at-stock">Not selected</small></div></div>
-<div class="visual-selected-weapon" id="visual-attach-weapon" aria-live="polite"><img id="visual-attach-weapon-image" width="960" height="320" alt="" decoding="async" loading="lazy" hidden><div><span class="visual-media-kicker">OPTIONAL PUBG WEAPON ART</span><strong id="visual-attach-weapon-title">Artwork not available</strong><small id="visual-attach-weapon-note">Weapon stats are shown below. Reference artwork is not game data.</small></div></div><p class="visual-art-disclaimer">PUBG item artwork © KRAFTON. Calculated effects use the selected equipment.</p>
+<div class="visual-selected-weapon" id="visual-attach-weapon" aria-live="polite"><img id="visual-attach-weapon-image" width="960" height="320" alt="" decoding="async" loading="lazy" hidden><div><span class="visual-media-kicker">PUBG WEAPON ART</span><strong id="visual-attach-weapon-title">Artwork not available</strong><small id="visual-attach-weapon-note">Weapon stats are shown below. Reference artwork is not game data.</small></div></div><p class="visual-art-disclaimer">PUBG item artwork © KRAFTON. Calculated effects use the selected equipment.</p>
 
   </div>
 
@@ -1002,9 +865,9 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
 <!-- Hit Zone Explorer: canonical front-view markup; keep embedded index.html version synchronized. -->
 <div id="panel-hit-zone" class="hub-main" aria-hidden="true">
   <div class="wrap">
-    <div class="eyebrow">Combat · Hit Zone Damage</div>
-    <h1>Hit Zone Damage Explorer</h1>
-    <p class="sub">Choose a weapon, helmet, vest and measured distance. Damage for every body zone is visible at once. Select a zone only for more detail.</p>
+    <div class="eyebrow">Combat · Damage, range &amp; time to kill</div>
+    <h1>Combat Lab</h1>
+    <p class="sub">Choose one loadout and recorded distance. Switch the model between damage, hits to kill, heatmap and TTK. Select a body zone to update the range and timing results below.</p>
     <div class="hz-workspace">
       <div class="hz-tools">
     <div class="card">
@@ -1021,7 +884,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
         </select></div>
         <div class="field"><label for="hz_mode">Display</label><select id="hz_mode">
           <option value="damage">Damage</option><option value="htk">Hits to kill</option>
-          <option value="heatmap">Heatmap + damage</option>
+          <option value="heatmap">Heatmap + damage</option><option value="ttk">Time to kill (seconds)</option>
           <option value="ideal-shells">Shotgun: theoretical minimum shells (all pellets hit)</option>
         </select></div>
       </div>
@@ -1176,24 +1039,164 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
         <p class="hz-caption">Both left and right limbs use the same hit-zone values. Coverage tints mark modeled protected hit zones, not the physical dimensions of equipment. Damage values are from published distance checkpoints.</p>
       </section>
     </div>
+  <p id="combat-selected-context" class="workspace-context" role="status"></p>
+<div id="panel-range" class="combat-result-section">
+<div class="wrap">
+  <div class="eyebrow">Combat · Effective Range</div>
+  <h2>Range &amp; ballistics</h2>
+  <p class="sub">Check damage and range at recorded distances. Shotguns also show a best-case minimum shell count, assuming every pellet hits.</p>
+  <div class="card combat-engine-controls" hidden>
+    <div class="section-h">Setup</div>
+    <div class="toolbar">
+      <div class="field"><label for="rg_weapon">Weapon</label><select id="rg_weapon"></select></div>
+      <div class="field"><label for="rg_hitbox">Hitbox</label>
+        <select id="rg_hitbox"><option value="head">Head</option><option value="chest" selected>Chest</option><option value="limb">Limbs</option></select>
+      </div>
+      <div class="field" style="flex:0 0 auto;justify-content:flex-end;flex-direction:row;align-items:center;gap:6px">
+        <label style="margin:0"><input type="checkbox" id="rg_detailed" style="width:auto;margin-right:4px;vertical-align:middle"> Detailed hitboxes</label>
+      </div>
+      <div class="field"><label for="rg_armor">Armor level (on that hitbox)</label>
+        <select id="rg_armor"><option value="0">None</option><option value="1">Level 1</option><option value="2">Level 2</option><option value="3" selected>Level 3</option></select>
+      </div>
+      <div class="field" id="rg_stanceField" style="display:none"><label for="rg_stance">Firing stance (shotguns only)</label>
+        <select id="rg_stance"><option value="hip" selected>Hip-fire</option><option value="ads">Aimed (ADS)</option></select>
+      </div>
+    </div>
+    <div class="field" style="margin-bottom:6px"><label>Measured checkpoint: <span id="rg_rangeLabel">100 m</span></label>
+      <input type="range" id="rg_range" min="0" max="1" step="1" value="0" aria-label="Select a recorded distance">
+      <p class="helptext" id="rg_rangeEvidence">Only recorded distances are available.</p>
+    </div>
+    <div id="rg_approxNote"></div>
   </div>
+
+  <div class="card">
+    <div class="section-h">Result at this range</div>
+    <div class="grid4">
+      <div class="stat"><div class="n" id="rg_dmg">–</div><div class="l" id="rg_dmgLabel">Damage at range</div><div class="bar"><div class="bar-fill" id="rg_dmg_bar"></div></div></div>
+      <div class="stat"><div class="n" id="rg_htk">–</div><div class="l" id="rg_htkLabel">Hits to kill</div><div class="bar"><div class="bar-fill" id="rg_htk_bar"></div></div></div>
+      <div class="stat"><div class="n" id="rg_ttk">–</div><div class="l">TTK (seconds)</div><div class="bar"><div class="bar-fill" id="rg_ttk_bar"></div></div></div>
+      <div class="stat"><div class="n" id="rg_flight">–</div><div class="l">Minimum flight time (ideal)</div></div>
+    </div>
+    <p class="helptext" style="margin-top:8px">Ideal minimum: distance ÷ muzzle velocity, assuming no drag. Actual projectile travel time is longer.</p>
+  </div>
+
+  <section class="visual-art-panel" id="visual-range-artwork">
+    <h2 class="section-h">Weapon & range reference </h2>
+    <div class="visual-art-content">
+<figure class="visual-reference-banner" id="visual-range"><img data-visual-src="assets/range-target.svg" width="320" height="200" loading="lazy" decoding="async" alt="Range target reference"><figcaption><strong>Range target reference</strong><span>Illustrative target only; charts show recorded checkpoints.</span></figcaption></figure>
+<div class="visual-selected-weapon" id="visual-range-weapon" aria-live="polite"><img id="visual-range-weapon-image" width="960" height="320" alt="" decoding="async" loading="lazy" hidden><div><span class="visual-media-kicker">PUBG WEAPON ART</span><strong id="visual-range-weapon-title">Artwork not available</strong><small id="visual-range-weapon-note">Weapon stats are shown below. Reference artwork is not game data.</small></div></div>
+    </div>
+  </section>
+
+  <div class="card">
+    <div class="section-h">Estimated gravity drop at this range</div>
+    <div class="grid3">
+      <div class="stat"><div class="n" id="rg_drop">–</div><div class="l">Estimated gravity displacement (cm)</div></div>
+      <div class="stat"><div class="n" id="rg_holdover">–</div><div class="l">Equivalent angle (mrad)</div></div>
+      <div class="stat"><div class="n" id="rg_muzzlecmp">–</div><div class="l" id="rg_velocityLabel">Muzzle velocity (game files)</div></div>
+    </div>
+    <div class="note" id="rg_dropNote"></div>
+  </div>
+
+  <div class="card">
+    <div class="section-h" id="rg_chartTitle">Damage at measured checkpoints</div>
+    <canvas id="rg_chartDmg" width="1100" height="200"></canvas>
+  </div>
+  <details class="card tt-disclosure" id="rg_comparison">
+    <summary>Compare another weapon at recorded checkpoints</summary>
+    <div class="field"><label for="rg_compare">Reference weapon</label><select id="rg_compare"><option value="">Choose a reference weapon</option></select></div>
+    <p class="helptext" id="rg_compareNote" role="status">Select a reference weapon. Comparisons use the same hitbox and equipment.</p>
+    <canvas id="rg_compareChart" width="1100" height="220" role="img" aria-label="Damage comparison at recorded checkpoints; exact values are listed in the following table"></canvas>
+    <div class="tt-table-scroll"><table id="rg_compareTable"></table></div>
+  </details>
+  <div class="card">
+    <div class="section-h">Hits-to-kill and TTK at recorded checkpoints</div>
+    <p class="helptext" style="margin-bottom:10px">Shotgun minimum shells assume every pellet hits the selected body area. Actual fights may require more.</p>
+    <table id="rg_brackets"></table>
+  </div>
+
+
+</div>
+</div><div id="panel-ttk" class="combat-result-section">
+<div class="wrap">
+  <div class="eyebrow">Combat · Time To Kill</div>
+  <h2>Time to kill &amp; weapon comparison</h2>
+  <p class="sub">Compare damage, hits to kill and time to kill at recorded distances. Missing values show No data.</p>
+  <div class="card combat-engine-controls" hidden>
+    <div class="section-h">Setup</div>
+    <div class="toolbar">
+      <div class="field"><label for="tk_weapon">Weapon</label><select id="tk_weapon"></select></div>
+      <div class="field"><label for="tk_distance">Recorded distance</label><select id="tk_distance"></select></div>
+      <div class="field"><label for="tk_hitbox">Hitbox</label>
+        <select id="tk_hitbox"><option value="head">Head</option><option value="chest" selected>Chest</option><option value="limb">Limbs</option></select>
+      </div>
+      <div class="field" style="flex:0 0 auto;justify-content:flex-end;flex-direction:row;align-items:center;gap:6px">
+        <label style="margin:0"><input type="checkbox" id="tk_detailed" style="width:auto;margin-right:4px;vertical-align:middle"> Detailed hitboxes</label>
+      </div>
+      <div class="field"><label for="tk_armor">Armor level</label>
+        <select id="tk_armor"><option value="0">None</option><option value="1">Level 1</option><option value="2">Level 2</option><option value="3" selected>Level 3</option></select>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-h">Result</div>
+    <div class="grid3">
+      <div class="stat"><div class="n" id="tk_dmg">–</div><div class="l">Damage per shot</div><div class="bar"><div class="bar-fill" id="tk_dmg_bar"></div></div></div>
+      <div class="stat"><div class="n" id="tk_htk">–</div><div class="l" id="tk_htkLabel">Hits to kill</div><div class="bar"><div class="bar-fill" id="tk_htk_bar"></div></div></div>
+      <div class="stat"><div class="n" id="tk_pure">–</div><div class="l">Pure TTK (s)</div><div class="bar"><div class="bar-fill" id="tk_pure_bar"></div></div></div>
+    </div>
+    <div class="grid3" style="margin-top:10px">
+      <div class="stat"><div class="n" id="tk_reload">–</div><div class="l">TTK incl. reload (s)</div><div class="bar"><div class="bar-fill" id="tk_reload_bar"></div></div></div>
+    </div>
+    <div class="note" id="tk_note"></div>
+  </div>
+
+  <section class="visual-art-panel" id="visual-ttk-artwork">
+    <h2 class="section-h">Weapon & timing reference </h2>
+    <div class="visual-art-content">
+<figure class="visual-reference-banner" id="visual-ttk"><img data-visual-src="assets/ttk-timer.svg" width="320" height="200" loading="lazy" decoding="async" alt="Combat timing reference"><figcaption><strong>Combat timing reference</strong><span>Timer artwork only; calculated results remain authoritative.</span></figcaption></figure>
+<div class="visual-selected-weapon" id="visual-ttk-weapon" aria-live="polite"><img id="visual-ttk-weapon-image" width="960" height="320" alt="" decoding="async" loading="lazy" hidden><div><span class="visual-media-kicker">PUBG WEAPON ART</span><strong id="visual-ttk-weapon-title">Artwork not available</strong><small id="visual-ttk-weapon-note">Weapon stats are shown below. Reference artwork is not game data.</small></div></div>
+    </div>
+  </section>
+
+  <div class="card">
+    <div class="section-h">Compare weapons</div>
+    <p class="helptext" style="margin-bottom:10px">Uses the selected body zone, armour and recorded distance from the model. Pick up to three weapons. A missing exact distance shows No data.</p>
+    <div class="toolbar">
+      <div class="field"><label for="tk_cmpA">Weapon A</label><select id="tk_cmpA"></select></div>
+      <div class="field"><label for="tk_cmpB">Weapon B</label><select id="tk_cmpB"></select></div>
+      <div class="field"><label for="tk_cmpC">Weapon C</label><select id="tk_cmpC"><option value="">— none —</option></select></div>
+    </div>
+
+    <table id="tk_cmpTable"></table>
+    <section class="visual-art-panel visual-compare-art" id="visual-ttk-comparison-artwork">
+      <h2 class="section-h">Comparison weapon pictures </h2>
+      <div class="visual-art-content">
+        <div id="visual-ttk-comparisons" class="visual-weapon-comparisons" aria-label="Comparison weapon illustrations"><div class="visual-compare-tile" id="visual-compare-a"><img id="visual-compare-a-image" width="960" height="320" alt="" loading="lazy" decoding="async" hidden><strong id="visual-compare-a-title">Weapon A</strong><small id="visual-compare-a-note">PUBG / KRAFTON artwork</small></div><div class="visual-compare-tile" id="visual-compare-b"><img id="visual-compare-b-image" width="960" height="320" alt="" loading="lazy" decoding="async" hidden><strong id="visual-compare-b-title">Weapon B</strong><small id="visual-compare-b-note">PUBG / KRAFTON artwork</small></div><div class="visual-compare-tile" id="visual-compare-c"><img id="visual-compare-c-image" width="960" height="320" alt="" loading="lazy" decoding="async" hidden><strong id="visual-compare-c-title">Weapon C</strong><small id="visual-compare-c-note">PUBG / KRAFTON artwork</small></div></div>
+      </div>
+    </section>
+  </div>
+</div>
+</div></div>
 </div>
 
 
 <script src="js/app-navigation.js"></script>
- 
+
 <script src="js/shared.js"></script>
 <script src="visual-catalog.js"></script>
 <script src="official-art-catalog.js"></script>
 <script src="js/combat-database.js"></script>
- 
+
 <script src="js/sensitivity.js"></script>
 
 <script src="js/toolkit-calculators.js"></script>
 <script src="visual-controls.js"></script>
 <script src="combat-workspace.js"></script>
 <script src="toolkit-layout.js"></script>
- 
+<script src="unified-workspace.js"></script>
+
 <script src="sticky-weapon-header.js" defer></script>
 </body>
 </html>

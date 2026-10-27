@@ -8,19 +8,19 @@ const vm=require('node:vm');
 const html=require('./toolkit-test-source.cjs')();
 const css=fs.readFileSync(path.join(__dirname,'../app-shell.css'),'utf8');
 const nav=html.slice(html.indexOf('<nav id="app-toolnav"'),html.indexOf('</nav>',html.indexOf('<nav id="app-toolnav"'))+6);
-const expected=['panel-sensitivity','panel-combat','panel-hit-zone','panel-range','panel-ttk','panel-recoil2','panel-attach','panel-backpack'];
+const expected=['panel-sensitivity','panel-combat','panel-hit-zone','panel-recoil2','panel-attach','panel-backpack'];
 
 test('all eight tool links live in one continuous sidebar group',()=>{
   assert.equal((nav.match(/class="nav-tool-group"/g)||[]).length,1,'Exactly one navigation group');
   assert.match(nav,/<div class="nav-group-label"><span>01<\/span>ALL TOOLS<\/div>/);
   assert.doesNotMatch(nav,/GEAR &amp; LOADOUT|<span>02<\/span>/);
   assert.deepEqual([...nav.matchAll(/data-open-panel="([^"]+)"/g)].map(x=>x[1]),expected);
-  assert.equal((nav.match(/<\/button>/g)||[]).length,8);
+  assert.equal((nav.match(/<\/button>/g)||[]).length,6);
 });
 
 test('every tool has a well-formed button with the exact same icon and label structure',()=>{
   const buttons=[...nav.matchAll(/<button\b([^>]*)>([\s\S]*?)<\/button>/g)];
-  assert.equal(buttons.length,8);
+  assert.equal(buttons.length,6);
   for(let i=0;i<buttons.length;i++){
     const [,attrs,inside]=buttons[i];
     assert.doesNotMatch(attrs,/<|>/,'Button '+i+' has malformed opening markup');
@@ -47,7 +47,7 @@ test('icons and tap targets share common CSS rather than tool-specific overrides
 test('home, current tool indices and every calculator remain intact',()=>{
   assert.match(html,/<div id="panel-sensitivity" class="hub-main active">/);
   assert.match(html,/<div id="panel-combat" class="hub-main">/);
-  assert.match(html,/id="active-tool-heading" tabindex="-1">Scope Sensitivity Matcher/);
+  assert.match(html,/id="active-tool-heading" tabindex="-1">Sensitivity Studio/);
   for(const f of ['pixelSpeed','matchedSens','finalDamageAt','shotgunMinShellsAt','htkFor','pureTtk']){
     assert.match(html,new RegExp('function '+f+'\\('));
   }
