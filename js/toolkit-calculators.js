@@ -371,7 +371,6 @@ function drawLineChart(canvas, series, opts={}){
   });
 }
 
-
 /* ================= 1. EFFECTIVE RANGE & DAMAGE ================= */
 // Strict source-only policy: show published checkpoints, never inferred distances
 // or assumed shotgun pellet connections.
@@ -552,7 +551,6 @@ function drawLineChart(canvas, series, opts={}){
   update();
 })();
 
-
 /* ================= 2. TTK CALCULATOR ================= */
 (function(){
   const $ = id => document.getElementById(id);
@@ -657,7 +655,6 @@ function drawLineChart(canvas, series, opts={}){
   update();
 })();
 
-
 /* ================= 3. RECOIL EVIDENCE EXPLORER ================= */
 (function(){
   'use strict';
@@ -720,7 +717,6 @@ function drawLineChart(canvas, series, opts={}){
   });
   update();
 })();
-
 
 /* ================= 4. ATTACHMENTS & RECOIL ================= */
 const ATTACH_MOD = {
@@ -1142,7 +1138,6 @@ function extendedCapFor(w,kind="extended"){
   update();
 })();
 
-
 /* ================= HIT ZONE EXPLORER =================
  * The controller runs within the established calculator IIFE.
  * All damage values come from the sourced all-zone adapter.
@@ -1351,7 +1346,6 @@ if(hitZonePanel){
     isPelletShotgun:w=>Boolean(SHOTGUN_PELLETS[w.name])
   });
 }
-
 /* ================= 5. BACKPACK CALCULATOR ================= */
 // Update 41.1 verifies Jammer and normal backpack carry bonuses match;
 // do not confuse the +150/+200/+250 pack additions with total character capacity.
@@ -1459,4 +1453,3 @@ const BP_THROW = [
 
 
 })();
-

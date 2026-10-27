@@ -287,7 +287,6 @@ function parseThreshold(str){
   return {always:false, label:str};
 }
  
-
 /* ---------------- SINGLE-PAGE CONTAINER ---------------- */
 const panelsEl = document.getElementById("panels");
  
@@ -720,4 +719,3 @@ PT.WEAPONS = WEAPONS;
 PT.WBYNAME = WBYNAME;
 })();
  
-

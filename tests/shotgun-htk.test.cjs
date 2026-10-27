@@ -90,4 +90,3 @@ test('original inline scripts and weapon database still parse',()=>{
   assert.match(html,/id="wTable"/);
   assert.match(html,/src="sticky-weapon-header\.js" defer/);
 });
-
