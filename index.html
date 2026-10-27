@@ -409,6 +409,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
 <link rel="stylesheet" href="unified-workspace.css">
 <link rel="stylesheet" href="recoil-analyzer.css">
 <link rel="stylesheet" href="damage-guide.css">
+<link rel="stylesheet" href="share-weapon-comparison.css">
 </head>
 <body>
 <div id="app-shell">
@@ -1205,6 +1206,13 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
     </div>
 
     <table id="tk_cmpTable"></table>
+    <section class="wc-share" id="wc_share" aria-label="Share weapon comparison">
+      <h3>Share this weapon comparison</h3>
+      <p>Copy a link containing the selected weapon, recorded distance, body zone, helmet and vest levels, and up to three comparison guns. Results are recalculated when opened; no player data is sent to a server.</p>
+      <button type="button" id="wc_copy">Copy comparison link</button>
+      <input id="wc_link" type="text" readonly hidden aria-label="Comparison link, select and copy if automatic copying is unavailable">
+      <p id="wc_status" role="status" aria-live="polite"></p>
+    </section>
     <section class="visual-art-panel visual-compare-art" id="visual-ttk-comparison-artwork">
       <h2 class="section-h">Comparison weapon pictures </h2>
       <div class="visual-art-content">
@@ -1237,6 +1245,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
 <script src="unified-workspace.js"></script>
 <script src="recoil-analyzer.js"></script>
 <script src="damage-guide.js"></script>
+<script src="share-weapon-comparison.js"></script>
 
 <script src="sticky-weapon-header.js" defer></script>
 </body>
