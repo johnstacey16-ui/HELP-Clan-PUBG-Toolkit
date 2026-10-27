@@ -407,6 +407,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
 <link rel="stylesheet" href="combat-workspace.css">
 <link rel="stylesheet" href="toolkit-layout.css">
 <link rel="stylesheet" href="unified-workspace.css">
+<link rel="stylesheet" href="recoil-analyzer.css">
 </head>
 <body>
 <div id="app-shell">
@@ -697,44 +698,62 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
 <div id="panel-recoil2" class="hub-main">
 <div class="wrap">
   <div class="eyebrow">Combat · Recoil</div>
-  <div class="recoil-release-row" role="status" aria-label="Detailed recoil analysis coming soon">
-    <div class="recoil-release-content">
-      <span class="recoil-release-caption">FULL SHOT-BY-SHOT ANALYSIS · IN DEVELOPMENT</span>
-      <span class="recoil-coming-soon"><span class="recoil-status-dot" aria-hidden="true"></span>COMING SOON</span>
-      <span class="recoil-release-detail">Full shot-by-shot spray analysis is on the way. The weapon recoil parameters below are available now.</span>
-    </div>
-    <div class="recoil-release-graphic" aria-hidden="true">
-      <span class="recoil-target-ring recoil-ring-outer"></span>
-      <span class="recoil-target-ring recoil-ring-inner"></span>
-      <span class="recoil-target-center"></span>
-    </div>
-  </div>
-  <h1>Recoil Evidence Explorer</h1>
-  <p class="sub">Explore weapon recoil parameters while full spray-pattern analysis is being built.</p>
+  <h1>Per-Shot Recoil Analyzer</h1>
+  <p class="sub">Explore recoil build-up, compare stance and attachment effects, and fire independent simulated sprays using weapon-specific reference curves.</p>
+  <p class="recoil-coverage">27 weapons with reference curves · Existing HELP values take precedence where sources differ. <a href="https://www.pubgintel.com/pubg-per-shot-analyzer" target="_blank" rel="noopener noreferrer">PUBGIntel reference</a></p>
   <div class="card">
-    <div class="section-h">Choose a weapon and question</div>
+    <div class="section-h">Weapon &amp; firing setup</div>
     <div class="toolbar">
+      <div class="field"><label for="rc_class">Weapon class</label><select id="rc_class"><option value="all">All classes</option><option value="AR">Assault rifles</option><option value="SMG">Submachine guns</option><option value="DMR">Marksman rifles</option><option value="MG">Machine guns</option><option value="SR">Sniper rifles</option><option value="SG">Shotguns</option><option value="Pistol">Pistols</option></select></div>
       <div class="field"><label for="rc_weapon">Weapon</label><select id="rc_weapon"></select></div>
       <div class="field"><label for="rc_stance">Stance</label>
         <select id="rc_stance"><option value="standing">Standing</option><option value="crouched">Crouched</option><option value="prone">Prone</option></select>
       </div>
-      <div class="field"><label for="rc_shots">Spray length to check</label>
-        <select id="rc_shots"><option value="10">10 shots</option><option value="20" selected>20 shots</option><option value="30">30 shots</option></select>
+      <div class="field"><label for="rc_shots">Simulated spray length</label>
+        <select id="rc_shots"><option value="10">10 shots</option><option value="20">20 shots</option><option value="30" selected>30 shots</option></select>
       </div>
     </div>
     <div id="rc_missing" class="recoil-evidence-note" role="status" aria-live="polite"></div>
   </div>
 
-  <div class="card">
-    <div class="section-h">Shot-by-shot recoil</div>
-    <div id="rc_chart" class="recoil-evidence-surface" role="status" aria-live="polite">
-      <div class="recoil-evidence-symbol" aria-hidden="true">?</div>
-      <div>
-        <strong>No verified per-shot recoil curve</strong>
-        <p>We cannot calculate an actual recoil path without a validated per-shot pattern. No graph is drawn from arbitrary growth rates.</p>
-      </div>
+  <section id="rc_analyzer" aria-label="Per-shot analysis">
+    <div class="card">
+      <h2 class="section-h">Weapon curve data</h2>
+      <div class="field" id="rc_rate_field" hidden><label for="rc_rate">Fire rate</label><select id="rc_rate"></select></div>
+      <div id="rc_metadata" class="recoil-metadata"></div>
+      <div id="rc_patch"></div>
     </div>
-  </div>
+    <div class="card">
+      <h2 class="section-h">Stance &amp; attachments</h2>
+      <p id="rc_stance_summary" class="helptext"></p>
+      <div id="rc_stance_buttons" class="workspace-segments" role="group" aria-label="Recoil stance"></div>
+      <div id="rc_attachment_choices" class="recoil-attachment-choices"></div>
+      <p id="rc_build_summary" class="note"></p>
+    </div>
+    <div class="card" id="rc_chart" data-evidence="reference-model">
+      <h2 class="section-h">Recoil build-up · first 30 shots</h2>
+      <p class="helptext">Average vertical climb and horizontal kick in 10-shot windows, shown as a percentage of this weapon’s first-30-shot peak. Lower means less kick. Saved values are percentage points of that peak.</p>
+      <div class="recoil-legend"><span>Baseline vertical</span><span>Build vertical</span><span>Baseline horizontal</span><span>Build horizontal</span></div>
+      <canvas id="rc_curve_canvas" width="960" height="320" role="img" aria-label="Per-shot vertical and horizontal recoil build-up; equivalent values are in the tables below"></canvas>
+      <div class="recoil-table-scroll" tabindex="0" role="region" aria-label="Ten-shot recoil stages"><table id="rc_stage_table"></table></div>
+      <p id="rc_estimate_note" class="helptext">EST means one or both curves have ended; their final values are held.</p>
+    </div>
+    <div class="card">
+      <h2 class="section-h">Visual spray simulator</h2>
+      <div id="rc_sim_metadata" class="recoil-metadata"></div>
+      <p class="helptext">Each Fire rolls a new random spray with the selected stance and attachments. The first bullet starts at the crosshair; recoil moves the following bullet. These are simulated positions in curve units, not measured screen pixels or guaranteed impacts. Five colours let you compare independent sprays.</p>
+      <div class="recoil-sim-controls"><button type="button" id="rc_fire">Fire a simulated spray</button><button type="button" id="rc_reset">Reset sprays</button><label><input type="checkbox" id="rc_animate" checked> Animate at weapon firing rate</label></div>
+      <p id="rc_sim_count" role="status" aria-live="polite">0 / 5 sprays</p>
+      <canvas id="rc_sim_canvas" width="960" height="600" role="img" aria-label="Randomized spray paths, overlaid in up to five colours"></canvas>
+      <p class="helptext">The view keeps the same scale when attachments or stance change. After five sprays, Fire starts a new set. Changing the setup clears the previous set.</p>
+    </div>
+    <div class="card">
+      <h2 class="section-h">Every shot’s curve values</h2>
+      <button type="button" id="rc_export">Download per-shot CSV</button>
+      <div class="recoil-table-scroll" tabindex="0" role="region" aria-label="Numeric per-shot recoil values"><table id="rc_shot_table"></table></div>
+      <p class="helptext">Curves are sampled at the selected firing interval with their recorded linear, constant or cubic interpolation. The 10-shot windows are a display choice, not a claim that PUBG changes mechanics at shot 10 or 20.</p>
+    </div>
+  </section>
 
   <div class="card">
     <div class="section-h">Weapon recoil parameters</div>
@@ -747,7 +766,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
   <section class="visual-art-panel" id="visual-recoil-artwork">
     <h2 class="section-h">Weapon & recoil reference </h2>
     <div class="visual-art-content">
-<figure class="visual-reference-banner" id="visual-recoil"><img data-visual-src="assets/recoil-parameters.svg" width="320" height="200" loading="lazy" decoding="async" alt="Recoil parameter reference"><figcaption><strong>Recoil parameter reference</strong><span>No synthetic spray or unverified shot-by-shot curve.</span></figcaption></figure>
+<figure class="visual-reference-banner" id="visual-recoil"><img data-visual-src="assets/recoil-parameters.svg" width="320" height="200" loading="lazy" decoding="async" alt="Recoil parameter reference"><figcaption><strong>Recoil parameter reference</strong><span>Weapon reference artwork; the analyzer above uses imported recoil curves.</span></figcaption></figure>
 <div class="visual-selected-weapon" id="visual-recoil-weapon" aria-live="polite"><img id="visual-recoil-weapon-image" width="960" height="320" alt="" decoding="async" loading="lazy" hidden><div><span class="visual-media-kicker">PUBG WEAPON ART</span><strong id="visual-recoil-weapon-title">Artwork not available</strong><small id="visual-recoil-weapon-note">Weapon stats are shown below. Reference artwork is not game data.</small></div></div>
     </div>
   </section>
@@ -1193,11 +1212,14 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
 
 <script src="js/sensitivity.js"></script>
 
+<script src="recoil-reference.js"></script>
+<script src="recoil-model.js"></script>
 <script src="js/toolkit-calculators.js"></script>
 <script src="visual-controls.js"></script>
 <script src="combat-workspace.js"></script>
 <script src="toolkit-layout.js"></script>
 <script src="unified-workspace.js"></script>
+<script src="recoil-analyzer.js"></script>
 
 <script src="sticky-weapon-header.js" defer></script>
 </body>

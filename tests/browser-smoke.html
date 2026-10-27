@@ -572,7 +572,7 @@
 
         await open('panel-recoil2');
         change(get('rc_weapon'),'RPD');
-        check(text('rc_missing').includes('No data'),'Exact recoil remains explicitly unknown');
+        check(text('rc_missing').includes('reference curves available'),'RPD uses its accepted reference curves');
 
         await open('panel-attach');
         change(get('at_weapon'),'MK14 EBR');
@@ -631,14 +631,53 @@
         change(get('at_mag'),'extquick');
         eq(text('at_capNew'),'40','ACE Extended QuickDraw capacity');
 
-        // For each gun, any missing recoil parameter still reads No data;
-        // never manufacture a shot-by-shot curve from the key count.
+        // Complete reference coverage, plus honest missing-curve states for other guns.
         await open('panel-recoil2');
+        const recoilNames=Object.keys(child.defaultView.HELP_RECOIL_REFERENCE.weapons);
+        eq(recoilNames.length,27,'All 27 reference curve sets are included');
         for(const gun of gunNames){
           change(get('rc_weapon'),gun);
-          check(/No verified [0-9]+-shot recoil curve/.test(text('rc_chart')),
-            gun+' must not invent a recoil trace');
+          const supported=recoilNames.includes(gun);
+          eq(get('rc_analyzer').hidden,!supported,gun+' curve coverage');
+          if(supported){
+            eq(get('rc_stage_table').querySelectorAll('tbody tr').length,3,gun+' three fixed stages');
+            eq(get('rc_shot_table').querySelectorAll('tbody tr').length,30,gun+' all 30 shot values');
+            check(!/NaN|undefined|Infinity/.test(text('rc_analyzer')),gun+' finite outputs');
+          }else check(text('rc_missing').includes('No reference curve data'),gun+' missing curve disclosure');
         }
+        change(get('rc_class'),'SMG');
+        check([...get('rc_weapon').options].every(o=>child.defaultView.PT.WBYNAME[o.value].cls==='SMG'),'Class selector filters actual registry');
+        change(get('rc_class'),'all');change(get('rc_weapon'),'M416');change(get('rc_stance'),'standing');
+        for(const [slot,value] of [['muzzle','compensator'],['grip','vertical'],['stock','heavy']]){
+          const button=child.querySelector('[data-rc-slot="'+slot+'"][data-value="'+value+'"]');
+          check(!!button,'Recoil choice '+slot);button.click();
+        }
+        check(text('rc_build_summary').includes('vertical 40% lower'),'Build uses existing additive HELP effects');
+        check(text('rc_build_summary').includes('horizontal 20% lower'),'Horizontal build multiplier matches existing attachments');
+        const firstShot=get('rc_shot_table').querySelector('tbody tr');
+        eq(Number(firstShot.cells[3].textContent),.216,'M416 initial .36 kick with 40% reduction');
+        get('rc_animate').checked=false;get('rc_animate').dispatchEvent(new Event('change'));
+        for(let i=0;i<5;i++)get('rc_fire').click();
+        check(text('rc_sim_count').includes('5 / 5'),'Five independent spray overlays');
+        get('rc_fire').click();check(text('rc_sim_count').includes('1 / 5'),'Sixth spray starts a fresh set');
+        get('rc_reset').click();eq(text('rc_sim_count'),'0 / 5 sprays','Reset clears overlays');
+        change(get('rc_stance'),'crouched');
+        check(text('rc_build_summary').includes('stance ×0.84'),'Existing crouch multiplier is retained');
+        change(get('rc_weapon'),'MG3');
+        eq(get('rc_rate').value,'700','HELP standard MG3 rate wins reference conflict');
+        check(!get('rc_rate_field').hidden,'MG3 alternate rate selector is available');
+        change(get('rc_rate'),'990');
+        check(text('rc_metadata').includes('990 RPM'),'Alternate MG3 rate updates metadata');
+        const shotTwo=get('rc_shot_table').querySelectorAll('tbody tr')[1];
+        check(Math.abs(Number(shotTwo.cells[1].textContent)-60/990)<.00001,'Alternate cadence resamples the curves');
+        change(get('rc_shots'),'10');
+        get('rc_animate').checked=true;get('rc_animate').dispatchEvent(new Event('change'));get('rc_fire').click();
+        check(get('rc_fire').disabled,'Fire is disabled during active cadence animation');
+        await new Promise(resolve=>setTimeout(resolve,750));
+        check(!get('rc_fire').disabled&&text('rc_sim_count').includes('1 / 5'),'Elapsed-time animation completes the 10-shot fast spray');
+        change(get('rc_weapon'),'AWM');
+        check(get('rc_analyzer').hidden,'Unsupported weapon hides model tools');
+        change(get('rc_weapon'),'AKM');
 
         await open('panel-backpack');
         change(get('bp_type'),'jammer');

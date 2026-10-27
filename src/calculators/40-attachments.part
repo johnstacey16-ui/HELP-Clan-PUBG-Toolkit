@@ -418,3 +418,24 @@ function extendedCapFor(w,kind="extended"){
   update();
 })();
 
+
+// Read-only adapter: Recoil Analyzer uses the same compatibility and additive
+// attachment effects as the established Attachments calculator.
+PT.RECOIL_ATTACHMENTS=Object.freeze({
+ choices(name,slot){
+  const w=PT.WBYNAME[name];if(!w)return [];
+  return attachmentChoicesFor(w,slot).map(value=>{
+   const item=ATTACH_MOD[slot][value],effect=slot==='muzzle'&&value==='compensator'?compensatorFor(w):item;
+   return {value,label:item.label,v:effect.v,h:effect.h};
+  });
+ },
+ combine(name,selection){
+  let v=1,h=1;
+  for(const slot of ['muzzle','grip','stock']){
+   const option=this.choices(name,slot).find(x=>x.value===selection[slot])||this.choices(name,slot)[0];
+   if(option){v+=option.v;h+=option.h;}
+  }
+  return {v:Math.max(0,v),h:Math.max(0,h)};
+ }
+});
+

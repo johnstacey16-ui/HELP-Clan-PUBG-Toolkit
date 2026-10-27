@@ -83,6 +83,15 @@ frame.addEventListener('load',()=>{
    assertion(guide.tagName==='SECTION','Armour artwork is always visible');
    assertion(panel.querySelector('#armor-guide').contains(guide),'Armour guide grouped with crossover tools');
   }
+  if(panelId==='panel-recoil2'){
+   for(const id of ['rc_class','rc_weapon','rc_stance','rc_shots','rc_metadata','rc_attachment_choices','rc_curve_canvas','rc_sim_canvas']){
+    const element=doc.getElementById(id),rect=element.getBoundingClientRect();
+    assertion(rect.width>20&&rect.height>10,id+' must be visible');
+    assertion(rect.left>=-2&&rect.right<=viewport+2,id+' overflows at '+viewport+'px');
+   }
+   assertion(doc.getElementById('rc_fire').getBoundingClientRect().height>=44,'Simulator button tap target');
+   assertion(doc.getElementById('rc_stage_table').closest('.recoil-table-scroll').scrollWidth>=doc.getElementById('rc_stage_table').closest('.recoil-table-scroll').clientWidth,'Stage values remain scrollable');
+  }
   if(panelId==='panel-backpack'){
    const buttons=[...panel.querySelectorAll('.bp-stepper button')];
    assertion(buttons.length>=20,'Backpack steppers missing');
