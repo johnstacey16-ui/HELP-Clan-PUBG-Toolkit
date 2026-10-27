@@ -1,5 +1,9 @@
 # HELP-Clan-PUBG-Toolkit
 
+## PUBG item artwork — 27 October 2026
+
+[PR #48](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/pull/48) replaces representative item drawings with sourced PUBG / KRAFTON images for all 45 weapons, optics, attachments, armour, backpacks and supplies. Pictures retain their existing optional/deferred loading. Calculator data and Model 2 stay unchanged. See the [artwork checklist](OFFICIAL_ARTWORK_ROADMAP.md) for verification progress.
+
 ## Calculator and weapon presentation — released (27 October 2026)
 
 [PR #47](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/pull/47) adapts useful reference-site interaction patterns with original HELP code: optional weapon cards, crate/class filtering, numeric scale bars and selection leaders; a quick armour crossover lookup; exact-checkpoint range comparisons; compact calculator results; compatible attachment slot browsers; inventory search, category filters and packed-item removal; and sourced recoil parameter cards. Gun pictures remain opt-in in the database browser. Model 2, sensitivity maths and game-data records are unchanged.
@@ -16,7 +20,7 @@ The checked [combat workspace roadmap](COMBAT_WORKSPACE_ROADMAP.md) records pass
 
 **Finished:** the owner-approved illustrated visual upgrade and follow-ups #41–#44 are merged and live. See [VISUAL_UPGRADE_RELEASE_STATUS.md](VISUAL_UPGRADE_RELEASE_STATUS.md) for verified CI/production evidence and the separate optional device/photo-art backlog.
 
-[Visual artwork credits and usage notes](VISUAL_ARTWORK_CREDITS.md) document the original conceptual graphics, limits of accuracy and why no official PUBG screenshots/textures are bundled.
+[Visual artwork credits and usage notes](VISUAL_ARTWORK_CREDITS.md) record the publisher image sources, original-file hashes, fan-site attribution, retained original diagrams and media limits.
 
 The visual upgrade was merged in [PR #41](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/pull/41) as commit `d54ac7cb` and is deployed to [production](https://help-clan-pubg-toolkit.vercel.app/). For remaining real Xbox Series S Edge / phone checks, follow [the visual acceptance checklist](docs/visual-acceptance-checklist.md). Automated tests do not replace physical device review.
 
