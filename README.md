@@ -1,5 +1,11 @@
 # HELP-Clan-PUBG-Toolkit
 
+## Calculator and weapon presentation — released (27 October 2026)
+
+[PR #47](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/pull/47) adapts useful reference-site interaction patterns with original HELP code: optional weapon cards, crate/class filtering, numeric scale bars and selection leaders; a quick armour crossover lookup; exact-checkpoint range comparisons; compact calculator results; compatible attachment slot browsers; inventory search, category filters and packed-item removal; and sourced recoil parameter cards. Gun pictures remain opt-in in the database browser. Model 2, sensitivity maths and game-data records are unchanged.
+
+The completed [layout roadmap](INTEL_LAYOUT_ROADMAP.md) records the passing final checks, screenshot review and production verification.
+
 ## Combat workspace upgrade — released to main (27 October 2026)
 
 [PR #46](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/pull/46) adds the compact Hit Zone workspace, visible equipment/display controls, searchable opt-in weapon thumbnails, and Combat DB Core / Damage / Handling / All stats views. Weapon, exact recorded distance and helmet/vest settings carry between Hit Zone, Range and TTK. TTK now supports recorded distances. Missing checkpoint matches are disclosed rather than interpolated. Model 2, source data and sensitivity calculations are preserved.
