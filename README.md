@@ -1,8 +1,8 @@
 # HELP-Clan-PUBG-Toolkit
 
-## Visible artwork, Sensitivity Studio and Combat Lab
+## Visible artwork, Sensitivity Studio and Combat Lab — released (27 October 2026)
 
-[PR #49](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/pull/49) displays pictures without artwork toggles, stacks the three sensitivity tools with jump links, adds Aim and the current-sensitivity px/s checker, groups armour guidance, and brings the model, range and TTK into one Combat Lab. See [the implementation checklist](UNIFIED_TOOLKIT_ROADMAP.md).
+[PR #49](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/pull/49) displays pictures without artwork toggles, stacks the three sensitivity tools with jump links, adds Aim and the current-sensitivity px/s checker, groups armour guidance, and brings the model, range and TTK into one Combat Lab. All 185 unit checks and browser/responsive checks pass; the production flows are verified. See [the completed checklist](UNIFIED_TOOLKIT_ROADMAP.md).
 
 ## PUBG item artwork — released (27 October 2026)
 
