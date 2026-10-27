@@ -40,3 +40,4 @@
 #panel-recoil2 #rc_curve_canvas {height:280px;aspect-ratio:auto}
 #panel-recoil2 #rc_sim_canvas {height:420px;aspect-ratio:auto}
 @media(max-width:480px){#panel-recoil2 #rc_curve_canvas {height:240px}#panel-recoil2 #rc_sim_canvas {height:350px}}
+#panel-recoil2 #rc_curve_canvas,#panel-recoil2 #rc_sim_canvas {min-width:0;max-width:100%;display:block}
