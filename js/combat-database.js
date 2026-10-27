@@ -297,7 +297,7 @@ const panelsEl = document.getElementById("panels");
     <div class="card" id="combat-database">
       <div class="panel-coord">A1 · Combat Database</div>
       <p class="combat-choose-hint">Select a weapon for its picture and full statistics.</p>
-      <div class="toolbar">
+      <div class="toolbar tt-db-filters">
         <input type="text" id="wSearch" placeholder="Search weapon name…" aria-label="Search weapon database">
         <label class="tt-toggle"><input type="checkbox" id="wCrates" checked> Include crate weapons</label>
         <select id="wSort">

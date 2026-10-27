@@ -98,3 +98,12 @@
 .tt-view-tools button[aria-expanded=true] {border-color:#e8bd78;background:#383b2d}
 #combat-browser:not([open]),#combat-insights:not([open]),#combat-stats-scroller[hidden] {display:none!important}
 #panel-combat #combat-table-instructions {margin-bottom:8px}
+@media(max-width:700px){
+ #panel-combat #combat-database>.tt-db-filters {display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:6px;align-items:center}
+ #panel-combat #combat-database>.tt-db-filters>input {grid-column:1/-1;width:100%;min-width:0}
+ #panel-combat #combat-database>.tt-db-filters>select {width:100%;min-width:0;padding-inline:7px;font-size:11px}
+ #panel-combat #combat-database>.tt-db-filters>.tt-toggle {min-width:0;overflow-wrap:anywhere}
+ .tt-view-tools {display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:5px}
+ #panel-combat .tt-view-tools #combat-view-status {min-width:0;font:10px/1.3 system-ui}
+ .tt-view-tools button {padding-inline:8px}
+}
