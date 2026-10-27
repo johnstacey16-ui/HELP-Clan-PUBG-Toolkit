@@ -92,3 +92,9 @@
  #panel-combat .hero-stats div {padding:6px 9px;min-width:75px}
  #panel-combat #combat-armour-disclosure {margin-top:8px}
 }
+.tt-view-tools {display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin:5px 0 8px}
+#panel-combat .tt-view-tools #combat-view-status {flex:1;min-width:140px;margin:0;font-size:11px}
+.tt-view-tools button {min-height:44px;border:1px solid #435869;border-radius:5px;padding:6px 10px;background:#132430;color:#e7cfaa;font:600 11px/1.3 system-ui;cursor:pointer}
+.tt-view-tools button[aria-expanded=true] {border-color:#e8bd78;background:#383b2d}
+#combat-browser:not([open]),#combat-insights:not([open]),#combat-stats-scroller[hidden] {display:none!important}
+#panel-combat #combat-table-instructions {margin-bottom:8px}

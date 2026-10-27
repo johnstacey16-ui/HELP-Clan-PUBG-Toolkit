@@ -320,11 +320,11 @@ const panelsEl = document.getElementById("panels");
         <button type="button" data-combat-view="handling" aria-pressed="false">Handling</button>
         <button type="button" data-combat-view="all" aria-pressed="false">All stats</button>
       </div>
-      <p class="helptext" id="combat-view-status" role="status"></p>
-      <div class="sort-hint" id="combat-table-instructions">Tap heading to sort · tap a weapon for its picture · swipe sideways for more stats.</div>
+      <div class="tt-view-tools"><p class="helptext" id="combat-view-status" role="status"></p><button type="button" id="combat-card-switch" aria-expanded="false" aria-controls="combat-browser">Weapon cards</button><button type="button" id="combat-leader-switch" aria-expanded="false" aria-controls="combat-insights">Leaders</button></div>
+      <div class="sort-hint" id="combat-table-instructions">Sort columns · swipe sideways for more stats.</div>
+      <details class="tt-disclosure" id="combat-insights"><summary>Leaders in this selection</summary><div id="combat-leaders" class="tt-leaders"></div></details>
       <div class="combat-stats-scroller" id="combat-stats-scroller" role="region" tabindex="0" aria-label="Scrollable weapon statistics" aria-describedby="combat-table-instructions"><table id="wTable"></table></div>
       <div class="missing-note">— means no available value. Mini bars compare the recorded numeric stats; they are not overall weapon ratings.</div>
-      <details class="tt-disclosure" id="combat-insights"><summary>Leaders in this selection</summary><div id="combat-leaders" class="tt-leaders"></div></details>
       <details class="tt-disclosure" id="combat-browser"><summary>Browse weapon cards</summary><label class="tt-toggle"><input type="checkbox" id="combat-card-art"> Show optional weapon pictures</label><div id="combat-cards" class="tt-weapon-cards"></div></details>
       
       <div class="helptext" style="margin-bottom:6px">Recoil &amp; handling columns:</div>
@@ -568,7 +568,18 @@ const panelsEl = document.getElementById("panels");
     }
     if(!list.length)cards.textContent='No matching weapons. Clear the search or change the class filter.';
   }
-  document.getElementById('combat-browser').addEventListener('toggle',render);
+  const browser=document.getElementById('combat-browser'),cardSwitch=document.getElementById('combat-card-switch');
+  function syncBrowser(){
+    document.getElementById('combat-stats-scroller').hidden=browser.open;
+    cardSwitch.textContent=browser.open?'Weapon table':'Weapon cards';
+    cardSwitch.setAttribute('aria-expanded',String(browser.open));
+    render();
+  }
+  cardSwitch.addEventListener('click',()=>{browser.open=!browser.open;syncBrowser();});
+  browser.addEventListener('toggle',syncBrowser);
+  const leaders=document.getElementById('combat-insights'),leaderSwitch=document.getElementById('combat-leader-switch');
+  leaderSwitch.addEventListener('click',()=>{leaders.open=!leaders.open;leaderSwitch.setAttribute('aria-expanded',String(leaders.open));});
+  leaders.addEventListener('toggle',()=>leaderSwitch.setAttribute('aria-expanded',String(leaders.open)));
   document.getElementById('combat-card-art').addEventListener('change',render);
   document.getElementById('wCrates').addEventListener('change',render);
   document.getElementById("wSearch").oninput = render;
