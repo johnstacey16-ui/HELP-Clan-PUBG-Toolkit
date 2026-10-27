@@ -16,6 +16,8 @@ Keep this distinction **in the repository documentation**, without filling the p
 The Scope Sensitivity Matcher uses owner-supplied scope-specific A/B constants and two mathematical functions:
 `pixel_speed = 3840 × (C + B) / ((A/60) × (10+B))` and
 `matched_sensitivity = (A/60) × (10+B) × pixel_speed / 3840 − B`.
+The over-the-shoulder **Aim** option uses the owner-supplied 15× constants (A=53, B=0.2), including the same calibration range. The current-sensitivity checker uses the same forward function independently for every entered setting. All px/s results use the existing 3840-pixel reference width, rather than detecting the visitor’s display.
+
 These are **deliberately used empirical conversion formulas**, not a claim to reproduce an official game-engine implementation. They remain in the app and can be the default opening calculator.
 
 ## Hit Zone Explorer: gun-config damage vs projectile hit damage

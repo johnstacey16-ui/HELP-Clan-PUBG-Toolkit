@@ -18,11 +18,11 @@
         check(!!child && !!child.getElementById('panel-sensitivity'),'Loaded real index.html');
         const get=id=>{const element=child.getElementById(id);check(!!element,'Missing '+id);return element};
         const text=id=>get(id).textContent.trim();
-        const open=id=>{
+        const open=async id=>{
           const parent=['panel-range','panel-ttk'].includes(id)?'panel-hit-zone':id;
           const button=child.querySelector('[data-open-panel="'+parent+'"]');
           check(!!button,'Missing navigation '+id);
-          button.click();
+          button.click();await Promise.resolve();
           check(get(parent).classList.contains('active'),'Panel did not open '+id);
           eq(child.querySelectorAll('.hub-main.active').length,1,'Exactly one visible panel');
           const visible=child.defaultView.getComputedStyle(get(id));
@@ -87,10 +87,10 @@
         // Mobile drawer and all eight navigable tools.
         get('mobile-nav-toggle').click();
         check(child.body.classList.contains('sidebar-open'),'Mobile drawer opens');
-        for(const id of ['panel-combat','panel-sensitivity','panel-hit-zone','panel-recoil2','panel-attach','panel-backpack'])open(id);
+        for(const id of ['panel-combat','panel-sensitivity','panel-hit-zone','panel-recoil2','panel-attach','panel-backpack'])await open(id);
         check(!child.body.classList.contains('sidebar-open'),'Navigation closes drawer');
         // Combat DB remains a compact text table; illustrations load only on tap.
-        open('panel-combat');
+        await open('panel-combat');
         const overview=get('combat-overview-disclosure');
         check(overview.open,'Combat overview and useful jump links are visible');
         eq(overview.querySelectorAll('nav.quicknav a').length,2,'Only comparison and armour quick links remain');
@@ -188,7 +188,7 @@
         eq(child.querySelectorAll('#wTable tr.rowclick').length,45,'Clearing search restores all text-only rows');
         eq(child.querySelectorAll('#wTable img').length,45,'Clearing search restores all weapon pictures');
         // Batch visuals: optics and existing controls still change independently.
-        open('panel-sensitivity');
+        await open('panel-sensitivity');
         change(get('px_scope'),'8x');
         eq(get('visual-scope-image').getAttribute('src'),'assets/optic-8x.svg','Scope art matches selected magnification');
         eq(text('visual-scope-label'),'8x reference optic','Visible optic label is updated');
@@ -217,7 +217,7 @@
         check(!get('visual-scope-preview').querySelector('.visual-image-unavailable'),'Recovered artwork clears the fallback');
         change(get('px_scope'),'3x');
         check(get('visual-one-x-variants').hidden,'1x choices hidden for higher magnifications');
-        open('panel-range');
+        await open('panel-range');
         // Source-backed range regression: shotguns are per-pellet estimates, not
         // simulated complete pellet patterns or invented TTK observations.
         change(get('rg_weapon'),'S686');
@@ -239,7 +239,7 @@
         eq(get('visual-range-weapon-image').getAttribute('src'),'assets/weapon-akm-field.svg','Range weapon picture follows the current selection');
         change(get('rg_weapon'),'SKS');
         eq(get('visual-range-weapon-image').getAttribute('src'),'assets/weapon-sks-field.svg','Changed weapon picture stays visible');
-        open('panel-ttk');
+        await open('panel-ttk');
         check(!!text('tk_dmg')&&!!text('tk_htk'),'TTK results are available below the model');
         check(get('visual-ttk-artwork').tagName==='SECTION','TTK pictures have no disclosure control');
         check(!!get('visual-compare-a-image').getAttribute('src'),'Comparison weapon pictures are visible');
@@ -249,11 +249,11 @@
         change(get('tk_cmpB'),'AKM');
         check(get('visual-compare-a-image').getAttribute('src')==='assets/weapon-m416-field.svg','TTK A thumbnail is M416');
         check(get('visual-compare-b-image').getAttribute('src')==='assets/weapon-akm-field.svg','TTK B thumbnail is AKM');
-        open('panel-recoil2');
+        await open('panel-recoil2');
         check(get('visual-recoil-artwork').tagName==='SECTION','Recoil pictures are visible without a disclosure');
         change(get('rc_weapon'),'P90');
         eq(get('visual-recoil-weapon-image').getAttribute('src'),'assets/weapon-p90-field.svg','Recoil art follows P90');
-                open('panel-attach');
+                await open('panel-attach');
         check(!!get('visual-attachment-grid').querySelector('img'),'Attachment art exists');
         check(!!text('visual-at-muzzle'),'Muzzle label reflects existing selection');
         change(get('at_sight'),'reddot');
@@ -289,7 +289,7 @@
         check(get('visual-at-muzzle-image').hidden,'Preset Clear hides muzzle image');
         check(get('visual-at-grip-image').hidden,'Preset Clear hides grip image');
 
-        open('panel-backpack');
+        await open('panel-backpack');
         check(text('visual-pack-label').includes('Level 3'),'Backpack art describes chosen level');
         change(get('bp_type'),'jammer');
         eq(get('visual-pack-image').getAttribute('src'),'assets/gear-jammer.svg','Jammer Pack uses its own illustration');
@@ -333,11 +333,11 @@
         eq(firstQty.value,'0','Minus removes the selected inventory item');
         eq(text('bp_used'),emptyUsed,'Round trip preserves original carry total');
 
-        open('panel-range');check(!!get('visual-range').querySelector('img'),'Range art exists');
-        open('panel-ttk');check(!!get('visual-ttk').querySelector('img'),'TTK art exists');
-        open('panel-recoil2');check(!!get('visual-recoil').querySelector('img'),'Recoil parameters art exists');
+        await open('panel-range');check(!!get('visual-range').querySelector('img'),'Range art exists');
+        await open('panel-ttk');check(!!get('visual-ttk').querySelector('img'),'TTK art exists');
+        await open('panel-recoil2');check(!!get('visual-recoil').querySelector('img'),'Recoil parameters art exists');
         // All thirteen labels render without tapping; helmet and vest work independently.
-        open('panel-hit-zone');
+        await open('panel-hit-zone');
         eq(get('active-tool-index').getAttribute('aria-label'),'Tool 3 of 6','Hit Zone Explorer is tool 03 of 08');
         change(get('hz_weapon'),'M416');
         change(get('hz_distance'),'0');
@@ -361,6 +361,9 @@
         eq(hzValue('chest'),'4 hits','HTK display labels hits unambiguously');
         check(text('hz_status').includes('100 HP'),'HTK explains the 100 HP single-zone assumption');
         eq(child.querySelector('[data-hit-zone="chest"]').getAttribute('aria-label'),'Chest: 4 hits','Keyboard label describes hits instead of a multiplier');
+        change(get('hz_mode'),'ttk');
+        eq(hzValue('chest'),'0.26 s','Model TTK uses the existing four-hit M416 timing');
+        check(text('hz_status').includes('excludes reloads'),'Model TTK explains what timing includes');
         change(get('hz_mode'),'heatmap');
         check(!!child.querySelector('[data-hit-zone="chest"]').style.fill,'Heatmap colours computed zone');
         change(get('hz_weapon'),'DBS');
@@ -469,7 +472,7 @@
         const modeButtons=child.querySelectorAll('[aria-label="Damage display"] button');
         eq(modeButtons.length,5,'Display modes are discoverable buttons');
         check(modeButtons[4].disabled,'Shotgun-only mode disabled for rifle');
-        const picker=get('hz_weapon').parentElement.querySelector('.workspace-picker');
+        const picker=get('panel-hit-zone').querySelector('.workspace-picker');
 
         const search=picker.querySelector('input[type=search]');search.value='AKM';search.dispatchEvent(new Event('input'));
         eq(picker.querySelectorAll('.workspace-weapon-list button').length,1,'Weapon browser filters names');
@@ -479,7 +482,7 @@
         check(picker.getBoundingClientRect().height>0,'Weapon gallery stays visible after selection');
         change(get('hz_weapon'),'M416');
         // Weapon presentation and threshold finder preserve the source records.
-        open('panel-combat');
+        await open('panel-combat');
         const crate=get('wCrates');crate.checked=false;crate.dispatchEvent(new Event('change',{bubbles:true}));
         check(!child.querySelector('#wTable .tag.crate'),'Crate filter removes crate rows');
         check(child.querySelectorAll('#wTable tr.rowclick').length<45,'Crate filter affects list');
@@ -497,7 +500,7 @@
         change(get('aq_weapon'),'RPD');check(text('aq_verdict').includes('No crossover record'),'Missing crossover stays unknown');
         change(get('aq_durability'),'','input');check(text('aq_verdict').includes('Enter a non-negative'),'Empty durability is not treated as zero');
 
-        open('panel-range');
+        await open('panel-range');
         change(get('rg_weapon'),'O12');change(get('rg_compare'),'M416');
         const rows=[...get('rg_compareTable').querySelectorAll('tbody tr')];
         const zero=rows.find(row=>row.cells[0].textContent==='0 m');
@@ -511,14 +514,14 @@
         check(!get('rg_compareChart').hidden,'Same-unit comparison exposes recorded checkpoint overlay');
         get('rg_comparison').open=false;
 
-        open('panel-attach');change(get('at_weapon'),'M416');
+        await open('panel-attach');change(get('at_weapon'),'M416');
         const slot=child.querySelector('[data-slot="at_grip"]');slot.open=true;slot.dispatchEvent(new Event('toggle'));
         eq(slot.querySelectorAll('button').length,get('at_grip').options.length,'Slot chooser only exposes compatible native choices');
         slot.querySelectorAll('button')[1].click();
         eq(get('at_grip').selectedIndex,1,'Slot button updates existing calculator');
         check(slot.tagName==='SECTION','Attachment picture choices stay on display');
         check(slot.querySelectorAll('img').length>0,'Compatible attachment choices include their pictures');
-        const attachPicker=get('at_weapon').parentElement.querySelector('.workspace-picker');
+        const attachPicker=get('panel-attach').querySelector('.workspace-picker');
         attachPicker.open=true;attachPicker.dispatchEvent(new Event('toggle'));
         await new Promise(resolve=>setTimeout(resolve,0));
         [...attachPicker.querySelectorAll('.tt-class-pills button')].find(b=>b.textContent==='SMG').click();
@@ -527,7 +530,7 @@
         attachPicker.open=false;
 
 
-        open('panel-backpack');get('bp_clear').click();
+        await open('panel-backpack');get('bp_clear').click();
         const bagAmmo=child.querySelector('input[data-bp="556"]');bagAmmo.value='20';bagAmmo.dispatchEvent(new Event('input',{bubbles:true}));
         await new Promise(resolve=>setTimeout(resolve,0));
         const usedBefore=text('bp_used');
@@ -540,27 +543,27 @@
         eq(text('bp_used'),'0.0','Remove packed item updates actual total');
         itemSearch.value='';itemSearch.dispatchEvent(new Event('input'));
         get('bp_packed').open=false;
-        open('panel-recoil2');
+        await open('panel-recoil2');
         eq(child.querySelectorAll('.tt-recoil-parameters>div').length,get('rc_table').querySelectorAll('tbody tr').length,'Recoil cards match recorded parameter rows');
 
         // Return to unchanged core calculator regression path.
-        open('panel-range');
+        await open('panel-range');
         change(get('rg_weapon'),'S686');
         check(text('rg_htk')!=='No data','Shotgun minimum shells available');
         check(text('rg_approxNote').includes('all'),'Shotgun pellet limitation shown');
         change(get('rg_weapon'),'M416');
         check(text('rg_dmg')!=='No data','Rifle checkpoint damage appears');
 
-        open('panel-ttk');
+        await open('panel-ttk');
         check(text('tk_htk')!=='No data','TTK initializes');
         change(get('tk_weapon'),'M416');
         check(text('tk_pure')!=='No data','Weapon switch updates TTK');
 
-        open('panel-recoil2');
+        await open('panel-recoil2');
         change(get('rc_weapon'),'RPD');
         check(text('rc_missing').includes('No data'),'Exact recoil remains explicitly unknown');
 
-        open('panel-attach');
+        await open('panel-attach');
         change(get('at_weapon'),'MK14 EBR');
         change(get('at_mag'),'extended');
         eq(text('at_capNew'),'22','Mk14 DMR/SR extended rounds');
@@ -619,14 +622,14 @@
 
         // For each gun, any missing recoil parameter still reads No data;
         // never manufacture a shot-by-shot curve from the key count.
-        open('panel-recoil2');
+        await open('panel-recoil2');
         for(const gun of gunNames){
           change(get('rc_weapon'),gun);
           check(/No verified [0-9]+-shot recoil curve/.test(text('rc_chart')),
             gun+' must not invent a recoil trace');
         }
 
-        open('panel-backpack');
+        await open('panel-backpack');
         change(get('bp_type'),'jammer');
         change(get('bp_level'),'1');
         change(get('bp_vest'),'no');

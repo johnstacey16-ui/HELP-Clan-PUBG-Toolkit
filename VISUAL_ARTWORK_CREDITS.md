@@ -20,7 +20,7 @@ All 45 database weapons have distinct, name-matched artwork in `visual-catalog.j
 
 `official-art-catalog.js` maps attachment options to their weapon-specific catalogue images and inventory items to their own icons. Unsupported artwork has no misleading fallback. The Emergency Cover Flare, Emergency Support Flare and Mini Smoke Grenade inventory entries remain readable text where a matching source icon was unavailable. Helmet and vest controls display the selected level's image and hide equipment when None is selected.
 
-Range, TTK and Recoil weapon images remain optional and load after their disclosure is opened. The database keeps its picture toggle and detail image. Hidden panels defer their images. Decorative icons have empty alternatives beside the item name; informative images have descriptive alternatives.
+Weapon, range, TTK, recoil, equipment and comparison pictures are displayed without artwork toggles. Database rows include weapon thumbnails, and the card gallery, weapon libraries and compatible attachment libraries show their images. Pictures can still change with the selected item; None does not depict equipped hardware. Inactive tools defer their image sources and off-screen images use native lazy loading. Decorative icons have empty alternatives beside the item name; informative images have descriptive alternatives.
 
 ## Retained original graphics
 

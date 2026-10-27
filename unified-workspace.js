@@ -23,6 +23,27 @@ crossover.querySelector('h2').textContent='Helmet & vest crossover table';
 // A single model sits above its equivalent table and both analytical sections.
 const lab=get('panel-hit-zone'),workspace=lab.querySelector('.hz-workspace');
 workspace.after(lab.querySelector('.hz-results'),lab.querySelector('.hz-detail-card'));
+// Keep the model and loadout controls near the top on a phone. Libraries are
+// still open on the same page, after the results they help the player explore.
+for(const [prefix,panelId] of [['hz','panel-hit-zone'],['at','panel-attach'],['rc','panel-recoil2']]){
+ const panel=get(panelId),picker=get(prefix+'_weapon').parentElement.querySelector('.workspace-picker');
+ picker.classList.add('full-weapon-library');panel.querySelector('.wrap').append(picker);
+}
+const attachmentLibrary=document.createElement('section');attachmentLibrary.id='attachment-library';
+const attachmentHeading=document.createElement('h2');attachmentHeading.textContent='Compatible attachment pictures';attachmentLibrary.append(attachmentHeading);
+for(const gallery of document.querySelectorAll('.tt-slot-picker'))attachmentLibrary.append(gallery);
+get('panel-attach').querySelector('.wrap').append(attachmentLibrary);
+const preview=document.createElement('div');preview.className='lab-weapon-preview';
+const weaponImage=document.createElement('img');weaponImage.width=180;weaponImage.height=60;weaponImage.alt='';weaponImage.loading='lazy';weaponImage.decoding='async';
+const weaponName=document.createElement('strong');preview.append(weaponImage,weaponName);lab.querySelector('.hz-tools>.card').prepend(preview);
+function showWeapon(){
+ const name=get('hz_weapon').value,file=window.HELP_VISUAL_WEAPONS?.[name];weaponName.textContent=name;
+ if(!file){weaponImage.hidden=true;return;}
+ weaponImage.hidden=false;
+ if(lab.classList.contains('active')){weaponImage.src='assets/'+file;delete weaponImage.dataset.visualSrc;}
+ else{weaponImage.removeAttribute('src');weaponImage.dataset.visualSrc='assets/'+file;}
+}
+get('hz_weapon').addEventListener('change',showWeapon);showWeapon();
 const context=get('combat-selected-context');
 function describeSelection(){
  const zone=lab.querySelector('[data-hit-zone][aria-pressed=true]');

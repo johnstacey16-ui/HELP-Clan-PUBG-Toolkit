@@ -50,3 +50,11 @@
 .tt-slot-options button {display:flex;align-items:center;gap:8px}
 .tt-slot-options img {width:64px;height:44px;object-fit:contain;flex:none}
 #panel-combat .tt-weapon-cards {max-height:none;overflow:visible}
+.full-weapon-library {grid-column:1/-1;max-width:100%;margin:20px 0}
+.full-weapon-library .workspace-weapon-list {grid-template-columns:repeat(auto-fill,minmax(100px,1fr));max-height:320px}
+.lab-weapon-preview {display:flex;gap:12px;align-items:center;padding:5px 0 12px;color:#f4d093;font:600 17px/1.3 system-ui}
+.lab-weapon-preview img {width:140px;height:46px;object-fit:contain}
+#attachment-library {grid-column:1/-1;margin:20px 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;min-width:0}
+#attachment-library>h2 {grid-column:1/-1;font:600 22px/1.3 system-ui;color:#f4d093}
+#attachment-library .tt-slot-picker {border:1px solid #405666;padding:10px;border-radius:6px;min-width:0}
+#hz_context,#rg_context,#tk_context {display:none}

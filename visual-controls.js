@@ -32,12 +32,10 @@ for(const button of document.querySelectorAll('[data-visual-optic]')){
  });
 }
 syncScope();
-// The Combat DB is table-first on mobile, while desktop keeps the full
-// overview visible. Native <details> lets keyboard/controller users expand it.
 // All artwork is visible in its tool; inactive tools still defer downloads.
 function assignOptionalArt(img,src) {
  const panel=img.closest('.hub-main');
- // Art is optional on other tools and inside collapsed <details>.
+ // Visible artwork is activated with its tool.
  // Never fetch it merely because HTML was parsed on the Scope home page.
  const inactive=panel&&!panel.classList.contains('active');
  if(inactive){
