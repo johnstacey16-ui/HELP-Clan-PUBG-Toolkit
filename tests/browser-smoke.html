@@ -549,6 +549,70 @@
         eq(get('hz_weapon').value,'AKM','Search result selects weapon');
         check(!picker.open,'Weapon picker closes after selection');
         change(get('hz_weapon'),'M416');
+        // Weapon presentation and threshold finder preserve the source records.
+        open('panel-combat');
+        const crate=get('wCrates');crate.checked=false;crate.dispatchEvent(new Event('change',{bubbles:true}));
+        check(!child.querySelector('#wTable .tag.crate'),'Crate filter removes crate rows');
+        check(child.querySelectorAll('#wTable tr.rowclick').length<45,'Crate filter affects list');
+        crate.checked=true;crate.dispatchEvent(new Event('change',{bubbles:true}));
+        eq(child.querySelectorAll('#wTable tr.rowclick').length,45,'Restoring crate filter restores all weapons');
+        check(child.querySelector('#wTable .tt-mini-bar'),'Numeric comparison bars render');
+        const cards=get('combat-browser');cards.open=true;cards.dispatchEvent(new Event('toggle'));
+        eq(child.querySelectorAll('#combat-cards article').length,45,'Optional weapon cards cover registry');
+        eq(child.querySelectorAll('#combat-cards img').length,0,'Card art remains opt-in');
+        cards.open=false;cards.dispatchEvent(new Event('toggle'));
+        change(get('aq_weapon'),'AKM');change(get('aq_gear'),'vest');change(get('aq_tier'),'3');change(get('aq_durability'),'1','input');
+        check(text('aq_verdict').includes('Replace with the fresh Level 2'),'Vest threshold resolves low durability');
+        change(get('aq_gear'),'helmet');
+        check(text('aq_verdict').includes('Keep the current Level 3'),'Helmet uses its independent threshold');
+        change(get('aq_weapon'),'RPD');check(text('aq_verdict').includes('No crossover record'),'Missing crossover stays unknown');
+        change(get('aq_durability'),'','input');check(text('aq_verdict').includes('Enter a non-negative'),'Empty durability is not treated as zero');
+
+        open('panel-range');
+        change(get('rg_weapon'),'O12');change(get('rg_compare'),'M416');
+        const rows=[...get('rg_compareTable').querySelectorAll('tbody tr')];
+        const zero=rows.find(row=>row.cells[0].textContent==='0 m');
+        eq(zero.cells[1].textContent,'No data','Comparison does not invent an O12 muzzle checkpoint');
+        change(get('rg_weapon'),'S686');
+        check(text('rg_compareNote').includes('Mixed units'),'Pellet and player damage are distinguished');
+        check(get('rg_compareChart').hidden,'Mixed-unit data cannot produce an overlay');
+        eq(child.defaultView.getComputedStyle(get('rg_compareChart')).display,'none','Mixed-unit chart is actually hidden');
+        change(get('rg_weapon'),'AKM');change(get('rg_compare'),'M416');
+        get('rg_comparison').open=true;get('rg_comparison').dispatchEvent(new Event('toggle'));
+        check(!get('rg_compareChart').hidden,'Same-unit comparison exposes recorded checkpoint overlay');
+        get('rg_comparison').open=false;
+
+        open('panel-attach');change(get('at_weapon'),'M416');
+        const slot=child.querySelector('[data-slot="at_grip"]');slot.open=true;slot.dispatchEvent(new Event('toggle'));
+        eq(slot.querySelectorAll('button').length,get('at_grip').options.length,'Slot chooser only exposes compatible native choices');
+        slot.querySelectorAll('button')[1].click();
+        eq(get('at_grip').selectedIndex,1,'Slot button updates existing calculator');
+        check(!slot.open,'Choosing a slot closes its menu');
+        const attachPicker=get('at_weapon').parentElement.querySelector('.workspace-picker');
+        attachPicker.open=true;attachPicker.dispatchEvent(new Event('toggle'));
+        await new Promise(resolve=>setTimeout(resolve,0));
+        [...attachPicker.querySelectorAll('.tt-class-pills button')].find(b=>b.textContent==='SMG').click();
+        const shownNames=[...attachPicker.querySelectorAll('.workspace-weapon-list button')].filter(b=>!b.hidden).map(b=>b.textContent.trim());
+        check(shownNames.includes('Vector')&&!shownNames.includes('M416'),'Class filter uses weapon registry');
+        attachPicker.open=false;
+
+
+        open('panel-backpack');get('bp_clear').click();
+        const bagAmmo=child.querySelector('input[data-bp="556"]');bagAmmo.value='20';bagAmmo.dispatchEvent(new Event('input',{bubbles:true}));
+        await new Promise(resolve=>setTimeout(resolve,0));
+        const usedBefore=text('bp_used');
+        const itemSearch=child.querySelector('.tt-inventory-tools input');itemSearch.value='Smoke';itemSearch.dispatchEvent(new Event('input'));
+        eq(text('bp_used'),usedBefore,'Filtering items never excludes packed ammo from totals');
+        get('bp_packed').open=true;
+        check(text('bp_packed').includes('5.56mm'),'Packed items list includes hidden-category ammo');
+        get('bp_packed').querySelector('button').click();
+        await new Promise(resolve=>setTimeout(resolve,0));
+        eq(text('bp_used'),'0.0','Remove packed item updates actual total');
+        itemSearch.value='';itemSearch.dispatchEvent(new Event('input'));
+        get('bp_packed').open=false;
+        open('panel-recoil2');
+        eq(child.querySelectorAll('.tt-recoil-parameters>div').length,get('rc_table').querySelectorAll('tbody tr').length,'Recoil cards match recorded parameter rows');
+
         // Return to unchanged core calculator regression path.
         open('panel-range');
         change(get('rg_weapon'),'S686');

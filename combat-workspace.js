@@ -32,7 +32,7 @@ for(const [id,art] of [['hz_helmet','gear-helmet.svg'],['hz_vest','gear-vest.svg
  new MutationObserver(sync).observe(select,{subtree:true,attributes:true,attributeFilter:['disabled'],childList:true});sync();
 }
 // Search lives inside a closed picker. Art is optional and only loaded while open.
-for(const id of ['hz_weapon','rg_weapon','tk_weapon']){
+for(const id of ['hz_weapon','rg_weapon','tk_weapon','at_weapon','rc_weapon']){
  const select=get(id);if(!select)continue;
  const picker=document.createElement('details');picker.className='workspace-picker';
  const summary=document.createElement('summary');summary.textContent='Browse weapons';

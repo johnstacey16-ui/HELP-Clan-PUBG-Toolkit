@@ -336,7 +336,8 @@ function drawLineChart(canvas, series, opts={}){
   ctx.fillStyle = "#0f161d"; ctx.fillRect(0,0,W,H);
   const allY = series.flatMap(s=>s.data.map(p=>p.y));
   const minY = Math.min(0,...allY), maxY = Math.max(...allY,1);
-  const minX = Math.min(...series[0].data.map(p=>p.x)), maxX = Math.max(...series[0].data.map(p=>p.x));
+  const allX = series.flatMap(s=>s.data.map(p=>p.x));
+  const minX = Math.min(...allX), maxX = Math.max(...allX);
   const xAt = x => pad + (W-2*pad) * ((x-minX)/(maxX-minX||1));
   const yAt = y => H-pad - (H-2*pad) * ((y-minY)/(maxY-minY||1));
   ctx.strokeStyle = "#223140"; ctx.lineWidth = 1;
@@ -527,16 +528,44 @@ function drawLineChart(canvas, series, opts={}){
       }).join("");
   }
 
+  const compareSelect=$("rg_compare");
+  for(const weapon of PT.WEAPONS)compareSelect.add(new Option(weapon.name,weapon.name));
+  function updateComparison(){
+    const ref=PT.WBYNAME[compareSelect.value],w=currentWeapon(),table=$("rg_compareTable"),canvas=$("rg_compareChart");
+    if(!ref){table.replaceChildren();canvas.hidden=true;$("rg_compareNote").textContent="Choose a reference weapon. Comparisons use the same hitbox and equipment.";return;}
+    const hitbox=$("rg_hitbox").value,armor=Number($("rg_armor").value),a=rowsFor(w)||[],b=rowsFor(ref)||[];
+    const pellet=isPelletShotgun(w),otherPellet=isPelletShotgun(ref);
+    const value=(gun,distance)=>isPelletShotgun(gun)?measuredValueAt(rowsFor(gun),distance):finalDamageAt(gun,distance,hitbox,armor);
+    const selected=parseFloat($("rg_rangeLabel").textContent);
+    const num=n=>Number.isFinite(n)?n.toFixed(1):"No data";
+    const unit=gun=>isPelletShotgun(gun)?"base damage / pellet":"damage to selected hitbox";
+    const distances=[...new Set([...a,...b].map(row=>row[0]))].sort((x,y)=>x-y);
+    table.innerHTML='<caption>Exact source checkpoints. A missing reading stays No data; no interpolation. Selected: '+(Number.isFinite(selected)?selected+' m':'No recorded distance')+'.</caption><thead><tr><th scope="col">Distance</th><th scope="col">'+w.name+' · '+unit(w)+'</th><th scope="col">'+ref.name+' · '+unit(ref)+'</th></tr></thead><tbody>'+
+      distances.map(distance=>'<tr'+(distance===selected?' class="tt-selected-checkpoint"':'')+'><th scope="row">'+distance+' m</th><td>'+num(value(w,distance))+'</td><td>'+num(value(ref,distance))+'</td></tr>').join('')+'</tbody>';
+    const sameUnits=pellet===otherPellet;
+    canvas.hidden=!sameUnits||!a.length||!b.length;
+    $("rg_compareNote").textContent=(Number.isFinite(selected)?'At '+selected+' m: '+w.name+' '+num(value(w,selected))+'; '+ref.name+' '+num(value(ref,selected))+'. ':'')+
+      (sameUnits?(pellet?'Both series show base damage per pellet, not whole-shell damage. ':'Both series use the selected hitbox and equipment. '):'Mixed units: shotgun per-pellet damage and player damage are listed separately; no combined chart. ')+
+      'Markers show recorded checkpoints only. No connecting curve or inferred intermediate damage.';
+    if(!canvas.hidden&&$("rg_comparison").open){
+      drawLineChart(canvas,[{label:w.name,color:'#e9bd77',data:a.map(([x])=>({x,y:value(w,x)})).filter(p=>p.y!=null)},
+        {label:ref.name,color:'#72cde1',data:b.map(([x])=>({x,y:value(ref,x)})).filter(p=>p.y!=null)}],{pointsOnly:true});
+    }
+  }
+  compareSelect.addEventListener('change',updateComparison);
+  $("rg_comparison").addEventListener('toggle',updateComparison);
   function update(){
     const w=currentWeapon(), range=selectMeasuredRange(w);
     if(range!=null) preferredRange=range;
     updatePoint(w,range);
     updateCharts();
+    updateComparison();
   }
   rangeSlider.addEventListener("input",()=>{
     const w=currentWeapon(), range=selectMeasuredRange(w);
     if(range!=null) preferredRange=range;
     updatePoint(w,range);
+    updateComparison();
   });
   ["rg_weapon","rg_hitbox","rg_armor"].forEach(id=>{
     $(id).addEventListener("input",update);

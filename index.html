@@ -405,6 +405,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
 <link rel="stylesheet" href="visual-assets.css">
 <link rel="stylesheet" href="src/explorer/hit-zone-explorer.scaffold.css">
 <link rel="stylesheet" href="combat-workspace.css">
+<link rel="stylesheet" href="toolkit-layout.css">
 </head>
 <body>
 <div id="app-shell">
@@ -500,11 +501,11 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
  
 <header class="hero">
   <div class="eyebrow">Combat · Weapon Database</div>
-  <h1>PUBG Combat &amp; Armor Intelligence</h1>
+  <h1>Weapon Database</h1>
   <details class="combat-overview-disclosure" id="combat-overview-disclosure" open>
     <summary>Combat overview &amp; quick links</summary>
     <div class="combat-overview-content">
-  <p class="sub">Built by HELP, for HELP. Real weapon data, real armor math — know when to keep your plates and when to swap, before the fight makes that call for you.</p>
+  <p class="sub">Compare weapon statistics and armour crossover thresholds. Select a weapon for its full details.</p>
   <div class="hero-stats">
     <div id="statAll"><b>44</b><span>Weapons</span></div>
     <div id="statVest"><b>39</b><span>Vest X-over</span></div>
@@ -746,6 +747,13 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
     <div class="section-h" id="rg_chartTitle">Damage at measured checkpoints</div>
     <canvas id="rg_chartDmg" width="1100" height="200"></canvas>
   </div>
+  <details class="card tt-disclosure" id="rg_comparison">
+    <summary>Compare another weapon at recorded checkpoints</summary>
+    <div class="field"><label for="rg_compare">Reference weapon</label><select id="rg_compare"><option value="">Choose a reference weapon</option></select></div>
+    <p class="helptext" id="rg_compareNote" role="status">Select a reference weapon. Comparisons use the same hitbox and equipment.</p>
+    <canvas id="rg_compareChart" width="1100" height="220" role="img" aria-label="Damage comparison at recorded checkpoints; exact values are listed in the following table"></canvas>
+    <div class="tt-table-scroll"><table id="rg_compareTable"></table></div>
+  </details>
   <div class="card">
     <div class="section-h">Hits-to-kill and TTK at recorded checkpoints</div>
     <p class="helptext" style="margin-bottom:10px">Shotgun minimum shells assume every pellet hits the selected body area. Actual fights may require more.</p>
@@ -895,8 +903,6 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
     <div class="toolbar">
       <div class="field"><label for="at_weapon">Weapon</label><select id="at_weapon"></select></div>
     </div>
-    <div class="visual-gear-grid" id="visual-attachment-grid" aria-label="Attachment category illustrations"><div class="visual-gear-tile"><img id="visual-at-muzzle-image" data-visual-src="assets/gear-muzzle.svg" width="320" height="200" loading="lazy" decoding="async" alt="Original representative muzzle attachment"><strong>Muzzle</strong><small id="visual-at-muzzle">Not selected</small></div><div class="visual-gear-tile"><img id="visual-at-grip-image" data-visual-src="assets/gear-grip.svg" width="320" height="200" loading="lazy" decoding="async" alt="Original representative grip attachment"><strong>Grip</strong><small id="visual-at-grip">Not selected</small></div><div class="visual-gear-tile"><img id="visual-at-mag-image" data-visual-src="assets/gear-magazine.svg" width="320" height="200" loading="lazy" decoding="async" alt="Original representative magazine attachment"><strong>Magazine</strong><small id="visual-at-mag">Not selected</small></div><div class="visual-gear-tile"><img id="visual-at-sight-image" data-visual-src="assets/optic-3x.svg" width="320" height="200" loading="lazy" decoding="async" alt="Representative Optic attachment"><strong>Optic</strong><small id="visual-at-sight">Not selected</small></div><div class="visual-gear-tile"><img id="visual-at-stock-image" data-visual-src="assets/gear-stock.svg" width="320" height="200" loading="lazy" decoding="async" alt="Original representative stock illustration"><strong>Stock</strong><small id="visual-at-stock">Not selected</small></div></div>
-<div class="visual-selected-weapon" id="visual-attach-weapon" aria-live="polite"><img id="visual-attach-weapon-image" width="960" height="320" alt="" decoding="async" loading="lazy" hidden><div><span class="visual-media-kicker">OPTIONAL WEAPON ART</span><strong id="visual-attach-weapon-title">Artwork not available</strong><small id="visual-attach-weapon-note">Weapon stats are shown below. Reference artwork is not game data.</small></div></div><p class="visual-art-disclaimer">Original category illustrations, not exact PUBG attachment models. The controls below determine compatibility.</p>
     <div class="preset-btns">
       <button type="button" class="chip" id="at_presetVert">Best vertical control</button>
       <button type="button" class="chip" id="at_presetHoriz">Best horizontal</button>
@@ -911,6 +917,9 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
       <div class="field"><label for="at_sight">Optic</label><select id="at_sight"></select></div>
     </div>
     <div class="note" id="at_opticNote"></div>
+    <div class="visual-gear-grid" id="visual-attachment-grid" aria-label="Attachment category illustrations"><div class="visual-gear-tile"><img id="visual-at-muzzle-image" data-visual-src="assets/gear-muzzle.svg" width="320" height="200" loading="lazy" decoding="async" alt="Original representative muzzle attachment"><strong>Muzzle</strong><small id="visual-at-muzzle">Not selected</small></div><div class="visual-gear-tile"><img id="visual-at-grip-image" data-visual-src="assets/gear-grip.svg" width="320" height="200" loading="lazy" decoding="async" alt="Original representative grip attachment"><strong>Grip</strong><small id="visual-at-grip">Not selected</small></div><div class="visual-gear-tile"><img id="visual-at-mag-image" data-visual-src="assets/gear-magazine.svg" width="320" height="200" loading="lazy" decoding="async" alt="Original representative magazine attachment"><strong>Magazine</strong><small id="visual-at-mag">Not selected</small></div><div class="visual-gear-tile"><img id="visual-at-sight-image" data-visual-src="assets/optic-3x.svg" width="320" height="200" loading="lazy" decoding="async" alt="Representative Optic attachment"><strong>Optic</strong><small id="visual-at-sight">Not selected</small></div><div class="visual-gear-tile"><img id="visual-at-stock-image" data-visual-src="assets/gear-stock.svg" width="320" height="200" loading="lazy" decoding="async" alt="Original representative stock illustration"><strong>Stock</strong><small id="visual-at-stock">Not selected</small></div></div>
+<div class="visual-selected-weapon" id="visual-attach-weapon" aria-live="polite"><img id="visual-attach-weapon-image" width="960" height="320" alt="" decoding="async" loading="lazy" hidden><div><span class="visual-media-kicker">OPTIONAL WEAPON ART</span><strong id="visual-attach-weapon-title">Artwork not available</strong><small id="visual-attach-weapon-note">Weapon stats are shown below. Reference artwork is not game data.</small></div></div><p class="visual-art-disclaimer">Original category illustrations, not exact PUBG attachment models. The controls below determine compatibility.</p>
+
   </div>
 
   <div class="card">
@@ -1182,6 +1191,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
 <script src="js/toolkit-calculators.js"></script>
 <script src="visual-controls.js"></script>
 <script src="combat-workspace.js"></script>
+<script src="toolkit-layout.js"></script>
  
 <script src="sticky-weapon-header.js" defer></script>
 </body>
