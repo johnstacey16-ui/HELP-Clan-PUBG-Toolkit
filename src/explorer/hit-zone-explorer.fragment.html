@@ -4,6 +4,8 @@
     <div class="eyebrow">Combat · Hit Zone Damage</div>
     <h1>Hit Zone Damage Explorer</h1>
     <p class="sub">Choose a weapon, helmet, vest and measured distance. Damage for every body zone is visible at once. Select a zone only for more detail.</p>
+    <div class="hz-workspace">
+      <div class="hz-tools">
     <div class="card">
       <div class="toolbar" aria-label="Damage explorer controls">
         <div class="field"><label for="hz_weapon">Weapon</label><select id="hz_weapon"></select></div>
@@ -24,7 +26,17 @@
       </div>
       <p id="hz_status" class="note" role="status" aria-live="polite">Explorer preview: select a weapon and equipment after integration.</p>
     </div>
-    <div class="hz-workspace">
+    <section class="card hz-results" aria-label="Text equivalent of all hit-zone values">
+      <div class="section-h">All zone results</div>
+      <div class="hz-table-scroll"><table><caption>All thirteen hit zones for the selected weapon and armour. Select a body zone for the optional multiplier breakdown.</caption><thead><tr><th scope="col">Hit zone</th><th scope="col">Value</th><th scope="col">Protection</th></tr></thead>
+      <tbody id="hz_rows"></tbody></table></div>
+    </section>
+      <details class="card hz-detail-card" aria-label="Damage calculations">
+        <summary>Selected zone — calculation details</summary>
+        <div id="hz_summary" aria-live="polite">Choose a loadout to see every hit-zone value.</div>
+        <div id="hz_detail">Select any body region to inspect the calculation.</div>
+      </details>
+      </div>
       <section class="card hz-figure-card" aria-label="Front-view hit zone map">
         <div class="section-h">Front view — all zones</div>
         <svg id="hz_body" viewBox="0 0 500 760" role="group" aria-labelledby="hz_bodyTitle hz_bodyDesc" xmlns="http://www.w3.org/2000/svg">
@@ -162,16 +174,6 @@
         </svg>
         <p class="hz-caption">Both left and right limbs use the same hit-zone values. Coverage tints mark modeled protected hit zones, not the physical dimensions of equipment. Damage values are from published distance checkpoints.</p>
       </section>
-      <aside class="card hz-detail-card" aria-label="Damage calculations">
-        <div class="section-h">Selected zone — optional detail</div>
-        <div id="hz_summary" aria-live="polite">Choose a loadout to see every hit-zone value.</div>
-        <div id="hz_detail">Select any body region to inspect the calculation.</div>
-      </aside>
     </div>
-    <section class="card hz-results" aria-label="Text equivalent of all hit-zone values">
-      <div class="section-h">All zone results</div>
-      <div class="hz-table-scroll"><table><caption>All thirteen hit zones for the selected weapon and armour. Select a body zone for the optional multiplier breakdown.</caption><thead><tr><th scope="col">Hit zone</th><th scope="col">Value</th><th scope="col">Protection</th></tr></thead>
-      <tbody id="hz_rows"></tbody></table></div>
-    </section>
   </div>
 </div>

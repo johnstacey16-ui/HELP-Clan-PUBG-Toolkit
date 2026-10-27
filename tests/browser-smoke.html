@@ -146,8 +146,11 @@
         scrollRegion.scrollLeft=0;
         check(child.querySelectorAll('#wTable tr.rowclick').length===45,'Every weapon has a compact row');
         const mainHeadings=[...child.querySelectorAll('#wTable tr.colheader th')].map(h=>h.textContent.trim());
-        eq(mainHeadings.length,15,'Main weapon table has 15 rather than 19 columns');
-        check(mainHeadings.some(v=>v.includes('Head Dmg'))&&mainHeadings.some(v=>v.includes('Chest Dmg')),
+        eq(mainHeadings.length,7,'Core view defaults to seven useful columns');
+        child.querySelector('[data-combat-view=all]').click();
+        const allHeadings=[...child.querySelectorAll('#wTable tr.colheader th')].map(h=>h.textContent.trim());
+        eq(allHeadings.length,15,'All stats retains every weapon column');
+        check(allHeadings.some(v=>v.includes('Head Dmg'))&&allHeadings.some(v=>v.includes('Chest Dmg')),
           'Head/Chest damage remain in the main database');
         check(!mainHeadings.some(v=>v.includes('Helm L3')||v.includes('Vest L3')),
           'Helmet/vest crossover columns moved below the main database');
@@ -407,7 +410,11 @@
         // All thirteen labels render without tapping; helmet and vest work independently.
         open('panel-hit-zone');
         eq(get('active-tool-index').getAttribute('aria-label'),'Tool 3 of 8','Hit Zone Explorer is tool 03 of 08');
-        eq(get('hz_weapon').value,'M416','Hit-zone weapon initializes to M416');
+        change(get('hz_weapon'),'M416');
+        change(get('hz_distance'),'0');
+        change(get('hz_helmet'),'0');
+        change(get('hz_vest'),'0');
+        eq(get('hz_weapon').value,'M416','Hit-zone weapon can select M416 after linked tool changes');
         eq(child.querySelectorAll('#hz_body [data-hit-zone]').length,13,'All body-zone shapes exist');
         eq(child.querySelectorAll('#hz_body [data-hz-value]').length,13,'All hit-zone values shown simultaneously');
         const hzValue=id=>child.querySelector('[data-hz-value="'+id+'"]').textContent.trim();
@@ -455,6 +462,7 @@
         check(hzValue('chest')!=='No data','Published 100m damage available');
         get('hz_body').querySelector('[data-hit-zone="calf"]').dispatchEvent(new MouseEvent('click',{bubbles:true}));
         check(text('hz_detail').includes('Calf'),'Optional region detail responds to clicks');
+        check(get('hz_detail').closest('details').open,'Selecting a body region reveals its calculation');
         eq(get('hz_body').querySelector('[data-hit-zone="calf"]').getAttribute('aria-pressed'),'true','Pointer-selected zone exposes state');
         eq(get('hz_body').querySelector('[data-hit-zone="chest"]').getAttribute('aria-pressed'),'false','Other zones are not selected');
         const keyboardZone=get('hz_body').querySelector('[data-hit-zone="head"]');
@@ -505,6 +513,42 @@
         change(get('hz_helmet'),'0');
         change(get('hz_vest'),'0');
         eq(hzValue('chest'),'44.0','Weapon sweep leaves selector usable at the unarmoured 0m checkpoint');
+        // Linked combat scenario: same weapon, exact checkpoint and distinct gear.
+        change(get('hz_weapon'),'AKM');
+        change(get('hz_distance'),'100');
+        change(get('hz_helmet'),'3');
+        change(get('hz_vest'),'2');
+        eq(get('rg_weapon').value,'AKM','Range follows selected weapon');
+        eq(get('tk_weapon').value,'AKM','TTK follows selected weapon');
+        eq(get('tk_distance').value,'100','TTK follows exact recorded distance');
+        eq(text('rg_rangeLabel'),'100 m','Range follows exact recorded distance');
+        child.querySelector('#hz_body [data-hit-zone="head"]').dispatchEvent(new MouseEvent('click',{bubbles:true}));
+        eq(get('tk_hitbox').value,'head','Body selection carries exact head region');
+        eq(get('tk_armor').value,'3','Head uses helmet level');
+        child.querySelector('#hz_body [data-hit-zone="chest"]').dispatchEvent(new MouseEvent('click',{bubbles:true}));
+        eq(get('rg_armor').value,'2','Chest uses independent vest level');
+        eq(Number(text('tk_dmg')),Number(hzValue('chest')),'TTK and body agree at same checkpoint');
+        change(get('tk_distance'),'25');
+        eq(get('hz_distance').value,'25','TTK checkpoint changes flow back to body');
+        change(get('hz_distance'),'0');
+        change(get('hz_weapon'),'O12');
+        check(text('tk_context').includes('not a recorded checkpoint'),'Missing shared distance disclosed');
+        check(get('tk_distance').value!=='0','No invented 0m O12 reading');
+        change(get('hz_weapon'),'M416');
+        change(get('hz_distance'),'0');
+        change(get('hz_helmet'),'0');change(get('hz_vest'),'0');
+        const modeButtons=child.querySelectorAll('[aria-label="Damage display"] button');
+        eq(modeButtons.length,4,'Display modes are discoverable buttons');
+        check(modeButtons[3].disabled,'Shotgun-only mode disabled for rifle');
+        const picker=get('hz_weapon').parentElement.querySelector('.workspace-picker');
+        picker.open=true;picker.dispatchEvent(new Event('toggle'));
+        const search=picker.querySelector('input[type=search]');search.value='AKM';search.dispatchEvent(new Event('input'));
+        eq(picker.querySelectorAll('.workspace-weapon-list button').length,1,'Weapon browser filters names');
+        eq(picker.querySelectorAll('img').length,0,'No weapon images until opted in');
+        picker.querySelector('.workspace-weapon-list button').click();
+        eq(get('hz_weapon').value,'AKM','Search result selects weapon');
+        check(!picker.open,'Weapon picker closes after selection');
+        change(get('hz_weapon'),'M416');
         // Return to unchanged core calculator regression path.
         open('panel-range');
         change(get('rg_weapon'),'S686');

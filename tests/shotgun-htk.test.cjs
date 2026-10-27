@@ -74,7 +74,7 @@ test('range and point-blank TTK screens label the best-case condition and keep T
   assert.match(html,/Minimum shells \(all pellets hit\)/);
   assert.match(html,/Actual shots may need more/);
   assert.match(html,/shotgunMinShellsAt\(w,range,hitbox,armor\)/);
-  assert.match(html,/shotgunMinShellsAt\(w,0,hitbox,armor\)/);
+  assert.match(html,/shotgunMinShellsAt\(w,Number\(\$\("tk_distance"\)\.value\),hitbox,armor\)/);
   assert.match(html,/const ttk = pellet \? null : pureTtk/);
   assert.match(html,/pure:null,withReload:null,reloads:null,bestCase:true/);
   assert.match(html,/HTK \(SG: minimum\)/);

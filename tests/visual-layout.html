@@ -47,7 +47,9 @@ frame.addEventListener('load',()=>{
   }
   if(panelId==='panel-combat'){
    assertion(panel.querySelectorAll('#wTable img').length===0,'Combat DB rows must not contain gun pictures');
-   assertion(panel.querySelectorAll('#wTable tr.colheader th').length===15,'Main table must fit 15 columns');
+   assertion(panel.querySelectorAll('#wTable tr.colheader th').length===7,'Core table shows seven columns');
+   panel.querySelector('[data-combat-view=all]').click();
+   assertion(panel.querySelectorAll('#wTable tr.colheader th').length===15,'All stats retains 15 columns');
    const primaryHeaders=[...panel.querySelectorAll('#wTable tr.colheader th')].map(th=>th.textContent);
    assertion(primaryHeaders.some(x=>x.includes('Head Dmg'))&&primaryHeaders.some(x=>x.includes('Chest Dmg')),
      'Head and Chest damage must stay in the main table');
