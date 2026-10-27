@@ -49,7 +49,7 @@ async function capture(binary,base,viewport,panel){
  const filename=viewport.label+'-'+panel[0]+'.png';
  const file=path.join(output,filename);
  const profile=fs.mkdtempSync(path.join(os.tmpdir(),'help-review-chrome-'));
- const url=base+'/index.html#'+panel[1];
+ const url=panel[2]?base+panel[2]:base+'/index.html#'+panel[1];
  const args=[
   '--headless=new','--no-sandbox','--disable-gpu','--disable-dev-shm-usage',
   '--no-first-run','--no-default-browser-check','--disable-background-networking',
@@ -93,10 +93,14 @@ async function capture(binary,base,viewport,panel){
   for(const viewport of viewports){
    for(const panel of panels)captured.push(await capture(binary,base,viewport,panel));
   }
+  const damageGuide=[];
+  for(const viewport of viewports)for(const section of ['dg_calculation','dg_hit_area','dg_weapon_class','dg_combined'])
+   damageGuide.push(await capture(binary,base,{...viewport,height:1600},['damage-'+section,null,'/tests/damage-guide-preview.html?section='+section]));
   const report={
    kind:'HELP Clan visual upgrade screenshot evidence',
    guidance:'Automated first-viewport captures, not proof of Xbox Edge behaviour, full-page layout, contrast or owner approval.',
    source:'PR #41 / feature/toolkit-visual-upgrade; matching run commit is shown on GitHub Actions.',
+   damageGuide,
    captures:captured
   };
   fs.writeFileSync(path.join(output,'capture-manifest.json'),JSON.stringify(report,null,2)+'\n');

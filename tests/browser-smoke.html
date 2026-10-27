@@ -417,7 +417,7 @@
         eq(get('hz_body').querySelector('[data-hit-zone="calf"]').getAttribute('aria-pressed'),'false','Keyboard selection clears old zone');
         eq(child.querySelectorAll('#hz_rows tr').length,13,'Accessible table includes all body regions');
         check(!!child.querySelector('#panel-hit-zone table caption'),'Table has a descriptive accessibility caption');
-        eq(child.querySelectorAll('#panel-hit-zone thead th[scope="col"]').length,3,'Result headings declare column scope');
+        eq(child.querySelectorAll('#panel-hit-zone .hz-results thead th[scope="col"]').length,3,'Result headings declare column scope');
         // All 45 combat weapons must render 13 consistent readouts and safe
         // no-data states without leaking NaN, Infinity, or per-pellet damage.
         const hitZoneWeaponNames=[...get('hz_weapon').options].map(o=>o.value).filter(Boolean);
@@ -686,6 +686,30 @@
         change(get('rc_weapon'),'AWM');
         check(get('rc_analyzer').hidden,'Unsupported weapon hides model tools');
         change(get('rc_weapon'),'AKM');
+
+        await open('panel-hit-zone');
+        const guideLink=child.querySelector('#panel-hit-zone a[href="#dg_weapon_class"]');
+        guideLink.click();await new Promise(resolve=>setTimeout(resolve,30));
+        check(get('panel-hit-zone').classList.contains('active'),'Guide jump stays in Combat Lab');
+        check(child.defaultView.location.hash==='#dg_weapon_class','Guide jump has a shareable fragment');
+        const guideTop=get('dg_weapon_class').getBoundingClientRect().top;
+        check(guideTop>=0&&guideTop<child.defaultView.innerHeight,'Guide jump reaches its diagrams immediately');
+        eq(get('dg_class_models').children.length,7,'Seven class models are visible');
+        eq(get('dg_combined_models').children.length,7,'Seven combined models are visible');
+        eq(get('damage-guide').querySelectorAll('svg image').length,15,'Every guide has its own portrait');
+        eq(get('dg_combined_models').querySelectorAll('[data-guide-value]').length,91,'All thirteen values on each combined model');
+        change(get('dg_helmet'),'0');
+        eq(get('dg_combined_models').querySelector('[data-guide-class="AR"] [data-guide-value="head"]').textContent,'235%','Helmet affects combined head factor');
+        eq(get('dg_combined_models').querySelector('[data-guide-class="AR"] [data-guide-value="chest"]').textContent,'66%','Helmet does not affect chest factor');
+        change(get('dg_vest'),'0');
+        eq(get('dg_combined_models').querySelector('[data-guide-class="AR"] [data-guide-value="chest"]').textContent,'110%','Vest affects combined chest factor');
+        change(get('hz_weapon'),'M416');change(get('hz_distance'),'100');change(get('hz_helmet'),'2');change(get('hz_vest'),'2');
+        get('hz_body').querySelector('[data-hit-zone="chest"]').dispatchEvent(new child.defaultView.MouseEvent('click',{bubbles:true}));
+        await Promise.resolve();eq(text('dg_actual_damage'),'25.74','Worked formula follows actual selected checkpoint and region');
+        get('dg_copy_gear').click();eq(get('dg_helmet').value,'2','Copy gear takes helmet from Combat Lab');eq(get('dg_vest').value,'2','Copy gear takes vest from Combat Lab');
+        await Promise.all([...get('damage-guide').querySelectorAll('svg image')].map(el=>new Promise((resolve,reject)=>{
+          const probe=new child.defaultView.Image();probe.onload=()=>probe.naturalWidth===512&&probe.naturalHeight===768?resolve():reject(Error('Guide portrait dimensions'));probe.onerror=()=>reject(Error('Guide portrait decode'));probe.src=new URL(el.getAttribute('href'),child.location.href).href;
+        })));
 
         await open('panel-backpack');
         change(get('bp_type'),'jammer');

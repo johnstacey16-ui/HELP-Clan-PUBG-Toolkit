@@ -13,7 +13,7 @@
   // Deep links to Combat subsections must activate the Combat tool, not Scope.
   const combatAnchors=new Set(['combat-database','compare-weapons','how-thresholds-work','armor-guide']);
   const sensitivityAnchors=new Set(['sensitivity-panel-scope','sensitivity-panel-vert','sensitivity-panel-res','current-sensitivities']);
-  const labAnchors=new Set(['panel-range','panel-ttk']);
+  const labAnchors=new Set(['panel-range','panel-ttk','damage-guide','dg_calculation','dg_hit_area','dg_weapon_class','dg_combined']);
   const isAnchor=id=>combatAnchors.has(id)||sensitivityAnchors.has(id)||labAnchors.has(id);
   function panelForHash(id){
     const target = panelIds.includes(id) ? id : panelIds[0];
@@ -23,7 +23,7 @@
     if(!isAnchor(id))return;
     const anchor=document.getElementById(id);
     if(anchor && typeof anchor.scrollIntoView==='function')
-      anchor.scrollIntoView({behavior:'auto',block:'start'});
+      anchor.scrollIntoView({behavior:id==='damage-guide'||id.startsWith('dg_')?'instant':'auto',block:'start'});
   }
 
   function closeMenu(){

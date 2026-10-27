@@ -408,6 +408,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
 <link rel="stylesheet" href="toolkit-layout.css">
 <link rel="stylesheet" href="unified-workspace.css">
 <link rel="stylesheet" href="recoil-analyzer.css">
+<link rel="stylesheet" href="damage-guide.css">
 </head>
 <body>
 <div id="app-shell">
@@ -891,6 +892,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
     <div class="eyebrow">Combat · Damage, range &amp; time to kill</div>
     <h1>Combat Lab</h1>
     <p class="sub">Choose one loadout and recorded distance. Switch the model between damage, hits to kill, heatmap and TTK. Select a body zone to update the range and timing results below.</p>
+    <nav class="dg-jumps" aria-label="Explore damage mechanics"><a href="#dg_calculation">Damage calculation ↓</a><a href="#dg_hit_area">Hit area ↓</a><a href="#dg_weapon_class">Weapon class ↓</a><a href="#dg_combined">Combined multipliers ↓</a></nav>
     <div class="hz-workspace">
       <div class="hz-tools">
     <div class="card">
@@ -1062,6 +1064,16 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
         <p class="hz-caption">Both left and right limbs use the same hit-zone values. Coverage tints mark modeled protected hit zones, not the physical dimensions of equipment. Damage values are from published distance checkpoints.</p>
       </section>
     </div>
+<section id="damage-guide" aria-labelledby="damage-guide-title">
+  <div class="dg-intro"><div><p class="dg-kicker">UNDERSTAND EVERY HIT</p><h2 id="damage-guide-title">How PUBG damage works</h2><p>Follow one shot through the calculation, then compare the hit-area, weapon-class and gear factors on the models below.</p></div></div>
+  <nav class="dg-jumps" aria-label="Damage guide sections"><a href="#dg_calculation">Damage calculation ↓</a><a href="#dg_hit_area">Hit area ↓</a><a href="#dg_weapon_class">Weapon class ↓</a><a href="#dg_combined">Combined multipliers ↓</a></nav>
+  <section id="dg_calculation" class="dg-section" aria-labelledby="dg_calculation_title"><p class="dg-kicker">01 / THE FORMULA</p><h2 id="dg_calculation_title">Damage Calculation</h2><p>Actual damage is base damage multiplied by four factors: distance, armour remaining, hit area and weapon class. This worked example follows your weapon, gear and selected body zone in Combat Lab.</p><p id="dg_formula_context" class="workspace-context"></p><div class="dg-formula"><div id="dg_formula_values" class="dg-factors"></div><div class="dg-total"><span>Actual damage</span><strong id="dg_actual_damage"></strong></div></div><p id="dg_formula_note" class="helptext"></p></section>
+  <section id="dg_hit_area" class="dg-section" aria-labelledby="dg_area_title"><p class="dg-kicker">02 / WHERE THE BULLET LANDS</p><h2 id="dg_area_title">Hit Area Modifier</h2><p>Each of the thirteen precise body regions has its own hit-area factor. These factors stay the same across the listed classes; class and gear modifiers are applied separately. Left and right limbs share the same values.</p><div class="dg-area-layout"><div id="dg_area_model"></div><div><div id="dg_area_table"></div><p class="dg-source-note">100% means ×1.00; 110% means ×1.10. This layer alone does not represent final damage. Portraits are fictional AI-generated adult fashion models; leader lines indicate approximate body regions, rather than an exact game collision mesh.</p></div></div></section>
+  <section id="dg_weapon_class" class="dg-section" aria-labelledby="dg_class_title"><p class="dg-kicker">03 / WHAT YOU FIRE</p><h2 id="dg_class_title">Weapon Class Modifier</h2><p>Compare all seven class profiles. SMGs give more weight to limb hits; sniper rifles give more weight to head and torso hits. These models show only the class factor, before hit-area and gear effects.</p><p class="helptext">Class defaults are shown here. Weapon-specific exceptions still apply in the live calculation: Dragunov uses ×2.80 for head and neck instead of the DMR default ×2.35. LMG pelvis and torso factors differ.</p><div id="dg_class_models" class="dg-model-grid"></div></section>
+  <section id="dg_combined" class="dg-section" aria-labelledby="dg_combined_title"><p class="dg-kicker">04 / THE COMPLETE MULTIPLIER</p><h2 id="dg_combined_title">Combined Multipliers: Weapon Class, Hit Area &amp; Gear</h2><p>Class × hit area × armour remaining. Change the helmet and vest to compare protection across every class. Distance is excluded from this view.</p><div class="dg-gear-controls"><div class="field"><label for="dg_helmet">Guide helmet</label><select id="dg_helmet"><option value="0">None</option><option value="1">Level 1</option><option value="2" selected>Level 2</option><option value="3">Level 3</option></select></div><div class="field"><label for="dg_vest">Guide vest</label><select id="dg_vest"><option value="0">None</option><option value="1">Level 1</option><option value="2" selected>Level 2</option><option value="3">Level 3</option></select></div><button type="button" id="dg_copy_gear">Use Combat Lab gear</button></div><p id="dg_gear_context" class="workspace-context" aria-live="polite"></p><div id="dg_combined_models" class="dg-model-grid"></div></section>
+  <p class="dg-source-note">The guide exposes the same multiplier data used by our damage engine. <a href="https://pubgstatistics.com/weapons" target="_blank" rel="noopener noreferrer">PUBGStatistics reference</a>. Armour factors assume intact standard gear: Level 1 ×0.70, Level 2 ×0.60, Level 3 ×0.45. Helmets apply to head/neck, vests to torso/pelvis, and limbs stay unprotected. Class diagrams show class defaults rather than every weapon exception. Shotgun multipliers are per-pellet factors, not guaranteed whole-shell damage.</p>
+</section>
+
   <p id="combat-selected-context" class="workspace-context" role="status"></p>
 <div id="panel-range" class="combat-result-section">
 <div class="wrap">
@@ -1205,6 +1217,8 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
 </div>
 
 
+
+
 <script src="js/app-navigation.js"></script>
 
 <script src="js/shared.js"></script>
@@ -1222,6 +1236,7 @@ body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hu
 <script src="toolkit-layout.js"></script>
 <script src="unified-workspace.js"></script>
 <script src="recoil-analyzer.js"></script>
+<script src="damage-guide.js"></script>
 
 <script src="sticky-weapon-header.js" defer></script>
 </body>

@@ -372,6 +372,26 @@ function drawLineChart(canvas, series, opts={}){
   });
 }
 
+// Read-only presentation adapter: all numbers reuse the established damage engine.
+PT.DAMAGE_GUIDE=Object.freeze({
+  parts:Object.freeze(DETAILED_PARTS.map(id=>Object.freeze({id,...BODY_PARTS[id]}))),
+  classes:Object.freeze(Object.keys(CLASS_MULT_DETAILED)),
+  rows(cls,helmet=2,vest=2){
+    if(!CLASS_MULT_DETAILED[cls])throw new RangeError('Unknown weapon class');
+    for(const level of [helmet,vest])if(!Number.isInteger(level)||level<0||level>3)throw new RangeError('Invalid gear level');
+    return DETAILED_PARTS.map(id=>{
+      const p=BODY_PARTS[id],level=armorLevelForHitZone(p,helmet,vest),classMultiplier=CLASS_MULT_DETAILED[cls][p.bucket],gear=armorMultFor(p,level);
+      return {id,label:p.label,hitArea:p.hitArea,classMultiplier,gear,combined:p.hitArea*classMultiplier*gear};
+    });
+  },
+  breakdown(w,distance,zone,helmet,vest){
+    const rows=getAllZoneDamageForWeapon(w,distance,helmet,vest),row=rows.find(r=>r.id===zone);
+    if(!row)throw new RangeError('Unknown hit zone');
+    const atRange=baseDamageAtRange(w,distance);
+    return {...row,base:w.dmg,distanceFactor:atRange==null?null:atRange/w.dmg,atRange,
+      pellet:Boolean(SHOTGUN_PELLETS[w.name]),damage:row.damage};
+  }
+});
 /* ================= 1. EFFECTIVE RANGE & DAMAGE ================= */
 // Strict source-only policy: show published checkpoints, never inferred distances
 // or assumed shotgun pellet connections.
