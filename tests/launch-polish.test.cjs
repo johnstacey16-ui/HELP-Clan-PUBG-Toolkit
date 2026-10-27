@@ -58,7 +58,7 @@ test('calculator scripts, panels and sticky database header all remain present',
   assert.equal(scripts.length,5);
   scripts.forEach((code,i)=>assert.doesNotThrow(()=>new vm.Script(code),'Inline block '+i));
   for(const id of ['panel-sensitivity','panel-combat','panel-range','panel-ttk','panel-recoil2','panel-attach','panel-backpack']){
-    assert.match(html,new RegExp('id="'+id+'" class="hub-main'));
+    assert.match(html,new RegExp('id="'+id+'" class="'));
   }
   for(const fn of ['shotgunMinShellsAt','finalDamageAt','htkFor','pureTtk','pixelSpeed','matchedSens']){
     assert.match(html,new RegExp('function '+fn+'\\('));

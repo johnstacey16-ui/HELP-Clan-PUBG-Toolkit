@@ -37,7 +37,7 @@ for(const select of document.querySelectorAll('#hz_weapon,#rg_weapon,#tk_weapon,
    button.hidden=active!=='All'&&w?.cls!==active;
    if(!button.hidden)total++;
   }
-  if(picker.open){count.textContent=total+' matching weapons';if(!total)count.textContent='No matching weapons. Change class or search.';}
+  count.textContent=total+' matching weapons';if(!total)count.textContent='No matching weapons. Change class or search.';
  }
  for(const cls of ['All','AR','DMR','SR','SMG','MG','SG','Pistol']){
   const button=document.createElement('button');button.type='button';button.textContent=cls;button.setAttribute('aria-pressed',String(cls===active));
@@ -51,22 +51,23 @@ for(const select of document.querySelectorAll('#hz_weapon,#rg_weapon,#tk_weapon,
 const slotSync=[];
 for(const [id,label] of [['at_muzzle','muzzle'],['at_grip','grip'],['at_stock','stock'],['at_mag','magazine'],['at_sight','optic']]){
  const select=get(id);if(!select)continue;
- const details=document.createElement('details');details.className='tt-slot-picker';details.dataset.slot=id;
- const summary=document.createElement('summary');summary.textContent='Browse '+label+' choices';
+ const details=document.createElement('section');details.className='tt-slot-picker';details.dataset.slot=id;
+ const summary=document.createElement('h3');summary.textContent=label+' choices';
  const group=document.createElement('div');group.className='tt-slot-options';group.setAttribute('role','group');group.setAttribute('aria-label','Compatible '+label+' choices');
  details.append(summary,group);select.after(details);
  function sync(){
   summary.textContent='Browse '+label+' choices · '+(select.options[select.selectedIndex]?.textContent||'None');
-  if(!details.open){group.replaceChildren();return;}
   group.replaceChildren();
   for(const option of select.options){
    const button=document.createElement('button');button.type='button';button.textContent=option.textContent;button.disabled=select.disabled||option.disabled;
    button.setAttribute('aria-pressed',String(option.value===select.value));
+   const file=window.HELP_OFFICIAL_ATTACHMENTS?.[get('at_weapon').value]?.[id.replace('at_','')]?.[option.value];
+   if(file){const img=document.createElement('img');if(select.closest('.hub-main').classList.contains('active'))img.src='assets/'+file;else img.dataset.visualSrc='assets/'+file;img.width=64;img.height=44;img.alt='';img.loading='lazy';img.decoding='async';button.prepend(img);}
    if(option.title)button.title=option.title;
-   button.addEventListener('click',()=>{select.value=option.value;change(select);details.open=false;summary.focus();});group.append(button);
+   button.addEventListener('click',()=>{select.value=option.value;change(select);select.focus();});group.append(button);
   }
  }
- select.addEventListener('change',sync);details.addEventListener('toggle',sync);
+ select.addEventListener('change',sync);
  new MutationObserver(sync).observe(select,{childList:true,subtree:true});slotSync.push(sync);sync();
 }
 get('panel-attach')?.addEventListener('click',event=>{if(event.target.closest('.preset-btns'))slotSync.forEach(fn=>fn());});

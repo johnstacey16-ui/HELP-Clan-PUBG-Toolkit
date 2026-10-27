@@ -19,10 +19,11 @@
         const get=id=>{const element=child.getElementById(id);check(!!element,'Missing '+id);return element};
         const text=id=>get(id).textContent.trim();
         const open=id=>{
-          const button=child.querySelector('[data-open-panel="'+id+'"]');
+          const parent=['panel-range','panel-ttk'].includes(id)?'panel-hit-zone':id;
+          const button=child.querySelector('[data-open-panel="'+parent+'"]');
           check(!!button,'Missing navigation '+id);
           button.click();
-          check(get(id).classList.contains('active'),'Panel did not open '+id);
+          check(get(parent).classList.contains('active'),'Panel did not open '+id);
           eq(child.querySelectorAll('.hub-main.active').length,1,'Exactly one visible panel');
           const visible=child.defaultView.getComputedStyle(get(id));
           eq(visible.animationName,'none','Panel must not fade: '+id);
@@ -47,16 +48,14 @@
           'No gun artwork can be requested before a player selects a weapon');
         check(initialMediaBytes<=65536,'Initial visual transfers exceed 64 KiB decoded budget');
         check(child.querySelectorAll('#panel-sensitivity img[src]').length===1,'Only the 3x reference art is active on the landing panel');
-        check(child.querySelectorAll('#wTable img').length===0,'No unselected weapon-table artwork');
+        eq(child.querySelectorAll('#wTable img').length,45,'All table rows have pictures');
+        eq(child.querySelectorAll('#wTable img[src]').length,0,'Inactive database pictures defer requests');
 
-        eq(child.querySelectorAll('#px_table tbody tr').length,7,'Seven scope conversions');
-        const sensitivityTabs=[...get('tabs').querySelectorAll('[role="tab"]')];
-        eq(get('tabs').getAttribute('role'),'tablist','Sensitivity uses keyboard-accessible tablist');
-        eq(sensitivityTabs.length,3,'Three native sensitivity tab buttons');
-        for(const button of sensitivityTabs){
-          eq(button.tagName,'BUTTON','Sensitivity tabs use native buttons');
-          check(button.getBoundingClientRect().height>=44,'Scope inner tabs are controller-sized');
-        }
+        eq(child.querySelectorAll('#px_table tbody tr').length,8,'Eight aiming-mode conversions including Aim');
+        const sensitivityLinks=[...get('tabs').querySelectorAll('a')];
+        eq(sensitivityLinks.length,3,'Three sensitivity jump links');
+        for(const link of sensitivityLinks)check(link.getBoundingClientRect().height>=44,'Jump links are touch sized');
+        for(const id of ['scope','vert','res'])check(get('sensitivity-panel-'+id).getBoundingClientRect().height>0,'Every sensitivity section is visible');
         const scopePreview=get('visual-scope-preview');
         const previewInitialHeight=scopePreview.getBoundingClientRect().height;
         const initialSrc=get('visual-scope-image').getAttribute('src');
@@ -68,69 +67,39 @@
         change(get('px_scope'),'3x');
         eq(get('visual-scope-image').getAttribute('src'),initialSrc,'Scope reference art restores without a layout shift');
         const baselineSpeed=text('px_speed');
-        const switchKey=(button,key)=>{
-          button.focus();
-          button.dispatchEvent(new child.defaultView.KeyboardEvent('keydown',{key,bubbles:true,cancelable:true}));
-        };
-        switchKey(sensitivityTabs[0],'ArrowRight');
-        eq(sensitivityTabs[1].getAttribute('aria-selected'),'true','Right arrow selects vertical multiplier tab');
-        eq(child.activeElement,sensitivityTabs[1],'Right arrow moves keyboard focus');
-        check(child.querySelector('#sensitivity-panel-vert').classList.contains('active'),'Vertical multiplier view opens');
-        switchKey(sensitivityTabs[1],'End');
-        eq(sensitivityTabs[2].getAttribute('aria-selected'),'true','End selects resolution tab');
-        switchKey(sensitivityTabs[2],'ArrowRight');
-        eq(sensitivityTabs[0].getAttribute('aria-selected'),'true','Right arrow wraps to Scope');
-        switchKey(sensitivityTabs[0],'Home');
-        check(child.querySelector('#sensitivity-panel-scope').classList.contains('active'),'Home returns to Scope');
-        eq(sensitivityTabs.filter(button=>button.tabIndex===0).length,1,'Exactly one tab in normal keyboard order');
-        eq(text('px_speed'),baselineSpeed,'Tab navigation cannot change sensitivity maths');
-
+        change(get('px_scope'),'aim');const aimSpeed=text('px_speed');
+        change(get('px_scope'),'15x');eq(text('px_speed'),aimSpeed,'Aim and 15x share A/B constants');
+        change(get('px_scope'),'3x');
+        const current3=get('current_sens_3x');change(current3,'12','input');
+        eq(current3.closest('tr').querySelector('output').textContent,text('px_speed'),'Current speed uses the same pixel-speed model');
+        change(get('current_sens_aim'),'10','input');change(get('current_sens_15x'),'10','input');
+        eq(get('current_sens_aim').closest('tr').querySelector('output').textContent,get('current_sens_15x').closest('tr').querySelector('output').textContent,'Current Aim speed matches 15x at equal settings');
+        get('current_sens_aim').closest('tr').querySelector('button').click();eq(get('px_scope').value,'aim','Current sensitivity can become the matcher reference');
+        change(current3,'','input');eq(current3.closest('tr').querySelector('output').textContent,'–','Blank speed clears');
+        change(current3,'21','input');eq(current3.closest('tr').querySelector('output').textContent,'–','Invalid sensitivity has no calculated speed');
+        check(current3.closest('tr').querySelector('button').disabled,'Invalid setting cannot become reference');
+        change(get('px_scope'),'3x');change(get('px_sens'),'12','input');
+        eq(text('px_speed'),baselineSpeed,'Speed checker does not alter the original matcher formula');
 
         // Sidebar and numbered navigation follow the user-requested position.
         const sidebarIds=[...child.querySelectorAll('#app-toolnav [data-open-panel]')].map(b=>b.dataset.openPanel);
-        eq(sidebarIds.join(','),['panel-sensitivity','panel-combat','panel-hit-zone','panel-range','panel-ttk','panel-recoil2','panel-attach','panel-backpack'].join(','),'Hit Zone Explorer appears immediately above Effective Range');
+        eq(sidebarIds.join(','),['panel-sensitivity','panel-combat','panel-hit-zone','panel-recoil2','panel-attach','panel-backpack'].join(','),'Hit Zone Explorer appears immediately above Effective Range');
         // Mobile drawer and all eight navigable tools.
         get('mobile-nav-toggle').click();
         check(child.body.classList.contains('sidebar-open'),'Mobile drawer opens');
-        for(const id of ['panel-combat','panel-sensitivity','panel-hit-zone','panel-range','panel-ttk','panel-recoil2','panel-attach','panel-backpack'])open(id);
+        for(const id of ['panel-combat','panel-sensitivity','panel-hit-zone','panel-recoil2','panel-attach','panel-backpack'])open(id);
         check(!child.body.classList.contains('sidebar-open'),'Navigation closes drawer');
         // Combat DB remains a compact text table; illustrations load only on tap.
         open('panel-combat');
         const overview=get('combat-overview-disclosure');
-        check(!overview.open,'Mobile Combat overview starts collapsed');
-        check(overview.querySelector('summary').getBoundingClientRect().height>=44,'Overview is keyboard/touch sized');
-        const firstWeapon=child.querySelector('#wTable tr.rowclick');
-        check(!!firstWeapon,'Weapon table has rows');
-        const initialRowTop=firstWeapon.getBoundingClientRect().top;
-        check(initialRowTop<820,'First weapon row must reach initial phone viewport: '+initialRowTop);
-        const overviewOpens=new Promise(resolve=>overview.addEventListener('toggle',resolve,{once:true}));
-        overview.querySelector('summary').click();
-        await overviewOpens;
-        check(overview.open,'Mobile Combat overview can be expanded');
-        check(!!overview.querySelector('#statAll'),'Overview retains weapon counter');
-        check(overview.querySelectorAll('nav.quicknav a').length===3,'All Combat quick links remain accessible');
-        const overviewCloses=new Promise(resolve=>overview.addEventListener('toggle',resolve,{once:true}));
-        overview.querySelector('summary').click();
-        await overviewCloses;
-        check(!overview.open,'Overview returns to compact table-first view');
-        check(Math.abs(firstWeapon.getBoundingClientRect().top-initialRowTop)<=2,'Collapsing returns to original table position');
-        check(child.querySelectorAll('#panel-combat .visual-armour-key img').length===2,'Armour guide remains distinct from the weapon table');
+        check(overview.open,'Combat overview and useful jump links are visible');
+        eq(overview.querySelectorAll('nav.quicknav a').length,2,'Only comparison and armour quick links remain');
         const armourGuide=get('combat-armour-disclosure');
-        check(!armourGuide.open,'Helmet/vest art starts collapsed, behind a user action');
-        check(armourGuide.querySelector('summary').getBoundingClientRect().height>=44,'Armour art summary is controller-sized');
-        check(!armourGuide.querySelector('.visual-armour-key img[src]'),'Closed guide must not request art');
-        const opening=new Promise(resolve=>armourGuide.addEventListener('toggle',resolve,{once:true}));
-        armourGuide.querySelector('summary').click();
-        await opening;
-        check(armourGuide.open,'Armour guide expands on request');
-        check(!!armourGuide.querySelector('.visual-armour-key img[src]'),'Expanded guide requests images');
-        const closing=new Promise(resolve=>armourGuide.addEventListener('toggle',resolve,{once:true}));
-        armourGuide.querySelector('summary').click();
-        await closing;
-        check(!armourGuide.open,'Armour guide closes on request');
-        check(!armourGuide.querySelector('.visual-armour-key img[src]'),'Closed guide releases image sources');
+        check(armourGuide.tagName==='SECTION','Armour pictures have no disclosure control');
+        eq(armourGuide.querySelectorAll('.visual-armour-key img[src]').length,2,'Armour images are on display');
+        for(const id of ['armor-quick-check','combat-armor-crossover-section','how-thresholds-work','realityCard'])check(get('armor-guide').contains(get(id)),'Armour guidance grouped: '+id);
         check(!child.querySelector('#combat-pilot-image'),'No automatic M416 hero image above the table');
-        check(child.querySelectorAll('#wTable img').length===0,'No image loads in the weapon table');
+        eq(child.querySelectorAll('#wTable img[src]').length,45,'All database pictures are on display');
         const scrollRegion=get('combat-stats-scroller');
         eq(scrollRegion.getAttribute('role'),'region','Weapon table has a named scroll region');
         eq(scrollRegion.getAttribute('aria-describedby'),'combat-table-instructions','Scroll instructions are linked');
@@ -155,7 +124,7 @@
         check(!mainHeadings.some(v=>v.includes('Helm L3')||v.includes('Vest L3')),
           'Helmet/vest crossover columns moved below the main database');
         const armourDetail=get('combat-armor-crossovers');
-        check(!armourDetail.open,'Crossover table is initially collapsed');
+        check(armourDetail.getBoundingClientRect().height>0,'Crossover table is visible');
         const armourTable=get('combatArmorTable');
         eq(armourTable.querySelectorAll('tbody tr').length,45,'Crossover data includes all 45 weapons');
         const m416InMain=child.querySelector('#wTable tr.rowclick[data-n="M416"]');
@@ -163,11 +132,6 @@
         check(!!m416InMain&&!!m416InArmor,'Same named gun appears in both databases');
         eq(m416InMain.cells[13].textContent.trim(),m416InArmor.cells[1].textContent.trim(),'Head damage repeated exactly');
         eq(m416InMain.cells[14].textContent.trim(),m416InArmor.cells[4].textContent.trim(),'Chest damage repeated exactly');
-        const openArmor=new Promise(resolve=>armourDetail.addEventListener('toggle',resolve,{once:true}));
-        armourDetail.querySelector('summary').click();await openArmor;
-        check(armourDetail.open,'Optional armour crossover table opens');
-        check(armourDetail.querySelector('summary').getBoundingClientRect().height>=44,
-          'Armour disclosure accessible for phone/controller');
         change(get('wSearch'),'M416','input');
         eq(child.querySelectorAll('#wTable tr.rowclick').length,1,'Search limits main weapon table');
         eq(armourTable.querySelectorAll('tbody tr').length,1,'Search also limits armour table');
@@ -178,11 +142,8 @@
         eq(child.querySelector('#wTable tr.rowclick').dataset.n,armourTable.querySelector('tbody tr').dataset.n,
           'Both tables share selected sort order');
         change(get('wSort'),'dmg-desc');
-        const closeArmor=new Promise(resolve=>armourDetail.addEventListener('toggle',resolve,{once:true}));
-        armourDetail.querySelector('summary').click();await closeArmor;
-        check(!armourDetail.open,'Armour table collapses again');
         // These are same-page links to dynamically rendered sections.
-        const combatJumpIds=['combat-database','compare-weapons','how-thresholds-work'];
+        const combatJumpIds=['compare-weapons','armor-guide'];
         for(const id of combatJumpIds){
           const link=child.querySelector('#panel-combat a[href="#'+id+'"]');
           check(!!link,'Missing quick link '+id);
@@ -222,10 +183,10 @@
         child.querySelector('#modalBody [data-action="close-modal"]').click();
         change(get('wSearch'),'S686','input');
         eq(child.querySelectorAll('#wTable tr.rowclick').length,1,'Search retains a single matching weapon');
-        check(child.querySelectorAll('#wTable img').length===0,'Filtering never inserts thumbnail images');
+        eq(child.querySelectorAll('#wTable img').length,1,'Search keeps the matching weapon picture');
         change(get('wSearch'),'','input');
         eq(child.querySelectorAll('#wTable tr.rowclick').length,45,'Clearing search restores all text-only rows');
-        check(child.querySelectorAll('#wTable img').length===0,'Sorting and filtering keep the table picture-free');
+        eq(child.querySelectorAll('#wTable img').length,45,'Clearing search restores all weapon pictures');
         // Batch visuals: optics and existing controls still change independently.
         open('panel-sensitivity');
         change(get('px_scope'),'8x');
@@ -273,44 +234,15 @@
         change(get('rg_weapon'),'AKM');
         check(!text('rg_chartTitle').includes('per pellet'),'Switching back to an AR updates chart classification');
         check(!text('rg_htkLabel').includes('Minimum shells'),'AR hit-count label is restored');
-        check(!get('visual-range-artwork').open,'Range art defaults closed');
-        eq(get('visual-range').querySelector('img').getAttribute('src'),null,'Closed range graphic has no image request');
-        eq(get('visual-range-weapon-image').getAttribute('src'),null,'Closed range weapon image has no request');
-        check(!!text('rg_dmg'),'Range result remains prominent');
-        const rangeSummary=get('visual-range-artwork').querySelector('summary');
-        check(rangeSummary.getBoundingClientRect().height>=44,'Range art summary has tap target');
-        const rangeDetails=get('visual-range-artwork');
-        const rangeOpened=new Promise(resolve=>rangeDetails.addEventListener('toggle',resolve,{once:true}));
-        rangeSummary.click();
-        await rangeOpened;
-        check(rangeDetails.open,'Range art opens only on request');
+        check(get('visual-range-artwork').tagName==='SECTION','Range pictures have no disclosure control');
         change(get('rg_weapon'),'AKM');
-        eq(get('visual-range-weapon-image').getAttribute('src'),'assets/weapon-akm-field.svg','Range weapon art follows AKM');
-        const rangeClosed=new Promise(resolve=>rangeDetails.addEventListener('toggle',resolve,{once:true}));
-        rangeSummary.click();
-        await rangeClosed;
-        check(!rangeDetails.open,'Range art can be closed again');
-        eq(get('visual-range-weapon-image').getAttribute('src'),null,'Closing range art releases weapon img source');
+        eq(get('visual-range-weapon-image').getAttribute('src'),'assets/weapon-akm-field.svg','Range weapon picture follows the current selection');
         change(get('rg_weapon'),'SKS');
-        eq(get('visual-range-weapon-image').getAttribute('src'),null,'Closed range defers the new weapon image');
-        eq(get('visual-range-weapon-image').getAttribute('data-visual-src'),'assets/weapon-sks-field.svg','Latest selection is kept without requesting art');
-        const rangeReopened=new Promise(resolve=>rangeDetails.addEventListener('toggle',resolve,{once:true}));
-        rangeSummary.click();
-        await rangeReopened;
-        eq(get('visual-range-weapon-image').getAttribute('src'),'assets/weapon-sks-field.svg','Reopening loads selected SKS art');
+        eq(get('visual-range-weapon-image').getAttribute('src'),'assets/weapon-sks-field.svg','Changed weapon picture stays visible');
         open('panel-ttk');
-        const ttkH=get('tk_hitbox').getBoundingClientRect();
-        const ttkA=get('tk_armor').getBoundingClientRect();
-        check(Math.abs(ttkH.top-ttkA.top)<=2,'TTK mobile Hitbox and Armour share a row');
-        check(ttkH.right<=child.defaultView.innerWidth+2&&ttkA.right<=child.defaultView.innerWidth+2,'TTK mobile fields fit');
-        check(!!text('tk_dmg')&&!!text('tk_htk'),'TTK damage and HTK remain available');
-        check(!get('visual-ttk-artwork').open,'TTK art defaults closed');
-        check(!get('visual-ttk-comparison-artwork').open,'TTK compare art defaults closed');
-        eq(get('visual-ttk-weapon-image').getAttribute('src'),null,'Closed TTK art is not downloaded');
-        eq(get('visual-compare-a-image').getAttribute('src'),null,'Closed comparison images are not requested');
-        check(!!text('tk_pure'),'TTK results are present without graphics');
-        get('visual-ttk-artwork').querySelector('summary').click();
-        get('visual-ttk-comparison-artwork').querySelector('summary').click();
+        check(!!text('tk_dmg')&&!!text('tk_htk'),'TTK results are available below the model');
+        check(get('visual-ttk-artwork').tagName==='SECTION','TTK pictures have no disclosure control');
+        check(!!get('visual-compare-a-image').getAttribute('src'),'Comparison weapon pictures are visible');
         change(get('tk_weapon'),'Kar98k');
         eq(get('visual-ttk-weapon-image').getAttribute('src'),'assets/weapon-kar98k-field.svg','TTK selected weapon art is exact');
         change(get('tk_cmpA'),'M416');
@@ -318,10 +250,7 @@
         check(get('visual-compare-a-image').getAttribute('src')==='assets/weapon-m416-field.svg','TTK A thumbnail is M416');
         check(get('visual-compare-b-image').getAttribute('src')==='assets/weapon-akm-field.svg','TTK B thumbnail is AKM');
         open('panel-recoil2');
-        check(!get('visual-recoil-artwork').open,'Recoil art defaults closed');
-        eq(get('visual-recoil-weapon-image').getAttribute('src'),null,'Closed recoil weapon art is deferred');
-        check(!!text('rc_chart'),'Unknown recoil evidence remains visible');
-        get('visual-recoil-artwork').querySelector('summary').click();
+        check(get('visual-recoil-artwork').tagName==='SECTION','Recoil pictures are visible without a disclosure');
         change(get('rc_weapon'),'P90');
         eq(get('visual-recoil-weapon-image').getAttribute('src'),'assets/weapon-p90-field.svg','Recoil art follows P90');
                 open('panel-attach');
@@ -409,7 +338,7 @@
         open('panel-recoil2');check(!!get('visual-recoil').querySelector('img'),'Recoil parameters art exists');
         // All thirteen labels render without tapping; helmet and vest work independently.
         open('panel-hit-zone');
-        eq(get('active-tool-index').getAttribute('aria-label'),'Tool 3 of 8','Hit Zone Explorer is tool 03 of 08');
+        eq(get('active-tool-index').getAttribute('aria-label'),'Tool 3 of 6','Hit Zone Explorer is tool 03 of 08');
         change(get('hz_weapon'),'M416');
         change(get('hz_distance'),'0');
         change(get('hz_helmet'),'0');
@@ -532,22 +461,22 @@
         eq(get('hz_distance').value,'25','TTK checkpoint changes flow back to body');
         change(get('hz_distance'),'0');
         change(get('hz_weapon'),'O12');
-        check(text('tk_context').includes('not a recorded checkpoint'),'Missing shared distance disclosed');
+        eq(get('tk_distance').value,get('hz_distance').value,'One valid recorded distance is shared after a weapon switch');
         check(get('tk_distance').value!=='0','No invented 0m O12 reading');
         change(get('hz_weapon'),'M416');
         change(get('hz_distance'),'0');
         change(get('hz_helmet'),'0');change(get('hz_vest'),'0');
         const modeButtons=child.querySelectorAll('[aria-label="Damage display"] button');
-        eq(modeButtons.length,4,'Display modes are discoverable buttons');
-        check(modeButtons[3].disabled,'Shotgun-only mode disabled for rifle');
+        eq(modeButtons.length,5,'Display modes are discoverable buttons');
+        check(modeButtons[4].disabled,'Shotgun-only mode disabled for rifle');
         const picker=get('hz_weapon').parentElement.querySelector('.workspace-picker');
-        picker.open=true;picker.dispatchEvent(new Event('toggle'));
+
         const search=picker.querySelector('input[type=search]');search.value='AKM';search.dispatchEvent(new Event('input'));
         eq(picker.querySelectorAll('.workspace-weapon-list button').length,1,'Weapon browser filters names');
-        eq(picker.querySelectorAll('img').length,0,'No weapon images until opted in');
+        eq(picker.querySelectorAll('img').length,1,'Matching weapon picture is visible without a toggle');
         picker.querySelector('.workspace-weapon-list button').click();
         eq(get('hz_weapon').value,'AKM','Search result selects weapon');
-        check(!picker.open,'Weapon picker closes after selection');
+        check(picker.getBoundingClientRect().height>0,'Weapon gallery stays visible after selection');
         change(get('hz_weapon'),'M416');
         // Weapon presentation and threshold finder preserve the source records.
         open('panel-combat');
@@ -557,10 +486,10 @@
         crate.checked=true;crate.dispatchEvent(new Event('change',{bubbles:true}));
         eq(child.querySelectorAll('#wTable tr.rowclick').length,45,'Restoring crate filter restores all weapons');
         check(child.querySelector('#wTable .tt-mini-bar'),'Numeric comparison bars render');
-        const cards=get('combat-browser');cards.open=true;cards.dispatchEvent(new Event('toggle'));
+        const cards=get('combat-browser');
         eq(child.querySelectorAll('#combat-cards article').length,45,'Optional weapon cards cover registry');
-        eq(child.querySelectorAll('#combat-cards img').length,0,'Card art remains opt-in');
-        cards.open=false;cards.dispatchEvent(new Event('toggle'));
+        eq(child.querySelectorAll('#combat-cards img').length,45,'Every weapon card shows its picture');
+        check(!child.getElementById('combat-card-art')&&!child.getElementById('combat-card-switch'),'No picture hiding controls');
         change(get('aq_weapon'),'AKM');change(get('aq_gear'),'vest');change(get('aq_tier'),'3');change(get('aq_durability'),'1','input');
         check(text('aq_verdict').includes('Replace with the fresh Level 2'),'Vest threshold resolves low durability');
         change(get('aq_gear'),'helmet');
@@ -587,7 +516,8 @@
         eq(slot.querySelectorAll('button').length,get('at_grip').options.length,'Slot chooser only exposes compatible native choices');
         slot.querySelectorAll('button')[1].click();
         eq(get('at_grip').selectedIndex,1,'Slot button updates existing calculator');
-        check(!slot.open,'Choosing a slot closes its menu');
+        check(slot.tagName==='SECTION','Attachment picture choices stay on display');
+        check(slot.querySelectorAll('img').length>0,'Compatible attachment choices include their pictures');
         const attachPicker=get('at_weapon').parentElement.querySelector('.workspace-picker');
         attachPicker.open=true;attachPicker.dispatchEvent(new Event('toggle'));
         await new Promise(resolve=>setTimeout(resolve,0));

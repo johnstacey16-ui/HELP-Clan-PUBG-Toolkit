@@ -84,7 +84,7 @@ test('selecting 10, 20, or 30 shots shows unknown rather than numerical spray',(
 
 test('existing toolkit panels and script structure remain intact',()=>{
   for(const id of ['panel-combat','panel-sensitivity','panel-range','panel-ttk','panel-recoil2','panel-attach' ,'panel-backpack']){
-    assert.ok(html.includes('id="'+id+'" class="hub-main'));
+    assert.ok(html.includes('id="'+id+'" class="'));
   }
   const scripts=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(x=>x[1]);
   assert.equal(scripts.length,5);

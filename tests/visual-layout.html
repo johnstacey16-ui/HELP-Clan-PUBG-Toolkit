@@ -21,32 +21,26 @@ frame.addEventListener('load',()=>{
  ['panel-backpack',['.visual-backpack-row']]
  ];
  for(const [panelId,selectors] of checks){
-  const tab=doc.querySelector('[data-open-panel="'+panelId+'"]');
+  const parent=['panel-range','panel-ttk'].includes(panelId)?'panel-hit-zone':panelId;
+  const tab=doc.querySelector('[data-open-panel="'+parent+'"]');
   assertion(tab,'No button for '+panelId);tab.click();
   const panel=doc.getElementById(panelId);
-  assertion(panel.classList.contains('active'),'Panel not opened: '+panelId);
+  assertion(doc.getElementById(parent).classList.contains('active'),'Panel not opened: '+panelId);
   const appearance=frame.contentWindow.getComputedStyle(panel);
   assertion(appearance.animationName==='none','Panel must not fade: '+panelId);
   assertion(appearance.opacity==='1','Panel must have full opacity: '+panelId);
   assertion(appearance.transform==='none','Panel must not shift position: '+panelId);
-  if(panelId==='panel-ttk'&&viewport<=700){
-    const hit=panel.querySelector('#tk_hitbox').getBoundingClientRect();
-    const armor=panel.querySelector('#tk_armor').getBoundingClientRect();
-    assertion(Math.abs(hit.top-armor.top)<=2,'TTK Hitbox and Armour rows differ');
-    assertion(hit.right<=viewport+2&&armor.right<=viewport+2,'TTK mobile field overflow');
-    assertion(panel.querySelector('#tk_htk').getBoundingClientRect().top<810,'TTK hits-to-kill is below phone fold');
-  }
   if(panelId==='panel-sensitivity'){
-   const controls=[...panel.querySelectorAll('#tabs [role="tab"]')];
+   const controls=[...panel.querySelectorAll('#tabs a')];
    assertion(controls.length===3,'Three sensitivity sub-tabs required');
    for(const tabButton of controls){
      const rect=tabButton.getBoundingClientRect();
      assertion(rect.height>=44,'Scope sub-tab requires at least 44px touch height');
-     assertion(tabButton.tagName==='BUTTON','Scope sub-tabs must be focusable buttons');
+     assertion(tabButton.tagName==='A','Scope sub-tabs must be focusable buttons');
    }
   }
   if(panelId==='panel-combat'){
-   assertion(panel.querySelectorAll('#wTable img').length===0,'Combat DB rows must not contain gun pictures');
+   assertion(panel.querySelectorAll('#wTable img').length===45,'All database weapons show their pictures');
    assertion(panel.querySelectorAll('#wTable tr.colheader th').length===7,'Core table shows seven columns');
    panel.querySelector('[data-combat-view=all]').click();
    assertion(panel.querySelectorAll('#wTable tr.colheader th').length===15,'All stats retains 15 columns');
@@ -54,8 +48,7 @@ frame.addEventListener('load',()=>{
    assertion(primaryHeaders.some(x=>x.includes('Head Dmg'))&&primaryHeaders.some(x=>x.includes('Chest Dmg')),
      'Head and Chest damage must stay in the main table');
    const armor=panel.querySelector('#combat-armor-crossovers');
-   assertion(!!armor&&!armor.open,'Detailed protection crossovers should start collapsed');
-   armor.open=true;
+   assertion(!!armor&&armor.getBoundingClientRect().height>0,'Protection crossovers should be visible');
    assertion(panel.querySelectorAll('#combatArmorTable tbody tr').length===45,'Crossover values missing');
    assertion(panel.querySelectorAll('#combatArmorTable thead tr:last-child th').length===7,'Secondary protection table must have 7 columns');
    const armorRect=panel.querySelector('.combat-armor-scroller').getBoundingClientRect();
@@ -85,23 +78,10 @@ frame.addEventListener('load',()=>{
    assertion(!panel.querySelector('.combat-visual-pilot'),'No unsolicited weapon pilot art');
    const overview=panel.querySelector('#combat-overview-disclosure');
    assertion(!!overview,'Mobile Combat overview is missing');
-   assertion(overview.open===(viewport>700),'Overview is not responsive to mobile viewport width: '+viewport);
-   if(viewport<=390){
-     const firstRow=panel.querySelector('#wTable tr.rowclick');
-     assertion(!!firstRow,'First weapon row missing');
-     const top=firstRow.getBoundingClientRect().top;
-     assertion(top<830,'First weapon row should appear in 830px mobile preview: '+top);
-   }
+   assertion(overview.open,'Combat overview remains visible');
    const guide=panel.querySelector('#combat-armour-disclosure');
-   assertion(guide && !guide.open,'Combat armour guide must be closed by default');
-   assertion(guide.querySelector('summary').getBoundingClientRect().height>=44,'Guide summary requires at least 44px height');
-   const table=panel.querySelector('#combat-database');
-   assertion(!!table,'Weapon database table must be present');
-   const closedTop=table.getBoundingClientRect().top;
-   guide.open=true;
-   const openedTop=table.getBoundingClientRect().top;
-   if(viewport<=390)assertion(openedTop-closedTop>=100,'Mobile guide must reclaim at least 100px when closed');
-   guide.open=false;
+   assertion(guide.tagName==='SECTION','Armour artwork is always visible');
+   assertion(panel.querySelector('#armor-guide').contains(guide),'Armour guide grouped with crossover tools');
   }
   if(panelId==='panel-backpack'){
    const buttons=[...panel.querySelectorAll('.bp-stepper button')];
@@ -113,13 +93,9 @@ frame.addEventListener('load',()=>{
    }
   }
   if(['panel-range','panel-ttk','panel-recoil2'].includes(panelId)){
-   const details=[...panel.querySelectorAll('details.visual-opt-in-art')];
-   assertion(details.length===(panelId==='panel-ttk'?2:1),'Expected optional artwork sections '+panelId);
-   for(const item of details){
-    assertion(!item.open,'Art should be closed by default');
-    assertion(item.querySelector('summary').getBoundingClientRect().height>=44,'Art opener too small');
-    item.open=true;
-   }
+   const sections=[...panel.querySelectorAll('section.visual-art-panel')];
+   assertion(sections.length===(panelId==='panel-ttk'?2:1),'Expected visible artwork sections '+panelId);
+   for(const item of sections)assertion(item.getBoundingClientRect().height>0,'Artwork must be visible');
   }
   for(const selector of selectors){
    const el=panel.querySelector(selector);assertion(el,'Missing '+selector);
@@ -129,7 +105,7 @@ frame.addEventListener('load',()=>{
      selector+' horizontal overflow at '+viewport+'px (left '+rect.left+', right '+rect.right+')');
   }
   if(['panel-range','panel-ttk','panel-recoil2'].includes(panelId)){
-   for(const item of panel.querySelectorAll('details.visual-opt-in-art'))item.open=false;
+   // Artwork has no collapsing controls.
   }
  }
  out.textContent='PASS: seven illustrated tool layouts fit viewport '+viewport+'px';

@@ -31,12 +31,12 @@ const panelsEl = document.getElementById("panels");
         <button type="button" data-combat-view="handling" aria-pressed="false">Handling</button>
         <button type="button" data-combat-view="all" aria-pressed="false">All stats</button>
       </div>
-      <div class="tt-view-tools"><p class="helptext" id="combat-view-status" role="status"></p><button type="button" id="combat-card-switch" aria-expanded="false" aria-controls="combat-browser">Weapon cards</button><button type="button" id="combat-leader-switch" aria-expanded="false" aria-controls="combat-insights">Leaders</button></div>
+      <div class="tt-view-tools"><p class="helptext" id="combat-view-status" role="status"></p><button type="button" id="combat-leader-switch" aria-expanded="false" aria-controls="combat-insights">Leaders</button></div>
       <div class="sort-hint" id="combat-table-instructions">Sort columns · swipe sideways for more stats.</div>
       <details class="tt-disclosure" id="combat-insights"><summary>Leaders in this selection</summary><div id="combat-leaders" class="tt-leaders"></div></details>
       <div class="combat-stats-scroller" id="combat-stats-scroller" role="region" tabindex="0" aria-label="Scrollable weapon statistics" aria-describedby="combat-table-instructions"><table id="wTable"></table></div>
       <div class="missing-note">— means no available value. Mini bars compare the recorded numeric stats; they are not overall weapon ratings.</div>
-      <details class="tt-disclosure" id="combat-browser"><summary>Browse weapon cards</summary><label class="tt-toggle"><input type="checkbox" id="combat-card-art"> Show optional weapon pictures</label><div id="combat-cards" class="tt-weapon-cards"></div></details>
+      <section id="combat-browser" aria-label="Weapon pictures"><h2 class="section-h">Weapon gallery</h2><div id="combat-cards" class="tt-weapon-cards"></div></section>
       
       <div class="helptext" style="margin-bottom:6px">Recoil &amp; handling columns:</div>
       <dl class="legend">
@@ -181,7 +181,7 @@ const panelsEl = document.getElementById("panels");
     }).join("");
     t.innerHTML = `<tr class="grouprow">${groupHtml}</tr><tr class="colheader">${headHtml}</tr>` +
       list.map(w=>`<tr class="rowclick" tabindex="0" data-n="${w.name}" aria-label="View ${w.name} weapon details and illustration">
-        <td class="combat-weapon-cell">${w.name} ${w.crate?'<span class="tag crate">CRATE</span>':''}</td>
+        <td class="combat-weapon-cell">${window.HELP_VISUAL_WEAPONS?.[w.name]?`<img class="db-weapon-picture" data-visual-src="assets/${window.HELP_VISUAL_WEAPONS[w.name]}" width="86" height="32" alt="" loading="lazy" decoding="async">`:""}${w.name} ${w.crate?'<span class="tag crate">CRATE</span>':''}</td>
         <td>${w.cls?`<span class="tag">${w.cls}</span>`:'—'}</td>
         <td>${w.dmg??'—'}</td>
         <td>${w.rpm??'—'}</td>
@@ -227,6 +227,7 @@ const panelsEl = document.getElementById("panels");
       return '<div><span>'+['Highest base damage','Highest RPM','Fastest bullet speed','Largest base magazine'][i]+'</span><strong>'+(best?best[key]:'No data')+'</strong><small>'+(best?best.name:'No matching weapons')+'</small></div>';
     }).join('');
     renderCards(list);
+    if(document.getElementById('panel-combat').classList.contains('active'))for(const image of t.querySelectorAll('img[data-visual-src]')){image.src=image.dataset.visualSrc;delete image.dataset.visualSrc;}
     // Render the same sorted and filtered weapons in the optional armour table.
     const armourTable=document.getElementById("combatArmorTable");
     const armourHeaders=ARMOR_COLS.map(([key,label])=>`<th scope="col"${TOOLTIPS[key]?` title="${TOOLTIPS[key]}"`:""}>${label}</th>`).join("");
@@ -265,11 +266,10 @@ const panelsEl = document.getElementById("panels");
   });
   function renderCards(list){
     const cards=document.getElementById('combat-cards');cards.replaceChildren();
-    if(!document.getElementById('combat-browser').open)return;
     for(const w of list){
       const card=document.createElement('article');card.className='tt-weapon-card';
       const art=window.HELP_VISUAL_WEAPONS&&window.HELP_VISUAL_WEAPONS[w.name];
-      if(document.getElementById('combat-card-art').checked&&art){const img=document.createElement('img');img.src='assets/'+art;img.width=180;img.height=60;img.alt='Representative '+w.name;img.loading='lazy';card.append(img);}
+      if(art){const img=document.createElement('img');img.dataset.visualSrc='assets/'+art;img.width=180;img.height=60;img.alt='PUBG '+w.name+' weapon artwork';img.loading='lazy';card.append(img);}
       const name=document.createElement('h3');name.textContent=w.name;card.append(name);
       const stats=document.createElement('p');stats.textContent=w.cls+' · '+w.ammo+' · '+w.dmg+' base damage · '+w.rpm+' RPM';card.append(stats);
       for(const [label,action] of [['Details',button=>openWeaponDetail(w.name,button)],['Compare',()=>{document.getElementById('cmpA').value=w.name;document.getElementById('cmpA').dispatchEvent(new Event('change',{bubbles:true}));location.hash='compare-weapons';}],['Hit zones',()=>{const select=document.getElementById('hz_weapon');select.value=w.name;select.dispatchEvent(new Event('change',{bubbles:true}));location.hash='panel-hit-zone';}]]){
@@ -277,21 +277,12 @@ const panelsEl = document.getElementById("panels");
       }
       cards.append(card);
     }
+    if(document.getElementById('panel-combat').classList.contains('active'))for(const image of cards.querySelectorAll('img[data-visual-src]')){image.src=image.dataset.visualSrc;delete image.dataset.visualSrc;}
     if(!list.length)cards.textContent='No matching weapons. Clear the search or change the class filter.';
   }
-  const browser=document.getElementById('combat-browser'),cardSwitch=document.getElementById('combat-card-switch');
-  function syncBrowser(){
-    document.getElementById('combat-stats-scroller').hidden=browser.open;
-    cardSwitch.textContent=browser.open?'Weapon table':'Weapon cards';
-    cardSwitch.setAttribute('aria-expanded',String(browser.open));
-    render();
-  }
-  cardSwitch.addEventListener('click',()=>{browser.open=!browser.open;syncBrowser();});
-  browser.addEventListener('toggle',syncBrowser);
   const leaders=document.getElementById('combat-insights'),leaderSwitch=document.getElementById('combat-leader-switch');
   leaderSwitch.addEventListener('click',()=>{leaders.open=!leaders.open;leaderSwitch.setAttribute('aria-expanded',String(leaders.open));});
   leaders.addEventListener('toggle',()=>leaderSwitch.setAttribute('aria-expanded',String(leaders.open)));
-  document.getElementById('combat-card-art').addEventListener('change',render);
   document.getElementById('wCrates').addEventListener('change',render);
   document.getElementById("wSearch").oninput = render;
   document.getElementById("wSort").onchange = ()=>{

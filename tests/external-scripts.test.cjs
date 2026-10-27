@@ -21,7 +21,7 @@ test('five external classic scripts preserve the original synchronous load order
 test('invalid/empty hash defaults to Scope, but valid Combat subsection hashes stay in Combat',()=>{
   const navigation=fs.readFileSync(path.join(root,names[0]),'utf8');
   assert.match(navigation,/const target = panelIds\.includes\(id\) \? id : panelIds\[0\]/);
-  assert.match(navigation,/return combatAnchors\.has\(id\) \? 'panel-combat' : target/);
+  assert.match(navigation,/return combatAnchors\.has\(id\)\?'panel-combat'/);
   assert.match(navigation,/window\.addEventListener\('popstate',followHash\)/);
   assert.match(navigation,/window\.addEventListener\('hashchange',followHash\)/);
   assert.match(navigation,/selectPanel\(panelForHash\(initialHash\)\)/);
