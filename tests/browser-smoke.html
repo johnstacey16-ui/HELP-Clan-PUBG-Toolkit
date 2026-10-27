@@ -688,6 +688,10 @@
         change(get('rc_weapon'),'AKM');
 
         await open('panel-hit-zone');
+        const guideLink=child.querySelector('#panel-hit-zone a[href="#dg_weapon_class"]');
+        guideLink.click();await new Promise(resolve=>setTimeout(resolve,30));
+        check(get('panel-hit-zone').classList.contains('active'),'Guide jump stays in Combat Lab');
+        check(child.defaultView.location.hash==='#dg_weapon_class','Guide jump has a shareable fragment');
         eq(get('dg_class_models').children.length,7,'Seven class models are visible');
         eq(get('dg_combined_models').children.length,7,'Seven combined models are visible');
         eq(get('damage-guide').querySelectorAll('svg image').length,15,'Every guide has its own portrait');
