@@ -134,12 +134,11 @@ test('recoil explorer renders recovered fields and preserves unknown shot-by-sho
   assert.match(nodes.rc_table.innerHTML,/Vertical recovery speed<\/td><td>7/);
   assert.match(nodes.rc_table.innerHTML,/Bullets per direction switch<\/td><td>2/);
   assert.match(nodes.rc_table.innerHTML,/Recoil climb parameter<\/td><td>0\.7/);
-  assert.match(nodes.rc_missing.textContent,/Exact shot-by-shot recoil: No data/);
-  assert.equal(nodes.rc_chart.attrs['data-evidence'],'unknown');
+  assert.match(nodes.rc_table.innerHTML,/Weapon parameter/);
   nodes.rc_weapon.value='AKM';
   nodes.rc_weapon.handlers.change();
   assert.doesNotMatch(nodes.rc_table.innerHTML,/Prone recoil multiplier/);
-  assert.match(nodes.rc_missing.textContent,/AKM/);
+  assert.match(nodes.rc_table.innerHTML,/Maximum vertical recoil/);
 });
 
 test('sensitivity, ballistics, and shotgun best-case maths are unaffected',()=>{

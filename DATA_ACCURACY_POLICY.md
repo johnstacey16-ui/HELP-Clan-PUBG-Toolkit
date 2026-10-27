@@ -40,16 +40,13 @@ The class-wide DMR head factor in the PC game-file table is ×2.35; the toolkit'
 - Flight time from *muzzle velocity* alone is not reliable beyond the muzzle, so effective-range flight time is **No data** rather than a fabricated constant-speed figure.
 - Even a line drawn between measured endpoints can imply false confidence. This toolkit uses individual plotted markers for measured checkpoints.
 
-## Recoil Analyzer — current behavior and future options
+## Recoil Analyzer — accepted reference curves and intentional simulation
 
-- The old analyzer multiplied vertical recoil and horizontal bias by \`1 + (shot - 1) × speed × 0.05\`, then generated seeded horizontal variation. **No official or validated current-PUBG source supports this as a universal per-bullet formula. This calculation has been retired.**
-- The old implementation was removed because its universal behavior was not supported. The owner can add a clearly intentional custom recoil model later; bullet-10/20/30 stages should not be described as official PUBG mechanics without evidence.
-- KRAFTON's 7 August 2026 LMG developer letter describes recoil reaching a peak and then settling, and documents an adjustment of approximately −10% at the peak and +10% after recovery. https://pubg.com/en/news/10874
-- Update 42.1 (16 June 2026) documents distinct early/mid recoil buildup for the SLR. https://pubg.com/en/news/10179
-- Update 30.1 (11 June 2024) describes MP5K vertical recoil increasing gradually. https://pubg.com/en-asia/news/7424
-- Build-derived PUBG weapon field listings include vertical/horizontal recoil speed, climb and fall values, recoil variation and horizontal direction-switch cadence. These do **not** by themselves establish verified per-shot displacement or a complete game-engine spray simulation. Example: https://pubgplanet.com/wiki/weapons/rpd
-- The Recoil Evidence Explorer now displays original supplied weapon-level parameter values with an explicit caveat, while withholding simulated shot-by-shot/cumulative recoil. Unverified or absent measurements are **No data**. Neither a generic prone factor nor a fixed 5% growth is applied.
-- Future recoil features can use either game measurements or explicitly designed creator-owned models. Keep the algorithm, intended inputs and any supporting references in the repository. Do not advertise a custom model as an exact engine reproduction.
+On 27 October 2026, the owner approved PUBGIntel's Per-Shot Analyzer as a solid fallback reference unless it conflicts with existing HELP values. We import its 27 numeric curve sets, variation settings, stance records and alternate MG3 rate. Existing non-null HELP parameters, compatible attachments and additive attachment math take precedence. The other 18 weapons retain an explicit missing-curve state.
+
+The current analyzer samples the reference's recorded curve segments at each weapon's resolved firing interval, displays fixed 10-shot averages and all 30 numeric samples, and offers randomized visual sprays. It does not reinstate the retired universal 5%-per-shot growth formula. Curve values are inputs to an intentional model; simulated paths are not a claim to reproduce exact in-game impacts.
+
+See [the reference audit](docs/recoil-reference-audit.md), `data/recoil-reference.json` and `data/recoil-conflicts.json` for the pinned source hash, four field conflicts, attachment differences, alias mappings, held-tail estimates and full simulation assumptions. The imported reference recovery keys are retained but are not applied as an extra recoil-growth factor. Displayed raw weapon records and other calculators remain unchanged.
 
 ## Other models and known limitations
 

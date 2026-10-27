@@ -730,15 +730,8 @@ function drawLineChart(canvas, series, opts={}){
         "<tr><td>"+label+"</td><td>"+value+"</td></tr>"
       ).join("")+"</tbody>";
 
-    $("rc_missing").textContent =
-      w.name+" · "+count+" shots · "+stance+" — Exact shot-by-shot recoil: No data.";
+    // The per-shot controller owns the curve, comparison and simulation UI.
 
-    // Keep an explicit unknown state, never replace it with seeded randomness
-    // or a mathematical curve unrelated to PUBG's actual recoil implementation.
-    const display = $("rc_chart");
-    display.setAttribute("data-evidence", "unknown");
-    const heading = display.querySelector("strong");
-    if(heading) heading.textContent = "No verified "+count+"-shot recoil curve for "+w.name;
   }
   ["rc_weapon","rc_stance","rc_shots"].forEach(id=>{
     $(id).addEventListener("input", update);
@@ -1166,6 +1159,27 @@ function extendedCapFor(w,kind="extended"){
   function trySet(id,val){ const sel=$(id); if(!sel.disabled && [...sel.options].some(o=>o.value===val)) sel.value = val; }
   update();
 })();
+
+
+// Read-only adapter: Recoil Analyzer uses the same compatibility and additive
+// attachment effects as the established Attachments calculator.
+PT.RECOIL_ATTACHMENTS=Object.freeze({
+ choices(name,slot){
+  const w=PT.WBYNAME[name];if(!w)return [];
+  return attachmentChoicesFor(w,slot).map(value=>{
+   const item=ATTACH_MOD[slot][value],effect=slot==='muzzle'&&value==='compensator'?compensatorFor(w):item;
+   return {value,label:item.label,v:effect.v,h:effect.h};
+  });
+ },
+ combine(name,selection){
+  let v=1,h=1;
+  for(const slot of ['muzzle','grip','stock']){
+   const option=this.choices(name,slot).find(x=>x.value===selection[slot])||this.choices(name,slot)[0];
+   if(option){v+=option.v;h+=option.h;}
+  }
+  return {v:Math.max(0,v),h:Math.max(0,h)};
+ }
+});
 
 /* ================= HIT ZONE EXPLORER =================
  * The controller runs within the established calculator IIFE.

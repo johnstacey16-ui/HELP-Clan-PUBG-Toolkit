@@ -10,23 +10,17 @@ const start = html.indexOf('/* ================= 3. RECOIL EVIDENCE EXPLORER ===
 const end = html.indexOf('/* ================= 4. ATTACHMENTS & RECOIL ================= */', start);
 const recoil = html.slice(start,end);
 
-test('Coming Soon is visible at the top, with existing recoil parameters still available',()=>{
-  const first = html.indexOf('id="panel-recoil2"');
-  const heading = html.indexOf('<h1>Recoil Evidence Explorer</h1>',first);
-  const label = html.indexOf('<span class="recoil-coming-soon">',first);
-  const tools = html.indexOf('<select id="rc_weapon"',first);
-  assert.ok(first>=0 && label>first && label<heading && tools>heading);
-  assert.match(html.slice(label,heading),/COMING SOON/);
-  assert.match(html.slice(first,tools),/FULL SHOT-BY-SHOT ANALYSIS/);
-  assert.match(html,/Full shot-by-shot spray analysis is on the way/);
-  assert.match(html,/recoil-release-row" role="status"/);
+test('per-shot tools and existing parameters are available without a release blocker',()=>{
+ assert.match(html,/<h1>Per-Shot Recoil Analyzer<\/h1>/);
+ assert.match(html,/id="rc_sim_canvas"/);assert.match(html,/id="rc_stage_table"/);
+ assert.doesNotMatch(html,/recoil-coming-soon/);
 });
 
 test('retire unsupported recoil growth and assumed prone multipliers',()=>{
   assert.ok(start>=0 && end>start,'Recoil evidence source section exists');
   assert.doesNotThrow(()=>new Script(recoil));
   assert.doesNotMatch(recoil,/0\.05|5%\s*\/\s*shot|PRONE_EXTRA|seededNoise|Math\.random|cumV|cumH|Math\.sin/);
-  assert.match(html,/No verified per-shot recoil curve/);
+  assert.match(html,/simulated positions in curve units/);
   assert.doesNotMatch(html, /<div class="recoil-source-list">/);
   assert.match(html,/Weapon recoil parameters/);
 });
@@ -41,7 +35,7 @@ function node(id,value=''){
   };
 }
 
-test('selecting 10, 20, or 30 shots shows unknown rather than numerical spray',()=>{
+test('existing parameter rendering remains independent of spray length',()=>{
   const objects = {
     rc_weapon:node('rc_weapon','AKM'),
     rc_stance:node('rc_stance','standing'),
@@ -66,10 +60,7 @@ test('selecting 10, 20, or 30 shots shows unknown rather than numerical spray',(
   for(const count of [10,20,30]){
     objects.rc_shots.value=String(count);
     objects.rc_shots.events.change();
-    assert.match(objects.rc_missing.textContent,new RegExp(count+' shots'));
-    assert.match(objects.rc_missing.textContent,/Exact shot-by-shot recoil: No data/);
-    assert.match(objects.rc_chart.children.strong.textContent,/No verified/);
-    assert.equal(objects.rc_chart.attributes['data-evidence'],'unknown');
+    assert.match(objects.rc_table.innerHTML,/Maximum vertical recoil/);
     assert.doesNotMatch(objects.rc_table.innerHTML,/<td>10<\/td><td>\d/);
     assert.match(objects.rc_table.innerHTML,/<th>Value<\/th>/);
   }
@@ -79,7 +70,7 @@ test('selecting 10, 20, or 30 shots shows unknown rather than numerical spray',(
   assert.doesNotMatch(objects.rc_table.innerHTML,/NaN|undefined/);
   objects.rc_stance.value='prone';
   objects.rc_stance.events.change();
-  assert.match(objects.rc_missing.textContent,/prone — Exact shot-by-shot recoil: No data/);
+  assert.match(objects.rc_table.innerHTML,/No data/);
 });
 
 test('existing toolkit panels and script structure remain intact',()=>{

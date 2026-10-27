@@ -28,19 +28,10 @@ test('HELP CLAN masthead stays centred in a sticky top bar on every page',()=>{
   assert.match(css,/#app-topbar \.topbar-heading\s*\{[\s\S]*?clip-path:\s*inset\(50%\);/);
 });
 
-test('Recoil Analyzer shows a massive visible banner before its title and controls',()=>{
-  const start=recoil.indexOf('class="recoil-release-row"');
-  const title=recoil.indexOf('<h1>Recoil Evidence Explorer</h1>');
-  const selector=recoil.indexOf('id="rc_weapon"');
-  assert.ok(start>0&&title>start&&selector>title);
-  assert.match(recoil,/recoil-release-row" role="status"/);
-  assert.match(recoil,/FULL SHOT-BY-SHOT ANALYSIS · IN DEVELOPMENT/);
-  assert.match(recoil,/recoil-coming-soon">[\s\S]*?COMING SOON/);
-  assert.match(recoil,/weapon recoil parameters below are available now/);
-  assert.match(css,/#panel-recoil2 \.recoil-coming-soon\s*\{[\s\S]*?font:\s*800 clamp\(52px,\s*7\.5vw,\s*101px\)/);
-  assert.match(css,/@media \(max-width:\s*700px\)\s*\{[\s\S]*?#panel-recoil2 \.recoil-release-graphic\s*\{\s*display:\s*none;/);
-  assert.match(recoil,/id="rc_chart"/);
-  assert.match(recoil,/id="rc_table"/);
+test('Recoil Analyzer exposes the per-shot tools without a Coming Soon blocker',()=>{
+ assert.match(recoil,/<h1>Per-Shot Recoil Analyzer<\/h1>/);
+ for(const id of ['rc_weapon','rc_chart','rc_table','rc_curve_canvas','rc_stage_table','rc_sim_canvas','rc_fire','rc_export'])assert.ok(recoil.includes('id="'+id+'"'),id);
+ assert.doesNotMatch(recoil,/recoil-coming-soon|IN DEVELOPMENT/);
 });
 
 test('Scope Matcher remains first; results are uncluttered and swipeable',()=>{

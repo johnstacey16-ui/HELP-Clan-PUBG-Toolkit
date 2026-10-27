@@ -33,8 +33,8 @@ test('raw game recoil values are not described as shot-by-shot movement',()=>{
 });
 
 test('shot-by-shot curve remains explicitly unknown',()=>{
-  assert.match(html,/Exact shot-by-shot recoil: No data/);
-  assert.match(html,/COMING SOON/);
+  assert.match(html,/simulated positions in curve units/);
+  assert.match(html,/Per-Shot Recoil Analyzer/);
   assert.match(html,/w\.recoilDetail = RECOIL_DETAIL_43_2\[w.name\] \|\| null/);
 });
 

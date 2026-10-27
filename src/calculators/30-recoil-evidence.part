@@ -44,15 +44,8 @@
         "<tr><td>"+label+"</td><td>"+value+"</td></tr>"
       ).join("")+"</tbody>";
 
-    $("rc_missing").textContent =
-      w.name+" · "+count+" shots · "+stance+" — Exact shot-by-shot recoil: No data.";
+    // The per-shot controller owns the curve, comparison and simulation UI.
 
-    // Keep an explicit unknown state, never replace it with seeded randomness
-    // or a mathematical curve unrelated to PUBG's actual recoil implementation.
-    const display = $("rc_chart");
-    display.setAttribute("data-evidence", "unknown");
-    const heading = display.querySelector("strong");
-    if(heading) heading.textContent = "No verified "+count+"-shot recoil curve for "+w.name;
   }
   ["rc_weapon","rc_stance","rc_shots"].forEach(id=>{
     $(id).addEventListener("input", update);

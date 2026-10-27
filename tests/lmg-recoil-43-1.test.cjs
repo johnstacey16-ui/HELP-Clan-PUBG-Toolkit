@@ -21,8 +21,8 @@ test('2026 LMG crouch multipliers replace pre-43.1 records',()=>{
 
 test('LGMs continue to show source-backed parameters, never made-up shot-by-shot curves',()=>{
   assert.match(html,/const fields = \[/);
-  assert.match(html,/Exact shot-by-shot recoil: No data/);
-  assert.match(html,/COMING SOON/);
+  assert.match(html,/simulated positions in curve units/);
+  assert.match(html,/Per-Shot Recoil Analyzer/);
   assert.doesNotMatch(html,/const rawV = w\.vRecoil\*/);
 });
 
