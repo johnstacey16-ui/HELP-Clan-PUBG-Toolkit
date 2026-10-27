@@ -95,7 +95,7 @@ async function capture(binary,base,viewport,panel){
   }
   const damageGuide=[];
   for(const viewport of viewports)for(const section of ['dg_calculation','dg_hit_area','dg_weapon_class','dg_combined'])
-   damageGuide.push(await capture(binary,base,viewport,['damage-'+section,null,'/index.html#'+section]));
+   damageGuide.push(await capture(binary,base,{...viewport,height:1600},['damage-'+section,null,'/tests/damage-guide-preview.html?section='+section]));
   const report={
    kind:'HELP Clan visual upgrade screenshot evidence',
    guidance:'Automated first-viewport captures, not proof of Xbox Edge behaviour, full-page layout, contrast or owner approval.',

@@ -692,7 +692,8 @@
         guideLink.click();await new Promise(resolve=>setTimeout(resolve,30));
         check(get('panel-hit-zone').classList.contains('active'),'Guide jump stays in Combat Lab');
         check(child.defaultView.location.hash==='#dg_weapon_class','Guide jump has a shareable fragment');
-        check(get('dg_weapon_class').getBoundingClientRect().top<child.defaultView.innerHeight,'Guide jump reaches its diagrams immediately');
+        const guideTop=get('dg_weapon_class').getBoundingClientRect().top;
+        check(guideTop>=0&&guideTop<child.defaultView.innerHeight,'Guide jump reaches its diagrams immediately');
         eq(get('dg_class_models').children.length,7,'Seven class models are visible');
         eq(get('dg_combined_models').children.length,7,'Seven combined models are visible');
         eq(get('damage-guide').querySelectorAll('svg image').length,15,'Every guide has its own portrait');
