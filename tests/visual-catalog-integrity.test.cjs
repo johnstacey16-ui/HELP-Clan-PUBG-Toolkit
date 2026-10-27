@@ -6,7 +6,7 @@ const context={window:{}};
 vm.runInNewContext(read('visual-catalog.js'),context);
 const art=context.window.HELP_VISUAL_WEAPONS;
 const registered=JSON.parse(read('assets/visual-manifest.json')).assets;
-test('all 45 names in the weapon database have exact-name conceptual art',()=>{
+test('all 45 names in the weapon database have exact-name publisher artwork',()=>{
  const section=read('src/combat/00-weapon-data-armor.part').split('const WEAPONS = [')[1].split('];')[0];
  const names=[...section.matchAll(/^\["([^"]+)",/gm)].map(x=>x[1]);
  assert.ok(names.length>=40,'expected full weapon dataset');
@@ -16,7 +16,7 @@ test('all 45 names in the weapon database have exact-name conceptual art',()=>{
    assert.match(filename,/^weapon-[a-z0-9-]+-field\.svg$/);
    const file='assets/'+filename;
    assert.ok(fs.existsSync(path.join(root,file)),'missing '+file);
-   assert.ok(registered.some(a=>a.path===file&&a.origin==='original-designed'),'unregistered '+file);
+   assert.ok(registered.some(a=>a.path===file&&a.origin==='publisher-fan-content'),'unregistered '+file);
  }
  assert.deepEqual(Object.keys(art).sort(),names.slice().sort(),'every database entry is mapped to its own asset');
  assert.equal(art.AKM,'weapon-akm-field.svg');

@@ -12,8 +12,8 @@ test('Chrome smoke runner distinguishes completed DOM from failed/timed-out runs
 });
 test('source attribution and accessibility affordances are documented',()=>{
  const docs=read('VISUAL_ARTWORK_CREDITS.md'),html=read('index.html'),css=read('visual-assets.css');
- assert.match(docs,/not sponsored, authorised, endorsed or supplied/);
- assert.match(docs,/45 stylised weapon side profiles/);
+ assert.match(docs,/unofficial fan toolkit; no endorsement is implied/);
+ assert.match(docs,/45 database weapons have distinct, name-matched artwork/);
  assert.match(read('README.md'),/VISUAL_ARTWORK_CREDITS\.md/);
  assert.match(html,/id="visual-scope-label" aria-live="polite"/);
  assert.match(css,/@media\(prefers-contrast:more\)/);

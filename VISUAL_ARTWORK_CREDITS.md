@@ -1,35 +1,31 @@
-# HELP Clan PUBG Toolkit — Visual Artwork Credits
+# HELP Clan PUBG Toolkit — Artwork credits
 
-Last audited: 2026-10-26 · Draft PR #41 (`feature/toolkit-visual-upgrade`).
+Updated 2026-10-27 for the owner-requested replacement of representative item drawings with PUBG artwork.
 
-## What the imagery represents
+## Publisher artwork
 
-The illustration library consists of **original, non-official conceptual graphics made for the toolkit**. They are not photographs, exact 3D models, official game screenshots, or evidence of PUBG weapon appearance or attachment compatibility.
+Weapons, optics, attachments, ammunition, throwables, healing supplies, boosts, backpacks, helmets and vests use PUBG / KRAFTON artwork. Copyright and other rights remain with their respective owners. This is an unofficial fan toolkit; no endorsement is implied.
 
-- **45 stylised weapon side profiles**: local artwork mapped by exact database weapon names in `visual-catalog.js`. **Combat DB is text-only until a specific weapon row is opened**; its detail popup then loads that weapon's art. No thumbnails or unsolicited M416 image occupy the table. Different weapon classes may reuse a general silhouette style. Labels, damage values and performance data come only from the existing combat database, never from the illustrations.
-- **Representative optics**: magnifications 1×–15×, with distinct Red Dot, Holographic and Iron-sight art. The additional 1× artwork chooser is strictly visual; sensitivity calculations do not change.
-- **Equipment categories**: backpacks (levels 1, 2 and 3), Jammer Pack, ammunition, medical supplies, booster, grenade, helmet and vest, plus grip, muzzle and magazine concept illustrations. These do not establish item availability or equipped damage reduction.
-- **Abstract reference diagrams**: range target, timer and recoil parameter board are illustrative, not sourced ballistic or measured per-shot spray patterns.
-- **Model 2 Hit Zone Explorer**: the approved original fictional adult portrait remains an independent asset on which existing 13 interactive damage zones are overlaid.
+Sources:
 
-Each asset's identifier, file size policy, expected dimensions, accessibility intent and creation/rights note is tracked in [`assets/visual-manifest.json`](assets/visual-manifest.json).
+- [PUBG weapon catalogue](https://d3tpthp8lq9ou3.cloudfront.net/en/game-info/weapons/ar), including its weapon, ammunition and attachment images hosted on `wstatic-prod.pubg.com`.
+- [Official PUBG developer asset repository](https://github.com/pubg/api-assets), pinned to commit `32b13b51128b8d8909ae5e77f3b833e01230b24d`, for equipment and utility icons absent from the catalogue.
+- [PUBG content creation guidelines](https://d3tpthp8lq9ou3.cloudfront.net/en/clause/content_creation_guideline). These publisher assets are not claimed as original toolkit artwork, public domain or an open licence.
 
-## Visual usage and player expectations
+Every publisher image has its exact original URL, original-file SHA-256, source label and rights note in `assets/visual-manifest.json`. Images are served locally, without third-party image requests. Catalogue WebP bytes are unchanged. PNG icons are losslessly encoded as WebP. Existing SVG filenames wrap the raster pixels in a transparent, aspect-preserving viewport; the viewport removes transparent margins without cropping visible content.
 
-All images are served from `assets/` and do not link to third-party hosts. In Range, TTK and Recoil, optional conceptual artwork sits in closed-by-default expandable sections after the primary numerical evidence. The artwork sources are also deferred until an expander is actually opened, to avoid requesting unused files on mobile and Xbox Edge. TTK comparison artwork is below the actual comparison table. Informational illustrations have descriptive `alt` text; decorative row thumbnails use empty alternatives when adjacent weapon text provides the same information. Missing images must not suppress statistics or controls.
+## Matching and presentation
 
-The toolkit's artwork is **not sponsored, authorised, endorsed or supplied by KRAFTON/PUBG Studios**. Product and weapon names are used to describe the related game data in the toolkit, not to suggest an official relationship. If official/licensed media is introduced later, record rights and attribution separately and do not replace originals without explicit project review.
+All 45 database weapons have distinct, name-matched artwork in `visual-catalog.js`. Existing database labels remain unchanged: G18C uses the catalogue P18C, and the legacy UMP9 label uses its current UMP catalogue image. These image aliases do not establish historical model or ammunition equivalence. No statistics, compatibility rules or calculator values were imported from the artwork sources.
 
-Artwork remains secondary to readable text and numbers, 44px focusable optic variant controls, reduced-motion and high-contrast preferences, and compatibility with Xbox Edge and mobile browsers.
+`official-art-catalog.js` maps attachment options to their weapon-specific catalogue images and inventory items to their own icons. Unsupported artwork has no misleading fallback. The flare gun, flare ammunition and mini smoke inventory entries remain readable text where a matching source icon was unavailable. Helmet and vest controls display the selected level's image and hide equipment when None is selected.
 
-## Release note
+Range, TTK and Recoil weapon images remain optional and load after their disclosure is opened. The database keeps its picture toggle and detail image. Hidden panels defer their images. Decorative icons have empty alternatives beside the item name; informative images have descriptive alternatives.
 
-PR #41 is in draft. Automated browser/geometry tests are not a substitute for **hands-on** Xbox Series S Edge, phone, and screen-reader verification. Only the repo owner can sign off on the completed visual preview; do not merge into `main` until they explicitly approve it.
+## Retained original graphics
 
-## Automated mobile-image guardrails
+The approved Model 2 Hit Zone portrait remains unchanged. Abstract range, timer and recoil diagrams and the iron-sight interface symbol remain original toolkit graphics. These diagrams are explanatory, not publisher ballistic measurements or weapon renders.
 
-The image registry enforces a total byte ceiling, while Chromium regression checks inspect image requests on the initial Scope screen and confirm that switching to the 8× reference optic does not resize its preview card. The original vector media library is lightweight and optional tools defer artwork until expanded. These are **synthetic test protections, not measured real-user Largest Contentful Paint, connection-speed performance, or physical Xbox Edge validation**. Real-world field testing remains a release gate.
+## Synthetic media limits
 
-## Verified synthetic budget (2026-10-26)
-
-The **79 image files total 199,252 bytes** (the 50 KB asset manifest is separate); the default 3× Scope image uses 1,047 bytes. All images have registered local provenance and their media dimensions and accessibility metadata are regression-tested. Automated Chromium confirms a synthetic ≤8 image requests / ≤64 KiB decoded-media budget on the initial Scope screen after deferring hidden-panel images, and confirms artwork switching does not resize that preview card beyond 1 px. This **does not measure** actual phone/Xbox network speed, Largest Contentful Paint, Cumulative Layout Shift, or photo realism. See [visual acceptance checklist](docs/visual-acceptance-checklist.md).
+The 127 image files total 8,308,510 bytes; the default Scope image is 6,738 bytes. The local collection has an 8 MiB ceiling, with a 512 KiB ceiling per item icon or thumbnail. It is not fetched as one download. Browser checks enforce at most eight images and 64 KiB of transferred image bodies on the initial Scope screen, plus stable scope preview dimensions. These checks do not claim real-device network speed or measured field Web Vitals.

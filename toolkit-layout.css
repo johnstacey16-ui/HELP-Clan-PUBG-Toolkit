@@ -107,3 +107,5 @@
  #panel-combat .tt-view-tools #combat-view-status {min-width:0;font:10px/1.3 system-ui}
  .tt-view-tools button {padding-inline:8px}
 }
+#panel-backpack .pubg-inventory-icon {display:inline-block;vertical-align:middle;width:28px;height:28px;object-fit:contain;margin-right:6px}
+.workspace-equipment img[hidden] {display:none!important}

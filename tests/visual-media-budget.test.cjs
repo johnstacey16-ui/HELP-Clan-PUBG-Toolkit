@@ -10,9 +10,9 @@ test('all illustration media stays inside documented byte budget',()=>{
   acc.total+=length;acc.max=Math.max(acc.max,length);acc.count++;
   return acc;
  },{total:0,max:0,count:0});
- assert.equal(totals.count,79);
+ assert.equal(totals.count,127);
  assert.ok(totals.total<=manifest.budget.maxTotalImageBytes);
- assert.ok(totals.total<=350*1024,'Prototype art increased unexpectedly: '+totals.total+' bytes');
+ assert.ok(totals.total<=8*1024*1024,'Publisher art increased unexpectedly: '+totals.total+' bytes');
  const scope=fs.statSync(path.join(root,'assets/optic-3x.svg')).size;
  assert.ok(scope<=8*1024,'Initial scope art too large: '+scope);
 });

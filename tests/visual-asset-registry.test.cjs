@@ -9,7 +9,7 @@ const root=path.resolve(__dirname,'..');
 const manifest=JSON.parse(fs.readFileSync(path.join(root,'assets/visual-manifest.json'),'utf8'));
 const panelIds=['panel-sensitivity','panel-combat','panel-hit-zone','panel-range','panel-ttk','panel-recoil2','panel-attach','panel-backpack'];
 const roles=['icon','thumbnail','hero'];
-const allowedOrigin=['original-generated','original-designed','licensed','official-redistribution-allowed'];
+const allowedOrigin=['original-generated','original-designed','licensed','official-redistribution-allowed','publisher-fan-content'];
 test('manifest describes all shipped image assets and a bounded budget',()=>{
  assert.equal(manifest.schemaVersion,1);
  assert.ok(Array.isArray(manifest.assets));
@@ -28,6 +28,10 @@ test('manifest describes all shipped image assets and a bounded budget',()=>{
   assert.ok(roles.includes(entry.role));
   assert.ok(allowedOrigin.includes(entry.origin),'image rights missing: '+entry.id);
   assert.ok(typeof entry.rightsNote==='string'&&entry.rightsNote.trim().length>=15);
+  if(entry.origin==='publisher-fan-content'){
+   assert.match(entry.sourceUrl,/^https:\/\/(wstatic-prod\.pubg\.com\/|raw\.githubusercontent\.com\/pubg\/api-assets\/[a-f0-9]{40}\/)/);
+   assert.match(entry.sourceSha256,/^[a-f0-9]{64}$/);
+  }
   assert.ok(typeof entry.usage==='string'&&entry.usage.trim());
   assert.ok(Number.isInteger(entry.width)&&entry.width>0&&Number.isInteger(entry.height)&&entry.height>0);
   assert.equal(typeof entry.decorative,'boolean');
