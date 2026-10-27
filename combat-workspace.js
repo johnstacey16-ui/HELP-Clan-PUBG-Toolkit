@@ -16,15 +16,19 @@ for(const [id,art] of [['hz_helmet','gear-helmet.svg'],['hz_vest','gear-vest.svg
  if(art){const img=document.createElement('img');img.src='assets/'+art;img.alt='';img.width=38;img.height=38;group.append(img);}
  for(const option of select.options){
   const button=document.createElement('button');button.type='button';button.dataset.value=option.value;
-  button.textContent=option.textContent;button.addEventListener('click',()=>set(id,option.value));group.append(button);
+  button.textContent=art?(option.value==='0'?'None':'L'+option.value):option.textContent;
+  button.setAttribute('aria-label',option.textContent+(art?(id==='hz_helmet'?' helmet':' vest'):''));
+  button.title=option.textContent;button.addEventListener('click',()=>set(id,option.value));group.append(button);
  }
  const sync=()=>group.querySelectorAll('button').forEach(button=>{
   button.setAttribute('aria-pressed',String(button.dataset.value===select.value));
   button.disabled=[...select.options].find(o=>o.value===button.dataset.value).disabled;
+  button.hidden=button.disabled;
  });
  select.after(group);select.hidden=true;
  // The label remains visible, with the group supplying its own accessible name.
  select.addEventListener('change',sync);
+ get('hz_weapon').addEventListener('change',sync);
  new MutationObserver(sync).observe(select,{subtree:true,attributes:true,attributeFilter:['disabled'],childList:true});sync();
 }
 // Search lives inside a closed picker. Art is optional and only loaded while open.
