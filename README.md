@@ -1,5 +1,11 @@
 # HELP-Clan-PUBG-Toolkit
 
+## Combat workspace upgrade — released to main (27 October 2026)
+
+[PR #46](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/pull/46) adds the compact Hit Zone workspace, visible equipment/display controls, searchable opt-in weapon thumbnails, and Combat DB Core / Damage / Handling / All stats views. Weapon, exact recorded distance and helmet/vest settings carry between Hit Zone, Range and TTK. TTK now supports recorded distances. Missing checkpoint matches are disclosed rather than interpolated. Model 2, source data and sensitivity calculations are preserved.
+
+The checked [combat workspace roadmap](COMBAT_WORKSPACE_ROADMAP.md) records passing automated/browser/layout checks, screenshot review and a verified production scenario. Physical Xbox Series S Edge testing remains separate.
+
 ## Full toolkit visual upgrade — released to main (2026-10-26)
 
 **Finished:** the owner-approved illustrated visual upgrade and follow-ups #41–#44 are merged and live. See [VISUAL_UPGRADE_RELEASE_STATUS.md](VISUAL_UPGRADE_RELEASE_STATUS.md) for verified CI/production evidence and the separate optional device/photo-art backlog.
