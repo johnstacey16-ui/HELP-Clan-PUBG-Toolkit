@@ -373,7 +373,7 @@ function extendedCapFor(w,kind="extended"){
       : finalReload.toFixed(2)+"s";
     $("at_capBase").textContent = baseCap ?? "—";
     $("at_capNew").textContent = newCap ?? "No data";
-    let note = `Attachment control percentages are from the 43.2 item descriptions; combined reductions and suggested setups remain a simplified model, not a measured spray.`;
+    let note = `Attachment control percentages are from the 43.2 item descriptions; combined reductions and suggested setups remain a simplified model, not a measured spray. Attachment stacking is additive here; whether PUBG adds or multiplies combined attachment effects remains unresolved.`;
     if(w.name==="MG3") note += " MG3 real reload-animation time is not verified.";
     if(["extended","extquick","extended_ar","extquick_ar"].includes(magVal) && newCap==null)
       note += " This magazine's capacity is not verified.";

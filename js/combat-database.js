@@ -37,9 +37,9 @@ const WEAPONS = [
 ["FAMAS","AR","5.56mm",true,39,900,925,585,30,3.1,["Semi","Burst","Auto"]],
 ["P90","SMG","5.7mm",false,35,1000,716,583,50,3.1,["Semi","Auto"]],
 ["P92","Pistol","9mm",false,34,600,380,340,15,2.3,["Semi"]],
-["MP5K","SMG","9mm",false,32,900,400,480,30,3.1,["Semi","Burst","Auto"]],
+["MP5K","SMG","9mm",false,32,901,400,481,30,3.1,["Semi","Burst","Auto"]],
 ["JS9","SMG","9mm",false,32,900,400,480,30,3.1,["Semi","Auto"]],
-["Vector","SMG","9mm",false,31,1100,380,568,19,3.1,["Semi","Burst","Auto"]],
+["Vector","SMG","9mm",false,31,1101,380,569,19,3.1,["Semi","Burst","Auto"]],
 ["MP9","SMG","9mm",false,31,1000,400,517,30,3.1,["Semi","Auto"]],
 ["DBS","SG","12 Gauge",false,28,480,360,224,14,6.1,["Semi"]],
 ["Micro Uzi","SMG","9mm",false,26,1250,350,542,25,3.1,["Semi","Auto"]],
@@ -56,6 +56,18 @@ const WEAPONS = [
 // and MG3 stays unknown rather than treating the generic 3.5s as measured.
 // Other weapon reload timings remain owner-supplied inputs, not guaranteed
 // to be animation-verified.
+// 27 October 2026 evidence review: pubg.gs PC 43.2 extraction lists
+// MP5K 901 and Vector 1101 RPM. DPS above is rounded damage * RPM / 60.
+// MG3's extracted default conflicts with KRAFTON's published 660/990 modes.
+for(const w of WEAPONS){
+  if(w.name==="MP5K" || w.name==="Vector")
+    w.rpmNote="Extracted reference rate: "+w.rpm+" RPM (PUBG PC 43.2, pubg.gs). This is not a measured Xbox firing rate.";
+  if(w.name==="MG3"){
+    w.rpmDisputed=true;
+    w.rpmNote="MG3 rate disputed: this toolkit uses 700 RPM from the 43.2 extraction; KRAFTON's published modes are 660/990 RPM. Active slow-mode timing remains unverified.";
+  }
+}
+
 // RPD added per official Update 42.3 patch notes (pubg.com/en/news/10885): dmg 43, RPM 750, velocity 735 m/s,
 // base magazine 50 (expandable to 110 via AR/LMG magazine attachments), Auto only, world spawn on all maps.
 // RPD's 43.2 engine recoil parameters are now recorded below; the precise
@@ -473,7 +485,7 @@ const panelsEl = document.getElementById("panels");
         <td class="combat-weapon-cell">${window.HELP_VISUAL_WEAPONS?.[w.name]?`<img class="db-weapon-picture" data-visual-src="assets/${window.HELP_VISUAL_WEAPONS[w.name]}" width="86" height="32" alt="" loading="lazy" decoding="async">`:""}${w.name} ${w.crate?'<span class="tag crate">CRATE</span>':''}</td>
         <td>${w.cls?`<span class="tag">${w.cls}</span>`:'—'}</td>
         <td>${w.dmg??'—'}</td>
-        <td>${w.rpm??'—'}</td>
+        <td${w.rpmNote?` title="${w.rpmNote}"`:""}>${w.rpm??'—'}${w.rpmDisputed?" <small>(disputed)</small>":""}</td>
         <td>${w.vel??'—'}</td>
         <td>${w.dps??'—'}</td>
         <td>${w.mag??'—'}</td>
@@ -632,7 +644,7 @@ function openWeaponDetail(name,trigger){
     ${weaponArt}
     <div class="kv">
       <div><span>Damage</span> ${w.dmg}</div>
-      <div><span>RPM</span> ${w.rpm}</div>
+      <div><span>RPM</span> ${w.rpm}${w.rpmDisputed?" (disputed)":""}</div>
       <div><span>Velocity</span> ${w.vel} m/s</div>
       <div><span>DPS</span> ${w.dps}</div>
       <div><span>Magazine</span> ${w.mag}</div>
@@ -641,6 +653,7 @@ function openWeaponDetail(name,trigger){
     </div>
     <div class="note">
       <b>Provided-data notes:</b><br>
+      ${w.rpmNote?w.rpmNote+"<br>":""}
       ${strengths.length?"Strengths: "+strengths.join("; ")+".":"No standout strengths from supplied stats."}<br>
       ${weaknesses.length?"Weaknesses: "+weaknesses.join("; ")+".":"No notable weaknesses from supplied stats."}
       ${helm?`<br><br>Headshot vs armor: ${helm.dmg} dmg. L3→L2 ${helm.l3} · L2→L1 ${helm.l2}.`:''}

@@ -86,8 +86,9 @@ function update(){
  reset();const weapon=PT.WBYNAME[get('rc_weapon').value],weaponChanged=weaponKey!==weapon?.name;weaponKey=weapon?.name;profile=model.resolve(weapon,reference.weapons[weapon?.name]);
  get('rc_analyzer').hidden=!profile;
  if(!profile){result=null;get('rc_missing').textContent=(weapon?.name||'This weapon')+' · No reference curve data. Existing weapon parameters remain available below.';get('rc_fire').disabled=true;get('rc_chart').dataset.evidence='unknown';return;}
- if(weaponChanged){selection={muzzle:'none',grip:'none',stock:'none'};get('rc_rate').replaceChildren(...profile.rates.map(rpm=>new Option(rpm+' RPM'+(rpm===profile.rates[0]?' · HELP default':' · fast'),String(rpm))));}
+ if(weaponChanged){selection={muzzle:'none',grip:'none',stock:'none'};get('rc_rate').replaceChildren(...profile.rates.map(rpm=>new Option(rpm+' RPM'+(rpm===profile.rates[0]?(weapon.rpmDisputed?' · disputed default':' · reference default'):' · fast'),String(rpm))));}
  profile=model.atRate(profile,get('rc_rate').value);get('rc_rate_field').hidden=profile.rates.length<2;
+ get('rc_rate_note').hidden=!weapon.rpmNote;get('rc_rate_note').textContent=weapon.rpmNote||'';
  for(const option of get('rc_stance').options)option.disabled=profile.stance[option.value]==null;
  if(profile.stance[get('rc_stance').value]==null)get('rc_stance').value='standing';
  const stance=get('rc_stance').value,factor=profile.stance[stance],stanceButtons=get('rc_stance_buttons');stanceButtons.replaceChildren();

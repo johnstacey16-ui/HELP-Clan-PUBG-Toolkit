@@ -5,23 +5,9 @@
     "sha256": "a3632210ca93d5871460451aaece2118cd7a2a208f77489cd7b8405a06d0568d",
     "policy": "Owner-approved fallback reference. Existing HELP values win conflicts; curves are model inputs, not observed bullet impacts."
   },
-  "policy": "Existing non-null HELP values and compatible attachment choices take precedence. Missing fields use PUBGIntel. No existing records are overwritten.",
+  "policy": "Existing non-null HELP values and compatible attachment choices take precedence. Missing fields use PUBGIntel. MP5K and Vector use approved extracted reference rates; MG3 and attachment stacking remain unresolved.",
   "coverage": 27,
   "fieldConflicts": [
-    {
-      "weapon": "MP5K",
-      "field": "rpm",
-      "help": 900,
-      "reference": 901,
-      "used": 900
-    },
-    {
-      "weapon": "Vector",
-      "field": "rpm",
-      "help": 1100,
-      "reference": 1101,
-      "used": 1100
-    },
     {
       "weapon": "SLR",
       "field": "tendency",
