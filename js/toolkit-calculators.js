@@ -658,7 +658,7 @@ function drawLineChart(canvas, series, opts={}){
     } else {
       tkNote="No reload needed for this calculation.";
     }
-    $("tk_note").textContent=tkNote;
+    $("tk_note").textContent=tkNote+(w.rpmDisputed?" "+w.rpmNote:"");
     renderCompare();
   }
   function renderCompare(){
@@ -667,7 +667,7 @@ function drawLineChart(canvas, series, opts={}){
     const rows=names.map(n=>{const w=PT.WBYNAME[n];return {name:n,...computeFor(w,hitbox,armor)};});
     $("tk_cmpTable").innerHTML=
       '<tr><th>Weapon</th><th>Dmg</th><th>HTK (SG: minimum)</th><th>Pure TTK</th><th>Incl. reload</th></tr>'+
-      rows.map(r=>'<tr><td>'+r.name+'</td><td>'+display(r.dmg,1)+
+      rows.map(r=>'<tr><td>'+r.name+(PT.WBYNAME[r.name].rpmDisputed?' (rate disputed)':'')+'</td><td>'+display(r.dmg,1)+
         '</td><td>'+(r.htk==null?'No data':r.htk)+
         '</td><td>'+display(r.pure,2)+
         '</td><td>'+displayReload(r)+'</td></tr>').join("");
@@ -1115,7 +1115,7 @@ function extendedCapFor(w,kind="extended"){
       : finalReload.toFixed(2)+"s";
     $("at_capBase").textContent = baseCap ?? "—";
     $("at_capNew").textContent = newCap ?? "No data";
-    let note = `Attachment control percentages are from the 43.2 item descriptions; combined reductions and suggested setups remain a simplified model, not a measured spray.`;
+    let note = `Attachment control percentages are from the 43.2 item descriptions; combined reductions and suggested setups remain a simplified model, not a measured spray. Attachment stacking is additive here; whether PUBG adds or multiplies combined attachment effects remains unresolved.`;
     if(w.name==="MG3") note += " MG3 real reload-animation time is not verified.";
     if(["extended","extquick","extended_ar","extquick_ar"].includes(magVal) && newCap==null)
       note += " This magazine's capacity is not verified.";

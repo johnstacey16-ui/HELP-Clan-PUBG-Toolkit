@@ -46,7 +46,7 @@ On 27 October 2026, the owner approved PUBGIntel's Per-Shot Analyzer as a solid 
 
 The current analyzer samples the reference's recorded curve segments at each weapon's resolved firing interval, displays fixed 10-shot averages and all 30 numeric samples, and offers randomized visual sprays. It does not reinstate the retired universal 5%-per-shot growth formula. Curve values are inputs to an intentional model; simulated paths are not a claim to reproduce exact in-game impacts.
 
-See [the reference audit](docs/recoil-reference-audit.md), `data/recoil-reference.json` and `data/recoil-conflicts.json` for the pinned source hash, four field conflicts, attachment differences, alias mappings, held-tail estimates and full simulation assumptions. The imported reference recovery keys are retained but are not applied as an extra recoil-growth factor. Displayed raw weapon records and other calculators remain unchanged.
+See [the reference audit](docs/recoil-reference-audit.md), `data/recoil-reference.json` and `data/recoil-conflicts.json` for the pinned source hash, two remaining field conflicts, attachment differences, alias mappings, held-tail estimates and full simulation assumptions. The imported reference recovery keys are retained but are not applied as an extra recoil-growth factor. The approved follow-up updates shared MP5K/Vector rates to 901/1101 RPM, with rounded DPS 481/569. Existing attachment effects and SLR tendency remain. MG3 rate and attachment stacking are explicitly unresolved; see [the conflict verification](docs/recoil-conflict-verification-2026-10-27.md).
 
 ## Other models and known limitations
 

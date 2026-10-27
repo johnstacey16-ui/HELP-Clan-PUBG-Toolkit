@@ -19,3 +19,12 @@ Owner request: include all functionality from the PUBGIntel Per-Shot Analyzer; a
 - [x] Merge and verify production.
   - PR #51 merged as `498fdd114a002109b0855d26f85e4029155c881c`; Vercel deployment reported success.
   - Production AKM curves, three stages, 30-shot table and two independent spray overlays verified at `https://help-clan-pubg-toolkit.vercel.app/#panel-recoil2`.
+
+## Approved conflict-verification follow-up — 27 October 2026
+
+- [x] Adopt extracted MP5K 901 / Vector 1101 reference RPM; update their rounded DPS to 481 / 569.
+- [x] Retain all 28 item-effect values and SLR tendency −0.05.
+- [x] Mark MG3 timing and attachment stacking unresolved where calculations are presented.
+- [x] Regenerate conflict audit: two remaining weapon conflicts and 28 attachment differences.
+- [x] Pass all 195 unit checks.
+- [ ] Pass browser/responsive CI and verify production.

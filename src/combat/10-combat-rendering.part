@@ -184,7 +184,7 @@ const panelsEl = document.getElementById("panels");
         <td class="combat-weapon-cell">${window.HELP_VISUAL_WEAPONS?.[w.name]?`<img class="db-weapon-picture" data-visual-src="assets/${window.HELP_VISUAL_WEAPONS[w.name]}" width="86" height="32" alt="" loading="lazy" decoding="async">`:""}${w.name} ${w.crate?'<span class="tag crate">CRATE</span>':''}</td>
         <td>${w.cls?`<span class="tag">${w.cls}</span>`:'—'}</td>
         <td>${w.dmg??'—'}</td>
-        <td>${w.rpm??'—'}</td>
+        <td${w.rpmNote?` title="${w.rpmNote}"`:""}>${w.rpm??'—'}${w.rpmDisputed?" <small>(disputed)</small>":""}</td>
         <td>${w.vel??'—'}</td>
         <td>${w.dps??'—'}</td>
         <td>${w.mag??'—'}</td>
@@ -343,7 +343,7 @@ function openWeaponDetail(name,trigger){
     ${weaponArt}
     <div class="kv">
       <div><span>Damage</span> ${w.dmg}</div>
-      <div><span>RPM</span> ${w.rpm}</div>
+      <div><span>RPM</span> ${w.rpm}${w.rpmDisputed?" (disputed)":""}</div>
       <div><span>Velocity</span> ${w.vel} m/s</div>
       <div><span>DPS</span> ${w.dps}</div>
       <div><span>Magazine</span> ${w.mag}</div>
@@ -352,6 +352,7 @@ function openWeaponDetail(name,trigger){
     </div>
     <div class="note">
       <b>Provided-data notes:</b><br>
+      ${w.rpmNote?w.rpmNote+"<br>":""}
       ${strengths.length?"Strengths: "+strengths.join("; ")+".":"No standout strengths from supplied stats."}<br>
       ${weaknesses.length?"Weaknesses: "+weaknesses.join("; ")+".":"No notable weaknesses from supplied stats."}
       ${helm?`<br><br>Headshot vs armor: ${helm.dmg} dmg. L3→L2 ${helm.l3} · L2→L1 ${helm.l2}.`:''}

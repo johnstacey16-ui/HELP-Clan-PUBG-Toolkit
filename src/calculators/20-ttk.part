@@ -76,7 +76,7 @@
     } else {
       tkNote="No reload needed for this calculation.";
     }
-    $("tk_note").textContent=tkNote;
+    $("tk_note").textContent=tkNote+(w.rpmDisputed?" "+w.rpmNote:"");
     renderCompare();
   }
   function renderCompare(){
@@ -85,7 +85,7 @@
     const rows=names.map(n=>{const w=PT.WBYNAME[n];return {name:n,...computeFor(w,hitbox,armor)};});
     $("tk_cmpTable").innerHTML=
       '<tr><th>Weapon</th><th>Dmg</th><th>HTK (SG: minimum)</th><th>Pure TTK</th><th>Incl. reload</th></tr>'+
-      rows.map(r=>'<tr><td>'+r.name+'</td><td>'+display(r.dmg,1)+
+      rows.map(r=>'<tr><td>'+r.name+(PT.WBYNAME[r.name].rpmDisputed?' (rate disputed)':'')+'</td><td>'+display(r.dmg,1)+
         '</td><td>'+(r.htk==null?'No data':r.htk)+
         '</td><td>'+display(r.pure,2)+
         '</td><td>'+displayReload(r)+'</td></tr>').join("");

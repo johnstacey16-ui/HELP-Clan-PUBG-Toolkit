@@ -35,7 +35,13 @@ test('sampler agrees with independent Bezier control-point evaluation across eve
 });
 test('existing values win all documented conflicts without mutating either dataset',()=>{
  const before=JSON.stringify(weapons),referenceBefore=JSON.stringify(data);
- assert.equal(audit.fieldConflicts.length,4);assert.ok(audit.attachmentConflicts.length>=20);
+ assert.equal(audit.fieldConflicts.length,2);assert.equal(audit.attachmentConflicts.length,28);
+ for(const [name,rpm,dps] of [["MP5K",901,481],["Vector",1101,569]]){
+  assert.equal(PT.WBYNAME[name].rpm,rpm);assert.equal(PT.WBYNAME[name].dps,dps);
+  assert.equal(profile(name).rpm,rpm);close(profile(name).tbs,60/rpm);
+  assert.match(PT.WBYNAME[name].rpmNote,/Extracted reference rate/);
+ }
+ assert.equal(PT.WBYNAME.MG3.rpmDisputed,true);assert.match(PT.WBYNAME.MG3.rpmNote,/660\/990/);
  for(const conflict of audit.fieldConflicts)assert.equal(conflict.used,conflict.help);
  assert.equal(profile('MG3').rpm,700);assert.equal(profile('SLR').tendency,-.05);
  assert.equal(profile('AKM').stance.prone,null);assert.equal(profile('M249').stance.prone,.32);

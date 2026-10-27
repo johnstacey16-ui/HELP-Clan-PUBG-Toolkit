@@ -8,16 +8,14 @@ Accessed: 2026-10-27. HTML SHA-256: `a3632210ca93d5871460451aaece2118cd7a2a208f7
 
 All 27 reference weapons map to existing HELP names; HK416 → M416, ACE32 → ACE 32, FAMAS G2 → FAMAS, Mutant → MK47 Mutant, QBZ → QBZ95, Thompson → Tommy Gun, Uzi → Micro Uzi, Dragunov → SVD Dragunov and Mini14 → Mini 14. The other 18 HELP weapons retain their parameter records and an explicit missing-curve state.
 
-Existing non-null HELP RPM, stance, minimum horizontal scalar, horizontal tendency and direction-switch values take priority. Absent fields use the reference. The established Attachments calculator supplies compatibility and individual effects through one read-only adapter. It combines attachment changes additively; the reference multiplies them. Both tools therefore continue to give the same HELP attachment result. No existing weapon data or global calculator values are replaced.
+Existing non-null HELP RPM, stance, minimum horizontal scalar, horizontal tendency and direction-switch values take priority. Absent fields use the reference. The established Attachments calculator supplies compatibility and individual effects through one read-only adapter. It combines attachment changes additively; the reference multiplies them. Both tools therefore continue to give the same HELP attachment result. The approved verification follow-up updates MP5K to 901 RPM and Vector to 1101 RPM in the shared weapon registry; rounded DPS is 481 and 569. Their timing flows into the analyzer and TTK. All 28 attachment differences remain in favour of HELP item-description values, and SLR tendency remains −0.05. See [the evidence review](recoil-conflict-verification-2026-10-27.md).
 
-Standing defaults to ×1 unless a value exists. A missing crouch value follows the reference's ×1 assumption and is disclosed in the UI. Prone without a value in either dataset is unavailable. MG3 keeps HELP's 700 RPM default over the reference's 660; the additional reference 990 RPM mode is available in this analyzer only.
+Standing defaults to ×1 unless a value exists. A missing crouch value follows the reference's ×1 assumption and is disclosed in the UI. Prone without a value in either dataset is unavailable. MG3 keeps HELP's 700 RPM default over the reference's 660; the additional reference 990 RPM mode is available in this analyzer only. Its active slow-mode rate is disputed: KRAFTON published 660/990, while the PC 43.2 extraction displays 700. The UI discloses this conflict. Additive versus multiplicative attachment stacking is unresolved; this implementation retains additive estimates without claiming engine verification.
 
-## Field conflicts (4)
+## Field conflicts (2)
 
 | Weapon | Field | HELP | Reference | Used |
 | --- | --- | ---: | ---: | ---: |
-| MP5K | rpm | 900 | 901 | 900 |
-| Vector | rpm | 1100 | 1101 | 1100 |
 | SLR | tendency | -0.05 | -0.1 | -0.05 |
 | MG3 | rpm | 700 | 660 | 700 |
 

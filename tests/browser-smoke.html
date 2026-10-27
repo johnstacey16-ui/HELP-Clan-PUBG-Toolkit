@@ -665,7 +665,14 @@
         change(get('rc_stance'),'crouched');
         check(text('rc_build_summary').includes('stance ×0.84'),'Existing crouch multiplier is retained');
         change(get('rc_weapon'),'MG3');
-        eq(get('rc_rate').value,'700','HELP standard MG3 rate wins reference conflict');
+        eq(get('rc_rate').value,'700','MG3 retains the disputed extracted default');
+        check(text('rc_rate_note').includes('MG3 rate disputed'),'MG3 uncertainty is visible beside its rate');
+        for(const [name,rpm] of [['MP5K',901],['Vector',1101]]){
+          change(get('rc_weapon'),name);
+          check(text('rc_metadata').includes(rpm+' RPM'),'Extracted '+name+' rate reaches analyzer');
+          check(text('rc_rate_note').includes('Extracted reference rate'),'Extracted rate provenance is visible');
+        }
+        change(get('rc_weapon'),'MG3');
         check(!get('rc_rate_field').hidden,'MG3 alternate rate selector is available');
         change(get('rc_rate'),'990');
         check(text('rc_metadata').includes('990 RPM'),'Alternate MG3 rate updates metadata');
