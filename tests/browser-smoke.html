@@ -646,7 +646,8 @@
           }else check(text('rc_missing').includes('No reference curve data'),gun+' missing curve disclosure');
         }
         change(get('rc_class'),'SMG');
-        check([...get('rc_weapon').options].every(o=>child.defaultView.PT.WBYNAME[o.value].cls==='SMG'),'Class selector filters actual registry');
+        const smgNames=new Set([...child.querySelectorAll('#wTable tr.rowclick')].filter(row=>row.cells[1].textContent.trim()==='SMG').map(row=>row.dataset.n));
+        check([...get('rc_weapon').options].every(o=>smgNames.has(o.value)),'Class selector filters actual registry');
         change(get('rc_class'),'all');change(get('rc_weapon'),'M416');change(get('rc_stance'),'standing');
         for(const [slot,value] of [['muzzle','compensator'],['grip','vertical'],['stock','heavy']]){
           const button=child.querySelector('[data-rc-slot="'+slot+'"][data-value="'+value+'"]');
