@@ -471,6 +471,19 @@
         child.querySelector('#hz_body [data-hit-zone="chest"]').dispatchEvent(new MouseEvent('click',{bubbles:true}));
         eq(get('rg_armor').value,'2','Chest uses independent vest level');
         eq(Number(text('tk_dmg')),Number(hzValue('chest')),'TTK and body agree at same checkpoint');
+        // Shareable comparisons retain the exact scenario without replacing the combat formulas.
+        change(get('tk_cmpA'),'M416');
+        change(get('tk_cmpB'),'AKM');
+        change(get('tk_cmpC'),'SLR');
+        get('wc_copy').click();
+        const sharedComparison = new URL(get('wc_link').value);
+        eq(sharedComparison.hash,'#panel-ttk','Shared link navigates directly to TTK');
+        for(const [param,expected] of Object.entries({
+          wc_v:'1',wc_weapon:'AKM',wc_distance:'100',wc_zone:'chest',
+          wc_helmet:'3',wc_vest:'2',wc_a:'M416',wc_b:'AKM',wc_c:'SLR'
+        }))eq(sharedComparison.searchParams.get(param),expected,'Shared link '+param);
+        check(!get('wc_link').hidden,'Comparison URL stays available for manual copy');
+        check(get('wc_link').value.length<600,'Comparison link remains compact');
         change(get('tk_distance'),'25');
         eq(get('hz_distance').value,'25','TTK checkpoint changes flow back to body');
         change(get('hz_distance'),'0');
