@@ -1,8 +1,8 @@
 # HELP-Clan-PUBG-Toolkit
 
-## PUBG item artwork — 27 October 2026
+## PUBG item artwork — released (27 October 2026)
 
-[PR #48](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/pull/48) replaces representative item drawings with sourced PUBG / KRAFTON images for all 45 weapons, optics, attachments, armour, backpacks and supplies. Pictures retain their existing optional/deferred loading. Calculator data and Model 2 stay unchanged. See the [artwork checklist](OFFICIAL_ARTWORK_ROADMAP.md) for verification progress.
+[PR #48](https://github.com/johnstacey16-ui/HELP-Clan-PUBG-Toolkit/pull/48) replaces representative item drawings with sourced PUBG / KRAFTON images for all 45 weapons, optics, attachments, armour, backpacks and supplies. Pictures retain their existing optional/deferred loading. Calculator data and Model 2 stay unchanged. See the [artwork checklist](OFFICIAL_ARTWORK_ROADMAP.md) for passing checks and production verification.
 
 ## Calculator and weapon presentation — released (27 October 2026)
 

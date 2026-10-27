@@ -18,7 +18,7 @@ Every publisher image has its exact original URL, original-file SHA-256, source 
 
 All 45 database weapons have distinct, name-matched artwork in `visual-catalog.js`. Existing database labels remain unchanged: G18C uses the catalogue P18C, and the legacy UMP9 label uses its current UMP catalogue image. These image aliases do not establish historical model or ammunition equivalence. No statistics, compatibility rules or calculator values were imported from the artwork sources.
 
-`official-art-catalog.js` maps attachment options to their weapon-specific catalogue images and inventory items to their own icons. Unsupported artwork has no misleading fallback. The flare gun, flare ammunition and mini smoke inventory entries remain readable text where a matching source icon was unavailable. Helmet and vest controls display the selected level's image and hide equipment when None is selected.
+`official-art-catalog.js` maps attachment options to their weapon-specific catalogue images and inventory items to their own icons. Unsupported artwork has no misleading fallback. The Emergency Cover Flare, Emergency Support Flare and Mini Smoke Grenade inventory entries remain readable text where a matching source icon was unavailable. Helmet and vest controls display the selected level's image and hide equipment when None is selected.
 
 Range, TTK and Recoil weapon images remain optional and load after their disclosure is opened. The database keeps its picture toggle and detail image. Hidden panels defer their images. Decorative icons have empty alternatives beside the item name; informative images have descriptive alternatives.
 
