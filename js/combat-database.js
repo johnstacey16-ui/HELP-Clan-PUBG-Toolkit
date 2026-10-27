@@ -296,7 +296,7 @@ const panelsEl = document.getElementById("panels");
   p.innerHTML = `
     <div class="card" id="combat-database">
       <div class="panel-coord">A1 · Combat Database</div>
-      <p class="combat-choose-hint">Tap a weapon row to see its illustration, damage, armour details and statistics.</p>
+      <p class="combat-choose-hint">Select a weapon for its picture and full statistics.</p>
       <div class="toolbar">
         <input type="text" id="wSearch" placeholder="Search weapon name…">
         <select id="wSort">

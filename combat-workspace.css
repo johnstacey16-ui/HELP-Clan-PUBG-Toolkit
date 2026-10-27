@@ -70,3 +70,9 @@
  #panel-hit-zone .workspace-equipment img {display:none}
  #panel-hit-zone h1 {font-size:24px}
 }
+@media(max-width:700px){
+ #panel-combat header.hero h1 {font-size:26px;line-height:1.05}
+ #panel-combat #combat-database .combat-choose-hint {margin:2px 0 7px}
+ #panel-combat #combat-view-status {font-size:11px;line-height:1.3;margin:3px 0 6px}
+ #panel-combat #combat-database .panel-coord {margin-bottom:6px}
+}

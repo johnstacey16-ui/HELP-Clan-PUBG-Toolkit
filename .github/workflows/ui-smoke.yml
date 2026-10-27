@@ -23,7 +23,7 @@ jobs:
       - name: Verify media layout in seven tools at phone tablet desktop widths
         run: node tests/visual-layout-smoke.cjs
       - name: Capture first-screen visual review evidence
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request' && always()
         run: node tests/visual-review-capture.cjs
       - name: Attach visual review screenshots to PR checks
         if: github.event_name == 'pull_request' && always()
