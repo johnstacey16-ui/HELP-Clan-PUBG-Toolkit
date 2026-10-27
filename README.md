@@ -1,3 +1,11 @@
+## Shareable weapon comparisons (27 October 2026)
+
+Combat Lab's TTK comparison now offers **Copy comparison link**. It captures the current weapon, exact recorded distance, body region, separate helmet and vest levels, and up to three comparison weapons in a versioned URL (`wc_v=1`, `wc_*` query parameters, `#panel-ttk`). Opening the URL restores the setup through the existing Hit Zone → Range → TTK synchronisation and recalculates results from the current toolkit data. No account, stored link, telemetry upload, new server, or damage-model change is required.
+
+Invalid weapons and distances cannot create invented readings; unavailable checkpoints are explained. A selectable link stays visible if the browser (including Xbox Edge) denies clipboard access. Sharing reproduces **settings**, not a frozen patch-specific numerical snapshot, so results may change when the toolkit's data changes.
+
+Test with `node --test tests/share-weapon-comparison.test.cjs` and the usual browser smoke and source-sync checks. Physical Xbox Edge and Android clipboard/focus behaviour require device verification.
+
 # HELP-Clan-PUBG-Toolkit
 
 ## Visual damage guide
