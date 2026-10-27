@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://help-clan-pubg-toolkit.vercel.app/sitemap.xml
