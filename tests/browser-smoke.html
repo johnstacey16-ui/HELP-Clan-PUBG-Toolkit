@@ -337,7 +337,7 @@
         // Attachment art follows equipment select values but never changes values itself.
         change(get('at_weapon'),'M416');
         change(get('at_muzzle'),'suppressor');
-        eq(get('visual-at-muzzle-image').getAttribute('src'),'assets/gear-suppressor.svg','Suppressor preview');
+        eq(get('visual-at-muzzle-image').getAttribute('src'),'assets/pubg-img-weapons-add-on-muzzle-suppressor-large.svg','M416 uses its catalogue suppressor image');
         change(get('at_muzzle'),'compensator');
         eq(get('visual-at-muzzle-image').getAttribute('src'),'assets/gear-compensator.svg','Compensator preview');
         change(get('at_muzzle'),'none');
@@ -345,7 +345,7 @@
         change(get('at_grip'),'vertical');
         eq(get('visual-at-grip-image').getAttribute('src'),'assets/gear-vertical-grip.svg','Vertical grip preview');
         change(get('at_grip'),'half');
-        eq(get('visual-at-grip-image').getAttribute('src'),'assets/gear-grip.svg','Other grip uses representative category artwork');
+        eq(get('visual-at-grip-image').getAttribute('src'),'assets/gear-grip.svg','Half grip uses its own publisher artwork');
         change(get('at_grip'),'none');
         check(get('visual-at-grip-image').hidden,'No grip shows no equipped hardware');
         change(get('at_stock'),'tactical');

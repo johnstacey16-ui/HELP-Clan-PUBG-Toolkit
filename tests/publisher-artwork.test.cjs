@@ -15,6 +15,8 @@ test('every mapped attachment, inventory and armour image has publisher provenan
   const item=manifest.find(a=>a.path==='assets/'+file);
   assert.ok(item&&item.origin==='publisher-fan-content','missing publisher image '+file);
  }
+ const m416Suppressor=manifest.find(a=>a.path==='assets/'+attachments.M416.muzzle.suppressor);
+ assert.ok(m416Suppressor.sourceUrl.endsWith('/img-weapons-add-on-muzzle-suppressor_large.webp'));
  assert.notEqual(attachments.M416.muzzle.compensator,attachments.MP5K.muzzle.compensator,'AR and SMG muzzle artwork must match their actual item');
  assert.notEqual(attachments.M416.grip.half,attachments.M416.grip.light,'different grips must not reuse a representative category drawing');
  for(const type of ['helmet','vest'])for(const level of ['1','2','3']){
