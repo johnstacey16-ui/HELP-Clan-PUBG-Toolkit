@@ -81,13 +81,22 @@
     choose('hz_distance',data.distance);
     choose('hz_helmet',data.helmet);
     choose('hz_vest',data.vest);
-    const zone=document.querySelector('#hz_body [data-hit-zone="'+data.zone+'"]');
+    const zoneId=data.zone==='limb'?'upperArm':data.zone;
+    const zone=document.querySelector('#hz_body [data-hit-zone="'+zoneId+'"]');
     if (!zone) {
       status.textContent='This hit zone is not available. Choose another body region.';
       return false;
     }
     // Updates the selected SVG zone AND the shared weapon / armour context.
     zone.dispatchEvent(new MouseEvent('click',{bubbles:true}));
+    // The simple TTK "limb" option has no separate SVG zone: it uses the
+    // upper-arm/thigh factor. Restore that selector instead of inventing a zone.
+    if (data.zone==='limb') {
+      const detailed=get('tk_detailed');
+      detailed.checked=false;
+      fireChange(detailed);
+      choose('tk_hitbox','limb');
+    }
     choose('tk_cmpA',data.a);
     choose('tk_cmpB',data.b);
     choose('tk_cmpC',data.c);
