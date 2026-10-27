@@ -77,11 +77,11 @@
  #panel-combat #combat-database .panel-coord {margin-bottom:6px}
 }
 @media(max-width:700px){
- #panel-ttk .wrap > p.sub + .card .toolbar > .field:nth-child(1) {grid-column:1/-1;grid-row:1}
- #panel-ttk .wrap > p.sub + .card .toolbar > .field:nth-child(2) {grid-column:1/-1;grid-row:2}
- #panel-ttk .wrap > p.sub + .card .toolbar > .field:nth-child(3) {grid-column:1;grid-row:3;min-height:0}
- #panel-ttk .wrap > p.sub + .card .toolbar > .field:nth-child(4) {grid-column:1/-1;grid-row:4}
- #panel-ttk .wrap > p.sub + .card .toolbar > .field:nth-child(5) {grid-column:2;grid-row:3}
+ #panel-ttk .wrap > p.sub + .card .toolbar > .field:nth-child(1) {grid-column:1;grid-row:1}
+ #panel-ttk .wrap > p.sub + .card .toolbar > .field:nth-child(2) {grid-column:2;grid-row:1}
+ #panel-ttk .wrap > p.sub + .card .toolbar > .field:nth-child(3) {grid-column:1;grid-row:2;min-height:0}
+ #panel-ttk .wrap > p.sub + .card .toolbar > .field:nth-child(4) {grid-column:1/-1;grid-row:3}
+ #panel-ttk .wrap > p.sub + .card .toolbar > .field:nth-child(5) {grid-column:2;grid-row:2}
 }
 #panel-hit-zone .workspace-equipment button {min-width:32px}
 #panel-hit-zone .workspace-equipment button[hidden] {display:none}

@@ -462,6 +462,7 @@
         check(hzValue('chest')!=='No data','Published 100m damage available');
         get('hz_body').querySelector('[data-hit-zone="calf"]').dispatchEvent(new MouseEvent('click',{bubbles:true}));
         check(text('hz_detail').includes('Calf'),'Optional region detail responds to clicks');
+        check(get('hz_detail').closest('details').open,'Selecting a body region reveals its calculation');
         eq(get('hz_body').querySelector('[data-hit-zone="calf"]').getAttribute('aria-pressed'),'true','Pointer-selected zone exposes state');
         eq(get('hz_body').querySelector('[data-hit-zone="chest"]').getAttribute('aria-pressed'),'false','Other zones are not selected');
         const keyboardZone=get('hz_body').querySelector('[data-hit-zone="head"]');

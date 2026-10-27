@@ -1211,6 +1211,8 @@ function initHitZoneExplorer({ panel, weapons, getCheckpoints, getZoneResults, i
       el.setAttribute('aria-pressed', String(active));
     });
     renderDetail();
+    const disclosure=detail.closest('details');
+    if(disclosure)disclosure.open=true;
   }
   function renderDetail() {
     const zone = results.find(r => r.id === selectedZone);
