@@ -260,6 +260,19 @@
         change(get('tk_cmpB'),'AKM');
         check(get('visual-compare-a-image').getAttribute('src')==='assets/weapon-m416-field.svg','TTK A thumbnail is M416');
         check(get('visual-compare-b-image').getAttribute('src')==='assets/weapon-akm-field.svg','TTK B thumbnail is AKM');
+        // End-to-end browser check: the share button reflects actual live controls.
+        change(get('tk_cmpC'),'SKS');
+        get('wc_copy').click();
+        check(!get('wc_link').hidden,'A shareable link is visible even if clipboard permission is denied');
+        const sharedComparison=new URL(get('wc_link').value);
+        eq(sharedComparison.hash,'#panel-ttk','Shared links open the TTK comparison panel');
+        for(const [key,value] of [
+          ['wc_v','1'],['wc_weapon',get('tk_weapon').value],
+          ['wc_distance',get('tk_distance').value],['wc_zone',get('tk_hitbox').value],
+          ['wc_helmet',get('hz_helmet').value],['wc_vest',get('hz_vest').value],
+          ['wc_a',get('tk_cmpA').value],['wc_b',get('tk_cmpB').value],['wc_c',get('tk_cmpC').value]
+        ])eq(sharedComparison.searchParams.get(key),value,'Shared URL preserves '+key);
+        check(get('tk_cmpTable').textContent.includes('SKS'),'New third compare weapon remains visible after copying');
         await open('panel-recoil2');
         check(get('visual-recoil-artwork').tagName==='SECTION','Recoil pictures are visible without a disclosure');
         change(get('rc_weapon'),'P90');
