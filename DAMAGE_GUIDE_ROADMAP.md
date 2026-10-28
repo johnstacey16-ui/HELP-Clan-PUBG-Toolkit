@@ -28,4 +28,6 @@ See [design and data decisions](docs/damage-guide-design-and-data.md).
 - [x] Remove the sixteen photographic assets and obsolete image-prompt catalogue.
 - [x] Pass all 198 unit checks and generated-source validation; review the rendered vector mannequin.
 - [ ] Run browser/responsive/screenshot checks: GitHub run `40639845505` failed before any job steps on both attempts, with no job logs; the local Chrome runner also could not launch. These are unavailable checks, not passing results.
-- [ ] Publish replacement.
+- [x] Publish replacement. PR #56 merged as `0ca6344da417c0598a5a6cbf72ab33466043013e`; Vercel reports success.
+  - Live desktop browser verified all sixteen model image references use the mannequin, all thirteen interactive regions remain present, Head selection shows 94.0 for unarmoured M416 at 0m, and AR combined head factor changes 235% → 141% between no helmet and Level 2.
+  - Interactive and combined views visually reviewed on production. Automated responsive coverage remains unavailable as noted above.
