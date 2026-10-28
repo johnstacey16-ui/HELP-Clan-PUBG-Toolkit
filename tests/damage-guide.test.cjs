@@ -29,9 +29,12 @@ test('worked formula respects actual checkpoints, weapon head exceptions and unk
  assert.equal(m.breakdown({name:'M416',cls:'AR',dmg:40},99,'chest',2,2).damage,null);
  const pellet=m.breakdown({name:'DBS',cls:'SG',dmg:28},0,'chest',2,2);assert.equal(pellet.pellet,true);assert.equal(pellet.damage,null);assert.equal(pellet.distanceFactor,null);
 });
-test('fifteen distinct optimized portraits and every source prompt are shipped',()=>{
- const manifest=JSON.parse(read('docs/damage-guide-image-prompts.json'));
- assert.equal(manifest.assets.length,15);const hashes=new Set();let bytes=0;
- for(const a of manifest.assets){const data=fs.readFileSync(path.join(__dirname,'..',a.file));assert.equal(data.subarray(8,12).toString(),'WEBP');assert.ok(data.length<100000);bytes+=data.length;hashes.add(crypto.createHash('sha256').update(data).digest('hex'));assert.match(a.prompt,/adult|ADULT/);}
- assert.equal(hashes.size,15);assert.ok(bytes<1000000);
+test('all explanatory models use the shared neutral mannequin and no fashion portraits are shipped',()=>{
+ const manifest=JSON.parse(read('assets/visual-manifest.json'));
+ const figure=manifest.assets.find(r=>r.id==='damage-training-mannequin');
+ assert.ok(figure);assert.deepEqual([figure.width,figure.height],[500,750]);
+ assert.ok(!manifest.assets.some(r=>r.id==='hit-zone-model-2'||/^damage-(class|combined|hit-area)/.test(r.id)));
+ const ui=read('damage-guide.js');assert.match(ui,/damage-training-mannequin\.svg/);assert.doesNotMatch(ui,/damage-.*\.webp/);
+ assert.ok(!fs.existsSync(path.join(__dirname,'../assets/hit-zone-model-2.webp')));
+ assert.match(read('index.html'),/assets\/damage-training-mannequin\.svg/);
 });

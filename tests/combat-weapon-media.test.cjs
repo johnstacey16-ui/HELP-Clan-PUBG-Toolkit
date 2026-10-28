@@ -30,7 +30,7 @@ test('numeric weapon data and all 13 hit zones retain their existing source boun
   assert.match(html,/id="panel-hit-zone"/);
   assert.equal((html.match(/data-hit-zone="/g)||[]).length,13);
   assert.ok(!source.includes('updateDamageModel'));
-  assert.match(read('src/explorer/hit-zone-explorer.fragment.html'),/hit-zone-model-2\.webp/);
+  assert.match(read('src/explorer/hit-zone-explorer.fragment.html'),/damage-training-mannequin\.svg/);
 });
 
 test('shared weapon art catalogue only defines entries present in the static weapon database',()=>{

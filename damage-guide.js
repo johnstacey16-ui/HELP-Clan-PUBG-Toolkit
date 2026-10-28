@@ -25,7 +25,7 @@ function makeModel(id,asset,rows,mode){
   const label=mode==='class'?({chest:'Torso',upperArm:'Arms',thigh:'Legs'}[key]||r.label):(short[key]||r.label);
   group.append(svgEl('text',{x:lx+8,y:ly+9,fill:'#b6ced8','font-size':19,'font-family':'system-ui'},label));
   const value=mode==='area'?r.hitArea:mode==='class'?r.classMultiplier:r.combined;
-  group.append(svgEl('text',{x:lx+8,y:ly+31,fill:'#fff0c7','font-size':23,'font-weight':700,'font-family':'system-ui','data-guide-value':key},pct(value)));
+  group.append(svgEl('text',{x:lx+8,y:ly+31,fill:'#fff0c7','font-size':pct(value).length>6?20:23,'font-weight':700,'font-family':'system-ui','data-guide-value':key},pct(value)));
   svg.append(group);
  }
  return svg;
@@ -40,11 +40,11 @@ function card(cls,mode){
  const id='dg-'+mode+'-'+slug[cls],article=document.createElement('article');article.className='dg-model-card';article.dataset.guideClass=cls;
  const h=document.createElement('h3');h.textContent=names[cls];const kicker=document.createElement('p');kicker.className='dg-kicker';kicker.textContent=mode==='class'?'CLASS FACTOR ONLY':'CLASS × HIT AREA × GEAR';article.append(kicker,h);
  const rows=model.rows(cls,Number(get('dg_helmet').value),Number(get('dg_vest').value));
- article.append(makeModel(id,'damage-'+mode+'-'+slug[cls]+'.webp',rows,mode));
+ article.append(makeModel(id,'damage-training-mannequin.svg',rows,mode));
  // Values remain fully accessible without relying on the image or colour.
  const details=document.createElement('details'),summary=document.createElement('summary');summary.textContent='Equivalent values as a table';details.append(summary,table(rows,mode,names[cls]+' '+mode+' multipliers'));article.append(details);return article;
 }
-const areaRows=model.rows('AR',0,0);get('dg_area_model').append(makeModel('dg-area','damage-hit-area.webp',areaRows,'area'));get('dg_area_table').append(table(areaRows,'area','Fixed hit-area multipliers'));
+const areaRows=model.rows('AR',0,0);get('dg_area_model').append(makeModel('dg-area','damage-training-mannequin.svg',areaRows,'area'));get('dg_area_table').append(table(areaRows,'area','Fixed hit-area multipliers'));
 for(const cls of model.classes)get('dg_class_models').append(card(cls,'class'));
 function loadGuideArtwork(){
  if(!get('panel-hit-zone').classList.contains('active'))return;

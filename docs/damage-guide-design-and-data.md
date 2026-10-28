@@ -20,10 +20,10 @@ The source prose says five factors but lists base damage plus four multipliers. 
 
 The reference's measured rates (e.g. Vector 1110, Groza 740, SLR 320) differ from our extracted or existing rates. Their measured-versus-extracted methodology needs separate reconciliation; this visual upgrade does not overwrite them or re-open the approved MP5K/Vector rate decision. The reference also exposes custom firing cadence, bolt-action ADS timing, additional weapon pages and patch histories; these are research candidates, not silently imported data. We already provide damage/HTK/TTK modes, weapon comparison, equipment selections and exact recorded-distance results.
 
-## Artwork
+## Artwork — updated 28 October 2026
 
-Fifteen distinct fictional 18-year-old adult fashion portraits were generated with the built-in image generator: one hit-area portrait, seven class portraits and seven combined portraits. Prompts request ordinary fully clothed, non-sexual fashion-catalog poses, opaque fitted evening outfits and clear front views. Source prompts are in `docs/damage-guide-image-prompts.json`. All fifteen portraits received a background cleanup edit to preserve complete opaque figures and clean edges against #091722.
+At the owner's request, every photographic model has been replaced, including the old interactive Model 2. All sixteen model placements now use one original neutral, faceless vector training mannequin: `assets/damage-training-mannequin.svg`.
 
-Assets live at `assets/damage-*.webp`, encoded to 512×768. Encoding/resizing changes no numerical labels. Total new artwork is approximately 0.2 MB. The total catalogue budget rises from 8 to 9 MiB for the new fifteen assets; the unchanged 64 KiB initial-screen transfer check remains enforced by deferring guide portraits until Combat Lab opens.
+The mannequin uses the same thirteen anatomical paths as the existing interactive map, so the decorative figure and focusable hit regions align. Metallic gradients, subtle facets and joint seams provide depth while staying readable at phone sizes. Main-map equipment overlays and every live numerical label remain independent of the art.
 
-Portraits are decorative underlying photographs. Live text, table equivalents and the calculation engine carry the data. Leader lines indicate approximate anatomical areas rather than claiming that fashion photography reproduces PUBG's collision geometry. Left/right limbs share values. The existing approved interactive Model 2 and its hit targets remain intact; the new fifteen portraits belong to the explanatory guide.
+The original sixteen portrait WebP files and their obsolete prompt catalogue are removed. No third-party artwork or website character model is copied. The shared vector is under 20 KB, requested only when Combat Lab opens, and the catalogue's 8 MiB budget and 64 KiB landing-media gate are restored/preserved. Damage values and calculator formulas are unchanged.

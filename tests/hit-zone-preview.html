@@ -62,7 +62,7 @@ photo.onload=()=>{
  try{
   assert(photo.naturalWidth===500 && photo.naturalHeight===750,
     'Unexpected model image dimensions: '+photo.naturalWidth+'×'+photo.naturalHeight);
-  result.textContent='PASS: 13 visible values, no collisions or overflow, and Model 2 photo decoded';
+  result.textContent='PASS: 13 visible values, no collisions or overflow, and Neutral mannequin decoded';
   result.dataset.qa='pass';
   document.body.dataset.previewStatus='pass';
  }catch(e){
@@ -72,11 +72,11 @@ photo.onload=()=>{
  }
 };
 photo.onerror=()=>{
- result.textContent='FAIL: Model 2 photo did not load';
+ result.textContent='FAIL: Neutral mannequin did not load';
  result.dataset.qa='fail';
  document.body.dataset.previewStatus='fail';
 };
-photo.src='../assets/hit-zone-model-2.webp';
+photo.src='../assets/damage-training-mannequin.svg';
 }catch(e){
 result.textContent='FAIL: '+e.message;
 result.dataset.qa='fail';
