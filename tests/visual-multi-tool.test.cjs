@@ -4,7 +4,7 @@ const read=p=>fs.readFileSync(require('node:path').join(__dirname,'..',p),'utf8'
 test('all six newly illustrated tool surfaces exist',()=>{
  for(const id of ['visual-scope-image','visual-attachment-grid','visual-pack-label','visual-range','visual-ttk','visual-recoil'])assert.ok(html.includes('id="'+id+'"'),id);
  assert.equal((html.match(/data-hit-zone="/g)||[]).length,13);
- assert.ok(html.includes('href="/assets/hit-zone-model-2.webp"'));
+ assert.ok(html.includes('href="/assets/damage-training-mannequin.svg"'));
 });
 test('art mapping never writes gameplay data',()=>{
  const src=read('visual-controls.js');assert.doesNotThrow(()=>new vm.Script(src));

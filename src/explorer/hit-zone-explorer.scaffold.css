@@ -57,7 +57,7 @@
 
 /* Photographic model is noninteractive; transparent anatomically aligned zones
    retain focus, heatmap, click and keyboard selection over the real pixels. */
-#panel-hit-zone #hz_body .hz-photo { pointer-events:none; }
+#panel-hit-zone #hz_body .hz-model { pointer-events:none; }
 #panel-hit-zone #hz_body .hz-figure-outline [data-hit-zone] { fill:rgba(19,118,152,.035);stroke:rgba(103,215,236,.34);stroke-width:1.6; }
 #panel-hit-zone #hz_body .hz-figure-outline [data-hit-zone]:hover,
 #panel-hit-zone #hz_body .hz-figure-outline [data-hit-zone].selected { fill:rgba(255,189,94,.19);stroke:#ffcf86;stroke-width:2.8; }

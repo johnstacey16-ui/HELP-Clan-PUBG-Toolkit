@@ -2,7 +2,7 @@
 
 ## Visual damage guide
 
-Combat Lab now explains the live damage formula, thirteen hit-area factors, seven weapon-class profiles and seven gear-adjusted combined profiles. Fifteen distinct fictional adult photographic models carry live percentage labels. Combined gear starts at Level 2 / Level 2; class defaults and weapon exceptions stay separate. See [implementation checklist](DAMAGE_GUIDE_ROADMAP.md) and [data/design decisions](docs/damage-guide-design-and-data.md).
+Combat Lab now explains the live damage formula, thirteen hit-area factors, seven weapon-class profiles and seven gear-adjusted combined profiles. A consistent neutral vector training mannequin carries live percentage labels throughout the guide and interactive map. Combined gear starts at Level 2 / Level 2; class defaults and weapon exceptions stay separate. See [implementation checklist](DAMAGE_GUIDE_ROADMAP.md) and [data/design decisions](docs/damage-guide-design-and-data.md). The 28 October update replaces all photographic models, including Model 2, with the standard mannequin.
 
 ## Per-shot recoil analyzer — released (27 October 2026)
 

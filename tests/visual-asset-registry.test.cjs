@@ -61,12 +61,12 @@ test('manifest describes all shipped image assets and a bounded budget',()=>{
    .filter(name=>/\.(webp|avif|png|svg)$/i.test(name));
  assert.deepEqual([...onDisk].sort(),[...listed].sort(),'asset not registered (or missing) in visual-manifest.json');
 });
-test('Model 2 remains an approved baseline instead of being replaced in this upgrade',()=>{
- const item=manifest.assets.find(a=>a.id==='hit-zone-model-2');
+test('interactive map uses the requested neutral mannequin with all thirteen regions',()=>{
+ const item=manifest.assets.find(a=>a.id==='damage-training-mannequin');
  assert.ok(item&&item.panelId==='panel-hit-zone');
  assert.deepEqual([item.width,item.height],[500,750]);
  const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
- assert.ok(html.includes('href="/assets/hit-zone-model-2.webp"'));
+ assert.ok(html.includes('href="/assets/damage-training-mannequin.svg"'));
  assert.equal((html.match(/data-hit-zone="/g)||[]).length,13);
 });
 test('visual roadmap retains complete tool coverage and release/approval provenance',()=>{

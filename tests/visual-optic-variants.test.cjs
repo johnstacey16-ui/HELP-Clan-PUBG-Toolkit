@@ -31,5 +31,5 @@ test('generic visual error recovery is accessible, scoped and does not affect Mo
  assert.match(script,/addEventListener\('load',event=>/);
  assert.match(css,/\.visual-image-unavailable/);
  assert.equal((html.match(/data-hit-zone="/g)||[]).length,13);
- assert.match(html,/href="\/assets\/hit-zone-model-2\.webp"/);
+ assert.match(html,/href="\/assets\/damage-training-mannequin\.svg"/);
 });
