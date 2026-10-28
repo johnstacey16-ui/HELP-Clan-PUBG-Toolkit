@@ -1,4 +1,4 @@
-// Photo/overlay invariants. Arithmetic source and controls must be untouched.
+// Neutral mannequin/overlay invariants. Arithmetic source and controls must be untouched.
 'use strict';
 const {test}=require('node:test');
 const assert=require('node:assert/strict');

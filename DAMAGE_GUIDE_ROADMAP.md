@@ -26,4 +26,6 @@ See [design and data decisions](docs/damage-guide-design-and-data.md).
 - [x] Replace the interactive Model 2 underlay and all fifteen guide portraits with the standard vector mannequin.
 - [x] Match the existing thirteen interactive anatomical regions and retain numerical overlays.
 - [x] Remove the sixteen photographic assets and obsolete image-prompt catalogue.
-- [ ] Pass unit, browser, responsive and screenshot checks; publish replacement.
+- [x] Pass all 198 unit checks and generated-source validation; review the rendered vector mannequin.
+- [ ] Run browser/responsive/screenshot checks: GitHub run `40639845505` failed before any job steps on both attempts, with no job logs; the local Chrome runner also could not launch. These are unavailable checks, not passing results.
+- [ ] Publish replacement.
